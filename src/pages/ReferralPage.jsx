@@ -145,7 +145,7 @@ const ReferralPage = () => {
     { id: '1-year-premium', name: '1 Year Premium', points: 200, icon: <Crown className="h-8 w-8 text-orange-400" />, description: "Become a receipt-reading master for a whole year." },
   ];
 
-  const points = referralCount * 5;
+  const points = stats.totalReferrals * 5;
 
   return (
     <div className="min-h-screen text-white px-4 py-8 overflow-hidden">
