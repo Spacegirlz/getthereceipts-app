@@ -4,7 +4,25 @@
 
 A React-based web application that provides AI-powered relationship advice through "Truth Receipts." Users can input messages, situations, or conversations and receive detailed analysis including personality archetypes, brutal honesty, and actionable advice.
 
-🌟 **[Live Demo](https://your-production-url.vercel.app)** | 📚 **[Documentation](#documentation)** | 🐛 **[Issues](https://github.com/yourusername/getthereceipts/issues)**
+🌟 **[Live App](https://www.getthereceipts.com)** | 📚 **[Documentation](#documentation)** | 🐛 **[GitHub Repository](https://github.com/Spacegirlz/getthereceipts-app)**
+
+---
+
+## 🚀 **Production Status: LIVE**
+
+**✅ App URL:** https://www.getthereceipts.com  
+**✅ GitHub:** https://github.com/Spacegirlz/getthereceipts-app  
+**✅ Database:** Supabase (configured & operational)  
+**✅ Payments:** Stripe integration (requires checkout activation)  
+**✅ Domain:** Custom domain configured with SSL  
+**✅ Deployment:** Auto-deploy from GitHub main branch  
+
+### Recent Updates (September 2025)
+- ✅ **Credits System:** Properly integrated with existing database structure
+- ✅ **Routing Fixed:** All navigation working correctly on production  
+- ✅ **Authentication:** Supabase auth configured for custom domain
+- ✅ **Free Daily Button:** Fixed to navigate directly to chat input
+- ⚠️ **Stripe Checkout:** Requires manual activation in Stripe dashboard
 
 ---
 
