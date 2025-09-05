@@ -9,7 +9,7 @@ export class SubscriptionService {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('subscription_status, credits_remaining, stripe_customer_id, stripe_subscription_id, last_free_receipt_date')
+        .select('email, subscription_status, credits_remaining, stripe_customer_id, stripe_subscription_id, last_free_receipt_date')
         .eq('id', userId)
         .single();
 
@@ -44,6 +44,9 @@ export class SubscriptionService {
    */
   static canGenerateReceipt(userData) {
     if (!userData) return false;
+
+    // Owner email has unlimited access
+    if (userData.email === 'piet@virtualsatchel.com') return true;
 
     const { subscription_status, credits_remaining, last_free_receipt_date } = userData;
     const today = new Date().toISOString().split('T')[0];

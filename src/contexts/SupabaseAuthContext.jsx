@@ -47,9 +47,12 @@ export const AuthProvider = ({ children }) => {
             .select('subscription_status, credits_remaining')
             .eq('id', session.user.id)
             .single();
-          setIsPremium(data && ['premium', 'founder'].includes(data.subscription_status));
+          // Owner email gets automatic premium access
+          const isOwner = session.user.email === 'piet@virtualsatchel.com';
+          setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
         } catch (_) {
-          setIsPremium(false);
+          // Owner email gets automatic premium access even if database query fails
+          setIsPremium(session?.user?.email === 'piet@virtualsatchel.com');
         }
       }
       setLoading(false);
@@ -97,7 +100,9 @@ export const AuthProvider = ({ children }) => {
               .select('subscription_status, credits_remaining')
               .eq('id', session.user.id)
               .single();
-            setIsPremium(data && ['premium', 'founder'].includes(data.subscription_status));
+            // Owner email gets automatic premium access
+            const isOwner = session.user.email === 'piet@virtualsatchel.com';
+            setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
           } else {
             setIsPremium(false);
           }
