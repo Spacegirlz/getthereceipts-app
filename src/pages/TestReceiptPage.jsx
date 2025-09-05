@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { ArrowLeft, Send, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { analyzeWithGPT } from '@/lib/advancedAnalysis';
+import { analyzeWithGPT } from '@/lib/analysis/advancedAnalysis';
 
 // Import receipt components
 import ReceiptCardViral from '@/components/ReceiptCardViral';
