@@ -8,6 +8,10 @@ export default defineConfig({
     port: 5173,
     cors: true,
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+  },
   resolve: {
     extensions: ['.jsx', '.js', '.tsx', '.ts', '.json'],
     alias: {
