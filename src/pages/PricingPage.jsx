@@ -181,15 +181,17 @@ const PricingPage = () => {
   const [loadingPlan, setLoadingPlan] = useState(null);
 
   const handlePurchase = async (planName, priceId) => {
+    // Handle Free Daily - works for both logged in and not logged in users
+    if (planName === 'Free Daily') {
+        navigate('/chat-input');
+        return;
+    }
+
+    // For premium plans, require login
     if (!user) {
       openModal('sign_up');
       toast({ title: 'Create an account to upgrade!', description: 'Sign up to unlock premium features and get receipts.'})
       return;
-    }
-
-    if (planName === 'Free Daily') {
-        navigate('/chat-input');
-        return;
     }
 
     if (!priceId || !stripe) {
