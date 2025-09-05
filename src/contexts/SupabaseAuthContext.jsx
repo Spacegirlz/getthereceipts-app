@@ -47,9 +47,26 @@ export const AuthProvider = ({ children }) => {
             .select('subscription_status, credits_remaining')
             .eq('id', session.user.id)
             .single();
+          
           // Owner email gets automatic premium access
           const isOwner = session.user.email === 'piet@virtualsatchel.com';
-          setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
+          
+          if (error && error.code === 'PGRST116') {
+            // User doesn't exist in users table - create them
+            console.log('Creating user record for:', session.user.email);
+            await supabase
+              .from('users')
+              .insert({
+                id: session.user.id,
+                email: session.user.email,
+                subscription_status: isOwner ? 'founder' : 'free',
+                credits_remaining: isOwner ? 999999 : 1,
+                last_free_receipt_date: new Date().toISOString().split('T')[0]
+              });
+            setIsPremium(isOwner);
+          } else {
+            setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
+          }
         } catch (_) {
           // Owner email gets automatic premium access even if database query fails
           setIsPremium(session?.user?.email === 'piet@virtualsatchel.com');
@@ -95,14 +112,36 @@ export const AuthProvider = ({ children }) => {
           }
           // refresh premium flag
           if (session?.user) {
-            const { data } = await supabase
-              .from('users')
-              .select('subscription_status, credits_remaining')
-              .eq('id', session.user.id)
-              .single();
-            // Owner email gets automatic premium access
-            const isOwner = session.user.email === 'piet@virtualsatchel.com';
-            setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
+            try {
+              const { data, error } = await supabase
+                .from('users')
+                .select('subscription_status, credits_remaining')
+                .eq('id', session.user.id)
+                .single();
+              
+              // Owner email gets automatic premium access
+              const isOwner = session.user.email === 'piet@virtualsatchel.com';
+              
+              if (error && error.code === 'PGRST116') {
+                // User doesn't exist in users table - create them
+                console.log('Creating user record for:', session.user.email);
+                await supabase
+                  .from('users')
+                  .insert({
+                    id: session.user.id,
+                    email: session.user.email,
+                    subscription_status: isOwner ? 'founder' : 'free',
+                    credits_remaining: isOwner ? 999999 : 1,
+                    last_free_receipt_date: new Date().toISOString().split('T')[0]
+                  });
+                setIsPremium(isOwner);
+              } else {
+                setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
+              }
+            } catch (_) {
+              // Owner email gets automatic premium access even if database query fails
+              setIsPremium(session?.user?.email === 'piet@virtualsatchel.com');
+            }
           } else {
             setIsPremium(false);
           }
