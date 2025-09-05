@@ -2,7 +2,7 @@
 import { supabase } from '@/lib/database/customSupabaseClient';
 
 export const CREDIT_AMOUNTS = {
-  FREE_USER_DAILY: 1,
+  FREE_USER_MONTHLY: 3, // 3 credits per month (changed from 1 per day)
   EMERGENCY_PACK: 5,
   PREMIUM_UNLIMITED: -1,
   FOUNDER_UNLIMITED: -1,
@@ -13,7 +13,7 @@ export const getUserCredits = async (userId) => {
   try {
     const { data, error } = await supabase
       .from('users')
-      .select('credits_remaining, subscription_status, last_free_receipt_date')
+      .select('credits_remaining, subscription_status, last_free_receipt_date, created_at')
       .eq('id', userId)
       .single();
 
@@ -21,7 +21,7 @@ export const getUserCredits = async (userId) => {
       console.error('Error fetching user credits:', error);
       return {
         data: {
-          credits_remaining: 1,
+          credits_remaining: 3,
           subscription_status: 'free',
           last_free_receipt_date: null
         },
@@ -29,9 +29,40 @@ export const getUserCredits = async (userId) => {
       };
     }
 
+    // Check if it's a new month and reset credits for free users
+    const now = new Date();
+    const lastReset = data.last_free_receipt_date ? new Date(data.last_free_receipt_date) : null;
+    
+    let creditsRemaining = data.credits_remaining || 3;
+    
+    // For free users, check if we need to reset monthly credits
+    if (data.subscription_status === 'free') {
+      const needsMonthlyReset = !lastReset || 
+        (now.getFullYear() > lastReset.getFullYear()) ||
+        (now.getFullYear() === lastReset.getFullYear() && now.getMonth() > lastReset.getMonth());
+      
+      if (needsMonthlyReset) {
+        // Reset to 3 credits and update last reset date
+        creditsRemaining = CREDIT_AMOUNTS.FREE_USER_MONTHLY;
+        
+        // Update the database with new credits and reset date
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({
+            credits_remaining: creditsRemaining,
+            last_free_receipt_date: now.toISOString().split('T')[0]
+          })
+          .eq('id', userId);
+          
+        if (updateError) {
+          console.error('Error updating monthly credit reset:', updateError);
+        }
+      }
+    }
+
     return {
       data: {
-        credits_remaining: data.credits_remaining || 1,
+        credits_remaining: creditsRemaining,
         subscription_type: data.subscription_status || 'free',
         last_reset: data.last_free_receipt_date,
         deep_dives_used: 0, // Not tracking this yet
@@ -43,7 +74,7 @@ export const getUserCredits = async (userId) => {
     console.error('getUserCredits error:', err);
     return {
       data: {
-        credits_remaining: 1,
+        credits_remaining: 3,
         subscription_type: 'free',
         last_reset: new Date().toISOString(),
         deep_dives_used: 0,
@@ -73,7 +104,7 @@ export const initializeUserCredits = async (userId) => {
     const { error } = await supabase
       .from('users')
       .update({
-        credits_remaining: 1,
+        credits_remaining: 3,
         last_free_receipt_date: new Date().toISOString().split('T')[0]
       })
       .eq('id', userId);

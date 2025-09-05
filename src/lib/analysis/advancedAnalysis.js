@@ -660,97 +660,45 @@ export const analyzeWithGPT = async (message, context) => {
 
     let rawContent = '';
     if (provider === 'openai') {
-      // Check if using GPT-5 reasoning models
-      const isReasoningModel = openAIModel.includes('gpt-5') || openAIModel.includes('o1');
+      // Use Chat Completions API for all models
+      const endpoint = 'https://api.openai.com/v1/chat/completions';
+      const messages = [
+        { role: 'system', content: customPrompt },
+        { role: 'user', content: userContent }
+      ];
       
-      if (isReasoningModel) {
-        // Use Responses API for reasoning models
-        const endpoint = 'https://api.openai.com/v1/responses';
-        const input = [
-          { role: 'system', content: customPrompt }
-        ];
-        
-        if (voiceOverride) {
-          input.push({ role: 'system', content: voiceOverride });
-        }
-        
-        input.push({ role: 'user', content: userContent });
-        
-        const body = {
-          model: openAIModel,
-          input,
-          reasoning: { effort: 'medium' },
-          max_output_tokens: 1500,
-          text: { format: { type: 'json_object' } }
-        };
-        
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body)
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`OpenAI Responses API error ${response.status}:`, errorText);
-          throw new Error(`OpenAI Responses API error: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('🔧 FULL GPT-5 Response Structure:', JSON.stringify(data, null, 2));
-        console.log('OpenAI Responses API meta:', { hasOutput: !!data?.output, usage: data?.usage });
-        console.log('🔍 Output array:', data?.output);
-        
-        // GPT-5 mini returns output in data.output[1].content[0].text
-        const messageOutput = data?.output?.find(o => o.type === 'message');
-        console.log('🎯 Found message output:', messageOutput);
-        rawContent = messageOutput?.content?.[0]?.text || data?.output_text || '';
-        console.log('📝 Extracted rawContent:', rawContent);
-        
-      } else {
-        // Use Chat Completions API for regular models
-        const endpoint = 'https://api.openai.com/v1/chat/completions';
-        const messages = [
-          { role: 'system', content: customPrompt },
-          { role: 'user', content: userContent }
-        ];
-        
-        if (voiceOverride) {
-          messages.splice(1, 0, { role: 'system', content: voiceOverride });
-        }
-        
-        const body = {
-          model: openAIModel,
-          messages,
-          temperature: 0.7,
-          max_tokens: 1500,
-          presence_penalty: 0.3,
-          frequency_penalty: 0.4,
-          response_format: { type: 'json_object' }
-        };
-        
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body)
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`OpenAI API error ${response.status}:`, errorText);
-          throw new Error(`OpenAI API error: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('OpenAI response meta:', { endpoint, hasChoices: !!data?.choices, usage: data?.usage });
-        rawContent = data.choices?.[0]?.message?.content || '';
+      if (voiceOverride) {
+        messages.splice(1, 0, { role: 'system', content: voiceOverride });
       }
+      
+      const body = {
+        model: openAIModel,
+        messages,
+        temperature: 0.7,
+        max_tokens: 1500,
+        presence_penalty: 0.3,
+        frequency_penalty: 0.4,
+        response_format: { type: 'json_object' }
+      };
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`OpenAI API error ${response.status}:`, errorText);
+        throw new Error(`OpenAI API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('OpenAI response meta:', { endpoint, hasChoices: !!data?.choices, usage: data?.usage });
+      rawContent = data.choices?.[0]?.message?.content || '';
     } else {
       // Google Gemini with structured output
       const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${import.meta.env.VITE_GOOGLE_API_KEY}`;
