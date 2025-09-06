@@ -207,9 +207,12 @@ const PricingPage = () => {
     setLoadingPlan(priceId);
 
     try {
+        // Emergency Pack is one-time payment, others are subscriptions
+        const mode = planName === 'Emergency Pack' ? 'payment' : 'subscription';
+        
         const { error } = await stripe.redirectToCheckout({
             lineItems: [{ price: priceId, quantity: 1 }],
-            mode: 'subscription',
+            mode: mode,
             successUrl: `${window.location.origin}/chat-input?session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${window.location.origin}/pricing`,
             customerEmail: user.email, 
