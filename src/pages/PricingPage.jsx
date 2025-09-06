@@ -181,8 +181,8 @@ const PricingPage = () => {
   const [loadingPlan, setLoadingPlan] = useState(null);
 
   const handlePurchase = async (planName, priceId) => {
-    // Handle Free Daily - works for both logged in and not logged in users
-    if (planName === 'Free Daily') {
+    // Handle Free Daily Receipt - works for both logged in and not logged in users
+    if (planName === 'Free Daily Receipt') {
         navigate('/chat-input');
         return;
     }
@@ -245,7 +245,7 @@ const PricingPage = () => {
   const plans = [
     {
       icon: "🥖",
-      name: "Free Daily",
+      name: "Free Daily Receipt",
       price: "$0",
       tagline: "One truth receipt a day",
       viralSubtext: "Test the waters",
@@ -274,7 +274,7 @@ const PricingPage = () => {
       viralSubtext: "5 instant answers",
       features: [
         '5 Truth Receipts for one crisis',
-        'Includes everything in Free Daily',
+        'Includes everything in Free Daily Receipt',
         'Valid 7 days',
         'Brutal clarity included',
         'Confirm what your gut is telling you',
@@ -310,7 +310,7 @@ const PricingPage = () => {
     },
     {
       icon: "👑",
-      name: "OG Founders Club",
+      name: "Premium Yearly - OG Founder",
       price: "$29.99",
       priceSub: "/year",
       slashedPrice: "$69.99",
@@ -323,7 +323,7 @@ const PricingPage = () => {
         "Beta features (be the friend who knew first)",
         "Always know where you stand",
       ],
-      buttonText: "Claim Founder's Deal",
+      buttonText: "Claim OG Founder Deal",
       buttonClass: "text-black font-bold",
       buttonStyle: { 
         background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
@@ -475,7 +475,7 @@ const PricingPage = () => {
                 <Button onClick={() => handlePurchase("OG Founder's Yearly Deal", 'price_1RzgBYG71EqeOEZer7ojcw0R')} className="bg-gradient-to-r from-pink-400 to-orange-400 hover:from-pink-500 hover:to-orange-500 text-white font-bold py-4" disabled={loadingPlan === 'price_1RzgBYG71EqeOEZer7ojcw0R'}>
                     {loadingPlan === 'price_1RzgBYG71EqeOEZer7ojcw0R' ? 'Redirecting...' : 'Lock In Forever - $29.99'}
                 </Button>
-                <Button onClick={() => handlePurchase("Free Daily", null)} variant="outline" className="border-purple-400 text-white hover:bg-purple-500/20 font-bold py-4">Start Free Daily</Button>
+                <Button onClick={() => handlePurchase("Free Daily Receipt", null)} variant="outline" className="border-purple-400 text-white hover:bg-purple-500/20 font-bold py-4">Start Free Daily Receipt</Button>
               </div>
             </motion.div>
 

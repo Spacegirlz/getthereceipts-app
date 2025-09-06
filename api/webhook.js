@@ -51,7 +51,7 @@ export default async function handler(req, res) {
       subscriptionType = 'premium';
     } else if (amountPaid === 29.99) {
       creditsToAdd = 999999; // Yearly founder
-      subscriptionType = 'founder';
+      subscriptionType = 'yearly';
     }
     
     // Update user credits directly

@@ -40,13 +40,13 @@ export const AuthProvider = ({ children }) => {
               .insert({
                 id: session.user.id,
                 email: session.user.email,
-                subscription_status: isOwner ? 'founder' : 'free',
+                subscription_status: isOwner ? 'yearly' : 'free',
                 credits_remaining: isOwner ? 999999 : 1,
                 last_free_receipt_date: new Date().toISOString().split('T')[0]
               });
             setIsPremium(isOwner);
           } else {
-            setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
+            setIsPremium(isOwner || (data && ['premium', 'yearly'].includes(data.subscription_status)));
           }
         } catch (_) {
           // Owner email gets automatic premium access even if database query fails
@@ -111,13 +111,13 @@ export const AuthProvider = ({ children }) => {
                   .insert({
                     id: session.user.id,
                     email: session.user.email,
-                    subscription_status: isOwner ? 'founder' : 'free',
+                    subscription_status: isOwner ? 'yearly' : 'free',
                     credits_remaining: isOwner ? 999999 : 1,
                     last_free_receipt_date: new Date().toISOString().split('T')[0]
                   });
                 setIsPremium(isOwner);
               } else {
-                setIsPremium(isOwner || (data && ['premium', 'founder'].includes(data.subscription_status)));
+                setIsPremium(isOwner || (data && ['premium', 'yearly'].includes(data.subscription_status)));
               }
             } catch (_) {
               // Owner email gets automatic premium access even if database query fails

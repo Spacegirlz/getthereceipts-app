@@ -17,9 +17,18 @@ const DashboardPage = () => {
   const stripe = useStripe();
   
   const [receipts, setReceipts] = useState([]);
-  const [userCredits, setUserCredits] = useState({ credits: 0, subscription: 'free' });
-  const [referralData, setReferralData] = useState({ referralCode: '', uses: 0 });
-  const [referralStats, setReferralStats] = useState({ totalReferrals: 0, bonusCreditsEarned: 0 });
+  const [userCredits, setUserCredits] = useState({ 
+    credits: 0, 
+    subscription: 'free'
+  });
+  const [referralData, setReferralData] = useState({ 
+    referralCode: '', 
+    uses: 0 
+  });
+  const [referralStats, setReferralStats] = useState({ 
+    totalReferrals: 0, 
+    bonusCreditsEarned: 0 
+  });
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async (userId) => {
@@ -124,20 +133,33 @@ const DashboardPage = () => {
   };
 
   const getPlanName = (subscription) => {
+    if (!subscription) return 'Free Daily Receipt';
     if (subscription === 'premium') return 'Premium Monthly';
-    if (subscription === 'yearly') return "Founder's Pass";
-    return 'Forever Free';
+    if (subscription === 'yearly') return 'Premium Yearly - OG Founder';
+    return 'Free Daily Receipt';
   };
 
   const getCreditsDisplay = () => {
+    if (!userCredits) return '0';
     if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly') {
       return 'Unlimited';
     }
-    return userCredits.credits.toString();
+    return String(userCredits.credits || 0);
   };
 
   const MiniReceiptCard = ({ receipt }) => {
+    if (!receipt) return null;
+    
     const analysisResult = receipt.analysis_result || {};
+    const formatDate = (dateString) => {
+      if (!dateString) return 'N/A';
+      try {
+        return new Date(dateString).toLocaleDateString();
+      } catch (error) {
+        return 'N/A';
+      }
+    };
+    
     return (
       <motion.div
         whileHover={{ scale: 1.05, y: -5 }}
@@ -146,21 +168,37 @@ const DashboardPage = () => {
       >
         <div>
           <h3 className="font-bold text-lg truncate">{analysisResult.archetype || 'Analysis'}</h3>
-          <p className="text-sm opacity-80 truncate">{receipt.original_message}</p>
+          <p className="text-sm opacity-80 truncate">{receipt.original_message || 'No message'}</p>
         </div>
         <div className="mt-4 text-xs opacity-70">
-          {new Date(receipt.created_at).toLocaleDateString()}
+          {formatDate(receipt.created_at)}
         </div>
       </motion.div>
     );
   };
   
   if (authLoading || loading) {
-     return (
-        <div className="flex justify-center items-center min-h-screen">
-          <Loader2 className="h-16 w-16 animate-spin text-purple-400" />
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-800 text-white flex justify-center items-center p-4">
+        <div className="text-center">
+          <Loader2 className="h-16 w-16 animate-spin text-purple-400 mx-auto mb-4" />
+          <h1 className="text-2xl mb-2">Loading your dashboard...</h1>
+          <p className="text-purple-200">Getting your credits and receipts ready</p>
         </div>
-      );
+      </div>
+    );
+  }
+
+  // Add additional safety check
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-800 text-white flex justify-center items-center p-4">
+        <div className="text-center">
+          <h1 className="text-2xl mb-2">Please sign in</h1>
+          <p className="text-purple-200">You need to be logged in to view your dashboard</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -177,7 +215,7 @@ const DashboardPage = () => {
         >
           <div>
             <h1 className="text-4xl font-black">Your Dashboard</h1>
-            <p className="text-gray-400">Welcome back, {user?.email}</p>
+            <p className="text-gray-400">Welcome back, {user?.email || 'User'}</p>
           </div>
           <div className="flex gap-2">
             <Button className="viral-button" onClick={() => navigate('/chat-input')}><PlusCircle className="mr-2 h-4 w-4" /> New Receipt</Button>
@@ -215,8 +253,8 @@ const DashboardPage = () => {
               <Gift className="mr-2 h-5 w-5 text-purple-400" />
               Referrals
             </h2>
-            <p className="text-2xl font-bold gradient-text">{referralStats.totalReferrals}</p>
-            <p className="text-sm text-gray-400 mt-1">+{referralStats.bonusCreditsEarned} bonus credits</p>
+            <p className="text-2xl font-bold gradient-text">{referralStats?.totalReferrals || 0}</p>
+            <p className="text-sm text-gray-400 mt-1">+{referralStats?.bonusCreditsEarned || 0} bonus credits</p>
           </div>
            
           <div className="meme-card p-6 rounded-2xl flex flex-col justify-center items-center">
@@ -225,12 +263,12 @@ const DashboardPage = () => {
               Actions
             </h2>
             <div className="flex flex-col gap-2 w-full">
-              {userCredits.subscription === 'free' && userCredits.credits < 2 && (
+              {userCredits?.subscription === 'free' && (userCredits?.credits || 0) < 2 && (
                 <Button size="sm" className="viral-button text-xs" onClick={handleBuyCredits}>
                   Buy 10 Credits ($2.49)
                 </Button>
               )}
-              {userCredits.subscription === 'free' && (
+              {userCredits?.subscription === 'free' && (
                 <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/pricing')}>
                   Upgrade Plan
                 </Button>
@@ -248,9 +286,9 @@ const DashboardPage = () => {
           transition={{ delay: 0.2 }}
         >
           <h2 className="text-3xl font-bold mb-6 flex items-center"><Receipt className="mr-3"/>Your Receipt History</h2>
-          {receipts.length > 0 ? (
+          {receipts && receipts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {receipts.map(receipt => <MiniReceiptCard key={receipt.id} receipt={receipt} />)}
+              {receipts.map(receipt => receipt && receipt.id ? <MiniReceiptCard key={receipt.id} receipt={receipt} /> : null)}
             </div>
           ) : (
             <div className="text-center meme-card p-10 rounded-2xl">

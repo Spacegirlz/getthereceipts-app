@@ -53,7 +53,7 @@ export class SubscriptionService {
 
     switch (subscription_status) {
       case 'premium':
-      case 'founder':
+      case 'yearly':
         return true; // Unlimited
       
       case 'emergency':
