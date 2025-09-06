@@ -17,25 +17,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const getInitialSession = async () => {
-      // LOCAL DEVELOPMENT BYPASS - Remove this in production
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        // Create a mock user for local testing
-        const mockUser = {
-          id: 'local-dev-user',
-          email: 'dev@local.test',
-          created_at: new Date().toISOString()
-        };
-        const mockSession = {
-          user: mockUser,
-          access_token: 'mock-token'
-        };
-        
-        setSession(mockSession);
-        setUser(mockUser);
-        setIsPremium(true); // Set to true to test premium features like Immunity Training
-        setLoading(false);
-        return;
-      }
 
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);

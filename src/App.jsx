@@ -11,7 +11,7 @@ import DashboardPage from '@/pages/DashboardPage';
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
 import TermsOfServicePage from '@/pages/TermsOfServicePage';
 import SettingsPage from '@/pages/SettingsPage';
-import AuthCallbackPage from '@/pages/AuthCallbackPage';
+import AuthCallback from '@/pages/AuthCallback';
 import TestMetrics from '@/components/TestMetrics';
 import TestAnalysis from '@/components/TestAnalysis';
 import TestReceipt from '@/pages/TestReceipt';
@@ -51,7 +51,7 @@ function App() {
               <Route path="/refer" element={<ReferralPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-              <Route path="/auth/callback" element={<AuthCallbackPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/test-metrics" element={<TestMetrics />} />
               <Route path="/test-analysis" element={<TestAnalysis />} />
               <Route path="/test-receipt" element={<TestReceipt />} />
