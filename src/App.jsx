@@ -16,6 +16,7 @@ import TestMetrics from '@/components/TestMetrics';
 import TestAnalysis from '@/components/TestAnalysis';
 import TestReceipt from '@/pages/TestReceipt';
 import TestReceiptPage from '@/pages/TestReceiptPage';
+import Success from '@/pages/Success';
 import { Helmet } from 'react-helmet';
 import AuthModal from '@/components/AuthModal';
 import PrivateRoute from '@/components/PrivateRoute';
@@ -52,6 +53,7 @@ function App() {
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/success" element={<Success />} />
               <Route path="/test-metrics" element={<TestMetrics />} />
               <Route path="/test-analysis" element={<TestAnalysis />} />
               <Route path="/test-receipt" element={<TestReceipt />} />

@@ -172,7 +172,7 @@ const ReceiptsCardPage = () => {
         const { error } = await stripe.redirectToCheckout({
             lineItems: [{ price: priceId, quantity: 1 }],
             mode: 'subscription',
-            successUrl: `${window.location.origin}/chat-input?session_id={CHECKOUT_SESSION_ID}`,
+            successUrl: `${window.location.origin}/success`,
             cancelUrl: `${window.location.origin}/pricing`,
             customerEmail: user.email, 
         });

@@ -100,7 +100,7 @@ const DashboardPage = () => {
       const { error } = await stripe.redirectToCheckout({
         lineItems: [{ price: 'price_1SoPo4G71EqeOEZe8qcB1Qfa', quantity: 1 }],
         mode: 'payment',
-        successUrl: `${window.location.origin}/dashboard?credits_purchased=true`,
+        successUrl: `${window.location.origin}/success`,
         cancelUrl: `${window.location.origin}/dashboard`,
         customerEmail: user.email,
       });
