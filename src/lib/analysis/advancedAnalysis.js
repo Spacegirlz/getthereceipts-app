@@ -933,16 +933,16 @@ export const generateAdvancedResults = (message, context) => {
   
   const profile = profiles[profileKey];
 
-  // Return basic structure with calculated metrics only
+  // Return professional fallback with calculated metrics
   const fallbackResult = {
-    archetype: 'Analysis Unavailable',
-    verdict: 'Unable to generate analysis at this time',
-    realTea: 'Check your connection and try again',
+    archetype: profile.title,
+    verdict: profile.verdict || 'Analysis based on behavioral patterns',
+    realTea: 'Your instincts are worth listening to - trust what you\'re observing',
     wastingTime: Math.max(0, 100 - interest),
     actuallyIntoYou: interest,
     redFlags: Math.round(manipulation / 10),
-    yourMove: ['Try again later', 'Check your internet connection'],
-    prophecy: 'Analysis will be available when connection is restored'
+    yourMove: ['Trust your gut', 'Actions speak louder than words'],
+    prophecy: 'Your intuition knows more than you think'
   };
   
   console.log('Fallback result to return:', fallbackResult);

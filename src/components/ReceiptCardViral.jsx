@@ -135,8 +135,8 @@ const ReceiptCardViral = ({ results }) => {
     ];
     
     const defaultRedFlags = [
-      "Mixed signals", "Delayed responses", "Pattern inconsistency", 
-      "Unclear intentions", "Communication gaps", "Time wasting behavior"
+      "Inconsistent communication", "Vague future plans", "Hot and cold behavior", 
+      "Avoids commitment talk", "Last minute changes", "Limited availability"
     ];
     
     // Try to get flags from multiple sources
