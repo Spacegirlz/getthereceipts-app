@@ -7,14 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
-import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits, addCredits } from '@/lib/services/creditsSystem';
-import { useStripe } from '@stripe/react-stripe-js';
+import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits } from '@/lib/services/creditsSystem';
 
 const DashboardPage = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const stripe = useStripe();
   
   const [receipts, setReceipts] = useState([]);
   const [userCredits, setUserCredits] = useState({ 
@@ -72,65 +70,12 @@ const DashboardPage = () => {
   useEffect(() => {
     if (!authLoading && user) {
       fetchData(user.id);
-      
-      // Check if user just purchased credits
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('credits_purchased') === 'true') {
-        // Add 10 credits for the $2.49 purchase
-        addCredits(user.id, 10, 'credit_pack_purchase').then(() => {
-          toast({
-            title: '🚀 Credits Added!',
-            description: '10 credits have been added to your account.',
-          });
-          // Remove the parameter from URL
-          window.history.replaceState({}, document.title, window.location.pathname);
-          // Refresh data to show new credits
-          fetchData(user.id);
-        });
-      }
     } else if (!authLoading && !user) {
       setLoading(false);
       navigate('/');
     }
-  }, [user, authLoading, fetchData, navigate, toast]);
+  }, [user, authLoading, fetchData, navigate]);
 
-  const handleBuyCredits = async () => {
-    if (!stripe || !user) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Unable to process payment. Please try again.',
-      });
-      return;
-    }
-
-    try {
-      // Redirect to Stripe Checkout for the $2.49 credit pack
-      const { error } = await stripe.redirectToCheckout({
-        lineItems: [{ price: 'price_1SoPo4G71EqeOEZe8qcB1Qfa', quantity: 1 }],
-        mode: 'payment',
-        successUrl: `${window.location.origin}/success`,
-        cancelUrl: `${window.location.origin}/dashboard`,
-        customerEmail: user.email,
-      });
-
-      if (error) {
-        console.error('Stripe redirect error:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Payment Error',
-          description: error.message || 'Could not redirect to checkout.',
-        });
-      }
-    } catch (error) {
-      console.error('Error processing payment:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Unable to process payment. Please try again.',
-      });
-    }
-  };
 
   const getPlanName = (subscription) => {
     if (!subscription) return 'Free Daily Receipt';
@@ -263,11 +208,6 @@ const DashboardPage = () => {
               Actions
             </h2>
             <div className="flex flex-col gap-2 w-full">
-              {userCredits?.subscription === 'free' && (userCredits?.credits || 0) < 2 && (
-                <Button size="sm" className="viral-button text-xs" onClick={handleBuyCredits}>
-                  Buy 10 Credits ($2.49)
-                </Button>
-              )}
               {userCredits?.subscription === 'free' && (
                 <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/pricing')}>
                   Upgrade Plan
