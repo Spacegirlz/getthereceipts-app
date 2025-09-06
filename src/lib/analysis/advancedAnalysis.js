@@ -933,16 +933,16 @@ export const generateAdvancedResults = (message, context) => {
   
   const profile = profiles[profileKey];
 
-  // Return professional fallback with calculated metrics
+  // Return clear error state - no fake analysis
   const fallbackResult = {
-    archetype: profile.title,
-    verdict: profile.verdict || 'Analysis based on behavioral patterns',
-    realTea: 'Your instincts are worth listening to - trust what you\'re observing',
-    wastingTime: Math.max(0, 100 - interest),
-    actuallyIntoYou: interest,
-    redFlags: Math.round(manipulation / 10),
-    yourMove: ['Trust your gut', 'Actions speak louder than words'],
-    prophecy: 'Your intuition knows more than you think'
+    archetype: 'Connection Error',
+    verdict: 'Unable to connect to analysis service',
+    realTea: 'Please check your internet connection and try again',
+    wastingTime: 0,
+    actuallyIntoYou: 0,
+    redFlags: 0,
+    yourMove: ['Refresh the page', 'Try again in a moment'],
+    prophecy: 'Analysis will be available once connection is restored'
   };
   
   console.log('Fallback result to return:', fallbackResult);
