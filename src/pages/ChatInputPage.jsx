@@ -28,9 +28,11 @@ const ChatInputPage = () => {
   
   // New quiz fields integrated into the input page
   const [userName, setUserName] = useState('');
+  const [otherName, setOtherName] = useState(''); // Add separate state for other person's name
   const [contextType, setContextType] = useState('');
   const [otherPartyPronouns, setOtherPartyPronouns] = useState('');
   const [userPronouns, setUserPronouns] = useState('');
+  const [userQuestion, setUserQuestion] = useState('');
   
   // User credits state
   const [userCredits, setUserCredits] = useState(null);
@@ -45,10 +47,21 @@ const ChatInputPage = () => {
   // Character limits
   const TEXTS_LIMIT = 2500;
   const BACKGROUND_LIMIT = 500;
+  const QUESTION_LIMIT = 300;
   
   const generateMessage = () => {
     let message = '';
     
+    // Include names and relationship context for clarity
+    if (userName.trim() && otherName.trim()) {
+      message += `USER: ${userName.trim()} (${userPronouns || 'they/them'})\n`;
+      message += `OTHER: ${otherName.trim()} (${otherPartyPronouns || 'they/them'})\n`;
+    }
+    if (contextType) {
+      message += `RELATIONSHIP: ${contextType}\n\n`;
+    } else {
+      message += '\n';
+    }
     if (texts.trim()) {
       message += `EVIDENCE:\n${texts.trim()}\n\n`;
     }
@@ -56,7 +69,10 @@ const ChatInputPage = () => {
       message += `QUICK CONTEXT: ${background.trim()}\n\n`;
     }
     if (gutFeel.trim()) {
-      message += `YOUR VIBE: ${gutFeel.trim()}`;
+      message += `YOUR VIBE: ${gutFeel.trim()}\n\n`;
+    }
+    if (userQuestion.trim()) {
+      message += `YOUR QUESTION: ${userQuestion.trim()}`;
     }
     
     return message.trim();
@@ -130,6 +146,15 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       return;
     }
 
+    if (!contextType.trim()) {
+      toast({
+        variant: 'destructive',
+        title: 'Context required',
+        description: 'Please select what type of relationship this is.',
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -145,10 +170,10 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
         user_side: userName.trim() || 'Alex',
         username: userName.trim() || 'Alex',
         
-        // Other party identification
-        other_name: background.trim(),
-        their_name: background.trim(),
-        other_party_name: background.trim(),
+        // Other party identification - NOW USING CORRECT FIELD
+        other_name: otherName.trim() || 'them',
+        their_name: otherName.trim() || 'them',
+        other_party_name: otherName.trim() || 'them',
         
         // Pronouns with multiple tag variations for GPT recognition
         user_pronoun: userPronouns || 'they/them',
@@ -301,7 +326,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)' }}>
                   1
                 </div>
-                <h3 className="text-xl font-bold text-stone-100">The Cast (Optional)</h3>
+                <h3 className="text-xl font-bold text-stone-100">The Cast</h3>
               </div>
               
               <p className="text-stone-300 text-sm mb-4">
@@ -325,8 +350,8 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 <div>
                   <input
                     type="text"
-                    value={background}
-                    onChange={(e) => setBackground(e.target.value.slice(0, 50))}
+                    value={otherName}
+                    onChange={(e) => setOtherName(e.target.value.slice(0, 50))}
                     placeholder="Their Name (e.g., Taylor)"
                     className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors placeholder-gray-500"
                     disabled={isLoading}
@@ -336,7 +361,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
 
               {/* Pronouns (Optional) - kept but simplified */}
               <div className="mt-4">
-                <label className="text-stone-400 text-xs mb-2 block">Pronouns (optional)</label>
+                <label className="text-stone-400 text-xs mb-2 block">Pronouns</label>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-stone-400 mb-2">You:</p>
@@ -427,7 +452,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)' }}>
                   3
                 </div>
-                <h3 className="text-xl font-bold text-stone-100">The Vibe (Optional)</h3>
+                <h3 className="text-xl font-bold text-stone-100">The Vibe</h3>
               </div>
               
               <p className="text-stone-300 text-sm mb-4">
@@ -451,6 +476,37 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   <option value="family">Family Drama</option>
                   <option value="curious">Just Curious / For Fun</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Step 4: Your Question (Optional) */}
+            <div className="bg-black/30 p-6 rounded-xl border border-white/10">
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-black font-bold text-sm mr-3"
+                  style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)' }}>
+                  4
+                </div>
+                <h3 className="text-xl font-bold text-stone-100">Your Question (Optional)</h3>
+              </div>
+              
+              <p className="text-stone-300 text-sm mb-4">
+                Got a specific question for Sage? Ask away! This helps focus the analysis on what matters most to you.
+              </p>
+              
+              <div>
+                <label className="text-stone-400 text-xs mb-2 block">What do you want to know?</label>
+                <Textarea
+                  value={userQuestion}
+                  onChange={(e) => setUserQuestion(e.target.value.slice(0, QUESTION_LIMIT))}
+                  placeholder="e.g., 'Should I keep giving him chances?' or 'Is this behavior normal?' or 'What would you do in my situation?'"
+                  className="w-full h-24 p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors resize-none"
+                  disabled={isLoading}
+                />
+                <div className="flex justify-between items-center mt-2">
+                  <span className={`text-xs ${userQuestion.length > QUESTION_LIMIT * 0.8 ? 'text-orange-400' : 'text-stone-400'} ${userQuestion.length > QUESTION_LIMIT * 0.95 ? 'text-red-400' : ''}`}>
+                    {userQuestion.length}/{QUESTION_LIMIT}
+                  </span>
+                </div>
               </div>
             </div>
 

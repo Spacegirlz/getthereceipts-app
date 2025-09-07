@@ -38,8 +38,18 @@ const AuthModal = () => {
     
     const handleGoogleSignIn = async () => {
         setLoading(true);
-        await signInWithGoogle();
-        // The modal will close on redirect, so no need to setLoading(false) here
+        try {
+            await signInWithGoogle();
+            // The modal will close on redirect, so no need to setLoading(false) here
+        } catch (error) {
+            console.error('Google sign in error:', error);
+            setLoading(false);
+            toast({
+                variant: "destructive",
+                title: "Google Sign-in Failed",
+                description: "Please try again or use email/password.",
+            });
+        }
     };
 
     if (user || !isOpen) {

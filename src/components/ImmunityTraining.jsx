@@ -503,7 +503,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 SAGE'S IMMUNITY TRAINING
               </h2>
             </div>
-            <h3 className="text-sm font-medium tracking-wider text-amber-300 opacity-75 mb-2 mt-4">
+            <h3 className="text-lg font-medium tracking-wider text-amber-300 opacity-75 mb-2 mt-4">
               {getArchetypeHeader(actualRiskLevel, archetypeName)}
             </h3>
             <div className="text-base text-white/60 mt-1">
@@ -565,23 +565,28 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
 
         {/* 3 Dynamic Flags */}
         <div className="mb-8">
-          <h4 className="text-teal-400 font-bold text-sm mb-4 text-center">FLAGS</h4>
+          <h4 className="text-teal-400 font-bold text-sm mb-4">FLAGS</h4>
           <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="space-y-2">
               {displayData.flags.map((flag, index) => (
-                <motion.span
+                <motion.div
                   key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className={`px-3 py-1 rounded-full text-xs border bg-white/5 transition-all ${
+                  className={`flex items-start gap-2 text-base ${
                     flag.type === 'red' 
-                      ? 'text-red-300 border-red-500/20' 
-                      : 'text-green-300 border-green-500/20'
+                      ? 'text-red-300' 
+                      : 'text-green-300'
                   }`}
                 >
-                  {flag.type === 'red' ? '🚩' : '🟢'} {flag.text}
-                </motion.span>
+                  <span className="mt-0.5 flex-shrink-0">
+                    {flag.type === 'red' ? '🚩' : '🟢'}
+                  </span>
+                  <span className="leading-relaxed">
+                    {flag.text}
+                  </span>
+                </motion.div>
               ))}
             </div>
           </div>

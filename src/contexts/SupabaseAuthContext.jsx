@@ -135,7 +135,7 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = useCallback(async (email, password) => {
     const options = {
-      emailRedirectTo: `${window.location.origin}/dashboard`,
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
     };
     if (referralCode) {
       options.data = { referral_code: referralCode };
@@ -185,10 +185,15 @@ export const AuthProvider = ({ children }) => {
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
     });
 
     if (error) {
+      console.error('Google OAuth error:', error);
       toast({
         variant: "destructive",
         title: "Google Sign-in Failed",

@@ -2,16 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/database/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuthModal } from '@/contexts/AuthModalContext';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap } from 'lucide-react';
+import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap, LogIn, LogOut, User } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
 import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits } from '@/lib/services/creditsSystem';
 
 const DashboardPage = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const { openModal } = useAuthModal();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -144,6 +146,28 @@ const DashboardPage = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to sign out. Please try again.',
+      });
+    }
+  };
+
+  const handleLogin = () => {
+    openModal('sign_in');
+  };
+
   const MiniReceiptCard = ({ receipt }) => {
     if (!receipt) return null;
     
@@ -176,7 +200,7 @@ const DashboardPage = () => {
   
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-800 text-white flex justify-center items-center p-4">
+      <div className="min-h-screen bg-black text-white flex justify-center items-center p-4">
         <div className="text-center">
           <Loader2 className="h-16 w-16 animate-spin text-purple-400 mx-auto mb-4" />
           <h1 className="text-2xl mb-2">Loading your dashboard...</h1>
@@ -189,7 +213,7 @@ const DashboardPage = () => {
   // Add additional safety check
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-800 text-white flex justify-center items-center p-4">
+      <div className="min-h-screen bg-black text-white flex justify-center items-center p-4">
         <div className="text-center">
           <h1 className="text-2xl mb-2">Please sign in</h1>
           <p className="text-purple-200">You need to be logged in to view your dashboard</p>
@@ -217,6 +241,15 @@ const DashboardPage = () => {
           <div className="flex gap-2">
             <Button className="viral-button" onClick={() => navigate('/chat-input')}><PlusCircle className="mr-2 h-4 w-4" /> New Receipt</Button>
             <Button variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20" onClick={() => navigate('/refer')}><Gift className="mr-2 h-4 w-4" /> Refer Friends</Button>
+            {user ? (
+              <Button variant="outline" className="text-white border-red-400 hover:bg-red-500/20" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" /> Sign Out
+              </Button>
+            ) : (
+              <Button variant="outline" className="text-white border-green-400 hover:bg-green-500/20" onClick={handleLogin}>
+                <LogIn className="mr-2 h-4 w-4" /> Sign In
+              </Button>
+            )}
           </div>
         </motion.header>
 

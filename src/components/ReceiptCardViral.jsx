@@ -22,8 +22,27 @@ const ReceiptCardViral = memo(({ results }) => {
     actuallyIntoYou,
     redFlags,
     confidenceScore,
-    confidenceRemark
+    confidenceRemark,
+    originalMessage,
+    userQuestion
   } = results;
+
+  // Extract user question from originalMessage
+  const extractUserQuestion = (message) => {
+    if (!message) return null;
+    const questionMatch = message.match(/YOUR QUESTION:\s*(.+?)(?:\n|$)/i);
+    return questionMatch ? questionMatch[1].trim() : null;
+  };
+
+  const parsedUserQuestion = userQuestion || extractUserQuestion(originalMessage);
+
+  // Function to truncate question to approximately 33 words (3 lines)
+  const truncateToThreeLines = (text, maxWords = 33) => {
+    if (!text) return '';
+    const words = text.split(' ');
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(' ') + '...';
+  };
 
   // Memoize debug output to prevent excessive logging
   const debugOutput = useMemo(() => {
@@ -341,7 +360,7 @@ const ReceiptCardViral = memo(({ results }) => {
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-4 py-2 bg-green-500/20 border border-green-400/30 text-green-300 rounded-full text-sm font-medium whitespace-nowrap"
+                      className="inline-flex items-center justify-center px-2 py-1 text-green-300 text-base font-medium whitespace-nowrap"
                     >
                       {chip}
                     </motion.span>
@@ -360,7 +379,7 @@ const ReceiptCardViral = memo(({ results }) => {
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-4 py-2 bg-red-500/20 border border-red-400/30 text-red-300 rounded-full text-sm font-medium whitespace-nowrap"
+                      className="inline-flex items-center justify-center px-2 py-1 text-red-300 text-base font-medium whitespace-nowrap"
                     >
                       {chip}
                     </motion.span>
@@ -387,21 +406,36 @@ const ReceiptCardViral = memo(({ results }) => {
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🫖 THE REAL TEA</h3>
               <div className="space-y-2">
-                {/* Main tea content - realTea already contains the combined content */}
-                {realTea && (
-                  <div className="text-stone-200/90 text-xl leading-relaxed">
-                    {realTea}
+                {/* User's Question (if provided) */}
+                {parsedUserQuestion && (
+                  <div className="mb-3 pb-3 border-b border-white/10">
+                    <p className="text-amber-300 text-sm font-medium mb-1">Your Question:</p>
+                    <p className="text-stone-300 text-base leading-relaxed italic">
+                      "{truncateToThreeLines(parsedUserQuestion)}"
+                    </p>
                   </div>
                 )}
                 
-                {/* Your Move items - only if not already included in realTea */}
-                {!realTea && nextMove.length > 0 && (
+                {/* Main tea content - try realTea, then teaAndMovePlay, then nextMove */}
+                {realTea ? (
+                  <div className="text-stone-200/90 text-xl leading-relaxed">
+                    {realTea}
+                  </div>
+                ) : teaAndMovePlay && Array.isArray(teaAndMovePlay) ? (
+                  <div className="space-y-2">
+                    {teaAndMovePlay.map((line, index) => (
+                      <div key={index} className="text-stone-200/90 text-xl leading-relaxed">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+                ) : nextMove.length > 0 ? (
                   <div className="space-y-1">
                     {nextMove.slice(0, 2).map((item, index) => (
                       <div key={index} className="text-stone-200/90 text-xl leading-relaxed">• {item}</div>
                     ))}
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
           )}

@@ -14,49 +14,70 @@ const AuthCallbackPage = () => {
     hasRun.current = true;
 
     const handleAuthCallback = async () => {
-      const url = new URL(window.location.href);
-      const code = url.searchParams.get('code');
-      const error = url.searchParams.get('error');
-      const errorDescription = url.searchParams.get('error_description');
+      try {
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get('code');
+        const error = url.searchParams.get('error');
+        const errorDescription = url.searchParams.get('error_description');
 
-      if (error) {
+        console.log('Auth callback:', { code: !!code, error, errorDescription });
+
+        if (error) {
+          console.error('Auth callback error:', error, errorDescription);
+          toast({
+            variant: "destructive",
+            title: "Authentication Error",
+            description: errorDescription || "An unknown error occurred during authentication.",
+          });
+          navigate(`/?error=${encodeURIComponent(errorDescription || 'unknown_error')}`);
+          return;
+        }
+
+        if (code) {
+          console.log('Exchanging code for session...');
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeError) {
+            console.error('Code exchange error:', exchangeError);
+            toast({
+              variant: "destructive",
+              title: "Authentication Failed",
+              description: exchangeError.message,
+            });
+            navigate(`/?error=${encodeURIComponent(exchangeError.message)}`);
+          } else {
+            console.log('Code exchange successful, user:', data.user?.email);
+            // Small delay to ensure auth context updates
+            setTimeout(() => navigate('/dashboard'), 100);
+          }
+        } else {
+          // This handles the implicit flow (from email link) which uses a hash
+          const hashParams = new URLSearchParams(url.hash.substring(1));
+          console.log('Hash params:', Object.fromEntries(hashParams));
+          
+          if (hashParams.has('access_token')) {
+            console.log('Found access token in hash, navigating to dashboard');
+            // The onAuthStateChange listener in SupabaseAuthContext will handle this
+            // Small delay to ensure auth context updates
+            setTimeout(() => navigate('/dashboard'), 100);
+          } else {
+            // No code and no hash, something is wrong
+            console.error('No auth code or token found');
+            toast({
+              variant: "destructive",
+              title: "Invalid Callback",
+              description: "No authentication code or token found.",
+            });
+            navigate('/');
+          }
+        }
+      } catch (err) {
+        console.error('Auth callback error:', err);
         toast({
           variant: "destructive",
           title: "Authentication Error",
-          description: errorDescription || "An unknown error occurred during authentication.",
+          description: "An unexpected error occurred.",
         });
-        navigate(`/?error=${encodeURIComponent(errorDescription || 'unknown_error')}`);
-        return;
-      }
-
-      if (code) {
-        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-        if (exchangeError) {
-          toast({
-            variant: "destructive",
-            title: "Authentication Failed",
-            description: exchangeError.message,
-          });
-          navigate(`/?error=${encodeURIComponent(exchangeError.message)}`);
-        } else {
-          navigate('/dashboard');
-        }
-      } else {
-        // This handles the implicit flow (from email link) which uses a hash
-        const hashParams = new URLSearchParams(url.hash.substring(1));
-        if (hashParams.has('access_token')) {
-          // The onAuthStateChange listener in SupabaseAuthContext will handle this
-          // We just need to navigate to the dashboard
-          navigate('/dashboard');
-        } else {
-          // No code and no hash, something is wrong
-          toast({
-            variant: "destructive",
-            title: "Invalid Callback",
-            description: "No authentication code or token found.",
-          });
-          navigate('/');
-        }
+        navigate('/');
       }
     };
 

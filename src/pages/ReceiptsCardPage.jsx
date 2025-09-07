@@ -13,6 +13,7 @@ import { Helmet } from 'react-helmet';
 import { supabase } from '@/lib/database/customSupabaseClient';
 import { Loader2, ArrowLeft, Share2, Shield, Brain, Sparkles, Crown, Gift } from 'lucide-react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { saveReceiptToDatabase, canUserSaveReceipts } from '@/lib/services/receiptService';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useStripe } from '@stripe/react-stripe-js';
 // Age verification imports removed
@@ -101,6 +102,9 @@ const ReceiptsCardPage = () => {
     
     setIsSharing(true);
     
+    // Add save-mode class for cleaner save
+    element.classList.add('save-mode');
+    
     // Fix gradient elements before screenshot
     const originalElements = fixGradientElements(element);
     console.log(`Found ${originalElements.length} gradient elements in Receipt component`);
@@ -122,6 +126,7 @@ const ReceiptsCardPage = () => {
           const timestamp = Date.now();
           saveAs(blob, `Sage's Truth Receipt #${timestamp}.png`);
           toast({ title: "Receipt saved!", description: "Your truth receipt has been downloaded." });
+          element.classList.remove('save-mode'); // Remove save-mode class
           setIsSharing(false);
         });
       }).catch(function(error) {
@@ -191,6 +196,30 @@ const ReceiptsCardPage = () => {
     }
   };
 
+  // Function to save receipt to database if user has saving enabled
+  const saveReceiptIfEnabled = async (receiptData, message = '') => {
+    if (!user || !receiptData) return;
+    
+    try {
+      const result = await saveReceiptToDatabase(
+        user.id,
+        message || receiptData.originalMessage || receiptData.message || 'Receipt generated',
+        receiptData.analysis || receiptData,
+        'truth',
+        0 // tokens used - could be calculated if needed
+      );
+      
+      if (result.success) {
+        console.log('Receipt saved successfully:', result.data);
+      } else if (result.error !== 'User has receipt saving disabled' && result.error !== 'Receipt saving is a premium feature') {
+        // Only show error if it's not expected (user settings)
+        console.warn('Could not save receipt:', result.error);
+      }
+    } catch (error) {
+      console.error('Error saving receipt:', error);
+    }
+  };
+
   useEffect(() => {
     // Handle redirections and data fetching in a single effect
     const handleDataFetching = async () => {
@@ -198,6 +227,9 @@ const ReceiptsCardPage = () => {
       if (location.state) {
         setReceiptData(location.state);
         setLoading(false);
+        
+        // Receipt saving disabled
+        // await saveReceiptIfEnabled(location.state, location.state?.originalMessage);
         
         // Age verification removed - handled at input level
         
@@ -261,6 +293,9 @@ const ReceiptsCardPage = () => {
         
         setReceiptData(testReceiptData);
         setLoading(false);
+        
+        // Receipt saving disabled
+        // await saveReceiptIfEnabled(testReceiptData, testReceiptData.originalMessage);
         
         // Age verification removed - handled at input level
         
