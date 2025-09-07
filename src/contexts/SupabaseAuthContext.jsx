@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
+        console.log('Auth state changed:', _event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -126,7 +127,12 @@ export const AuthProvider = ({ children }) => {
           } else {
             setIsPremium(false);
           }
+        } else if (_event === "SIGNED_OUT") {
+          setIsPremium(false);
         }
+        
+        // Always ensure loading is false after auth state changes
+        setLoading(false);
       }
     );
 

@@ -40,7 +40,10 @@ const AuthModal = () => {
         setLoading(true);
         try {
             await signInWithGoogle();
-            // The modal will close on redirect, so no need to setLoading(false) here
+            // Reset loading state after a timeout in case redirect doesn't happen immediately
+            setTimeout(() => {
+                setLoading(false);
+            }, 3000);
         } catch (error) {
             console.error('Google sign in error:', error);
             setLoading(false);

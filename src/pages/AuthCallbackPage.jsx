@@ -46,8 +46,8 @@ const AuthCallbackPage = () => {
             navigate(`/?error=${encodeURIComponent(exchangeError.message)}`);
           } else {
             console.log('Code exchange successful, user:', data.user?.email);
-            // Small delay to ensure auth context updates
-            setTimeout(() => navigate('/dashboard'), 100);
+            // Longer delay for mobile to ensure auth context updates properly
+            setTimeout(() => navigate('/dashboard'), 500);
           }
         } else {
           // This handles the implicit flow (from email link) which uses a hash
@@ -57,8 +57,8 @@ const AuthCallbackPage = () => {
           if (hashParams.has('access_token')) {
             console.log('Found access token in hash, navigating to dashboard');
             // The onAuthStateChange listener in SupabaseAuthContext will handle this
-            // Small delay to ensure auth context updates
-            setTimeout(() => navigate('/dashboard'), 100);
+            // Longer delay for mobile to ensure auth context updates properly
+            setTimeout(() => navigate('/dashboard'), 500);
           } else {
             // No code and no hash, something is wrong
             console.error('No auth code or token found');

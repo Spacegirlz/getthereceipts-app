@@ -996,6 +996,107 @@ const tiers = [
 
 ---
 
+## 🆕 Recent Updates & Improvements (September 2025)
+
+### **AI Relationship Context Awareness**
+**Major Update:** Enhanced AI prompts to properly distinguish between relationship types
+
+**Files Modified:**
+- `/src/lib/prompts/brutalPrompt.js` - Added relationship context awareness
+- `/src/lib/prompts/deepDivePrompt.js` - Context-aware analysis 
+- `/src/lib/prompts/immunityPrompt.js` - Friendship vs dating appropriate advice
+- `/src/pages/ChatInputPage.jsx` - Added relationship type to message generation
+
+**Key Improvements:**
+- **Friendship Context:** AI now uses "Flaky Friend" archetype instead of romantic "Hot & Cold"
+- **Dating Context:** Proper romantic relationship analysis with dating-specific advice
+- **Family Context:** Family dynamics focus with appropriate boundaries advice
+- **Dynamic Names:** Removed all hardcoded names (Maya, Jess, Ryan) for actual conversation names
+
+**Implementation:**
+```javascript
+// Message now includes relationship context
+if (contextType) {
+  message += `RELATIONSHIP: ${contextType}\n\n`;
+}
+// AI prompts check for FRIENDSHIP/DATING/FAMILY context
+- FRIENDSHIP context: Focus on friendship dynamics, loyalty, communication issues - NO romantic advice
+- DATING context: Focus on romantic patterns, dating red flags, relationship advice  
+- FAMILY context: Focus on family dynamics, boundaries, respect issues
+```
+
+### **Enhanced User Input & Validation**
+**New Features:**
+- **Optional User Question Field:** 300 character limit, displays in receipts
+- **Context Type Validation:** Relationship type now mandatory (was optional)
+- **User Questions in Receipts:** Questions appear in "Real Tea" section (truncated to 3 lines/33 words)
+
+**Files Modified:**
+- `/src/pages/ChatInputPage.jsx` - Added user question field and validation
+- `/src/components/ReceiptCardViral.jsx` - Display user questions in receipts
+- Form validation now requires relationship context selection
+
+### **Immunity Training UI Fixes**
+**Problem:** Flags were displayed as centered buttons  
+**Solution:** Changed to left-aligned list format
+
+**Files Modified:**
+- `/src/components/ImmunityTraining.jsx` - Redesigned flags section
+
+**Before:**
+```jsx
+<div className="flex flex-wrap gap-2 justify-center">
+  <motion.span className="px-4 py-2 rounded-full text-base border bg-white/5">
+    🚩 Flag text
+  </motion.span>
+</div>
+```
+
+**After:**
+```jsx
+<div className="space-y-2">
+  <motion.div className="flex items-start gap-2 text-base">
+    <span className="mt-0.5 flex-shrink-0">🚩</span>
+    <span className="leading-relaxed">Flag text</span>
+  </motion.div>
+</div>
+```
+
+### **Receipt Saving System (Temporarily Disabled)**
+**Implementation Added:**
+- `/src/lib/services/receiptService.js` - Complete receipt saving service
+- Database integration for premium users with save_receipts toggle
+- User preference management in dashboard
+
+**Current Status:** Disabled for stability (commented out in ReceiptsCardPage.jsx)
+- `// await saveReceiptIfEnabled(location.state, location.state?.originalMessage);`
+- Can be re-enabled when needed by uncommenting save calls
+
+### **Font System Optimization**
+**Current Font Stack:** System fonts for performance and CSP compatibility
+```css
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+```
+- **macOS/iOS:** San Francisco font (-apple-system)
+- **Windows:** Segoe UI  
+- **Android:** Roboto
+- **Fallback:** sans-serif
+
+**Benefits:** No external font loading, better CSP compliance, native OS appearance
+
+### **Database Schema Updates**
+**New Columns Added:**
+```sql
+-- Added to users table
+ALTER TABLE users ADD COLUMN IF NOT EXISTS save_receipts BOOLEAN DEFAULT FALSE;
+```
+
+**Files Added:**
+- `/add-column.sql` - SQL script for adding save_receipts column
+- `/fix-database.sql` - Comprehensive database fixes and updates
+
+---
+
 ## 🚨 Critical Maintenance & Monitoring
 
 ### **1. Environment Variables Security**
@@ -1201,9 +1302,10 @@ This project is **production-ready** with all critical systems tested and verifi
 ---
 
 **Last Updated:** September 7, 2025  
-**Status:** Production Deployment Complete  
-**Version:** 1.0.3  
-**Next Review:** 1 week post-launch
+**Status:** Production Deployment Complete ✅  
+**Version:** 1.0.4 (September 2025 Context Update)  
+**Major Features Added:** AI Relationship Context Awareness, Enhanced UI/UX  
+**Next Review:** 1 week post-context update deployment
 
 ---
 
