@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -6,8 +6,13 @@ import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 // import { voiceService } from '@/lib/voiceService';
 
-const DeepDive = ({ deepDive, analysisData, isPremium = true }) => {
-  console.log('🔥 DEEP DIVE V4 - SHORT, SAVAGE, SUBSTANTIAL:', { deepDive, analysisData, isPremium });
+const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
+  // Memoize debug logging to prevent excessive output
+  useMemo(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔥 DEEP DIVE V4 - SHORT, SAVAGE, SUBSTANTIAL:', { deepDive, analysisData, isPremium });
+    }
+  }, [deepDive, analysisData, isPremium]);
   
   const { toast } = useToast();
   const [copiedText, setCopiedText] = useState('');
@@ -617,5 +622,9 @@ const DeepDive = ({ deepDive, analysisData, isPremium = true }) => {
     </div>
   );
 };
+
+});
+
+DeepDive.displayName = 'DeepDive';
 
 export default DeepDive;

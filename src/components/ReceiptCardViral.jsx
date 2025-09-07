@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Brain } from 'lucide-react';
 import TrendSticker from '@/components/TrendSticker';
 // Standard Sage image for Truth Receipt
 import sageStandardImage from '@/assets/sage-dark-circle.png';
 
-const ReceiptCardViral = ({ results }) => {
+const ReceiptCardViral = memo(({ results }) => {
   if (!results) return null;
 
 
@@ -25,15 +25,20 @@ const ReceiptCardViral = ({ results }) => {
     confidenceRemark
   } = results;
 
-  // Debug: Log the values after extraction (basic info only)
-  console.log('=== ReceiptCardViral Debug ===');
-  console.log('Full results object:', results);
-  console.log('DeepDive red_flag_tags:', results?.deepDive?.red_flag_tags);
-  console.log('Results redFlagTags:', results?.redFlagTags);
-  console.log('Results receipts patterns:', (results?.receipts || []).map(r => r?.pattern));
-  console.log('Metrics values:', { wastingTime, actuallyIntoYou, redFlags });
-  console.log('Content values:', { archetype, verdict, realTea, yourMove, prophecy });
-  console.log('Confidence values:', { confidenceScore, confidenceRemark });
+  // Memoize debug output to prevent excessive logging
+  const debugOutput = useMemo(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('=== ReceiptCardViral Debug ===');
+      console.log('Full results object:', results);
+      console.log('DeepDive red_flag_tags:', results?.deepDive?.red_flag_tags);
+      console.log('Results redFlagTags:', results?.redFlagTags);
+      console.log('Results receipts patterns:', (results?.receipts || []).map(r => r?.pattern));
+      console.log('Metrics values:', { wastingTime, actuallyIntoYou, redFlags });
+      console.log('Content values:', { archetype, verdict, realTea, yourMove, prophecy });
+      console.log('Confidence values:', { confidenceScore, confidenceRemark });
+    }
+    return null;
+  }, [results, wastingTime, actuallyIntoYou, redFlags, archetype, verdict, realTea, yourMove, prophecy, confidenceScore, confidenceRemark]);
 
   // Get dynamic gradient based on archetype
   const getGradient = (archetypeTitle = '') => {
@@ -441,5 +446,9 @@ const ReceiptCardViral = ({ results }) => {
     </motion.div>
   );
 };
+
+});
+
+ReceiptCardViral.displayName = 'ReceiptCardViral';
 
 export default ReceiptCardViral;

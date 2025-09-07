@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Shield, AlertTriangle, Zap, Eye, LogOut, Crown, CheckCircle, Calendar, Target, TrendingUp, Clock, Mic, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
 
-const ImmunityTraining = ({ immunityData, archetypeName = "The Gaslighter" }) => {
+const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" }) => {
   const { toast } = useToast();
-  console.log('🛡️ ImmunityTraining received:', immunityData);
-  console.log('🛡️ Type:', typeof immunityData, 'Keys:', immunityData ? Object.keys(immunityData) : 'none');
+  // Memoize debug logging to prevent excessive output
+  useMemo(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🛡️ ImmunityTraining received:', immunityData);
+      console.log('🛡️ Type:', typeof immunityData, 'Keys:', immunityData ? Object.keys(immunityData) : 'none');
+    }
+  }, [immunityData]);
 
   // Better element detection using computed styles
   const fixGradientElements = (element) => {
@@ -713,5 +718,9 @@ const ImmunityTraining = ({ immunityData, archetypeName = "The Gaslighter" }) =>
     </div>
   );
 };
+
+});
+
+ImmunityTraining.displayName = 'ImmunityTraining';
 
 export default ImmunityTraining;
