@@ -40,7 +40,7 @@ const PricingPage = () => {
   const { openModal } = useAuthModal();
   const stripe = useStripe();
   const [loadingPriceId, setLoadingPriceId] = useState(null);
-  const [founderCount, setFounderCount] = useState(353); // Dynamic counter (147 remaining)
+  const [founderCount, setFounderCount] = useState(353); // Dynamic counter - 147 spots remaining
 
   // Dynamic founder counter that ticks up very slowly
   useEffect(() => {
