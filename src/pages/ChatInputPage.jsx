@@ -366,12 +366,12 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-stone-400 mb-2">You:</p>
-                    <div className="flex gap-1">
+                    <div className="flex gap-2">
                       {['she/her', 'he/him', 'they/them'].map((pronoun) => (
                         <button
                           key={pronoun}
                           onClick={() => setUserPronouns(pronoun)}
-                          className={`px-2 py-1 rounded text-xs transition-all ${
+                          className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
                             userPronouns === pronoun
                               ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
                               : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
@@ -384,12 +384,12 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   </div>
                   <div>
                     <p className="text-xs text-stone-400 mb-2">Them:</p>
-                    <div className="flex gap-1">
+                    <div className="flex gap-2">
                       {['he/him', 'she/her', 'they/them'].map((pronoun) => (
                         <button
                           key={pronoun}
                           onClick={() => setOtherPartyPronouns(pronoun)}
-                          className={`px-2 py-1 rounded text-xs transition-all ${
+                          className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
                             otherPartyPronouns === pronoun
                               ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
                               : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
