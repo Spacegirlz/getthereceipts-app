@@ -93,7 +93,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       if (user?.id) {
         const credits = await getUserCredits(user.id);
         setUserCredits(credits);
-        setIsPremium(credits.subscription === 'premium');
+        setIsPremium(credits.subscription === 'premium' || credits.subscription === 'yearly' || credits.subscription === 'founder');
       } else {
         // Non-logged in users need to create account for free daily credit
         setUserCredits({ deepDivesRemaining: 0, subscription: 'free' });
@@ -116,7 +116,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
     }
 
     // Check if user has credits
-    if (!isPremium && (!userCredits?.deepDivesRemaining || userCredits.deepDivesRemaining <= 0)) {
+    if (!isPremium && (!userCredits?.credits || userCredits.credits <= 0)) {
       setShowUpgradeModal(true);
       return;
     }
@@ -469,7 +469,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   '🧾 Get My Free Truth Receipt'
                 ) : isPremium ? (
                   '🧾 Get My Truth Receipt'
-                ) : userCredits?.deepDivesRemaining > 0 ? (
+                ) : userCredits?.credits > 0 ? (
                   '🧾 Get My Free Truth Receipt'
                 ) : (
                   `🧾 Get My Truth Receipt (0 Today)`
@@ -487,7 +487,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   <Sparkles className="w-4 h-4 text-yellow-400" />
                   <span>Unlimited Truth Receipts!</span>
                 </div>
-              ) : userCredits?.deepDivesRemaining > 0 ? (
+              ) : userCredits?.credits > 0 ? (
                 <div className="flex items-center justify-center gap-2 text-sm text-gray-300">
                   <Sparkles className="w-4 h-4 text-yellow-400" />
                   <span>Your daily free receipt is ready!</span>

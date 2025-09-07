@@ -20,12 +20,9 @@ export const getUserCredits = async (userId) => {
     if (error) {
       console.error('Error fetching user credits:', error);
       return {
-        data: {
-          credits_remaining: 1,
-          subscription_status: 'free',
-          last_free_receipt_date: null
-        },
-        error: error
+        credits: 1,
+        subscription: 'free',
+        last_free_receipt_date: null
       };
     }
 
@@ -62,26 +59,20 @@ export const getUserCredits = async (userId) => {
     }
 
     return {
-      data: {
-        credits_remaining: creditsRemaining,
-        subscription_type: data.subscription_status || 'free',
-        last_reset: data.last_free_receipt_date,
-        deep_dives_used: 0, // Not tracking this yet
-        deep_dives_reset: new Date().toISOString()
-      },
-      error: null
+      credits: creditsRemaining,
+      subscription: data.subscription_status || 'free', // Return as 'subscription' not 'subscription_type'
+      last_reset: data.last_free_receipt_date,
+      deep_dives_used: 0, // Not tracking this yet
+      deep_dives_reset: new Date().toISOString()
     };
   } catch (err) {
     console.error('getUserCredits error:', err);
     return {
-      data: {
-        credits_remaining: 1,
-        subscription_type: 'free',
-        last_reset: new Date().toISOString(),
-        deep_dives_used: 0,
-        deep_dives_reset: new Date().toISOString()
-      },
-      error: err
+      credits: 1,
+      subscription: 'free',
+      last_reset: new Date().toISOString(),
+      deep_dives_used: 0,
+      deep_dives_reset: new Date().toISOString()
     };
   }
 };

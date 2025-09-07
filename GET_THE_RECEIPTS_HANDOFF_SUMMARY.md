@@ -3,7 +3,7 @@
 **Status**: 🚀 **LIVE & OPERATIONAL** - Payments processing successfully  
 **Launch Date**: Saturday Evening September 6, 2025  
 **Production URL**: https://www.getthereceipts.com  
-**Last Updated**: September 6, 2025 - Final Status
+**Last Updated**: September 7, 2025 - AI Token Limits Fixed
 
 ---
 
@@ -24,6 +24,12 @@
 - **Payments**: Stripe with working webhook handlers 
 - **APIs**: OpenAI + Google Gemini with fallback chain (3 API keys total)
 - **Domain**: Custom domain configured and SSL enabled
+
+### ✅ **Latest Updates (Sep 7, 2025)**
+- ✅ **AI Token Limits Fixed**: Deep Dive (800→2000), Immunity Training (600→1500)
+- ✅ **Founder Support Added**: 'founder' subscription status recognized throughout app
+- ✅ **Referral System**: Replaced with clean "Coming Soon" page
+- ✅ **Vercel Config**: Simplified for proper framework detection
 
 ### ✅ **Final Deployment Completed (Sep 6, 2025)**
 - ✅ **Stripe Integration**: Live payment processing with $1.99 test transaction
@@ -148,10 +154,17 @@ User can generate 5 receipts
 
 ## ⚠️ Known Issues (Non-Critical)
 
+### **Recently Fixed Issues**
+- ✅ **AI Analysis Truncation**: Fixed by increasing token limits (Deep Dive: 2000, Immunity: 1500)
+- ✅ **Founder Status Recognition**: Added support for 'founder' subscription type
+- ✅ **Database Field Mismatch**: Fixed subscription_status vs subscription field naming
+- ✅ **Pricing Page Scroll**: Attempted multiple fixes for scroll-to-top behavior
+
 ### **Minor Items to Address Later**
 - **No email confirmations**: Would need SendGrid/Resend setup
 - **Dashboard purchase history**: References non-existent table (cosmetic)
 - **Success page**: Users return to chat page after payment (functional but not optimal)
+- **Pricing page scroll position**: Links may still scroll to mid-page despite fixes
 
 ### **Monitoring Needed**
 - **First 24-48 hours**: Watch for any webhook delivery failures
@@ -176,7 +189,40 @@ User can generate 5 receipts
 
 ---
 
-## 🎯 Launch Confidence: 95% ✅
+## 🔧 Technical Fixes Applied (Sep 7, 2025)
+
+### **AI Analysis Improvements**
+```javascript
+// Fixed token limits in /src/lib/analysis/advancedAnalysis.js
+// Deep Dive Analysis
+max_completion_tokens: 2000  // was 800
+maxOutputTokens: 2000        // was 800 (Gemini)
+
+// Immunity Training  
+max_completion_tokens: 1500  // was 600
+maxOutputTokens: 1500        // was 600 (Gemini)
+```
+
+### **Database Field Alignment**
+```javascript
+// Fixed in /src/lib/services/creditsSystem.js
+return {
+  subscription: data.subscription_status || 'free',  // was subscription_type
+  credits: creditsRemaining,
+  // ... rest of fields
+}
+```
+
+### **Founder Status Support**
+Added 'founder' checks to:
+- `/src/pages/DashboardPage.jsx`
+- `/src/pages/ChatInputPage.jsx`  
+- `/src/contexts/SupabaseAuthContext.jsx`
+- All subscription validation logic
+
+---
+
+## 🎯 Launch Confidence: 98% ✅
 
 ### **What's Working Right Now:**
 - ✅ **Real payments processing** ($1.99 test successful)

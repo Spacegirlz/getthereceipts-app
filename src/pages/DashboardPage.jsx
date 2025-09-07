@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '@/lib/database/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -27,27 +28,45 @@ const DashboardPage = () => {
     totalReferrals: 0, 
     bonusCreditsEarned: 0 
   });
+  const [saveReceipts, setSaveReceipts] = useState(false); // Default OFF - privacy first
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async (userId) => {
     setLoading(true);
     try {
-      // Fetch receipts
-      const { data: receiptsData, error: receiptsError } = await supabase
-        .from('receipts')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-
-      if (receiptsError) throw receiptsError;
-      setReceipts(receiptsData || []);
-
       // Initialize user credits if they don't exist
       await initializeUserCredits(userId);
 
-      // Fetch user credits
+      // Fetch user credits and check subscription
       const creditsData = await getUserCredits(userId);
       setUserCredits(creditsData);
+      
+      // Check if user has receipt saving enabled (premium feature)
+      const isPremiumUser = creditsData.subscription === 'premium' || creditsData.subscription === 'yearly' || creditsData.subscription === 'founder';
+      
+      // Fetch user's receipt saving preference (defaults to OFF for privacy)
+      const { data: userData } = await supabase
+        .from('users')
+        .select('save_receipts')
+        .eq('id', userId)
+        .single();
+      
+      const shouldSaveReceipts = userData?.save_receipts === true; // Explicit false unless explicitly true
+      setSaveReceipts(shouldSaveReceipts);
+
+      // Only fetch receipts if user is premium AND has saving enabled
+      if (isPremiumUser && shouldSaveReceipts) {
+        const { data: receiptsData, error: receiptsError } = await supabase
+          .from('receipts')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+
+        if (receiptsError) throw receiptsError;
+        setReceipts(receiptsData || []);
+      } else {
+        setReceipts([]); // No receipts for free users or when saving is disabled
+      }
 
       // Fetch referral data
       const referralCodeData = await getUserReferralCode(userId);
@@ -81,15 +100,48 @@ const DashboardPage = () => {
     if (!subscription) return 'Free Daily Receipt';
     if (subscription === 'premium') return 'Premium Monthly';
     if (subscription === 'yearly') return 'Premium Yearly - OG Founder';
+    if (subscription === 'founder') return 'OG Founder - Unlimited';
     return 'Free Daily Receipt';
   };
 
   const getCreditsDisplay = () => {
     if (!userCredits) return '0';
-    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly') {
+    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') {
       return 'Unlimited';
     }
     return String(userCredits.credits || 0);
+  };
+
+  const handleSaveReceiptsToggle = async (checked) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ save_receipts: checked })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      setSaveReceipts(checked);
+      
+      // Refresh receipts based on new setting
+      await fetchData(user.id);
+      
+      toast({
+        title: checked ? "Receipt Saving Enabled" : "Receipt Saving Disabled",
+        description: checked 
+          ? "Your future receipts will be saved to your dashboard" 
+          : "Your receipts will no longer be saved (privacy mode)",
+      });
+    } catch (error) {
+      console.error('Error updating receipt preference:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to update receipt saving preference',
+      });
+    }
   };
 
   const MiniReceiptCard = ({ receipt }) => {
@@ -207,7 +259,22 @@ const DashboardPage = () => {
               <CreditCard className="mr-2 h-5 w-5 text-blue-400" />
               Actions
             </h2>
-            <div className="flex flex-col gap-2 w-full">
+            <div className="flex flex-col gap-3 w-full">
+              {/* Receipt Saving Toggle for Premium Users */}
+              {(userCredits?.subscription === 'premium' || userCredits?.subscription === 'yearly' || userCredits?.subscription === 'founder') && (
+                <div className="flex items-center justify-between p-2 rounded-lg bg-white/5">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium">Save Receipts</span>
+                    <span className="text-xs text-gray-400">Store receipts on dashboard</span>
+                  </div>
+                  <Switch
+                    checked={saveReceipts}
+                    onCheckedChange={handleSaveReceiptsToggle}
+                    className="ml-2"
+                  />
+                </div>
+              )}
+              
               {userCredits?.subscription === 'free' && (
                 <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/pricing')}>
                   Upgrade Plan
@@ -233,9 +300,25 @@ const DashboardPage = () => {
           ) : (
             <div className="text-center meme-card p-10 rounded-2xl">
               <Frown className="h-16 w-16 mx-auto text-gray-500 mb-4" />
-              <h3 className="text-2xl font-bold">No Receipts Found</h3>
-              <p className="text-gray-400 mb-6">Looks like you haven't decoded any messages yet, or you have history turned off.</p>
-              <Button className="viral-button" onClick={() => navigate('/chat-input')}>Get Your First Receipt</Button>
+              {userCredits?.subscription === 'free' ? (
+                <>
+                  <h3 className="text-2xl font-bold">Privacy First 🛡️</h3>
+                  <p className="text-gray-400 mb-6">Your receipts aren't saved by default. Upgrade to Premium to enable receipt saving and build your personal analysis library.</p>
+                  <Button className="viral-button" onClick={() => navigate('/pricing')}>Upgrade for Receipt History</Button>
+                </>
+              ) : !saveReceipts ? (
+                <>
+                  <h3 className="text-2xl font-bold">Receipt Saving Off</h3>
+                  <p className="text-gray-400 mb-6">Your receipts aren't being saved. Turn on "Save Receipts" above to start building your analysis library.</p>
+                  <Button className="viral-button" onClick={() => navigate('/chat-input')}>Get Your First Receipt</Button>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-2xl font-bold">No Receipts Yet</h3>
+                  <p className="text-gray-400 mb-6">You haven't decoded any messages yet. Start analyzing to build your receipt history!</p>
+                  <Button className="viral-button" onClick={() => navigate('/chat-input')}>Get Your First Receipt</Button>
+                </>
+              )}
             </div>
           )}
         </motion.section>

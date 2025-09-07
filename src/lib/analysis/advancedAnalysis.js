@@ -990,7 +990,7 @@ export const generateAlignedResults = async (message, context) => {
           { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${message}` }
         ],
         temperature: 1.2,
-        max_completion_tokens: 800,
+        max_completion_tokens: 2000,
         response_format: { type: 'json_object' }
       };
       console.log('🔧 OpenAI Deep Dive request:', { endpoint, model: openAIModel });
@@ -1019,7 +1019,7 @@ export const generateAlignedResults = async (message, context) => {
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: ddSystem + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 800 } })
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: ddSystem + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
       });
       const data = await response.json();
       rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -1216,7 +1216,7 @@ export const generateAlignedResults = async (message, context) => {
           { role: 'user', content: `TEXTS:\n${message}` }
         ],
         temperature: 0.8,
-        max_completion_tokens: 600,
+        max_completion_tokens: 1500,
         response_format: { type: 'json_object' }
       };
       
@@ -1247,7 +1247,7 @@ export const generateAlignedResults = async (message, context) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           contents: [{ role: 'user', parts: [{ text: immunitySystem + `\n\nTEXTS:\n${message}` }] }], 
-          generationConfig: { temperature: 0.8, maxOutputTokens: 600 } 
+          generationConfig: { temperature: 0.8, maxOutputTokens: 1500 } 
         })
       });
       const data = await response.json();
