@@ -187,23 +187,34 @@ export const AuthProvider = ({ children }) => {
   }, [toast]);
 
   const signInWithGoogle = useCallback(async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account consent',
+          },
+          // Add skipBrowserRedirect for better mobile handling
+          skipBrowserRedirect: false,
         },
-      },
-    });
+      });
 
-    if (error) {
-      console.error('Google OAuth error:', error);
+      if (error) {
+        console.error('Google OAuth error:', error);
+        toast({
+          variant: "destructive",
+          title: "Google Sign-in Failed", 
+          description: error.message || "Something went wrong",
+        });
+      }
+    } catch (err) {
+      console.error('Sign-in preparation error:', err);
       toast({
         variant: "destructive",
         title: "Google Sign-in Failed",
-        description: error.message || "Something went wrong",
+        description: "Please try again in a moment.",
       });
     }
   }, [toast]);

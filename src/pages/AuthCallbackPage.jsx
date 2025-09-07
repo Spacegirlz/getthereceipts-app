@@ -15,6 +15,8 @@ const AuthCallbackPage = () => {
 
     const handleAuthCallback = async () => {
       try {
+        // Add more debug logging for mobile
+        console.log('Starting auth callback, user agent:', navigator.userAgent);
         const url = new URL(window.location.href);
         const code = url.searchParams.get('code');
         const error = url.searchParams.get('error');
@@ -35,19 +37,56 @@ const AuthCallbackPage = () => {
 
         if (code) {
           console.log('Exchanging code for session...');
-          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-          if (exchangeError) {
-            console.error('Code exchange error:', exchangeError);
-            toast({
-              variant: "destructive",
-              title: "Authentication Failed",
-              description: exchangeError.message,
-            });
-            navigate(`/?error=${encodeURIComponent(exchangeError.message)}`);
-          } else {
-            console.log('Code exchange successful, user:', data.user?.email);
-            // Longer delay for mobile to ensure auth context updates properly
-            setTimeout(() => navigate('/dashboard'), 500);
+          
+          // Add retry logic for high load scenarios
+          let retries = 3;
+          let success = false;
+          
+          while (retries > 0 && !success) {
+            try {
+              const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+              
+              if (exchangeError) {
+                if (exchangeError.status === 429 || exchangeError.status >= 500) {
+                  // Rate limit or server error - retry
+                  retries--;
+                  if (retries > 0) {
+                    console.log(`Retrying code exchange, ${retries} attempts remaining...`);
+                    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+                    continue;
+                  }
+                }
+                
+                console.error('Code exchange error:', exchangeError);
+                toast({
+                  variant: "destructive",
+                  title: "Authentication Failed",
+                  description: exchangeError.message,
+                });
+                navigate(`/?error=${encodeURIComponent(exchangeError.message)}`);
+                return;
+              } else {
+                console.log('Code exchange successful, user:', data.user?.email);
+                success = true;
+                // Longer delay for mobile to ensure auth context updates properly
+                setTimeout(() => navigate('/dashboard'), 750);
+              }
+            } catch (networkError) {
+              console.error('Network error during code exchange:', networkError);
+              retries--;
+              if (retries > 0) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                continue;
+              } else {
+                toast({
+                  variant: "destructive",
+                  title: "Network Error",
+                  description: "Please check your connection and try again.",
+                });
+                navigate('/?error=network_error');
+                return;
+              }
+            }
           }
         } else {
           // This handles the implicit flow (from email link) which uses a hash

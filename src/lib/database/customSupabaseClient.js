@@ -13,5 +13,20 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storage: window?.localStorage,
     storageKey: 'supabase.auth.token',
     debug: process.env.NODE_ENV === 'development'
-  }
+  },
+  // Add global configuration for better handling of concurrent requests
+  global: {
+    headers: {
+      'X-Client-Info': 'getthereceipts-web@1.0.0',
+    },
+  },
+  // Add retry configuration for high load scenarios
+  db: {
+    schema: 'public',
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
+  },
 });

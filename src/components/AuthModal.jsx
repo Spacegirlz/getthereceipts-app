@@ -37,21 +37,42 @@ const AuthModal = () => {
     };
     
     const handleGoogleSignIn = async () => {
+        if (loading) return; // Prevent double-clicks
+        
         setLoading(true);
         try {
             await signInWithGoogle();
-            // Reset loading state after a timeout in case redirect doesn't happen immediately
-            setTimeout(() => {
+            // Reset loading state after a longer timeout for high-load scenarios
+            const timeout = setTimeout(() => {
                 setLoading(false);
-            }, 3000);
+            }, 5000);
+            
+            // Clear timeout if component unmounts
+            return () => clearTimeout(timeout);
         } catch (error) {
             console.error('Google sign in error:', error);
             setLoading(false);
-            toast({
-                variant: "destructive",
-                title: "Google Sign-in Failed",
-                description: "Please try again or use email/password.",
-            });
+            
+            const errorMessage = error?.message?.toLowerCase();
+            if (errorMessage?.includes('rate') || errorMessage?.includes('limit')) {
+                toast({
+                    variant: "destructive",
+                    title: "Too Many Sign-in Attempts",
+                    description: "Please wait a moment and try again.",
+                });
+            } else if (errorMessage?.includes('network') || errorMessage?.includes('connection')) {
+                toast({
+                    variant: "destructive",
+                    title: "Connection Error",
+                    description: "Please check your internet connection and try again.",
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Google Sign-in Failed",
+                    description: "Please try again or use email/password.",
+                });
+            }
         }
     };
 
