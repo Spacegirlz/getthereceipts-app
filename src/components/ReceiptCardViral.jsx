@@ -208,15 +208,17 @@ const ReceiptCardViral = memo(({ results }) => {
         <div className={`text-3xl font-bold ${colorClass} mb-2`}>
           {(label === 'RED FLAGS' || label === 'GREEN FLAGS') ? `${value}/10` : `${value}%`}
         </div>
-        <div className="w-full bg-white/20 rounded-full h-2">
-          <div 
-            className={`h-2 rounded-full ${
-              colorClass.includes('red') ? 'bg-red-400' : 
-              colorClass.includes('green') ? 'bg-green-400' : 
-              colorClass.includes('orange') ? 'bg-orange-400' : 'bg-teal-400'
-            }`}
-            style={{ width: getProgressWidth() }}
-          />
+        <div className="px-2">
+          <div className="w-full bg-white/20 rounded-full h-2">
+            <div 
+              className={`h-2 rounded-full ${
+                colorClass.includes('red') ? 'bg-red-400' : 
+                colorClass.includes('green') ? 'bg-green-400' : 
+                colorClass.includes('orange') ? 'bg-orange-400' : 'bg-teal-400'
+              }`}
+              style={{ width: getProgressWidth() }}
+            />
+          </div>
         </div>
       </div>
     );
@@ -225,17 +227,19 @@ const ReceiptCardViral = memo(({ results }) => {
   return (
     <motion.div
       id="receipt-card-shareable"
-      className="w-full max-w-2xl mx-auto p-1 rounded-[28px] overflow-hidden"
+      className="w-full max-w-2xl mx-auto rounded-[24px]"
       style={{
-        background: 'rgba(26, 26, 46, 0.95)'
+        background: 'transparent'
       }}
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
     >
-      <div className={`relative rounded-[24px] p-8 text-stone-200 overflow-hidden`}
+      <div 
+        id="receipt-inner-container"
+        className={`relative rounded-[24px] p-6 text-stone-200/90`}
         style={{
-          background: 'rgba(17, 22, 43, 0.85)',
+          background: '#14142e',
           backdropFilter: 'blur(20px) saturate(200%)',
           WebkitBackdropFilter: 'blur(20px) saturate(200%)',
           border: '2px solid rgba(212, 175, 55, 0.6)',
@@ -247,7 +251,7 @@ const ReceiptCardViral = memo(({ results }) => {
               initial={{ scale: 0, rotate: -45 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.5, type: 'spring', stiffness: 300, damping: 15 }}
-              className="bg-red-600 text-stone-200 text-xs font-black uppercase px-3 py-1 rounded-full shadow-lg"
+              className="bg-red-600 text-stone-200/90 text-xs font-black uppercase px-3 py-1 rounded-full shadow-lg"
             >
               SAVAGE
             </motion.div>
@@ -257,17 +261,17 @@ const ReceiptCardViral = memo(({ results }) => {
 
         <div className="relative z-10">
           {/* SAGE HEADER */}
-          <div className="text-center mb-1 relative z-20">
-            <div className="inline-flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full border border-white/10 mb-2">
+          <div className="text-center mb-1 relative z-50">
+            <div className="inline-flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full border border-white/10 mb-2 relative z-50">
               <img 
                 src={sageStandardImage}
                 alt="Sage's Truth Receipt" 
-                className="w-24 h-24 object-contain rounded-full border border-white/30 relative z-30"
+                className="w-24 h-24 object-contain rounded-full border border-white/30 relative z-50"
                 style={{
                   filter: 'brightness(1.1) contrast(1.1)'
                 }}
               />
-              <span className="text-lg font-bold tracking-widest"
+              <span className="text-lg font-bold tracking-widest relative z-50"
                 style={{
                   color: '#D4AF37',
                   textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.3)'
@@ -290,15 +294,17 @@ const ReceiptCardViral = memo(({ results }) => {
                 </div>
               </div>
               {/* TREND STICKER */}
-              <div className="flex justify-center mt-4">
-                <TrendSticker archetype={archetypeTitle} />
+              <div className="flex justify-center mt-4 mb-8">
+                <div className="inline-flex">
+                  <TrendSticker archetype={archetypeTitle} />
+                </div>
               </div>
             </div>
           )}
 
           {/* METRICS GRID */}
           <motion.div 
-            className="grid grid-cols-3 gap-2 mb-5"
+            className="grid grid-cols-3 gap-2 mb-2"
             initial="hidden"
             animate="visible"
             variants={{
@@ -314,7 +320,7 @@ const ReceiptCardViral = memo(({ results }) => {
             <motion.div variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
               <Metric 
                 label={isHealthy ? "GREEN FLAGS" : "RED FLAGS"} 
-                value={isHealthy ? (results?.greenFlagChips?.length || metricsData.actuallyIntoYou || 0) : metricsData.redFlags} 
+                value={isHealthy ? (results?.greenFlagChips?.length || (metricsData.actuallyIntoYou / 10) || 0) : metricsData.redFlags} 
                 icon={isHealthy ? "✅" : "🚩"} 
                 colorClass={isHealthy ? "text-green-400" : "text-orange-400"} 
               />
@@ -328,14 +334,14 @@ const ReceiptCardViral = memo(({ results }) => {
                 <h3 className="text-green-400 text-sm font-bold tracking-wider flex items-center gap-2">
                   <span>✅</span> GREEN FLAGS
                 </h3>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-2 justify-center max-w-md mx-auto">
                   {guaranteedFlags.map((chip, i) => (
                     <motion.span 
                       key={i} 
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-4 py-2 bg-green-500/20 border border-green-400/30 text-green-300 rounded-full text-sm font-medium min-w-[120px] h-[32px]"
+                      className="inline-flex items-center justify-center px-4 py-2 bg-green-500/20 border border-green-400/30 text-green-300 rounded-full text-sm font-medium whitespace-nowrap"
                     >
                       {chip}
                     </motion.span>
@@ -347,14 +353,14 @@ const ReceiptCardViral = memo(({ results }) => {
                 <h3 className="text-red-400 text-sm font-bold tracking-wider flex items-center gap-2">
                   <span>🚩</span> RED FLAGS
                 </h3>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-2 justify-center max-w-md mx-auto">
                   {guaranteedFlags.map((chip, i) => (
                     <motion.span 
                       key={i} 
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-4 py-2 bg-red-500/20 border border-red-400/30 text-red-300 rounded-full text-sm font-medium min-w-[120px] h-[32px]"
+                      className="inline-flex items-center justify-center px-4 py-2 bg-red-500/20 border border-red-400/30 text-red-300 rounded-full text-sm font-medium whitespace-nowrap"
                     >
                       {chip}
                     </motion.span>
@@ -366,10 +372,10 @@ const ReceiptCardViral = memo(({ results }) => {
 
           {/* THE VERDICT */}
           {verdict && (
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-5">
+            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-3">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>THE VERDICT</h3>
-              <p className="text-stone-200 text-xl italic leading-relaxed">
+              <p className="text-stone-200/90 text-xl italic leading-relaxed">
                 {verdict}
               </p>
             </div>
@@ -377,13 +383,13 @@ const ReceiptCardViral = memo(({ results }) => {
 
           {/* COMBINED REAL TEA - Single unified section */}
           {(realTea || nextMove.length > 0) && (
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-5">
+            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-3">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🫖 THE REAL TEA</h3>
               <div className="space-y-2">
                 {/* Main tea content - realTea already contains the combined content */}
                 {realTea && (
-                  <div className="text-stone-200 text-xl leading-relaxed">
+                  <div className="text-stone-200/90 text-xl leading-relaxed">
                     {realTea}
                   </div>
                 )}
@@ -392,7 +398,7 @@ const ReceiptCardViral = memo(({ results }) => {
                 {!realTea && nextMove.length > 0 && (
                   <div className="space-y-1">
                     {nextMove.slice(0, 2).map((item, index) => (
-                      <div key={index} className="text-stone-200 text-xl leading-relaxed">• {item}</div>
+                      <div key={index} className="text-stone-200/90 text-xl leading-relaxed">• {item}</div>
                     ))}
                   </div>
                 )}
@@ -402,10 +408,10 @@ const ReceiptCardViral = memo(({ results }) => {
 
           {/* SAGE'S PROPHECY */}
           {prophecy && (
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-5">
+            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-3">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🔮 SAGE'S PROPHECY</h3>
-              <p className="text-stone-200 text-xl leading-relaxed">
+              <p className="text-stone-200/90 text-xl leading-relaxed">
                 {prophecy
                   ?.replace(/^Next:\s*/i, 'Next: ')
                   ?.split(' ')
@@ -419,7 +425,7 @@ const ReceiptCardViral = memo(({ results }) => {
           )}
           
           {/* SAGE'S CONFIDENCE BAR */}
-          <div className="bg-white/5 p-4 rounded-xl border border-white/10 mb-5">
+          <div className="bg-white/5 p-4 rounded-xl border border-white/10 mb-1">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide flex items-center">
                 <Brain className="w-4 h-4 mr-2 text-teal-400" />
@@ -436,17 +442,15 @@ const ReceiptCardViral = memo(({ results }) => {
           </div>
           
           {/* WATERMARK */}
-          <div className="text-center">
-            <p className="text-xs text-stone-200/40 tracking-widest">
-              getthereceipts.com
+          <div className="text-center mt-4 mb-4">
+            <p className="text-xs text-stone-200/90/40 tracking-widest">
+              www.getthereceipts.com
             </p>
           </div>
         </div>
       </div>
     </motion.div>
   );
-};
-
 });
 
 ReceiptCardViral.displayName = 'ReceiptCardViral';

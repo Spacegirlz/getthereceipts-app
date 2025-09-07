@@ -668,6 +668,13 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
           </motion.div>
         )}
       </motion.div>
+      
+      {/* Age Disclaimer */}
+      <div className="text-center mt-8 pb-4">
+        <p className="text-white/40 text-xs">
+          This service is intended for users 18+ only
+        </p>
+      </div>
     </div>
   );
 };

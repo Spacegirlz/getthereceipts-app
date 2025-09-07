@@ -33,9 +33,24 @@ const ShareButtons = ({ results, sharing, setSharing }) => {
 
     try {
       const dataUrl = await domtoimage.toPng(element, { 
+        width: element.offsetWidth * 2,
+        height: element.offsetHeight * 2,
+        style: {
+          transform: 'scale(2)',
+          transformOrigin: 'top left'
+        },
         pixelRatio: 2,
         quality: 1.0,
-        bgcolor: '#000000'
+        bgcolor: '#1a1a2e',
+        filter: (node) => {
+          // Preserve gold borders while removing others
+          if (node.style && !node.style.borderColor?.includes('212, 175, 55')) {
+            if (node.style.border && !node.style.border.includes('212, 175, 55')) {
+              // Don't remove borders that are gold
+            }
+          }
+          return true;
+        }
       });
       
       // Convert data URL to blob

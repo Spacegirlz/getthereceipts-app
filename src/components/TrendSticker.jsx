@@ -33,7 +33,7 @@ const TrendSticker = ({ archetype, trendData }) => {
   const getTrendColor = () => {
     if (data.trend === 'up') return 'from-red-500/20 to-orange-500/10 border-red-400/30';
     if (data.trend === 'down') return 'from-green-500/20 to-emerald-500/10 border-green-400/30';
-    return 'from-yellow-500/20 to-amber-500/10 border-yellow-400/30';
+    return 'from-transparent to-transparent border-white/20';
   };
 
   const getTrendText = () => {
@@ -43,7 +43,7 @@ const TrendSticker = ({ archetype, trendData }) => {
   };
 
   return (
-    <div className="relative group">
+    <div className="relative group flex justify-center">
       {/* Main Trend Badge */}
       <div className={`
         inline-flex items-center gap-2 px-3 py-1.5 

@@ -15,9 +15,7 @@ import { Loader2, ArrowLeft, Share2, Shield, Brain, Sparkles, Crown, Gift } from
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useStripe } from '@stripe/react-stripe-js';
-import ShareComponent from '@/components/ShareComponent';
-import AgeVerificationModal from '@/components/AgeVerificationModal';
-import { useAgeVerification } from '@/hooks/useAgeVerification';
+// Age verification imports removed
 // Sage mood images based on red flags
 import greenFlag from '@/assets/green-flag.png'; // 0-3 red flags - Happy Sage
 import orangeFlag from '@/assets/orange-flag.png'; // 4-6 red flags - Suspicious Sage  
@@ -42,13 +40,7 @@ const ReceiptsCardPage = () => {
   const { toast } = useToast();
   const { user, isPremium } = useAuth();
   const { openModal } = useAuthModal();
-  const { 
-    isVerified, 
-    showModal, 
-    handleConfirm, 
-    handleDecline, 
-    requestVerification 
-  } = useAgeVerification();
+  // Age verification variables removed
   const stripe = useStripe();
 
   const [receiptData, setReceiptData] = useState(location.state || null);
@@ -118,10 +110,10 @@ const ReceiptsCardPage = () => {
       html2canvas(element, {
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#11162B',
+        backgroundColor: 'transparent',
         scale: 2,
         width: element.offsetWidth,
-        height: element.offsetHeight
+        height: Math.max(element.offsetHeight, element.scrollHeight, element.clientHeight) + 30
       }).then(function(canvas) {
         // Restore original elements
         restoreOriginalElements(originalElements);
@@ -191,9 +183,11 @@ const ReceiptsCardPage = () => {
         toast({
             variant: "destructive",
             title: "Payment Error",
-            description: "An unexpected error occurred. Please try again.",
+            description: "Redirecting to pricing page...",
         });
         setLoadingCheckout(false);
+        // Redirect to pricing page on error
+        setTimeout(() => navigate('/pricing'), 1500);
     }
   };
 
@@ -205,10 +199,7 @@ const ReceiptsCardPage = () => {
         setReceiptData(location.state);
         setLoading(false);
         
-        // Trigger age verification for first-time receipt viewers
-        if (!isVerified) {
-          setTimeout(() => requestVerification(), 500); // Small delay for smooth UX
-        }
+        // Age verification removed - handled at input level
         
         return;
       }
@@ -271,10 +262,7 @@ const ReceiptsCardPage = () => {
         setReceiptData(testReceiptData);
         setLoading(false);
         
-        // Trigger age verification for test receipt viewers too
-        if (!isVerified) {
-          setTimeout(() => requestVerification(), 500);
-        }
+        // Age verification removed - handled at input level
         
         return;
       }
@@ -682,12 +670,7 @@ const ReceiptsCardPage = () => {
         )}
       </motion.div>
       
-      {/* Age Verification Modal */}
-      <AgeVerificationModal
-        isOpen={showModal}
-        onConfirm={handleConfirm}
-        onDecline={handleDecline}
-      />
+      {/* Age Verification Modal - Removed */}
     </div>
   );
 };

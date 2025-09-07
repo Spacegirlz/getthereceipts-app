@@ -182,7 +182,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           <span className="text-2xl">🏗️</span>
         </div>
         <h3 className="text-emerald-300 font-bold text-lg mb-2">Your Immunity Training is Being Crafted</h3>
-        <p className="text-stone-200 text-xl leading-relaxed">Sage is preparing your personalized protection strategies. This premium feature will be available soon.</p>
+        <p className="text-stone-300/90 text-xl leading-relaxed">Sage is preparing your personalized protection strategies. This premium feature will be available soon.</p>
       </div>
     );
   }
@@ -451,13 +451,13 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
-        className="p-12 mb-8 premium-card relative"
+        className="p-12 mb-8 relative"
         style={{
-          background: 'rgba(26, 26, 46, 0.95)',
+          background: '#14142e',
           backdropFilter: 'blur(10px)',
           borderRadius: '16px',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)',
+          border: 'none'
         }}
       >
         {/* Premium dot pattern background */}
@@ -476,11 +476,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           transition={{ delay: 0.1 }}
           className="text-center mb-8"
         >
-          <div className="p-6 py-8 rounded-xl border border-white/8 relative overflow-hidden" 
+          <div className="p-6 py-8 rounded-xl relative overflow-hidden" 
             style={{ 
-              background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(245, 230, 211, 0.03) 100%)',
-              borderColor: 'rgba(88, 28, 135, 0.5)',
-              boxShadow: '0 0 30px rgba(88, 28, 135, 0.25), 0 8px 32px rgba(0, 0, 0, 0.2)'
+              background: 'rgba(255, 255, 255, 0.03)',
+              borderColor: 'rgba(255, 255, 255, 0.08)',
+              boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
             }}>
             {/* Journey Badge */}
             <div className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
@@ -503,10 +503,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 SAGE'S IMMUNITY TRAINING
               </h2>
             </div>
-            <h3 className="text-sm font-bold tracking-wider text-amber-300 opacity-90 mb-2">
+            <h3 className="text-sm font-medium tracking-wider text-amber-300 opacity-75 mb-2 mt-4">
               {getArchetypeHeader(actualRiskLevel, archetypeName)}
             </h3>
-            <div className="text-xs text-white/60 mt-1">
+            <div className="text-base text-white/60 mt-1">
               Premium personalized protection strategies 🏆
             </div>
           </div>
@@ -526,13 +526,13 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           }`} style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
             <div className="text-center space-y-2">
               {/* TEMPLATE EXAMPLES FOR AI - These are example formats for AI to follow */}
-              <div className="text-stone-200 text-lg font-normal leading-relaxed">
+              <div className="text-stone-300/90 text-xl font-normal leading-relaxed" style={{ textShadow: 'none' }}>
                 Pattern detected: {actualRiskLevel === 'low' ? 'Healthy relationship cycle' : 'Classic manipulation cycle'}
               </div>
-              <div className={`text-sm ${actualRiskLevel === 'low' ? 'text-green-300' : 'text-purple-300'}`}>
+              <div className={`text-lg ${actualRiskLevel === 'low' ? 'text-green-300' : 'text-purple-300'}`}>
                 Success rate: {actualRiskLevel === 'low' ? '95% sustainable long-term' : '94% will repeat this pattern'}
               </div>
-              <div className="text-teal-300 text-sm">
+              <div className="text-teal-300 text-lg">
                 {/* EXAMPLES ONLY - In production, AI should generate dynamic content based on actual analysis */}
                 Your {actualRiskLevel === 'low' ? 'strength' : 'vulnerability'}: {
                   actualRiskLevel === 'high' ? 'Emotional availability' : 
@@ -551,7 +551,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
             <div className="flex items-center justify-center gap-3 flex-wrap">
               {displayData.patternLoop.map((step, index) => (
                 <div key={step} className="contents">
-                  <div className="bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full text-sm border border-purple-500/30 whitespace-nowrap">
+                  <div className="bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full text-lg border border-purple-500/30 whitespace-nowrap">
                     {step}
                   </div>
                   {index < displayData.patternLoop.length - 1 && (
@@ -592,7 +592,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           <div className="mb-6">
             <h4 className="text-teal-400 font-bold text-sm mb-2">🧬 ARCHETYPE DECODER</h4>
             <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-              <p className="text-stone-200 text-lg leading-relaxed">
+              <p className="text-stone-300/90 text-lg leading-relaxed" style={{ textShadow: 'none' }}>
                 {displayData.archetypeDecoder}
               </p>
             </div>
@@ -635,7 +635,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                   className="flex items-start gap-3"
                 >
                   <span className="text-teal-400 text-sm mt-1">•</span>
-                  <p className="text-stone-200 text-lg leading-relaxed">{step}</p>
+                  <p className="text-stone-300/90 text-lg leading-relaxed" style={{ textShadow: 'none' }}>{step}</p>
                 </motion.div>
               ))}
             </div>
@@ -648,17 +648,16 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           <div className="mb-6">
             <h4 className="text-purple-400 font-bold text-sm mb-2">🧪 IMMUNITY TEST</h4>
             <div className="rounded-lg p-4 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-              <p className="text-stone-200 text-lg leading-relaxed">{displayData.immunityTest}</p>
+              <p className="text-stone-300/90 text-lg leading-relaxed" style={{ textShadow: 'none' }}>{displayData.immunityTest}</p>
             </div>
           </div>
         )}
 
         {/* Sage's Blessing - Premium Gold Treatment */}
-        <div className="p-6 border relative overflow-hidden" style={{
+        <div className="p-6 relative overflow-hidden" style={{
           background: 'rgba(255, 255, 255, 0.03)',
           backdropFilter: 'blur(10px)',
           borderRadius: '16px',
-          borderColor: 'rgba(255, 255, 255, 0.08)',
           boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
         }}>
           <div className="text-center mb-4">
@@ -687,7 +686,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           <div className="flex gap-3">
             <button 
               onClick={handleSaveBadge}
-              className="flex-1 bg-white/10 hover:bg-white/20 text-stone-200 font-normal py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+              className="flex-1 bg-white/10 hover:bg-white/20 text-stone-300 font-normal py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
               style={{
                 border: '1px solid rgba(212, 175, 55, 0.6)',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
@@ -715,18 +714,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
 
         {/* Watermark */}
         <div className="text-center mt-6">
-          <p className="text-white/40 text-xs">getthereceipts.com</p>
+          <p className="text-white/40 text-xs">www.getthereceipts.com</p>
         </div>
 
-        {/* Legal Disclaimer */}
-        <div className="mt-4 text-center">
-          <p className="text-white/40 text-xs">Entertainment purposes only • Not licensed relationship advice • You know your truth</p>
-        </div>
       </motion.div>
     </div>
   );
-};
-
 });
 
 ImmunityTraining.displayName = 'ImmunityTraining';

@@ -2213,3 +2213,46 @@ body::before {
     font-size: 18px;
   }
 }
+
+/* Print Styles - Fix vertical text positioning */
+@media print {
+  /* Force proper text flow and positioning for print */
+  .receipt-card {
+    page-break-inside: avoid;
+  }
+  
+  /* Fix flag chips alignment for print */
+  .flag-chip, 
+  [class*="bg-green-500/20"],
+  [class*="bg-red-500/20"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    margin: 2px !important;
+    break-inside: avoid;
+  }
+  
+  /* Fix trend sticker positioning */
+  .trend-sticker,
+  [data-trend-sticker] {
+    display: block !important;
+    text-align: center !important;
+    margin: 8px auto !important;
+  }
+  
+  /* Ensure text elements flow vertically */
+  .text-content,
+  .flag-text,
+  .percentage-text {
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+  }
+  
+  /* Fix percentage badge positioning */
+  .percentage-badge {
+    display: block !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+  }
+}

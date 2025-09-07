@@ -251,7 +251,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
 
   return (
     <div className="relative overflow-hidden">
-      {/* The Tea V4 Main Container - Using meme-card styling */}
+      {/* The Tea V4 Main Container - 9:16 Format */}
       <motion.div 
         data-deepdive-component
         initial={{ opacity: 0, scale: 0.95 }}
@@ -259,7 +259,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
         transition={{ delay: 0.3 }}
         className="p-6 mb-3 hover:scale-[1.01] transition-all duration-300 max-w-2xl mx-auto"
         style={{
-          background: 'rgba(26, 26, 46, 0.95)',
+          background: '#14142e',
           backdropFilter: 'blur(10px)',
           borderRadius: '16px',
           border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -611,18 +611,12 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
 
         {/* Watermark */}
         <div className="text-center mt-6">
-          <p className="text-white/40 text-xs">getthereceipts.com</p>
+          <p className="text-white/40 text-xs">www.getthereceipts.com</p>
         </div>
 
-        {/* Legal Disclaimer */}
-        <div className="mt-4 text-center">
-          <p className="text-white/40 text-xs">Entertainment purposes only • Not licensed relationship advice • You know your truth</p>
-        </div>
       </motion.div>
     </div>
   );
-};
-
 });
 
 DeepDive.displayName = 'DeepDive';
