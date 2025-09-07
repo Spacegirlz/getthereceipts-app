@@ -403,13 +403,19 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
     return strategy;
   };
   
+  // Determine risk level based on archetype
+  const actualRiskLevel = archetypeName?.includes('Healthy Partner') || 
+                         archetypeName?.includes('Green Flag') ||
+                         archetypeName?.toLowerCase().includes('healthy') 
+                         ? 'low' : riskLevel;
+  
   // Get dynamic immunity content
-  const immunity = generateDynamicImmunity(archetypeName, riskLevel);
+  const immunity = generateDynamicImmunity(archetypeName, actualRiskLevel);
   
   // Dynamic data with powerful archetype-specific content
   const displayData = {
     patternLoop: ensureArray(immunityData?.patternLoop, immunity.patternLoop),
-    flags: ensureArray(immunityData?.flags, getFlagsForRiskLevel(riskLevel, immunityData?.flags)),
+    flags: ensureArray(immunityData?.flags, getFlagsForRiskLevel(actualRiskLevel, immunityData?.flags)),
     whyItHooks: immunityData?.whyItHooks || immunity.decoder,
     healthySigns: ensureArray(immunityData?.healthySigns, 
       whatGoodLooksLike.length > 0 ? whatGoodLooksLike : immunity.healthySigns
@@ -423,7 +429,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
     ),
     immunityTest: immunityData?.immunityTest || twoWeekExperiment?.description || immunity.immunityTest,
     archetypeDecoder: immunityData?.archetypeDecoder || patternBreakers?.[0] || immunity.decoder,
-    teaPlayScript: immunityData?.teaPlayScript || immunityData?.realTalk || immunity.realTalk || getTeaPlayForRiskLevel(riskLevel, immunityData?.menuOfMoves),
+    teaPlayScript: immunityData?.teaPlayScript || immunityData?.realTalk || immunity.realTalk || getTeaPlayForRiskLevel(actualRiskLevel, immunityData?.menuOfMoves),
     sagesSeal: immunityData?.sagesSeal || immunityShield || immunity.blessing
   };
 
@@ -498,7 +504,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               </h2>
             </div>
             <h3 className="text-sm font-bold tracking-wider text-amber-300 opacity-90 mb-2">
-              {getArchetypeHeader(riskLevel, archetypeName)}
+              {getArchetypeHeader(actualRiskLevel, archetypeName)}
             </h3>
             <div className="text-xs text-white/60 mt-1">
               Premium personalized protection strategies 🏆
@@ -514,21 +520,21 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </div>
           
           <div className={`rounded-xl p-8 border border-white/8 space-y-4 ${
-            riskLevel === 'low' 
+            actualRiskLevel === 'low' 
               ? 'bg-gradient-to-r from-green-900/10 to-emerald-900/10' 
               : 'bg-gradient-to-r from-purple-900/10 to-red-900/10'
           }`} style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
             <div className="text-center space-y-2">
               <div className="text-stone-100 text-lg font-normal leading-relaxed">
-                Pattern detected: {riskLevel === 'low' ? 'Healthy relationship cycle' : 'Classic manipulation cycle'}
+                Pattern detected: {actualRiskLevel === 'low' ? 'Healthy relationship cycle' : 'Classic manipulation cycle'}
               </div>
-              <div className={`text-sm ${riskLevel === 'low' ? 'text-green-300' : 'text-purple-300'}`}>
-                Success rate: {riskLevel === 'low' ? '95% sustainable long-term' : '94% will repeat this pattern'}
+              <div className={`text-sm ${actualRiskLevel === 'low' ? 'text-green-300' : 'text-purple-300'}`}>
+                Success rate: {actualRiskLevel === 'low' ? '95% sustainable long-term' : '94% will repeat this pattern'}
               </div>
               <div className="text-teal-300 text-sm">
-                Your {riskLevel === 'low' ? 'strength' : 'vulnerability'}: {
-                  riskLevel === 'high' ? 'Emotional availability' : 
-                  riskLevel === 'low' ? 'Clear boundary setting' : 
+                Your {actualRiskLevel === 'low' ? 'strength' : 'vulnerability'}: {
+                  actualRiskLevel === 'high' ? 'Emotional availability' : 
+                  actualRiskLevel === 'low' ? 'Clear boundary setting' : 
                   'Mixed signal confusion'
                 }
               </div>
