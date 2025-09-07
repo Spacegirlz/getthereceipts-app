@@ -525,6 +525,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               : 'bg-gradient-to-r from-purple-900/10 to-red-900/10'
           }`} style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
             <div className="text-center space-y-2">
+              {/* TEMPLATE EXAMPLES FOR AI - These are example formats for AI to follow */}
               <div className="text-stone-100 text-lg font-normal leading-relaxed">
                 Pattern detected: {actualRiskLevel === 'low' ? 'Healthy relationship cycle' : 'Classic manipulation cycle'}
               </div>
@@ -532,6 +533,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 Success rate: {actualRiskLevel === 'low' ? '95% sustainable long-term' : '94% will repeat this pattern'}
               </div>
               <div className="text-teal-300 text-sm">
+                {/* EXAMPLES ONLY - In production, AI should generate dynamic content based on actual analysis */}
                 Your {actualRiskLevel === 'low' ? 'strength' : 'vulnerability'}: {
                   actualRiskLevel === 'high' ? 'Emotional availability' : 
                   actualRiskLevel === 'low' ? 'Clear boundary setting' : 
