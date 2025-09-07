@@ -283,15 +283,16 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
         </div>
 
         {/* Header - Sage Section */}
-        <header className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
+        <header className="text-center mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center mb-4 gap-3 sm:gap-0">
             <img 
               src={sageCharacter} 
               alt="Sage" 
-              className="w-16 h-16 rounded-full object-cover mr-3"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover mr-3 flex-shrink-0"
               loading="lazy"
+              style={{ minWidth: '64px', minHeight: '64px' }}
             />
-            <h1 className="text-3xl font-bold"
+            <h1 className="text-2xl sm:text-3xl font-bold"
               style={{
                 background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                 WebkitBackgroundClip: 'text',
