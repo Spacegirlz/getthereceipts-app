@@ -171,7 +171,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
             <span className="text-2xl">🔮</span>
           </div>
           <h3 className="text-purple-300 font-bold text-base mb-2">Sage is finishing the read</h3>
-          <p className="text-stone-100 leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Try again in a moment for your complete analysis.</p>
+          <p className="text-stone-100 text-xl leading-relaxed">Try again in a moment for your complete analysis.</p>
         </div>
       </div>
     );
@@ -325,7 +325,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               <div className={`text-lg font-bold ${style.accent} mb-1`}>
                 You're In {deepDive.verdict?.act || analysisData?.verdict || 'Analysis Complete'}
               </div>
-              <div className="text-stone-100 text-sm italic mb-4 leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+              <div className="text-stone-100 text-base italic mb-4 leading-relaxed">
                 "{deepDive.verdict?.subtext || 'Sage has analyzed the situation'}"
               </div>
               <button 
@@ -376,7 +376,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                 )}
                 
                 <div className={`${showPaywall && index >= 2 ? 'opacity-30' : ''}`}>
-                  <div className="text-stone-100 text-xs mb-2 font-normal italic leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+                  <div className="text-stone-100 text-sm mb-2 font-normal italic leading-relaxed">
                     "{receipt.quote}"
                   </div>
                   <div className="text-xs mb-1">
@@ -384,7 +384,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                       {receipt.pattern}
                     </span>
                   </div>
-                  <div className="text-stone-100/80 text-xs leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+                  <div className="text-stone-100/80 text-sm leading-relaxed">
                     Cost: {receipt.cost}
                   </div>
                 </div>
@@ -399,8 +399,8 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 rounded-xl flex items-center justify-center">
               <div className="text-center p-6">
                 <Lock className="w-8 h-8 text-purple-400 mx-auto mb-3" />
-                <h4 className="text-stone-100 font-bold text-base mb-2" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Unlock Full Tea</h4>
-                <p className="text-stone-100 text-sm mb-4 leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Get The Physics, The Playbook, and complete pattern analysis</p>
+                <h4 className="text-stone-100 font-bold text-lg mb-2">Unlock Full Tea</h4>
+                <p className="text-stone-100 text-base mb-4 leading-relaxed">Get The Physics, The Playbook, and complete pattern analysis</p>
                 <button className="viral-button text-stone-100 font-normal py-2 px-6 rounded-full transition-all duration-300">
                   Unlock Premium
                 </button>
@@ -417,9 +417,9 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                 </div>
                 <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
                   <div className="space-y-2 text-sm">
-                    <div><span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>What you bring:</span> <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Pattern recognition</span></div>
-                    <div><span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>What they exploit:</span> <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Your willingness to understand</span></div>
-                    <div><span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>The result:</span> <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Endless confusion cycles</span></div>
+                    <div><span className="font-normal text-stone-100">What you bring:</span> <span className="text-stone-100 text-base">Pattern recognition</span></div>
+                    <div><span className="font-normal text-stone-100">What they exploit:</span> <span className="text-stone-100 text-base">Your willingness to understand</span></div>
+                    <div><span className="font-normal text-stone-100">The result:</span> <span className="text-stone-100 text-base">Endless confusion cycles</span></div>
                   </div>
                 </div>
               </div>
@@ -432,9 +432,9 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                 </div>
                 <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
                   <div className="space-y-2 text-sm">
-                    <div><span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Next 48hrs:</span> <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Predictable move incoming</span></div>
-                    <div><span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Next week:</span> <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Pattern escalation</span></div>
-                    <div><span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Trump card:</span> <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>The classic deflection</span></div>
+                    <div><span className="font-normal text-stone-100">Next 48hrs:</span> <span className="text-stone-100 text-base">Predictable move incoming</span></div>
+                    <div><span className="font-normal text-stone-100">Next week:</span> <span className="text-stone-100 text-base">Pattern escalation</span></div>
+                    <div><span className="font-normal text-stone-100">Trump card:</span> <span className="text-stone-100 text-base">The classic deflection</span></div>
                   </div>
                 </div>
               </div>
@@ -460,16 +460,16 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
                 <div className="space-y-2 text-sm">
                   <div className="leading-relaxed">
-                    <span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>What you bring:</span>{' '}
-                    <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{deepDive.physics?.you_bring || ''}</span>
+                    <span className="font-normal text-stone-100">What you bring:</span>{' '}
+                    <span className="text-stone-100 text-base">{deepDive.physics?.you_bring || ''}</span>
                   </div>
                   <div className="leading-relaxed">
-                    <span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>What they exploit:</span>{' '}
-                    <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{deepDive.physics?.they_exploit || ''}</span>
+                    <span className="font-normal text-stone-100">What they exploit:</span>{' '}
+                    <span className="text-stone-100 text-base">{deepDive.physics?.they_exploit || ''}</span>
                   </div>
                   <div className="leading-relaxed">
-                    <span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>The result:</span>{' '}
-                    <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{deepDive.physics?.result || ''}</span>
+                    <span className="font-normal text-stone-100">The result:</span>{' '}
+                    <span className="text-stone-100 text-base">{deepDive.physics?.result || ''}</span>
                   </div>
                 </div>
               </div>
@@ -490,16 +490,16 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
                 <div className="space-y-2 text-sm">
                   <div className="leading-relaxed">
-                    <span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Next 48hrs:</span>{' '}
-                    <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{deepDive.playbook?.next_48h || ''}</span>
+                    <span className="font-normal text-stone-100">Next 48hrs:</span>{' '}
+                    <span className="text-stone-100 text-base">{deepDive.playbook?.next_48h || ''}</span>
                   </div>
                   <div className="leading-relaxed">
-                    <span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Next week:</span>{' '}
-                    <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{deepDive.playbook?.next_week || ''}</span>
+                    <span className="font-normal text-stone-100">Next week:</span>{' '}
+                    <span className="text-stone-100 text-base">{deepDive.playbook?.next_week || ''}</span>
                   </div>
                   <div className="leading-relaxed">
-                    <span className="font-normal text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Trump card:</span>{' '}
-                    <span className="text-stone-100" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{deepDive.playbook?.trump_card || ''}</span>
+                    <span className="font-normal text-stone-100">Trump card:</span>{' '}
+                    <span className="text-stone-100 text-base">{deepDive.playbook?.trump_card || ''}</span>
                   </div>
                 </div>
               </div>
@@ -548,7 +548,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               "{deepDive.sages_seal || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || getFallbackSeal()}"
             </p>
             {(deepDive.share_text || getFallbackSeal()) && (
-              <p className="text-stone-100 text-base italic leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+              <p className="text-stone-100 text-lg italic leading-relaxed">
                 {deepDive.share_text || analysisData?.deepDive?.share_text || analysisData?.share_text || ""}
               </p>
             )}

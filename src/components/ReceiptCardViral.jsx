@@ -369,7 +369,7 @@ const ReceiptCardViral = memo(({ results }) => {
             <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-5">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>THE VERDICT</h3>
-              <p className="text-stone-100 text-lg italic leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+              <p className="text-stone-100 text-xl italic leading-relaxed">
                 {verdict}
               </p>
             </div>
@@ -383,7 +383,7 @@ const ReceiptCardViral = memo(({ results }) => {
               <div className="space-y-2">
                 {/* Main tea content - realTea already contains the combined content */}
                 {realTea && (
-                  <div className="text-stone-100 text-lg leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+                  <div className="text-stone-100 text-xl leading-relaxed">
                     {realTea}
                   </div>
                 )}
@@ -392,7 +392,7 @@ const ReceiptCardViral = memo(({ results }) => {
                 {!realTea && nextMove.length > 0 && (
                   <div className="space-y-1">
                     {nextMove.slice(0, 2).map((item, index) => (
-                      <div key={index} className="text-stone-100 text-lg leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>• {item}</div>
+                      <div key={index} className="text-stone-100 text-xl leading-relaxed">• {item}</div>
                     ))}
                   </div>
                 )}
@@ -405,7 +405,7 @@ const ReceiptCardViral = memo(({ results }) => {
             <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-5">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🔮 SAGE'S PROPHECY</h3>
-              <p className="text-stone-100 text-lg leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+              <p className="text-stone-100 text-xl leading-relaxed">
                 {prophecy
                   ?.replace(/^Next:\s*/i, 'Next: ')
                   ?.split(' ')

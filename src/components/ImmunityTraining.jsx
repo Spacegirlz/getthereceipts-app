@@ -182,7 +182,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           <span className="text-2xl">🏗️</span>
         </div>
         <h3 className="text-emerald-300 font-bold text-lg mb-2">Your Immunity Training is Being Crafted</h3>
-        <p className="text-stone-100 leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>Sage is preparing your personalized protection strategies. This premium feature will be available soon.</p>
+        <p className="text-stone-100 text-xl leading-relaxed">Sage is preparing your personalized protection strategies. This premium feature will be available soon.</p>
       </div>
     );
   }
@@ -519,7 +519,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               : 'bg-gradient-to-r from-purple-900/10 to-red-900/10'
           }`} style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
             <div className="text-center space-y-2">
-              <div className="text-stone-100 text-base font-normal leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+              <div className="text-stone-100 text-lg font-normal leading-relaxed">
                 Pattern detected: {riskLevel === 'low' ? 'Healthy relationship cycle' : 'Classic manipulation cycle'}
               </div>
               <div className={`text-sm ${riskLevel === 'low' ? 'text-green-300' : 'text-purple-300'}`}>
@@ -584,7 +584,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           <div className="mb-6">
             <h4 className="text-teal-400 font-bold text-sm mb-2">🧬 ARCHETYPE DECODER</h4>
             <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-              <p className="text-stone-100 text-base leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+              <p className="text-stone-100 text-lg leading-relaxed">
                 {displayData.archetypeDecoder}
               </p>
             </div>
@@ -627,7 +627,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                   className="flex items-start gap-3"
                 >
                   <span className="text-teal-400 text-sm mt-1">•</span>
-                  <p className="text-stone-100 text-base leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{step}</p>
+                  <p className="text-stone-100 text-lg leading-relaxed">{step}</p>
                 </motion.div>
               ))}
             </div>
@@ -640,7 +640,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           <div className="mb-6">
             <h4 className="text-purple-400 font-bold text-sm mb-2">🧪 IMMUNITY TEST</h4>
             <div className="rounded-lg p-4 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-              <p className="text-stone-100 text-base leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>{displayData.immunityTest}</p>
+              <p className="text-stone-100 text-lg leading-relaxed">{displayData.immunityTest}</p>
             </div>
           </div>
         )}
