@@ -233,7 +233,7 @@ const ReceiptCardViral = memo(({ results }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
     >
-      <div className={`relative rounded-[24px] p-8 text-stone-300 overflow-hidden`}
+      <div className={`relative rounded-[24px] p-8 text-stone-200 overflow-hidden`}
         style={{
           background: 'rgba(17, 22, 43, 0.85)',
           backdropFilter: 'blur(20px) saturate(200%)',
@@ -247,7 +247,7 @@ const ReceiptCardViral = memo(({ results }) => {
               initial={{ scale: 0, rotate: -45 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.5, type: 'spring', stiffness: 300, damping: 15 }}
-              className="bg-red-600 text-stone-300 text-xs font-black uppercase px-3 py-1 rounded-full shadow-lg"
+              className="bg-red-600 text-stone-200 text-xs font-black uppercase px-3 py-1 rounded-full shadow-lg"
             >
               SAVAGE
             </motion.div>
@@ -369,7 +369,7 @@ const ReceiptCardViral = memo(({ results }) => {
             <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-5">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>THE VERDICT</h3>
-              <p className="text-stone-300 text-xl italic leading-relaxed">
+              <p className="text-stone-200 text-xl italic leading-relaxed">
                 {verdict}
               </p>
             </div>
@@ -383,7 +383,7 @@ const ReceiptCardViral = memo(({ results }) => {
               <div className="space-y-2">
                 {/* Main tea content - realTea already contains the combined content */}
                 {realTea && (
-                  <div className="text-stone-300 text-xl leading-relaxed">
+                  <div className="text-stone-200 text-xl leading-relaxed">
                     {realTea}
                   </div>
                 )}
@@ -392,7 +392,7 @@ const ReceiptCardViral = memo(({ results }) => {
                 {!realTea && nextMove.length > 0 && (
                   <div className="space-y-1">
                     {nextMove.slice(0, 2).map((item, index) => (
-                      <div key={index} className="text-stone-300 text-xl leading-relaxed">• {item}</div>
+                      <div key={index} className="text-stone-200 text-xl leading-relaxed">• {item}</div>
                     ))}
                   </div>
                 )}
@@ -405,7 +405,7 @@ const ReceiptCardViral = memo(({ results }) => {
             <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-5">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🔮 SAGE'S PROPHECY</h3>
-              <p className="text-stone-300 text-xl leading-relaxed">
+              <p className="text-stone-200 text-xl leading-relaxed">
                 {prophecy
                   ?.replace(/^Next:\s*/i, 'Next: ')
                   ?.split(' ')
@@ -437,7 +437,7 @@ const ReceiptCardViral = memo(({ results }) => {
           
           {/* WATERMARK */}
           <div className="text-center">
-            <p className="text-xs text-stone-300/40 tracking-widest">
+            <p className="text-xs text-stone-200/40 tracking-widest">
               getthereceipts.com
             </p>
           </div>
