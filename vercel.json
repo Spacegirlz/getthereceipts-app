@@ -4,10 +4,10 @@
   "outputDirectory": "dist",
   "functions": {
     "api/create-checkout-session.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node"
     },
     "api/webhook.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node"
     }
   },
   "rewrites": [
