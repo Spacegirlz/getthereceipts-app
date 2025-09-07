@@ -1,4 +1,15 @@
 {
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/create-checkout-session.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/webhook.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/((?!api/.*).*)",
