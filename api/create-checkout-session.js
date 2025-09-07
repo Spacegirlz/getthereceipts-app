@@ -9,9 +9,15 @@ module.exports = async function handler(req, res) {
 
   try {
     const { priceId, userId } = req.body;
+    console.log('Create checkout session request:', { priceId, userId });
 
     if (!priceId) {
       return res.status(400).json({ error: 'Price ID is required' });
+    }
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY not found in environment variables');
+      return res.status(500).json({ error: 'Stripe configuration error' });
     }
 
     // Determine mode based on price ID
@@ -43,6 +49,15 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Stripe checkout session error:', error);
-    res.status(500).json({ error: 'Failed to create checkout session' });
+    console.error('Error details:', {
+      message: error.message,
+      type: error.type,
+      code: error.code,
+      param: error.param
+    });
+    res.status(500).json({ 
+      error: 'Failed to create checkout session',
+      details: error.message 
+    });
   }
 };
