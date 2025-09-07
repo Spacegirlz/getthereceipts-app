@@ -1,24 +1,34 @@
 const Stripe = require('stripe');
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 module.exports = async function handler(req, res) {
+  console.log('Function invoked, method:', req.method);
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { priceId, userId } = req.body;
-    console.log('Create checkout session request:', { priceId, userId });
+    console.log('Request body:', req.body);
+    const { priceId, userId } = req.body || {};
+    console.log('Parsed data:', { priceId, userId });
 
     if (!priceId) {
+      console.log('No priceId provided');
       return res.status(400).json({ error: 'Price ID is required' });
     }
 
+    console.log('Checking environment variables...');
+    const hasStripeKey = !!process.env.STRIPE_SECRET_KEY;
+    console.log('Has STRIPE_SECRET_KEY:', hasStripeKey);
+    
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('STRIPE_SECRET_KEY not found in environment variables');
       return res.status(500).json({ error: 'Stripe configuration error' });
     }
+
+    console.log('Initializing Stripe...');
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    console.log('Stripe initialized successfully');
 
     // Determine mode based on price ID
     const isSubscription = priceId.includes('1RzgEZG71EqeOEZejcCAFxQs') || priceId.includes('1RzgBYG71EqeOEZer7ojcw0R');
