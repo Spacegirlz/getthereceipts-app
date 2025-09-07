@@ -23,6 +23,19 @@ module.exports = async function handler(req, res) {
     // Determine mode based on price ID
     const isSubscription = priceId.includes('1RzgEZG71EqeOEZejcCAFxQs') || priceId.includes('1RzgBYG71EqeOEZer7ojcw0R');
     const mode = isSubscription ? 'subscription' : 'payment';
+    
+    console.log('Price ID analysis:', { priceId, isSubscription, mode });
+
+    // Validate price exists
+    try {
+      await stripe.prices.retrieve(priceId);
+    } catch (priceError) {
+      console.error('Price validation error:', priceError);
+      return res.status(400).json({ 
+        error: 'Invalid price ID',
+        details: priceError.message 
+      });
+    }
 
     const sessionConfig = {
       payment_method_types: ['card'],
