@@ -1192,7 +1192,7 @@ export const generateAlignedResults = async (message, context) => {
       archetype: shareShotAnalysis.archetype,
       redFlags: shareShotAnalysis.redFlags,
       messageLength: message.length,
-      systemPromptLength: ddSystem.length
+      systemPromptLength: deepDiveSystemPrompt.length
     });
     
     console.log('🔧 Deep Dive using provider:', provider);

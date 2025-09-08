@@ -117,7 +117,7 @@ Use this EXACT JSON structure with these EXACT keys:
     // Line 3: Give exact words for USER to send to OTHER
     // Line 4: Predict what will likely happen next with sass
   ],
-  "prophecy": "[20 words max. Format: 'Next: OTHER will...' Use actual name if available, otherwise use OTHER]",
+  "prophecy": "[20 words max. Predict what OTHER will do next. Vary your opening: 'Watch:', 'Calling it:', 'Mark my words:', 'Bet money:', or 'Next move:'. Always capitalize first word. Use actual name if available, otherwise use OTHER]",
   "patternNumber": [random 1-99],
   "accuracyNote": "[random 80-95]% accurate on this pattern", 
   "socialProof": "[random 1200-9999] got this today"
