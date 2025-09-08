@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver';
 import DetailedResults from '@/components/DetailedResults';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
-import TabbedReceiptInterface from '@/components/TabbedReceiptInterface';
+// import TabbedReceiptInterface from '@/components/TabbedReceiptInterface'; // TODO: Create this component
 import { Helmet } from 'react-helmet';
 import { supabase } from '@/lib/database/customSupabaseClient';
 import { Loader2, ArrowLeft, Share2, Shield, Brain, Sparkles, Crown, Gift } from 'lucide-react';
@@ -479,18 +479,40 @@ const ReceiptsCardPage = () => {
                 ease: "easeOut"
               }}
             >
-              {/* DEBUG: Test if TabbedReceiptInterface is working */}
-              <div className="bg-red-500 p-4 text-white mb-4">
-                DEBUG: TabbedReceiptInterface should be here - {new Date().toLocaleTimeString()}
+              {/* TODO: Implement TabbedReceiptInterface - for now using original layout */}
+              
+              {/* Receipt Card */}
+              <div className="mb-8">
+                <ReceiptCardViral 
+                  results={analysis}
+                  onSaveReceipt={handleSaveReceipt}
+                  onScreenshot={handleScreenshot}
+                  isSharing={isSharing}
+                />
               </div>
-              <TabbedReceiptInterface 
-                analysis={analysis}
-                archetypeName={archetypeName}
-                archetypeNameForImmunity={archetypeNameForImmunity}
-                onSaveReceipt={handleSaveReceipt}
-                onScreenshot={handleScreenshot}
-                isSharing={isSharing}
-              />
+
+              {/* Deep Dive */}
+              <div className="mb-8">
+                <DeepDive 
+                  deepDive={analysis.deepDive}
+                  analysisData={analysis}
+                  onSaveReceipt={handleSaveReceipt}
+                  onScreenshot={handleScreenshot}
+                  isSharing={isSharing}
+                />
+              </div>
+
+              {/* Immunity Training */}
+              <div className="mb-8">
+                <ImmunityTraining 
+                  immunityData={analysis.immunityTraining}
+                  archetypeName={archetypeNameForImmunity}
+                  riskLevel={analysis.immunityTraining?.riskLevel || 'medium'}
+                  onSaveReceipt={handleSaveReceipt}
+                  onScreenshot={handleScreenshot}
+                  isSharing={isSharing}
+                />
+              </div>
             </motion.div>
 
         {/* 5. CTA SECTION - Bottom */}

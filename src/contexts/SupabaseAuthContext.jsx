@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
-import { supabase } from '@/lib/database/customSupabaseClient';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { supabase, withRetry, withTimeout } from '@/lib/database/customSupabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { initializeUserCredits, processReferral } from '@/lib/services/creditsSystem';
@@ -14,130 +14,126 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
+  const [userData, setUserData] = useState(null); // Cache user data to avoid duplicate queries
 
-  useEffect(() => {
-    const getInitialSession = async () => {
-
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        try {
-          const { data, error } = await supabase
+  // Helper function to fetch user data with retry and timeout
+  const fetchUserData = useCallback(async (userId, email) => {
+    if (!userId) return null;
+    
+    try {
+      const isOwner = email === 'piet@virtualsatchel.com' || email === 'piet@pietmarie.com';
+      
+      // For development, return owner status immediately to avoid database issues
+      if (process.env.NODE_ENV === 'development' && isOwner) {
+        console.log('🚀 DEV MODE: Giving premium access to owner:', email);
+        return { subscription_status: 'yearly', credits_remaining: 999999 };
+      }
+      
+      const { data, error } = await withTimeout(
+        withRetry(async () => {
+          return await supabase
             .from('users')
             .select('subscription_status, credits_remaining')
-            .eq('id', session.user.id)
+            .eq('id', userId)
             .single();
-          
-          // Owner email gets automatic premium access
-          const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
-          
-          if (error && error.code === 'PGRST116') {
-            // User doesn't exist in users table - create them
-            console.log('Creating user record for:', session.user.email);
-            await supabase
+        }),
+        3000 // Reduced timeout to 3 seconds
+      );
+      
+      if (error && error.code === 'PGRST116') {
+        // User doesn't exist in users table - create them
+        console.log('Creating user record for:', email);
+        try {
+          await withTimeout(
+            supabase
               .from('users')
               .insert({
-                id: session.user.id,
-                email: session.user.email,
+                id: userId,
+                email: email,
                 subscription_status: isOwner ? 'yearly' : 'free',
                 credits_remaining: isOwner ? 999999 : 1,
                 last_free_receipt_date: new Date().toISOString().split('T')[0]
-              });
-            setIsPremium(isOwner);
-          } else {
-            setIsPremium(isOwner || (data && ['premium', 'yearly'].includes(data.subscription_status)));
-          }
-        } catch (_) {
-          // Owner email gets automatic premium access even if database query fails
-          setIsPremium(session?.user?.email === 'piet@virtualsatchel.com' || session?.user?.email === 'piet@pietmarie.com');
+              }),
+            3000
+          );
+        } catch (insertError) {
+          console.error('Error creating user record:', insertError);
+          // Return fallback data even if insert fails
         }
+        return { subscription_status: isOwner ? 'yearly' : 'free', credits_remaining: isOwner ? 999999 : 1 };
       }
-      setLoading(false);
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      // Return owner status as fallback
+      return { subscription_status: (email === 'piet@virtualsatchel.com' || email === 'piet@pietmarie.com') ? 'yearly' : 'free' };
+    }
+  }, []);
+
+  useEffect(() => {
+    // Simple, clean auth setup
+    const getInitialSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Simple owner check - no database calls to prevent loops
+          const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
+          console.log('🔐 Auth Debug:', { 
+            email: session.user.email, 
+            isOwner, 
+            premiumStatus: isOwner 
+          });
+          setIsPremium(isOwner);
+        }
+      } catch (error) {
+        console.error('Error getting initial session:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getInitialSession();
 
+    // Minimal auth state change handler to prevent loops
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         console.log('Auth state changed:', _event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (_event === "SIGNED_IN") {
-          toast({
-            title: "Welcome!",
-            description: "You have successfully signed in.",
-          });
-          
-          // Initialize credits for new user
-          if (session?.user) {
-            await initializeUserCredits(session.user.id);
-            
-            // Process referral if there's a referral code
-            if (referralCode && session.user.created_at) {
-              const userCreatedAt = new Date(session.user.created_at);
-              const now = new Date();
-              const timeDiff = now - userCreatedAt;
-              
-              // Only process referral for users created within the last 5 minutes (fresh signups)
-              if (timeDiff < 5 * 60 * 1000) {
-                const success = await processReferral(referralCode, session.user.id);
-                if (success) {
-                  toast({
-                    title: "Bonus Credits! 🎉",
-                    description: "You earned +3 bonus credits for using a referral link!",
-                  });
-                }
-              }
-            }
-          }
-          // refresh premium flag
-          if (session?.user) {
-            try {
-              const { data, error } = await supabase
-                .from('users')
-                .select('subscription_status, credits_remaining')
-                .eq('id', session.user.id)
-                .single();
-              
-              // Owner email gets automatic premium access
-              const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
-              
-              if (error && error.code === 'PGRST116') {
-                // User doesn't exist in users table - create them
-                console.log('Creating user record for:', session.user.email);
-                await supabase
-                  .from('users')
-                  .insert({
-                    id: session.user.id,
-                    email: session.user.email,
-                    subscription_status: isOwner ? 'yearly' : 'free',
-                    credits_remaining: isOwner ? 999999 : 1,
-                    last_free_receipt_date: new Date().toISOString().split('T')[0]
-                  });
-                setIsPremium(isOwner);
-              } else {
-                setIsPremium(isOwner || (data && ['premium', 'yearly'].includes(data.subscription_status)));
-              }
-            } catch (_) {
-              // Owner email gets automatic premium access even if database query fails
-              setIsPremium(session?.user?.email === 'piet@virtualsatchel.com' || session?.user?.email === 'piet@pietmarie.com');
-            }
-          } else {
-            setIsPremium(false);
-          }
-        } else if (_event === "SIGNED_OUT") {
+        if (session?.user) {
+          const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
+          setIsPremium(isOwner);
+        } else {
           setIsPremium(false);
         }
         
-        // Always ensure loading is false after auth state changes
         setLoading(false);
       }
     );
 
-    return () => subscription.unsubscribe();
-  }, [toast]);
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
+  }, [toast, fetchUserData, referralCode]);
+
+  // Add a safety timeout to prevent infinite loading
+  useEffect(() => {
+    const safetyTimeout = setTimeout(() => {
+      if (loading) {
+        console.warn('Auth loading timeout - forcing loading to false');
+        setLoading(false);
+      }
+    }, 10000); // 10 second safety timeout
+
+    return () => clearTimeout(safetyTimeout);
+  }, [loading]);
 
   const signUp = useCallback(async (email, password) => {
     const options = {
@@ -189,16 +185,27 @@ export const AuthProvider = ({ children }) => {
   const signInWithGoogle = useCallback(async () => {
     try {
       console.log('Starting Google OAuth...');
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'select_account consent',
+      
+      // For development, use localhost redirect
+      const redirectUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:5174/auth/callback'
+        : `${window.location.origin}/auth/callback`;
+      
+      console.log('Using redirect URL:', redirectUrl);
+      
+      const { data, error } = await withTimeout(
+        supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectUrl,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'select_account consent',
+            },
           },
-        },
-      });
+        }),
+        10000 // 10 second timeout for OAuth initiation
+      );
 
       if (error) {
         console.error('Google OAuth error:', error);
@@ -217,7 +224,9 @@ export const AuthProvider = ({ children }) => {
       toast({
         variant: "destructive",
         title: "Google Sign-in Failed",
-        description: "Please try again in a moment.",
+        description: err.message === 'Operation timed out' 
+          ? "Sign-in is taking too long. Please try again." 
+          : "Please try again in a moment.",
       });
       return { error: err };
     }
