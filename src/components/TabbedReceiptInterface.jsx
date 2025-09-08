@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Crown, Lock, Brain, Shield, Sparkles } from 'lucide-react';
+import { Crown, Lock, Brain, Shield, Sparkles, ChevronLeft, ChevronRight, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import ReceiptCardViral from '@/components/ReceiptCardViral';
@@ -15,7 +15,8 @@ const TabbedReceiptInterface = ({
   onScreenshot,
   isSharing 
 }) => {
-  const [activeTab, setActiveTab] = useState('receipt');
+  const [activeTab, setActiveTab] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const { isPremium } = useAuth();
   const navigate = useNavigate();
 
@@ -23,93 +24,224 @@ const TabbedReceiptInterface = ({
     {
       id: 'receipt',
       label: 'Truth Receipt',
-      icon: '📋',
-      component: <ReceiptCardViral results={analysis} />,
+      icon: Receipt,
+      component: (
+        <ReceiptCardViral 
+          results={analysis}
+          onSaveReceipt={onSaveReceipt}
+          onScreenshot={onScreenshot}
+          isSharing={isSharing}
+        />
+      ),
       isPremium: false
     },
     {
       id: 'deepdive',
-      label: 'Deep Dive',
-      icon: '🔍',
-      component: <DeepDive deepDive={analysis.deepDive} analysisData={analysis} />,
+      label: "Sage's Tea",
+      icon: Brain,
+      component: (
+        <DeepDive 
+          deepDive={analysis?.deepDive}
+          analysisData={analysis}
+          onSaveReceipt={onSaveReceipt}
+          onScreenshot={onScreenshot}
+          isSharing={isSharing}
+        />
+      ),
       isPremium: false
     },
     {
       id: 'immunity',
       label: 'Immunity Training',
-      icon: '🛡️',
-      component: <ImmunityTraining 
-        immunityData={analysis.immunityTraining} 
-        archetypeName={archetypeNameForImmunity}
-      />,
+      icon: Shield,
+      component: (
+        <ImmunityTraining 
+          immunityData={analysis?.immunityTraining}
+          archetypeName={archetypeNameForImmunity}
+          riskLevel={analysis?.immunityTraining?.riskLevel || 'medium'}
+          onSaveReceipt={onSaveReceipt}
+          onScreenshot={onScreenshot}
+          isSharing={isSharing}
+        />
+      ),
       isPremium: true
     }
   ];
 
-  const handleTabClick = (tabId) => {
-    if (tabId === 'immunity' && !isPremium) {
-      // Don't change tab, but could show upgrade modal
-      return;
+  // Navigation functions
+  const navigateToTab = (newIndex) => {
+    if (newIndex === activeTab || isTransitioning) return;
+    if (newIndex < 0 || newIndex >= tabs.length) return;
+    
+    // Check premium access for immunity tab
+    if (newIndex === 2 && !isPremium) {
+      // Allow viewing the premium lock screen
     }
-    setActiveTab(tabId);
+    
+    setIsTransitioning(true);
+    setActiveTab(newIndex);
+    
+    // Reset transition state after animation
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
+  };
+
+  const handleTabClick = (tabIndex) => {
+    navigateToTab(tabIndex);
   };
 
   const handleUpgradeClick = () => {
     navigate('/pricing');
   };
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        navigateToTab(activeTab - 1);
+      } else if (e.key === 'ArrowRight') {
+        navigateToTab(activeTab + 1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab]);
+
+  // Touch/swipe handling
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  
+  const minSwipeDistance = 75; // Minimum distance for a swipe
+
+  const onTouchStart = (e) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && activeTab < tabs.length - 1) {
+      navigateToTab(activeTab + 1);
+    }
+    if (isRightSwipe && activeTab > 0) {
+      navigateToTab(activeTab - 1);
+    }
+  };
+
   console.log('TabbedReceiptInterface rendering with:', { analysis, archetypeName, isPremium });
   
   return (
     <div className="w-full max-w-6xl mx-auto">
-      {/* DEBUG: Component is rendering */}
-      <div className="bg-blue-500 p-2 text-white text-xs mb-2">
-        DEBUG: TabbedReceiptInterface is rendering
-      </div>
-      {/* Tab Navigation */}
+      {/* Tab Navigation with Arrow Controls */}
       <div className="mb-8">
-        <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-2 border border-white/10">
-          {/* Mobile: Horizontal scroll */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide sm:flex-row sm:gap-0 sm:overflow-visible">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => handleTabClick(tab.id)}
-                className={`
-                  relative flex-shrink-0 sm:flex-1 flex items-center justify-center gap-2 px-3 sm:px-4 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap
-                  ${activeTab === tab.id 
-                    ? 'bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-white border border-purple-400/50' 
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
-                  }
-                  ${tab.isPremium && !isPremium ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}
-                `}
-              >
-                <span className="text-lg">{tab.icon}</span>
-                <span className="text-sm sm:text-base">{tab.label}</span>
-                {tab.isPremium && !isPremium && (
-                  <Lock className="w-4 h-4 text-yellow-400" />
-                )}
-                {tab.isPremium && isPremium && (
-                  <Crown className="w-4 h-4 text-yellow-400" />
-                )}
-              </button>
-            ))}
+        <div className="relative">
+          <div className="flex items-center justify-between bg-gray-800/50 rounded-2xl p-2 backdrop-blur-sm border border-gray-700/50">
+            {/* Left Arrow */}
+            <button
+              onClick={() => navigateToTab(activeTab - 1)}
+              disabled={activeTab === 0 || isTransitioning}
+              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              aria-label="Previous section"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {/* Tab Labels */}
+            <div className="flex-1 flex justify-center">
+              <div className="flex gap-1">
+                {tabs.map((tab, index) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => handleTabClick(index)}
+                      disabled={isTransitioning}
+                      className={`
+                        px-4 py-2 rounded-xl flex items-center gap-2 transition-all duration-200 min-w-[120px] justify-center
+                        ${activeTab === index 
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg' 
+                          : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                        }
+                        ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
+                      `}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="text-sm font-medium hidden sm:inline">{tab.label}</span>
+                      {tab.isPremium && !isPremium && (
+                        <Lock className="w-3 h-3 text-yellow-400" />
+                      )}
+                      {tab.isPremium && isPremium && (
+                        <Crown className="w-3 h-3 text-yellow-400" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Right Arrow */}
+            <button
+              onClick={() => navigateToTab(activeTab + 1)}
+              disabled={activeTab === tabs.length - 1 || isTransitioning}
+              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              aria-label="Next section"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Progress Indicator */}
+          <div className="flex justify-center mt-3">
+            <div className="flex gap-1">
+              {tabs.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-2 rounded-full transition-all duration-200 ${
+                    index === activeTab 
+                      ? 'bg-purple-400 w-8' 
+                      : 'bg-gray-600 hover:bg-gray-500 w-2 cursor-pointer'
+                  }`}
+                  onClick={() => navigateToTab(index)}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Tab Content */}
-      <div className="relative">
+      {/* Tab Content with Swipe Support */}
+      <div 
+        className="relative overflow-hidden"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 300, 
+              damping: 30,
+              opacity: { duration: 0.2 }
+            }}
             className="w-full"
           >
-            {activeTab === 'immunity' && !isPremium ? (
+            {activeTab === 2 && !isPremium ? (
               // Premium Lock Screen
               <div className="text-center py-16 px-8">
                 <div className="relative">
@@ -218,10 +350,10 @@ const TabbedReceiptInterface = ({
                         </button>
                         
                         <button
-                          onClick={() => setActiveTab('deepdive')}
+                          onClick={() => navigateToTab(1)}
                           className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all duration-300 border border-white/20"
                         >
-                          Continue with Deep Dive
+                          Continue with Sage's Tea
                         </button>
                       </div>
                       
@@ -235,40 +367,16 @@ const TabbedReceiptInterface = ({
             ) : (
               // Regular Tab Content
               <div className="w-full">
-                {tabs.find(tab => tab.id === activeTab)?.component}
-                
-                {/* Save/Share Actions for Receipt Tab */}
-                {activeTab === 'receipt' && (
-                  <div className="w-full max-w-2xl mx-auto mt-8">
-                    <div className="flex gap-3 justify-center px-4">
-                      <button 
-                        onClick={onSaveReceipt} 
-                        disabled={isSharing}
-                        className="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-                        style={{
-                          border: '1px solid rgba(212, 175, 55, 0.5)',
-                          boxShadow: '0 0 10px rgba(212, 175, 55, 0.2)'
-                        }}
-                      >
-                        <span className="text-lg">💾</span>
-                        {isSharing ? 'Saving...' : 'Save Receipt'}
-                      </button>
-
-                      <button 
-                        onClick={onScreenshot}
-                        className="flex-1 text-black font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-                        style={{
-                          background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                          border: '1px solid rgba(212, 175, 55, 0.8)',
-                          boxShadow: '0 0 10px rgba(212, 175, 55, 0.3)'
-                        }}
-                      >
-                        <span className="text-lg">📤</span>
-                        Share Receipt
-                      </button>
-                    </div>
-                  </div>
-                )}
+                {tabs[activeTab]?.component}
+              </div>
+            )}
+            
+            {/* Mobile Swipe Hint (show only on first tab) */}
+            {activeTab === 0 && (
+              <div className="flex justify-center mt-6 sm:hidden">
+                <div className="text-xs text-gray-500 flex items-center gap-2 animate-pulse">
+                  <span>👈 Swipe to explore more sections 👉</span>
+                </div>
               </div>
             )}
           </motion.div>

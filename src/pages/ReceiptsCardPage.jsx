@@ -18,6 +18,7 @@ import { saveReceiptToDatabase, canUserSaveReceipts } from '@/lib/services/recei
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useStripe } from '@stripe/react-stripe-js';
 import { getUserCredits } from '@/lib/services/creditsSystem';
+import TabbedReceiptInterface from '@/components/TabbedReceiptInterface';
 // Age verification imports removed
 // Sage mood images based on red flags
 import greenFlag from '@/assets/green-flag.png'; // 0-3 red flags - Happy Sage
@@ -487,40 +488,13 @@ const ReceiptsCardPage = () => {
                 ease: "easeOut"
               }}
             >
-              {/* TODO: Implement TabbedReceiptInterface - for now using original layout */}
-              
-              {/* Receipt Card */}
-              <div className="mb-8">
-                <ReceiptCardViral 
-                  results={analysis}
-                  onSaveReceipt={handleSaveReceipt}
-                  onScreenshot={handleScreenshot}
-                  isSharing={isSharing}
-                />
-              </div>
-
-              {/* Deep Dive */}
-              <div className="mb-8">
-                <DeepDive 
-                  deepDive={analysis.deepDive}
-                  analysisData={analysis}
-                  onSaveReceipt={handleSaveReceipt}
-                  onScreenshot={handleScreenshot}
-                  isSharing={isSharing}
-                />
-              </div>
-
-              {/* Immunity Training */}
-              <div className="mb-8">
-                <ImmunityTraining 
-                  immunityData={analysis.immunityTraining}
-                  archetypeName={archetypeNameForImmunity}
-                  riskLevel={analysis.immunityTraining?.riskLevel || 'medium'}
-                  onSaveReceipt={handleSaveReceipt}
-                  onScreenshot={handleScreenshot}
-                  isSharing={isSharing}
-                />
-              </div>
+              <TabbedReceiptInterface 
+                analysis={analysis}
+                archetypeNameForImmunity={archetypeNameForImmunity}
+                onSaveReceipt={handleSaveReceipt}
+                onScreenshot={handleScreenshot}
+                isSharing={isSharing}
+              />
             </motion.div>
 
         {/* 5. CTA SECTION - Bottom */}
