@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Sparkles, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Sparkles, HelpCircle, Upload } from 'lucide-react';
+import ImageUpload from '@/components/ImageUpload';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
@@ -431,6 +432,25 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
               <p className="text-stone-400 text-xs mb-4 italic">
                 Your messages are analyzed and immediately discarded unless you choose to save them. Your drama stays yours.
               </p>
+              
+              {/* Image Upload Option */}
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Upload className="h-4 w-4 text-purple-400" />
+                  <span className="text-sm font-medium text-stone-300">Upload Screenshots (Optional)</span>
+                </div>
+                <ImageUpload 
+                  onTextExtracted={(extractedText, fileName) => {
+                    setTexts(prev => prev + (prev ? '\n\n' : '') + extractedText);
+                    toast({
+                      title: "Text Extracted! 📸",
+                      description: `Successfully extracted text from ${fileName}`,
+                    });
+                  }}
+                  maxFiles={2}
+                  maxSize={5 * 1024 * 1024}
+                />
+              </div>
               
               <Textarea
                 value={texts}
