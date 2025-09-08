@@ -108,6 +108,7 @@ const ChatInputPage = () => {
       userQuestion,
       extractedTexts
     };
+    console.log('💾 Saving form data:', formData);
     localStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData));
   };
 
@@ -115,8 +116,10 @@ const ChatInputPage = () => {
   const loadFormData = () => {
     try {
       const saved = localStorage.getItem(FORM_DATA_KEY);
+      console.log('📂 Attempting to load saved form data:', saved);
       if (saved) {
         const formData = JSON.parse(saved);
+        console.log('✅ Restoring form data:', formData);
         setTexts(formData.texts || '');
         setBackground(formData.background || '');
         setGutFeel(formData.gutFeel || '');
@@ -129,9 +132,11 @@ const ChatInputPage = () => {
         setExtractedTexts(formData.extractedTexts || []);
         // Clear saved data after restoring
         localStorage.removeItem(FORM_DATA_KEY);
+      } else {
+        console.log('📭 No saved form data found');
       }
     } catch (error) {
-      console.error('Error loading saved form data:', error);
+      console.error('❌ Error loading saved form data:', error);
     }
   };
 
