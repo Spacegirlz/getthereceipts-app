@@ -409,7 +409,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
         {/* Sage's Welcome Message */}
         <div className="bg-black/20 p-5 rounded-xl border border-white/5 mb-8">
           <p className="text-stone-300 text-sm leading-relaxed">
-            <span className="text-stone-100 font-medium">Hey, it's Sage.</span> I know you've been staring at that text, re-reading it until the words lose all meaning. You're in the right place. Paste the conversation below, and let's decode it together. No judgment, just clarity.
+            <span className="text-cyan-400/70 font-medium">👋 Hey, it's Sage.</span> I know you've been staring at that text, re-reading it until the words lose all meaning. You're in the right place. Paste the conversation below, and let's decode it together. No judgment, just clarity.
           </p>
         </div>
 

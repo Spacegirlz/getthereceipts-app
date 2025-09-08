@@ -414,21 +414,21 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
   };
 
   return (
-    <div className="relative overflow-hidden max-w-none mx-auto">
+    <div className="relative w-full max-w-md sm:max-w-2xl md:max-w-4xl mx-auto px-4 sm:px-0">
       
-      {/* Main Immunity Card */}
+      {/* Main Immunity Card - Mobile-optimized with max-width constraints */}
       <motion.div 
         data-immunity-component
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
-        className="p-3 sm:p-6 md:p-8 lg:p-12 mb-4 sm:mb-6 md:mb-8 relative"
+        className="p-4 sm:p-6 md:p-8 lg:p-10 mb-4 sm:mb-6 md:mb-8 relative"
         style={{
-          background: '#14142e',
+          background: 'linear-gradient(180deg, #1a1a3e 0%, #14142e 100%)',
           backdropFilter: 'blur(10px)',
-          borderRadius: '16px',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)',
-          border: 'none'
+          borderRadius: '20px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+          border: '1px solid rgba(255, 255, 255, 0.05)'
         }}
       >
         {/* Premium dot pattern background */}
@@ -483,51 +483,76 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </div>
         </motion.div>
 
-        {/* Pattern Recognition */}
+        {/* Pattern Recognition - Card-based design */}
         <div className="mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <span className="text-base sm:text-lg">📊</span>
-            <h4 className="text-teal-400 font-bold text-xs sm:text-sm tracking-wide">PATTERN RECOGNITION</h4>
-          </div>
-          
-          <div className={`rounded-xl p-4 sm:p-6 md:p-8 border border-white/8 space-y-3 sm:space-y-4 ${
-            actualRiskLevel === 'low' 
-              ? 'bg-gradient-to-r from-green-900/10 to-emerald-900/10' 
-              : 'bg-gradient-to-r from-purple-900/10 to-red-900/10'
-          }`} style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-            <div className="text-center space-y-2">
-              <div className="text-stone-300/90 text-base sm:text-lg md:text-xl font-normal leading-relaxed break-words" style={{ textShadow: 'none' }}>
-                Pattern detected: {immunityData?.patternDetected || 
-                  (actualRiskLevel === 'low' ? 'Healthy relationship cycle' : `The ${archetypeName} manipulation cycle`)}
-              </div>
-              <div className={`text-lg ${actualRiskLevel === 'low' ? 'text-green-300' : 'text-purple-300'}`}>
-                Success rate: {immunityData?.successRate || 
-                  (actualRiskLevel === 'low' ? '95% sustainable long-term' : '94% will repeat this pattern')}
-              </div>
-              <div className="text-teal-300 text-lg">
-                Your vulnerability: {immunityData?.userVulnerability || 
-                  immunityData?.whyItHooks || 
-                  (actualRiskLevel === 'low' ? 'Clear boundary setting' : 'Your genuine hope for connection')}
+          <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-2xl border border-teal-500/20 overflow-hidden">
+            <div className="px-4 py-3 sm:px-5 sm:py-4 bg-teal-500/5 border-b border-teal-500/10">
+              <div className="flex items-center gap-2">
+                <span className="text-lg sm:text-xl">📊</span>
+                <h4 className="text-teal-400 font-bold text-sm sm:text-base tracking-wide uppercase">Pattern Recognition</h4>
               </div>
             </div>
+            
+            <div className="p-4 sm:p-5 md:p-6 space-y-4">
+              {/* Mobile-optimized card layout */}
+              <div className="space-y-3">
+                {/* Pattern Type Badge */}
+                <div className="flex justify-center">
+                  <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${
+                    actualRiskLevel === 'low' 
+                      ? 'bg-green-500/20 text-green-300 border border-green-500/30' 
+                      : 'bg-red-500/20 text-red-300 border border-red-500/30'
+                  }`}>
+                    {actualRiskLevel === 'low' ? '✅ Healthy' : '⚠️ Toxic Pattern'}
+                  </span>
+                </div>
+                
+                {/* Pattern Name */}
+                <p className="text-white font-medium text-sm sm:text-base text-center px-2">
+                  {immunityData?.patternDetected || 
+                    (actualRiskLevel === 'low' ? 'Healthy relationship cycle' : `${archetypeName} cycle`)}
+                </p>
+                
+                {/* Success Rate Visual */}
+                <div className="px-4">
+                  <div className="flex justify-between text-xs text-gray-400 mb-1">
+                    <span>Pattern Match</span>
+                    <span>{actualRiskLevel === 'low' ? '95%' : '94%'}</span>
+                  </div>
+                  <div className="w-full bg-gray-800/50 rounded-full h-1.5">
+                    <div 
+                      className={`h-full rounded-full ${
+                        actualRiskLevel === 'low' ? 'bg-gradient-to-r from-green-500 to-emerald-400' : 'bg-gradient-to-r from-purple-500 to-pink-500'
+                      }`}
+                      style={{ width: actualRiskLevel === 'low' ? '95%' : '94%' }}
+                    />
+                  </div>
+                </div>
+              </div>
           </div>
         </div>
 
-        {/* Pattern Loop */}
-        <div className="mb-8">
-          <h4 className="text-teal-400 font-bold text-sm mb-6 tracking-wide text-center">PATTERN LOOP</h4>
-          <div className="bg-white/3 rounded-xl p-8 border border-white/8">
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              {displayData.patternLoop.map((step, index) => (
-                <div key={step} className="contents">
-                  <div className="bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full text-lg border border-purple-500/30 whitespace-nowrap">
-                    {step}
-                  </div>
-                  {index < displayData.patternLoop.length - 1 && (
-                    <span className="text-purple-300 text-lg">→</span>
-                  )}
-                </div>
-              ))}
+        {/* Pattern Loop - Compact Mobile Design */}
+        <div className="mb-6">
+          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl border border-purple-500/20 overflow-hidden">
+            <div className="px-4 py-3 bg-purple-500/5 border-b border-purple-500/10">
+              <h4 className="text-purple-400 font-bold text-sm tracking-wide uppercase flex items-center gap-2">
+                <span>🔄</span> Pattern Loop
+              </h4>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-center gap-2 sm:gap-3">
+                {displayData.patternLoop.map((step, index) => (
+                  <React.Fragment key={step}>
+                    <div className="bg-purple-900/30 text-purple-300 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-center border border-purple-500/20">
+                      {step}
+                    </div>
+                    {index < displayData.patternLoop.length - 1 && (
+                      <span className="hidden sm:block text-purple-400">→</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -545,26 +570,41 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </div>
         )}
 
-        {/* Healthy Signs | Sketchy Signs - Mobile-first responsive */}
-        <div className="mb-4 sm:mb-6 space-y-4 sm:space-y-6 md:grid md:grid-cols-2 md:gap-4 lg:gap-6 md:space-y-0">
-          <div>
-            <h4 className="text-green-400 font-bold text-xs sm:text-sm mb-2 sm:mb-3">✅ HEALTHY SIGNS</h4>
-            <div className="space-y-2">
-              {displayData.healthySigns.map((sign, index) => (
-                <div key={index} className="bg-green-900/20 rounded-lg p-3 sm:p-4 border border-green-500/20">
-                  <p className="text-green-300 text-sm sm:text-base leading-relaxed break-words">{sign}</p>
-                </div>
-              ))}
+        {/* Healthy vs Sketchy Signs - Tabbed Mobile Design */}
+        <div className="mb-6">
+          <div className="bg-gray-900/30 rounded-2xl border border-gray-700/30 overflow-hidden">
+            {/* Tab Headers */}
+            <div className="grid grid-cols-2 border-b border-gray-700/30">
+              <div className="px-4 py-3 bg-green-500/10 border-r border-gray-700/30">
+                <h4 className="text-green-400 font-bold text-xs sm:text-sm text-center">✅ HEALTHY</h4>
+              </div>
+              <div className="px-4 py-3 bg-red-500/10">
+                <h4 className="text-red-400 font-bold text-xs sm:text-sm text-center">⚠️ RED FLAGS</h4>
+              </div>
             </div>
-          </div>
-          <div>
-            <h4 className="text-red-400 font-bold text-xs sm:text-sm mb-2 sm:mb-3">⚠️ SKETCHY SIGNS</h4>
-            <div className="space-y-2">
-              {displayData.sketchySigns.map((sign, index) => (
-                <div key={index} className="bg-red-900/20 rounded-lg p-3 sm:p-4 border border-red-500/20">
-                  <p className="text-red-300 text-sm sm:text-base leading-relaxed break-words">{sign}</p>
-                </div>
-              ))}
+            
+            {/* Content - Side by Side on Mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-700/30">
+              <div className="p-3 sm:p-4">
+                <ul className="space-y-2">
+                  {displayData.healthySigns.slice(0, 3).map((sign, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="text-green-400 text-xs mt-0.5">•</span>
+                      <span className="text-green-300 text-xs sm:text-sm leading-relaxed">{sign}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-3 sm:p-4">
+                <ul className="space-y-2">
+                  {displayData.sketchySigns.slice(0, 3).map((sign, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="text-red-400 text-xs mt-0.5">•</span>
+                      <span className="text-red-300 text-xs sm:text-sm leading-relaxed">{sign}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
