@@ -444,6 +444,83 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   {texts.length}/{TEXTS_LIMIT}
                 </span>
               </div>
+              
+              {/* Sage's Input Quality Warnings */}
+              {(() => {
+                const wordCount = texts.trim().split(/\s+/).filter(word => word.length > 0).length;
+                const peopleCount = (() => {
+                  const lines = texts.split('\n').filter(line => line.trim());
+                  const people = new Set();
+                  lines.forEach(line => {
+                    const match = line.match(/^([^:]+):/);
+                    if (match) {
+                      people.add(match[1].trim().toLowerCase());
+                    }
+                  });
+                  return people.size;
+                })();
+                
+                const warnings = [];
+                
+                if (wordCount < 100 && wordCount > 0) {
+                  warnings.push({
+                    type: 'warning',
+                    icon: '⚠️',
+                    message: `Bestie, ${wordCount} words is pretty sparse. I'm good, but I'm not psychic. The more tea you spill, the better I can read the room. Consider adding more context or background details.`
+                  });
+                }
+                
+                if (peopleCount > 2) {
+                  warnings.push({
+                    type: 'warning', 
+                    icon: '🤯',
+                    message: `Whoa there, bestie! ${peopleCount} people in one conversation? That's alphabet soup territory. I'm good, but I'm not a mind reader. Consider focusing on the main dynamic between 2 people for the clearest receipts.`
+                  });
+                }
+                
+                if (wordCount === 0) {
+                  return null;
+                }
+                
+                // Positive reinforcement for good input
+                if (warnings.length === 0 && wordCount >= 100) {
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-4 bg-green-900/20 border border-green-500/30 rounded-lg p-4"
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-lg flex-shrink-0">✨</span>
+                        <p className="text-green-200 text-sm leading-relaxed">
+                          Now THIS is what I'm talking about! {wordCount} words of pure tea. I can already feel the drama brewing. Let's get these receipts, bestie.
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                }
+                
+                return warnings.length > 0 ? (
+                  <div className="mt-4 space-y-3">
+                    {warnings.map((warning, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="text-lg flex-shrink-0">{warning.icon}</span>
+                          <p className="text-yellow-200 text-sm leading-relaxed">
+                            {warning.message}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : null;
+              })()}
             </div>
 
             {/* Step 3: The Vibe (Optional) */}

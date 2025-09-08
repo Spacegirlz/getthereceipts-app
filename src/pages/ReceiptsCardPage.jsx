@@ -9,6 +9,7 @@ import { saveAs } from 'file-saver';
 import DetailedResults from '@/components/DetailedResults';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
+import TabbedReceiptInterface from '@/components/TabbedReceiptInterface';
 import { Helmet } from 'react-helmet';
 import { supabase } from '@/lib/database/customSupabaseClient';
 import { Loader2, ArrowLeft, Share2, Shield, Brain, Sparkles, Crown, Gift } from 'lucide-react';
@@ -460,200 +461,37 @@ const ReceiptsCardPage = () => {
           </p>
         </div>
 
+        {/* DEBUG: Check analysis data */}
+        <div className="bg-yellow-500 p-4 text-black mb-4">
+          DEBUG: Analysis exists: {analysis ? 'YES' : 'NO'}, Type: {typeof analysis}
+          {analysis && <div>Keys: {Object.keys(analysis).join(', ')}</div>}
+        </div>
+
         {/* Conditional render - only show content if analysis exists */}
         {analysis ? (
           <div>
-            {/* 1. THE SHAREABLE RECEIPT CARD - 9:16 */}
-        <motion.div 
-          className="flex justify-center mb-8"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.8,
-            ease: "easeOut"
-          }}
-        >
-          <ReceiptCardViral results={analysis} />
-        </motion.div>
-
-        {/* RECEIPT ACTIONS - Slimline matching Tea/Immunity style */}
-        <div className="w-full max-w-2xl mx-auto mb-20">
-          <div className="flex gap-3 justify-center px-4">
-            <button 
-              onClick={handleSaveReceipt} 
-              disabled={isSharing}
-              className="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-              style={{
-                border: '1px solid rgba(212, 175, 55, 0.5)',
-                boxShadow: '0 0 10px rgba(212, 175, 55, 0.2)'
+            {/* Tabbed Interface */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.8,
+                ease: "easeOut"
               }}
             >
-              <span className="text-lg">💾</span>
-              {isSharing ? 'Saving...' : 'Save Receipt'}
-            </button>
-
-            <button 
-              onClick={handleScreenshot}
-              className="flex-1 text-black font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.8)',
-                boxShadow: '0 0 10px rgba(212, 175, 55, 0.3)'
-              }}
-            >
-              <span className="text-lg">📤</span>
-              Share Receipt
-            </button>
-          </div>
-        </div>
-
-        {/* Premium Access Section */}
-        <div className="max-w-3xl mx-auto mb-12">
-          <div className="grid md:grid-cols-3 gap-4">
-            {/* Daily Access */}
-            <div className="relative backdrop-blur-sm bg-black/30 border border-purple-500/30 rounded-xl p-4 text-center">
-              <Gift className="h-5 w-5 mx-auto mb-2 text-purple-400" />
-              <h4 className="text-sm font-bold text-white mb-1">Daily Truth Access</h4>
-              <p className="text-xs text-gray-400">Complimentary insights</p>
-            </div>
-
-            {/* Founder's Circle */}
-            <div className="relative backdrop-blur-sm bg-black/40 border-2 border-yellow-400/50 rounded-xl p-4 text-center">
-              <Crown className="h-5 w-5 mx-auto mb-2 text-yellow-400" />
-              <div className="mb-2">
-                <span className="text-xs bg-yellow-400 text-black px-2 py-0.5 rounded-full font-bold">FOUNDER'S CIRCLE</span>
-                <div className="flex items-center justify-center gap-1 mt-1">
-                  <span className="text-gray-400 line-through text-xs">$99</span>
-                  <span className="text-lg font-bold text-yellow-400">$29.99</span>
-                  <span className="text-xs text-yellow-400">/year</span>
-                </div>
+              {/* DEBUG: Test if TabbedReceiptInterface is working */}
+              <div className="bg-red-500 p-4 text-white mb-4">
+                DEBUG: TabbedReceiptInterface should be here - {new Date().toLocaleTimeString()}
               </div>
-              <Button 
-                size="sm"
-                className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-4 py-1 rounded-full text-xs"
-                onClick={() => navigate('/pricing')}
-              >
-                Secure Access
-              </Button>
-            </div>
-
-            {/* VIP Rewards */}
-            <div className="relative backdrop-blur-sm bg-black/30 border border-green-500/30 rounded-xl p-4 text-center">
-              <Share2 className="h-5 w-5 mx-auto mb-2 text-green-400" />
-              <h4 className="text-sm font-bold text-white mb-1">VIP Rewards</h4>
-              <p className="text-xs text-gray-400">Exclusive member benefits</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Visual Connector 1→2 */}
-        <div className="flex flex-col items-center mb-16">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
-            }}>
-            <div className="text-black font-bold text-sm">⌄</div>
-          </div>
-          <div className="text-white/60 text-xs font-medium tracking-wide mb-4">CONTINUE TO THE TEA</div>
-          <div className="w-0.5 h-8 bg-gradient-to-b from-amber-400/30 to-transparent"></div>
-        </div>
-
-        {/* Wine-Drunk Sage's Deep Dive - Premium Analysis */}
-        <motion.div 
-          className="w-full max-w-2xl mx-auto mb-10"
-          initial={{ opacity: 0, scaleY: 0.8, transformOrigin: "top" }}
-          animate={{ opacity: 1, scaleY: 1 }}
-          transition={{ 
-            duration: 1.0,
-            delay: 0.3,
-            ease: "easeOut"
-          }}
-        >
-          <DeepDive deepDive={analysis.deepDive} analysisData={analysis} />
-        </motion.div>
-
-        {/* Visual Connector 2→3 */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
-            }}>
-            <div className="text-black font-bold text-sm">⌄</div>
-          </div>
-          <div className="text-white/60 text-xs font-medium tracking-wide mb-4">UNLOCK IMMUNITY TRAINING</div>
-          <div className="w-0.5 h-8 bg-gradient-to-b from-amber-400/30 to-transparent"></div>
-        </div>
-
-        {/* Removed test element */}
-
-        {/* 3. IMMUNITY TRAINING - Premium Feature */}
-        <div className="w-full max-w-6xl mx-auto mb-12 px-8">
-          <div className="relative overflow-hidden">
-            {/* Premium Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 via-teal-900/20 to-cyan-900/30 rounded-3xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 rounded-3xl"></div>
-            
-            {/* Main Container */}
-            <div className="relative backdrop-blur-xl bg-black/40 border border-white/10 rounded-3xl p-8 md:p-10">
-              
-              {/* Header Section */}
-              {/* Content Section */}
-              <div className="space-y-6">
-                {/* Show Immunity Training for all users */}
-                <motion.div
-                    initial={{ 
-                      opacity: 0, 
-                      scale: 0.95,
-                      filter: "blur(2px)"
-                    }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: 1,
-                      filter: "blur(0px)"
-                    }}
-                    transition={{ 
-                      duration: 1.2,
-                      delay: 0.6,
-                      ease: "easeOut"
-                    }}
-                  >
-                    {/* Sparkle particles overlay */}
-                    <div className="absolute -inset-4 pointer-events-none">
-                      {[...Array(6)].map((_, i) => (
-                        <motion.div
-                          key={i}
-                          className="absolute w-1 h-1 bg-yellow-300 rounded-full"
-                          style={{
-                            left: `${20 + i * 15}%`,
-                            top: `${10 + (i % 3) * 30}%`,
-                          }}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ 
-                            opacity: [0, 1, 0],
-                            scale: [0, 1, 0],
-                          }}
-                          transition={{
-                            duration: 2,
-                            delay: 0.8 + i * 0.2,
-                            repeat: Infinity,
-                            repeatDelay: 3
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <ImmunityTraining 
-                      immunityData={analysis.immunityTraining} 
-                      archetypeName={archetypeNameForImmunity}
-                    />
-                  </motion.div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Removed old premium-only deep dive block; Deep Dive shown above for all users */}
+              <TabbedReceiptInterface 
+                analysis={analysis}
+                archetypeName={archetypeName}
+                archetypeNameForImmunity={archetypeNameForImmunity}
+                onSaveReceipt={handleSaveReceipt}
+                onScreenshot={handleScreenshot}
+                isSharing={isSharing}
+              />
+            </motion.div>
 
         {/* 5. CTA SECTION - Bottom */}
         <div className="w-full max-w-2xl mx-auto space-y-6">

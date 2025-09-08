@@ -202,34 +202,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
     safetyNote
   } = immunityData;
 
-  // Dynamic flags from immunity data or risk level fallback
-  const getFlagsForRiskLevel = (level, immunityFlags) => {
-    // If immunity data provides flags, use those
-    if (immunityFlags && Array.isArray(immunityFlags) && immunityFlags.length > 0) {
-      return immunityFlags;
-    }
-    
-    // Fallback to risk level patterns only if no immunity data
-    if (level === 'high') {
-      return [
-        { type: 'red', text: 'Pattern override detected' },
-        { type: 'red', text: 'Deflection activated' },
-        { type: 'red', text: 'Confusion protocol engaged' }
-      ];
-    } else if (level === 'low') {
-      return [
-        { type: 'green', text: 'Consistent behavior' },
-        { type: 'green', text: 'Clear communication' },
-        { type: 'green', text: 'Reliable follow-through' }
-      ];
-    } else {
-      return [
-        { type: 'red', text: 'Mixed signals detected' },
-        { type: 'green', text: 'Some positive signs' },
-        { type: 'red', text: 'Clarity needed' }
-      ];
-    }
-  };
 
   // Get dynamic archetype header based on risk level
   const getArchetypeHeader = (level, archetype) => {
@@ -415,7 +387,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
   // Dynamic data with powerful archetype-specific content
   const displayData = {
     patternLoop: ensureArray(immunityData?.patternLoop, immunity.patternLoop),
-    flags: ensureArray(immunityData?.flags, getFlagsForRiskLevel(actualRiskLevel, immunityData?.flags)),
     whyItHooks: immunityData?.whyItHooks || immunity.decoder,
     healthySigns: ensureArray(immunityData?.healthySigns, 
       whatGoodLooksLike.length > 0 ? whatGoodLooksLike : immunity.healthySigns
@@ -525,20 +496,18 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               : 'bg-gradient-to-r from-purple-900/10 to-red-900/10'
           }`} style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
             <div className="text-center space-y-2">
-              {/* TEMPLATE EXAMPLES FOR AI - These are example formats for AI to follow */}
               <div className="text-stone-300/90 text-xl font-normal leading-relaxed" style={{ textShadow: 'none' }}>
-                Pattern detected: {actualRiskLevel === 'low' ? 'Healthy relationship cycle' : 'Classic manipulation cycle'}
+                Pattern detected: {immunityData?.patternDetected || 
+                  (actualRiskLevel === 'low' ? 'Healthy relationship cycle' : `The ${archetypeName} manipulation cycle`)}
               </div>
               <div className={`text-lg ${actualRiskLevel === 'low' ? 'text-green-300' : 'text-purple-300'}`}>
-                Success rate: {actualRiskLevel === 'low' ? '95% sustainable long-term' : '94% will repeat this pattern'}
+                Success rate: {immunityData?.successRate || 
+                  (actualRiskLevel === 'low' ? '95% sustainable long-term' : '94% will repeat this pattern')}
               </div>
               <div className="text-teal-300 text-lg">
-                {/* EXAMPLES ONLY - In production, AI should generate dynamic content based on actual analysis */}
-                Your {actualRiskLevel === 'low' ? 'strength' : 'vulnerability'}: {
-                  actualRiskLevel === 'high' ? 'Emotional availability' : 
-                  actualRiskLevel === 'low' ? 'Clear boundary setting' : 
-                  'Mixed signal confusion'
-                }
+                Your vulnerability: {immunityData?.userVulnerability || 
+                  immunityData?.whyItHooks || 
+                  (actualRiskLevel === 'low' ? 'Clear boundary setting' : 'Your genuine hope for connection')}
               </div>
             </div>
           </div>
@@ -563,34 +532,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </div>
         </div>
 
-        {/* 3 Dynamic Flags */}
-        <div className="mb-8">
-          <h4 className="text-teal-400 font-bold text-sm mb-4">FLAGS</h4>
-          <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-            <div className="space-y-2">
-              {displayData.flags.map((flag, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`flex items-start gap-2 text-base ${
-                    flag.type === 'red' 
-                      ? 'text-red-300' 
-                      : 'text-green-300'
-                  }`}
-                >
-                  <span className="mt-0.5 flex-shrink-0">
-                    {flag.type === 'red' ? '🚩' : '🟢'}
-                  </span>
-                  <span className="leading-relaxed">
-                    {flag.text}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
 
         {/* Archetype Decoder - Only show if we have dynamic content */}
         {displayData.archetypeDecoder && (

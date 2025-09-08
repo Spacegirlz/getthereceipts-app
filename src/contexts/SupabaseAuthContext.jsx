@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
             .single();
           
           // Owner email gets automatic premium access
-          const isOwner = session.user.email === 'piet@virtualsatchel.com';
+          const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
           
           if (error && error.code === 'PGRST116') {
             // User doesn't exist in users table - create them
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
           }
         } catch (_) {
           // Owner email gets automatic premium access even if database query fails
-          setIsPremium(session?.user?.email === 'piet@virtualsatchel.com');
+          setIsPremium(session?.user?.email === 'piet@virtualsatchel.com' || session?.user?.email === 'piet@pietmarie.com');
         }
       }
       setLoading(false);
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
                 .single();
               
               // Owner email gets automatic premium access
-              const isOwner = session.user.email === 'piet@virtualsatchel.com';
+              const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
               
               if (error && error.code === 'PGRST116') {
                 // User doesn't exist in users table - create them
@@ -122,7 +122,7 @@ export const AuthProvider = ({ children }) => {
               }
             } catch (_) {
               // Owner email gets automatic premium access even if database query fails
-              setIsPremium(session?.user?.email === 'piet@virtualsatchel.com');
+              setIsPremium(session?.user?.email === 'piet@virtualsatchel.com' || session?.user?.email === 'piet@pietmarie.com');
             }
           } else {
             setIsPremium(false);
