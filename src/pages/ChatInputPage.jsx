@@ -41,6 +41,7 @@ const ChatInputPage = () => {
   // User credits state
   const [userCredits, setUserCredits] = useState(null);
   const [isPremium, setIsPremium] = useState(false);
+  const [creditsLoading, setCreditsLoading] = useState(true);
   
   // Help popup state
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -130,12 +131,8 @@ const ChatInputPage = () => {
         // Clear saved data after restoring
         localStorage.removeItem(FORM_DATA_KEY);
         
-        // Auto-submit after restoration if user is authenticated
-        setTimeout(() => {
-          if (user && (formData.texts || formData.extractedTexts?.length > 0)) {
-            handleSubmit();
-          }
-        }, 1000); // Small delay to ensure state updates
+        // Set a flag for auto-submit after restoration
+        localStorage.setItem('shouldAutoSubmit', 'true');
       }
     } catch (error) {
       console.error('Error loading saved form data:', error);
@@ -173,19 +170,42 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
   
   useEffect(() => {
     const fetchCredits = async () => {
-      if (user?.id) {
-        const credits = await getUserCredits(user.id);
-        setUserCredits(credits);
-        setIsPremium(credits.subscription === 'premium' || credits.subscription === 'yearly' || credits.subscription === 'founder');
-      } else {
-        // Non-logged in users need to create account for free daily credit
-        setUserCredits({ deepDivesRemaining: 0, subscription: 'free' });
+      setCreditsLoading(true);
+      try {
+        if (user?.id) {
+          const credits = await getUserCredits(user.id);
+          setUserCredits(credits);
+          setIsPremium(credits.subscription === 'premium' || credits.subscription === 'yearly' || credits.subscription === 'founder');
+        } else {
+          // Non-logged in users need to create account for free daily credit
+          setUserCredits({ deepDivesRemaining: 0, subscription: 'free' });
+          setIsPremium(false);
+        }
+      } catch (error) {
+        console.error('Error fetching credits:', error);
+        // Default to free user on error
+        setUserCredits({ credits: 0, subscription: 'free' });
         setIsPremium(false);
+      } finally {
+        setCreditsLoading(false);
       }
     };
     
     fetchCredits();
   }, [user]);
+
+  // Auto-submit when credits finish loading (if flag is set)
+  useEffect(() => {
+    if (!creditsLoading && user && localStorage.getItem('shouldAutoSubmit') === 'true') {
+      localStorage.removeItem('shouldAutoSubmit');
+      if ((texts.trim() || extractedTexts.length > 0)) {
+        // Small delay to ensure UI is ready
+        setTimeout(() => {
+          handleSubmit();
+        }, 500);
+      }
+    }
+  }, [creditsLoading, user, texts, extractedTexts]);
 
   const handleSubmit = async () => {
     // Check if user is logged in first
@@ -200,7 +220,16 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       return;
     }
 
-    // Check if user has credits
+    // Prevent submission if credits are still loading
+    if (creditsLoading) {
+      toast({
+        title: 'Loading your account...',
+        description: 'Please wait while we check your credits.',
+      });
+      return;
+    }
+
+    // Check if user has credits (only for non-premium users)
     if (!isPremium && (!userCredits?.credits || userCredits.credits <= 0)) {
       setShowUpgradeModal(true);
       return;
@@ -691,7 +720,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
             <div className="space-y-4">
               <Button
                 onClick={handleSubmit}
-                disabled={isLoading || (!texts.trim() && extractedTexts.length === 0)}
+                disabled={isLoading || creditsLoading || (!texts.trim() && extractedTexts.length === 0)}
                 className="w-full py-6 text-xl font-bold text-black rounded-xl transition-all hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
@@ -700,6 +729,8 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
               >
                 {!user ? (
                   '🧾 Get My Free Truth Receipt'
+                ) : creditsLoading ? (
+                  '⏳ Loading Account...'
                 ) : isPremium ? (
                   '🧾 Get My Truth Receipt'
                 ) : userCredits?.credits > 0 ? (

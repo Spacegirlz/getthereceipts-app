@@ -1,11 +1,11 @@
 import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Brain } from 'lucide-react';
+import { Brain, Download, Share2 } from 'lucide-react';
 import TrendSticker from '@/components/TrendSticker';
 // Standard Sage image for Truth Receipt
 import sageStandardImage from '@/assets/sage-dark-circle.png';
 
-const ReceiptCardViral = memo(({ results }) => {
+const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing }) => {
   if (!results) return null;
 
 
@@ -475,6 +475,48 @@ const ReceiptCardViral = memo(({ results }) => {
             </div>
           </div>
           
+          {/* ACTION BUTTONS */}
+          <div className="flex gap-2 mb-4">
+            <button 
+              onClick={onSaveReceipt}
+              disabled={isSharing}
+              className="flex-1 bg-white/10 hover:bg-white/20 text-stone-200 font-normal py-2 px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
+              style={{
+                border: '1px solid rgba(212, 175, 55, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+              }}
+            >
+              <Download className="w-4 h-4" />
+              {isSharing ? 'Saving...' : 'Save'}
+            </button>
+            <motion.button 
+              animate={{ 
+                scale: [1, 1.02, 1],
+                boxShadow: [
+                  '0 0 20px rgba(212, 175, 55, 0.3)',
+                  '0 0 30px rgba(212, 175, 55, 0.5)', 
+                  '0 0 20px rgba(212, 175, 55, 0.3)'
+                ]
+              }}
+              onClick={onScreenshot}
+              disabled={isSharing}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="flex-1 text-black font-bold py-2 px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
+              style={{
+                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                border: '1px solid rgba(212, 175, 55, 0.9)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+              }}
+            >
+              <Share2 className="w-4 h-4" />
+              {isSharing ? 'Sharing...' : 'Share Receipt'}
+            </motion.button>
+          </div>
+
           {/* WATERMARK */}
           <div className="text-center mt-4 mb-4">
             <p className="text-xs text-stone-200/90/40 tracking-widest">
