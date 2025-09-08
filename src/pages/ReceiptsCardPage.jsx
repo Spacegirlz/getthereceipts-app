@@ -498,23 +498,51 @@ const ReceiptsCardPage = () => {
               />
             </motion.div>
 
+        {/* Mobile Navigation Block - After Save/Share */}
+        <div className="flex justify-center mt-8 sm:hidden">
+          <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-2 backdrop-blur-md border border-slate-600/40 shadow-lg">
+            <div className="flex items-center gap-1">
+              <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30">
+                <span className="text-xs font-medium">Truth</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              </button>
+              <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
+                <span className="text-xs font-medium">Tea</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              </button>
+              <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
+                <span className="text-xs font-medium">Immunity</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* 5. CTA SECTION - Bottom */}
-        <div className="w-full max-w-2xl mx-auto space-y-6">
+        <div className="w-full max-w-2xl mx-auto space-y-8">
           <LinkButton
             to="/chat-input"
-            className="w-full py-6 text-black rounded-full text-xl font-bold hover:scale-105 transition-all duration-300"
+            className="w-full py-6 text-white rounded-full text-xl font-bold hover:scale-105 transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              border: '1px solid rgba(212, 175, 55, 0.9)',
-              boxShadow: '0 0 30px rgba(212, 175, 55, 0.4), 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(245, 230, 211, 0.8)',
-              filter: 'drop-shadow(0 0 20px rgba(212, 175, 55, 0.3))'
+              background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
+              border: '1px solid rgba(139, 92, 246, 0.8)',
+              boxShadow: '0 0 30px rgba(139, 92, 246, 0.4), 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(167, 139, 250, 0.6)',
+              filter: 'drop-shadow(0 0 20px rgba(139, 92, 246, 0.3))'
             }}
           >
             ✨ Decode Another Message
           </LinkButton>
           
-          <div className="text-center p-6 bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur rounded-2xl border border-purple-500/30">
-            <h3 className="text-xl font-bold mb-4 text-white">
+          <div className="text-center p-8 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 backdrop-blur rounded-3xl border border-purple-500/30 shadow-lg">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6"
+              style={{
+                background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #F59E0B 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                backgroundSize: '200% 200%',
+                animation: 'gradient-shift 3s ease infinite'
+              }}>
               Need More Truth Receipts?
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

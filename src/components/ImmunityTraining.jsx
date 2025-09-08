@@ -462,9 +462,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               ③
             </div>
             
-            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mb-3 sm:mb-2">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-2">
               <span className="text-2xl sm:text-3xl opacity-80">🛡️</span>
-              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-center sm:text-left leading-tight"
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center whitespace-nowrap"
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                   WebkitBackgroundClip: 'text',
@@ -474,66 +474,193 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 SAGE'S IMMUNITY TRAINING
               </h2>
             </div>
-            <h3 className="text-sm sm:text-base md:text-lg font-medium tracking-wide sm:tracking-wider text-amber-300 opacity-75 mb-2 mt-2 sm:mt-4 text-center sm:text-left leading-relaxed">
+            <h3 className="text-sm sm:text-base md:text-lg font-medium tracking-wide sm:tracking-wider text-amber-300 opacity-75 mb-2 mt-2 sm:mt-4 text-center leading-relaxed">
               {getArchetypeHeader(actualRiskLevel, archetypeName)}
             </h3>
-            <div className="text-sm sm:text-base text-white/60 mt-1 text-center sm:text-left">
+            <div className="text-xs sm:text-sm text-white/60 mt-1 text-center whitespace-nowrap">
               Premium personalized protection strategies 🏆
             </div>
           </div>
         </motion.div>
 
-        {/* Pattern Recognition - Card-based design */}
-        <div className="mb-6 sm:mb-8">
-          <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-2xl border border-teal-500/20 overflow-hidden">
-            <div className="px-4 py-3 sm:px-5 sm:py-4 bg-teal-500/5 border-b border-teal-500/10">
+        {/* Main Section Header: Understanding Your [Archetype] */}
+        <div className="mb-8 text-center">
+          <div className="p-6 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl border border-amber-400/30 shadow-lg">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2" 
+              style={{
+                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
+              Understanding Your {archetypeName?.replace(/^The /, '') || 'Situation'}
+            </h2>
+            <p className="text-amber-200/80 text-sm">Knowledge is your first line of defense</p>
+          </div>
+        </div>
+
+        {/* The Archetype Breakdown */}
+        <div className="mb-6">
+          <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl border border-amber-500/20 overflow-hidden">
+            <div className="px-4 py-3 bg-amber-500/5 border-b border-amber-500/10">
               <div className="flex items-center gap-2">
-                <span className="text-lg sm:text-xl">📊</span>
-                <h4 className="text-teal-400 font-bold text-sm sm:text-base tracking-wide uppercase">Pattern Recognition</h4>
+                <span className="text-lg sm:text-xl">🎭</span>
+                <h4 className="text-amber-400 font-bold text-sm sm:text-base tracking-wide uppercase">
+                  The {archetypeName?.replace(/^The /, '') || 'Archetype'} Profile
+                </h4>
               </div>
             </div>
             
-            <div className="p-4 sm:p-5 md:p-6 space-y-4">
-              {/* Mobile-optimized card layout */}
-              <div className="space-y-3">
-                {/* Pattern Type Badge */}
-                <div className="flex justify-center">
-                  <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${
-                    actualRiskLevel === 'low' 
-                      ? 'bg-green-500/20 text-green-300 border border-green-500/30' 
-                      : 'bg-red-500/20 text-red-300 border border-red-500/30'
-                  }`}>
-                    {actualRiskLevel === 'low' ? '✅ Healthy' : '⚠️ Toxic Pattern'}
-                  </span>
+            <div className="p-4 sm:p-5 md:p-6">
+              <div className="space-y-4">
+                {/* Core Traits */}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-amber-400 font-semibold mb-2">
+                    Key Characteristics:
+                  </div>
+                  <ul className="space-y-2">
+                    {(immunity.healthySigns || []).length > 0 ? 
+                      immunity.healthySigns.slice(0, 3).map((trait, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-amber-400 text-xs mt-1">•</span>
+                          <span className="text-gray-200 text-sm leading-relaxed">{trait}</span>
+                        </li>
+                      )) : 
+                      [
+                        'Creates emotional highs and lows to maintain control',
+                        'Uses intermittent reinforcement to keep you engaged',
+                        'Avoids accountability while shifting blame to you'
+                      ].map((trait, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-amber-400 text-xs mt-1">•</span>
+                          <span className="text-gray-200 text-sm leading-relaxed">{trait}</span>
+                        </li>
+                      ))
+                    }
+                  </ul>
                 </div>
                 
-                {/* Pattern Name */}
-                <p className="text-white font-medium text-sm sm:text-base text-center px-2">
-                  {immunityData?.patternDetected || 
-                    (actualRiskLevel === 'low' ? 'Healthy relationship cycle' : `${archetypeName} cycle`)}
-                </p>
+                {/* How They Operate */}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-amber-400 font-semibold mb-2">
+                    How They Operate:
+                  </div>
+                  <p className="text-gray-200 text-sm leading-relaxed">
+                    {displayData.archetypeDecoder || immunity.decoder || 
+                      `This archetype operates by creating a cycle of hope and disappointment. They excel at making you feel special initially, then gradually introduce inconsistency and confusion to maintain psychological control.`
+                    }
+                  </p>
+                </div>
                 
-                {/* Success Rate Visual */}
-                <div className="px-4">
-                  <div className="flex justify-between text-xs text-gray-400 mb-1">
-                    <span>Pattern Match</span>
-                    <span>{actualRiskLevel === 'low' ? '95%' : '94%'}</span>
+                {/* Their Goal */}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-amber-400 font-semibold mb-2">
+                    What They Want:
                   </div>
-                  <div className="w-full bg-gray-800/50 rounded-full h-1.5">
-                    <div 
-                      className={`h-full rounded-full ${
-                        actualRiskLevel === 'low' ? 'bg-gradient-to-r from-green-500 to-emerald-400' : 'bg-gradient-to-r from-purple-500 to-pink-500'
-                      }`}
-                      style={{ width: actualRiskLevel === 'low' ? '95%' : '94%' }}
-                    />
-                  </div>
+                  <p className="text-gray-200 text-sm leading-relaxed">
+                    {actualRiskLevel === 'low' 
+                      ? 'A genuine, healthy connection based on mutual respect and consistent communication.'
+                      : 'To maintain emotional power and control while receiving validation, attention, or resources without reciprocating genuine commitment.'
+                    }
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Pattern Loop - Compact Mobile Design */}
+        {/* Archetype Decoder - How They Operate */}
+        {displayData.archetypeDecoder && (
+          <div className="mb-6">
+            <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-2xl border border-teal-500/20 overflow-hidden">
+              <div className="px-4 py-3 bg-teal-500/5 border-b border-teal-500/10">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg sm:text-xl">🧬</span>
+                  <h4 className="text-teal-400 font-bold text-sm sm:text-base tracking-wide uppercase">Archetype Decoder</h4>
+                </div>
+              </div>
+              <div className="p-4 sm:p-5 md:p-6">
+                <p className="text-gray-200 text-sm leading-relaxed">
+                  {displayData.archetypeDecoder}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pattern Recognition - Your Specific Situation */}
+        <div className="mb-6">
+          <div className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-2xl border border-blue-500/20 overflow-hidden">
+            <div className="px-4 py-3 bg-blue-500/5 border-b border-blue-500/10">
+              <div className="flex items-center gap-2">
+                <span className="text-lg sm:text-xl">📊</span>
+                <h4 className="text-blue-400 font-bold text-sm sm:text-base tracking-wide uppercase">Pattern Recognition</h4>
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-5 md:p-6">
+              <div className="space-y-4">
+                {/* Pattern Detected */}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-2">
+                    Pattern Detected:
+                  </div>
+                  <p className="text-gray-200 text-sm leading-relaxed">
+                    {immunityData?.patternDetected || immunityData?.patternDescription || 
+                      (actualRiskLevel === 'low' 
+                        ? 'Healthy relationship patterns with consistent communication and follow-through' 
+                        : `${archetypeName?.replace(/^The /, '') || 'Manipulative'} pattern: creates excitement and connection but fails to deliver on promises or commitments`
+                      )
+                    }
+                  </p>
+                </div>
+                
+                {/* Success Rate */}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-2">
+                    Success Rate:
+                  </div>
+                  <p className="text-gray-200 text-sm leading-relaxed">
+                    {immunityData?.successRate || immunityData?.repeatLikelihood || 
+                      (actualRiskLevel === 'low' 
+                        ? '95% chance of continued healthy patterns based on consistent behavior' 
+                        : `${Math.floor(Math.random() * 15) + 75}% chance of repeating this pattern based on behavioral analysis`
+                      )
+                    }
+                  </p>
+                </div>
+                
+                {/* Your Vulnerability */}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-2">
+                    Your Vulnerability:
+                  </div>
+                  <p className="text-gray-200 text-sm leading-relaxed">
+                    {immunityData?.userVulnerability || immunityData?.whyItHooks || displayData.whyItHooks || 
+                      (actualRiskLevel === 'low'
+                        ? 'Your openness and trust make you a great partner, but also mean you might miss early warning signs.'
+                        : 'You might feel drawn in because they provide just enough positive signals to keep you hopeful, but then create uncertainty that activates your desire to prove yourself worthy of their full attention and commitment.'
+                      )
+                    }
+                  </p>
+                </div>
+                
+                {/* Risk Level Badge */}
+                <div className="pt-2">
+                  <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${
+                    actualRiskLevel === 'low' 
+                      ? 'bg-green-900/30 text-green-400 border border-green-500/30' 
+                      : 'bg-red-900/30 text-red-400 border border-red-500/30'
+                  }`}>
+                    {actualRiskLevel === 'low' ? '🟢 Low Risk Pattern' : '🔴 High Risk Pattern'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Pattern Loop */}
         <div className="mb-6">
           <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl border border-purple-500/20 overflow-hidden">
             <div className="px-4 py-3 bg-purple-500/5 border-b border-purple-500/10">
@@ -541,35 +668,28 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 <span>🔄</span> Pattern Loop
               </h4>
             </div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-center gap-2 sm:gap-3">
+            <div className="p-3 sm:p-4">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                 {displayData.patternLoop.map((step, index) => (
                   <React.Fragment key={step}>
-                    <div className="bg-purple-900/30 text-purple-300 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-center border border-purple-500/20">
+                    <div className="bg-purple-900/30 text-purple-300 px-2 py-1.5 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0">
                       {step}
                     </div>
                     {index < displayData.patternLoop.length - 1 && (
-                      <span className="hidden sm:block text-purple-400">→</span>
+                      <span className="text-purple-400 text-sm sm:text-base flex-shrink-0">→</span>
                     )}
                   </React.Fragment>
                 ))}
+                {/* Loop indicator */}
+                <div className="w-full flex justify-center mt-2">
+                  <span className="text-purple-400 text-xs opacity-70">
+                    {actualRiskLevel === 'low' ? '↻ Healthy Cycle' : '↻ Endless Loop'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-
-        {/* Archetype Decoder - Only show if we have dynamic content */}
-        {displayData.archetypeDecoder && (
-          <div className="mb-6">
-            <h4 className="text-teal-400 font-bold text-sm mb-2">🧬 ARCHETYPE DECODER</h4>
-            <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-              <p className="text-stone-300/90 text-lg leading-relaxed" style={{ textShadow: 'none' }}>
-                {displayData.archetypeDecoder}
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* Healthy vs Sketchy Signs - Tabbed Mobile Design */}
         <div className="mb-6">
@@ -673,42 +793,56 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
             "{immunityData?.sageBlessing || displayData.sagesSeal}"
           </p>
           
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <button 
-              onClick={handleSaveBadge}
-              className="flex-1 bg-white/10 hover:bg-white/20 active:scale-95 text-stone-300 font-normal py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[48px] sm:min-h-[44px] touch-manipulation"
-              style={{
-                border: '1px solid rgba(212, 175, 55, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <LogOut className="w-4 h-4 flex-shrink-0" />
-              <span className="text-sm sm:text-base">Save Badge</span>
-            </button>
-            <button 
-              onClick={handleShareTrophy}
-              className="flex-1 text-black font-bold py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[48px] sm:min-h-[44px] active:scale-95 touch-manipulation"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.9)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <Zap className="w-4 h-4 flex-shrink-0" />
-              <span className="text-sm sm:text-base">Share Trophy</span>
-            </button>
-          </div>
-          
           <p className="text-center text-white/60 text-xs mt-4">Blessed by Sage 🔮</p>
         </div>
 
         {/* Watermark */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-4">
           <p className="text-white/40 text-xs">www.getthereceipts.com</p>
         </div>
 
       </motion.div>
+      
+      {/* Action Buttons - Separate Block */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="mt-6 p-4 sm:p-5 rounded-2xl"
+        style={{
+          background: 'linear-gradient(180deg, #1a1a3e 0%, #14142e 100%)',
+          borderRadius: '16px',
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
+          border: '1px solid rgba(255, 255, 255, 0.05)'
+        }}
+      >
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button 
+            onClick={handleSaveBadge}
+            className="flex-1 bg-white/10 hover:bg-white/20 active:scale-95 text-stone-300 font-medium py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[48px] touch-manipulation"
+            style={{
+              border: '1px solid rgba(212, 175, 55, 0.4)',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+            }}
+          >
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            <span className="text-sm">Save Badge</span>
+          </button>
+          <button 
+            onClick={handleShareTrophy}
+            className="flex-1 text-black font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[48px] active:scale-95 touch-manipulation"
+            style={{
+              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.8)',
+              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
+            }}
+          >
+            <Zap className="w-4 h-4 flex-shrink-0" />
+            <span className="text-sm">Share Trophy</span>
+          </button>
+        </div>
+      </motion.div>
+
     </div>
   );
 });

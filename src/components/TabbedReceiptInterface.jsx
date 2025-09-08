@@ -146,12 +146,12 @@ const TabbedReceiptInterface = ({
       {/* Tab Navigation with Arrow Controls */}
       <div className="mb-8">
         <div className="relative">
-          <div className="flex items-center justify-between bg-gray-800/50 rounded-2xl p-2 backdrop-blur-sm border border-gray-700/50">
+          <div className="flex items-center justify-between bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-3 backdrop-blur-md border border-slate-600/40 shadow-lg">
             {/* Left Arrow */}
             <button
               onClick={() => navigateToTab(activeTab - 1)}
               disabled={activeTab === 0 || isTransitioning}
-              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out"
               aria-label="Previous section"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -159,7 +159,7 @@ const TabbedReceiptInterface = ({
 
             {/* Tab Labels */}
             <div className="flex-1 flex justify-center">
-              <div className="flex gap-1">
+              <div className="flex items-center gap-1 sm:gap-2">
                 {tabs.map((tab, index) => {
                   const Icon = tab.icon;
                   return (
@@ -168,22 +168,25 @@ const TabbedReceiptInterface = ({
                       onClick={() => handleTabClick(index)}
                       disabled={isTransitioning}
                       className={`
-                        px-4 py-2 rounded-xl flex items-center gap-2 transition-all duration-200 min-w-[120px] justify-center
+                        group relative px-3 py-2.5 rounded-xl flex items-center gap-1.5 transition-all duration-300 ease-out transform hover:scale-105
                         ${activeTab === index 
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg' 
-                          : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                          ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30' 
+                          : 'text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40'
                         }
                         ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
                     >
-                      <Icon className="w-4 h-4" />
-                      <span className="text-sm font-medium hidden sm:inline">{tab.label}</span>
+                      <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="text-xs font-medium whitespace-nowrap">{tab.label}</span>
                       {tab.isPremium && !isPremium && (
-                        <Lock className="w-3 h-3 text-yellow-400" />
+                        <Lock className="w-2.5 h-2.5 text-amber-400 animate-pulse" />
                       )}
                       {tab.isPremium && isPremium && (
-                        <Crown className="w-3 h-3 text-yellow-400" />
+                        <Crown className="w-2.5 h-2.5 text-amber-400" />
                       )}
+                      
+                      {/* Hover effect overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                     </button>
                   );
                 })}
@@ -194,7 +197,7 @@ const TabbedReceiptInterface = ({
             <button
               onClick={() => navigateToTab(activeTab + 1)}
               disabled={activeTab === tabs.length - 1 || isTransitioning}
-              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out"
               aria-label="Next section"
             >
               <ChevronRight className="w-5 h-5" />
@@ -202,15 +205,15 @@ const TabbedReceiptInterface = ({
           </div>
 
           {/* Progress Indicator */}
-          <div className="flex justify-center mt-3">
-            <div className="flex gap-1">
+          <div className="flex justify-center mt-4">
+            <div className="flex gap-2">
               {tabs.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-2 rounded-full transition-all duration-200 ${
+                  className={`h-1.5 rounded-full transition-all duration-300 ease-out cursor-pointer hover:scale-110 ${
                     index === activeTab 
-                      ? 'bg-purple-400 w-8' 
-                      : 'bg-gray-600 hover:bg-gray-500 w-2 cursor-pointer'
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-400 w-8 shadow-sm shadow-teal-400/50' 
+                      : 'bg-slate-600 hover:bg-slate-500 w-1.5'
                   }`}
                   onClick={() => navigateToTab(index)}
                 />
@@ -371,14 +374,69 @@ const TabbedReceiptInterface = ({
               </div>
             )}
             
-            {/* Mobile Swipe Hint (show only on first tab) */}
-            {activeTab === 0 && (
-              <div className="flex justify-center mt-6 sm:hidden">
-                <div className="text-xs text-gray-500 flex items-center gap-2 animate-pulse">
-                  <span>👈 Swipe to explore more sections 👉</span>
+            {/* Mobile Navigation Hands - Clickable */}
+            <div className="flex justify-center items-center mt-8 sm:hidden">
+              <div className="flex items-center gap-6">
+                <button
+                  onClick={() => navigateToTab(activeTab - 1)}
+                  disabled={activeTab === 0}
+                  className="text-4xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label="Previous section"
+                >
+                  👈
+                </button>
+                <div className="text-xs text-gray-400 text-center px-4">
+                  <div>Explore more sections</div>
+                  <div className="text-[10px] text-gray-500 mt-1">Tap hands or use arrows above</div>
+                </div>
+                <button
+                  onClick={() => navigateToTab(activeTab + 1)}
+                  disabled={activeTab === tabs.length - 1}
+                  className="text-4xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label="Next section"
+                >
+                  👉
+                </button>
+              </div>
+            </div>
+
+            {/* Additional Mobile Navigation - Same style as top */}
+            <div className="flex justify-center mt-6 sm:hidden">
+              <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-2 backdrop-blur-md border border-slate-600/40 shadow-lg">
+                <div className="flex items-center gap-1">
+                  {tabs.map((tab, index) => {
+                    const Icon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => handleTabClick(index)}
+                        disabled={isTransitioning}
+                        className={`
+                          group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105
+                          ${activeTab === index 
+                            ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30' 
+                            : 'text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40'
+                          }
+                          ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
+                        `}
+                      >
+                        <Icon className="w-3 h-3 flex-shrink-0" />
+                        <span className="text-[10px] font-medium">{tab.label.split(' ')[0]}</span>
+                        {tab.isPremium && !isPremium && (
+                          <Lock className="w-2 h-2 text-amber-400 animate-pulse" />
+                        )}
+                        {tab.isPremium && isPremium && (
+                          <Crown className="w-2 h-2 text-amber-400" />
+                        )}
+                        
+                        {/* Hover effect overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            )}
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
