@@ -35,6 +35,9 @@ const ChatInputPage = () => {
   const [userPronouns, setUserPronouns] = useState('');
   const [userQuestion, setUserQuestion] = useState('');
   
+  // Image upload state
+  const [extractedTexts, setExtractedTexts] = useState([]);
+  
   // User credits state
   const [userCredits, setUserCredits] = useState(null);
   const [isPremium, setIsPremium] = useState(false);
@@ -65,6 +68,13 @@ const ChatInputPage = () => {
     }
     if (texts.trim()) {
       message += `EVIDENCE:\n${texts.trim()}\n\n`;
+    }
+    // Add extracted text from images
+    if (extractedTexts.length > 0) {
+      message += `EXTRACTED TEXT FROM IMAGES:\n`;
+      extractedTexts.forEach((text, index) => {
+        message += `Image ${index + 1}: ${text}\n\n`;
+      });
     }
     if (background.trim()) {
       message += `QUICK CONTEXT: ${background.trim()}\n\n`;
@@ -138,11 +148,11 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       return;
     }
 
-    if (!texts.trim()) {
+    if (!texts.trim() && extractedTexts.length === 0) {
       toast({
         variant: 'destructive',
         title: 'Texts required',
-        description: 'Please paste the texts you want analyzed.',
+        description: 'Please paste the texts you want analyzed or upload images with text.',
       });
       return;
     }
@@ -441,7 +451,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 </div>
                 <ImageUpload 
                   onTextExtracted={(extractedText, fileName) => {
-                    setTexts(prev => prev + (prev ? '\n\n' : '') + extractedText);
+                    setExtractedTexts(prev => [...prev, extractedText]);
                     toast({
                       title: "Text Extracted! 📸",
                       description: `Successfully extracted text from ${fileName}`,
@@ -450,6 +460,17 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   maxFiles={2}
                   maxSize={5 * 1024 * 1024}
                 />
+                
+                {extractedTexts.length > 0 && (
+                  <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+                    <p className="text-green-400 text-sm font-medium mb-2">
+                      ✅ Text extracted from {extractedTexts.length} image{extractedTexts.length > 1 ? 's' : ''}
+                    </p>
+                    <p className="text-green-300 text-xs">
+                      This text will be included in your analysis along with any pasted messages.
+                    </p>
+                  </div>
+                )}
               </div>
               
               <Textarea
@@ -612,7 +633,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
             <div className="space-y-4">
               <Button
                 onClick={handleSubmit}
-                disabled={isLoading || !texts.trim()}
+                disabled={isLoading || (!texts.trim() && extractedTexts.length === 0)}
                 className="w-full py-6 text-xl font-bold text-black rounded-xl transition-all hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
