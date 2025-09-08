@@ -584,35 +584,129 @@ export const analyzeWithGPT = async (message, context) => {
 
   try {
           console.log('Calling AI with context:', actualContext);
-    // Import the working prompt that's already perfectly structured
+    // Import the working prompt - now fully dynamic
     const { brutalPrompt } = await import('../prompts/brutalPrompt');
-    const customPrompt = brutalPrompt;
 
-      // EXTRACT ACTUAL NAMES FROM CONVERSATION FIRST
-      const extractNamesFromConversation = (text) => {
+      // EXTRACT ACTUAL NAMES FROM CONVERSATION - FIXED VERSION
+      const extractNamesFromConversation = (text, context) => {
+        // Priority 1: Use form-provided names if available
+        if (context?.userName && context?.otherName) {
+          return {
+            user: context.userName.trim(),
+            other: context.otherName.trim()
+          };
+        }
+        
+        // Priority 2: Try to extract from conversation patterns
         const lines = text.split('\n').filter(line => line.trim());
-        const names = new Set();
+        const speakers = new Map();
         
         for (const line of lines) {
-          // Look for patterns like "Name:" or "Name :"  
-          const match = line.match(/^([A-Za-z]+)\s*:/);
+          // Look for patterns like "Her:", "Him:", "Me:", "Alex:", etc.
+          const match = line.match(/^([^:]+):/);
           if (match) {
-            names.add(match[1]);
+            const speaker = match[1].trim();
+            speakers.set(speaker.toLowerCase(), speaker);
           }
         }
         
-        const nameArray = Array.from(names);
+        // Identify user (Me, I) vs other person
+        let userName = context?.userName || context?.user_name || 'You';
+        let otherName = context?.otherName || context?.other_name || 'Them';
+        
+        // Common patterns to identify speakers
+        const userIndicators = ['me', 'i', 'myself'];
+        const otherIndicators = ['her', 'him', 'them', 'they'];
+        
+        // If we have form context with partial names, use those
+        if (context?.userName) {
+          userName = context.userName;
+        }
+        if (context?.otherName) {
+          otherName = context.otherName;
+        }
+        
+        // Extract all actual names from conversation (not pronouns)
+        const actualNames = [];
+        for (const [key, value] of speakers) {
+          if (!userIndicators.includes(key) && !otherIndicators.includes(key) && key.length > 1) {
+            actualNames.push(value);
+          }
+        }
+        
+        // If we have names from conversation, use them appropriately
+        if (actualNames.length >= 1) {
+          // If no form context at all, assign from conversation
+          if (!context?.userName && !context?.otherName) {
+            // First actual name found becomes the "other" person (usually who initiated)
+            otherName = actualNames[0];
+            // If there's a second name, that's likely the user
+            if (actualNames.length >= 2) {
+              userName = actualNames[1];
+            } else {
+              userName = 'You';
+            }
+          } 
+          // If only user provided via form, extract other from conversation
+          else if (context?.userName && !context?.otherName) {
+            // Look for name that's NOT the user name
+            const foundOther = actualNames.find(name => name !== context.userName);
+            if (foundOther) {
+              otherName = foundOther;
+            }
+          }
+          // If only other provided via form, extract user from conversation
+          else if (!context?.userName && context?.otherName) {
+            // Look for name that's NOT the other name
+            const foundUser = actualNames.find(name => name !== context.otherName);
+            if (foundUser) {
+              userName = foundUser;
+            }
+          }
+        }
+        
+        // Handle cases where user indicators are present
+        for (const [key, value] of speakers) {
+          if (userIndicators.includes(key)) {
+            userName = 'You';
+          }
+        }
+        
         return {
-          user: nameArray[0] || context?.user_name || 'User',
-          other: nameArray[1] || context?.other_name || 'Other Person'
+          user: userName,
+          other: otherName
         };
       };
       
-      const extractedNames = extractNamesFromConversation(message);
-      const actualUserName = extractedNames.user;
-      const actualOtherName = extractedNames.other;
+      // BUILD CLEAN CONTEXT - SINGLE SOURCE OF TRUTH
+      const buildCleanContext = (message, context) => {
+        const names = extractNamesFromConversation(message, context);
+        
+        return {
+          // Single source of truth for names
+          userName: names.user,
+          otherName: names.other,
+          
+          // Pronouns
+          userPronouns: context?.userPronouns || context?.known_pronouns?.user || 'they/them',
+          otherPronouns: context?.otherPartyPronouns || context?.known_pronouns?.other_party || 'they/them',
+          
+          // Core context
+          relationshipType: context?.contextType || context?.context?.toLowerCase() || 'dating',
+          background: context?.background || context?.background_context || '',
+          userQuestion: context?.userQuestion || '',
+          gutFeeling: context?.gutFeel || context?.gut_feeling || '',
+          
+          // The actual conversation
+          conversation: message
+        };
+      };
+      
+      const cleanContext = buildCleanContext(message, context);
+      const actualUserName = cleanContext.userName;
+      const actualOtherName = cleanContext.otherName;
 
-      // SAGE VOICE ENFORCEMENT - Nuanced Safety + Multi-Modal Protection  
+      // SAGE VOICE ENFORCEMENT - purely dynamic
       let voiceOverride = '';
       if (!context?.purePropmt) {
         voiceOverride = `🔮 SAGE VOICE ENFORCEMENT - SMART SAFETY DETECTION:
@@ -628,53 +722,27 @@ export const analyzeWithGPT = async (message, context) => {
 • HEALTHY mode: "Disgusting but effective. Keep it up." (exhausted support)
 • NEVER say user is "embarrassing/desperate/crazy" - always target the BEHAVIOR
 • Use therapy-speak alternatives: house rules not boundaries, speak up not communicate
-• NAME CONSISTENCY RULE: Use the EXACT names extracted from conversation labels: "${actualUserName}" and "${actualOtherName}"
-• These are the real names from the conversation - use them consistently throughout all analysis sections
-• MANDATORY: Every response should feel personalized, never template-based`;
+• Extract names from conversation dynamically - use USER/OTHER or actual names consistently
+• Every response should feel personalized, never template-based`;
       }
       
       const userPayload = {
         transcript: message,
-        detectedMode: detectedMode, // Pass heuristic mode detection
+        detectedMode: detectedMode,
         
-        // CRITICAL: Name enforcement instructions
-        NAME_INSTRUCTIONS: `IMPORTANT: Use these EXACT names extracted from the conversation:
-        - Person seeking analysis (usually first speaker): "${actualUserName}"
-        - Other person in conversation: "${actualOtherName}"
-        These names were extracted from the conversation labels. Use them consistently throughout your response.`,
+        // Clean context data
+        conversation: cleanContext.conversation,
+        userName: cleanContext.userName,
+        otherName: cleanContext.otherName,
+        userPronouns: cleanContext.userPronouns,
+        otherPronouns: cleanContext.otherPronouns,
+        relationshipType: cleanContext.relationshipType,
+        background: cleanContext.background,
         
-        // CORE USER INFO TAGS
+        // Legacy support for existing prompts
         user_name: actualUserName,
         other_name: actualOtherName,
-        user_pronoun: context?.known_pronouns?.user || 'they/them',
-        their_pronoun: context?.known_pronouns?.other_party || 'they/them',
-        otherperson_pronoun: context?.known_pronouns?.other_party || 'they/them',
-        
-        // SITUATION CONTEXT TAGS  
-        situation_category: context?.situation_category || context?.context_type || 'dating',
-        relationship_type: context?.context?.toLowerCase() || 'dating',
-        background_context: context?.background_context || context?.relationship_background || '',
-        
-        // EMOTIONAL STATE TAGS
-        user_vibe: context?.gut_feeling || context?.user_vibe || context?.emotional_state || '',
-        emotional_state: context?.gut_feeling || '',
-        
-        // EVIDENCE TAGS
-        evidence_text: context?.evidence_text || message,
-        evidence_length: context?.evidence_length || message.length,
-        background_length: context?.background_length || 0,
-        
-        // META INFORMATION TAGS
-        has_user_name: context?.has_user_name || false,
-        has_situation_context: context?.has_situation_context || false,
-        has_background_info: context?.has_background_info || false,
-        has_emotional_state: context?.has_emotional_state || false,
-        has_user_pronouns: context?.has_user_pronouns || false,
-        has_other_pronouns: context?.has_other_pronouns || false,
-        
-        // LEGACY SUPPORT
-        context: context?.quickContext || context?.additionalContext || context?.background_context || '',
-        userName: context?.user_name || 'user',
+        context: cleanContext.relationshipType,
         subjectGender: 'unknown',
         locale: 'en-US',
         preferences: {
@@ -693,7 +761,7 @@ export const analyzeWithGPT = async (message, context) => {
       // Use Chat Completions API for all models
       const endpoint = 'https://api.openai.com/v1/chat/completions';
       const messages = [
-        { role: 'system', content: customPrompt },
+        { role: 'system', content: brutalPrompt },
         { role: 'user', content: userContent }
       ];
       
@@ -733,7 +801,7 @@ export const analyzeWithGPT = async (message, context) => {
       // Google Gemini with structured output
       const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${import.meta.env.VITE_GOOGLE_API_KEY}`;
       
-      const promptText = voiceOverride ? `${customPrompt}\n\n${voiceOverride}\n\n${userContent}` : `${customPrompt}\n\n${userContent}`;
+      const promptText = voiceOverride ? `${brutalPrompt}\n\n${voiceOverride}\n\n${userContent}` : `${brutalPrompt}\n\n${userContent}`;
       
       const body = {
         contents: [
@@ -981,16 +1049,137 @@ export const generateAdvancedResults = (message, context) => {
 
 // Function to generate ALIGNED results for premium users (same analysis for Share Shot + Deep Dive)
 export const generateAlignedResults = async (message, context) => {
-  console.log('Generating ALIGNED results for premium user');
+  console.log('🔄 Starting 3-API analysis system...');
   
-  // Generate the primary analysis (for Share Shot)
+  // Build clean context for all API calls
+  const buildCleanContext = (message, context) => {
+    const extractNamesFromConversation = (text, context) => {
+      // Priority 1: Use form-provided names if available
+      if (context?.userName && context?.otherName) {
+        return {
+          user: context.userName.trim(),
+          other: context.otherName.trim()
+        };
+      }
+      
+      // Priority 2: Try to extract from conversation patterns
+      const lines = text.split('\n').filter(line => line.trim());
+      const speakers = new Map();
+      
+      for (const line of lines) {
+        // Look for patterns like "Her:", "Him:", "Me:", "Alex:", etc.
+        const match = line.match(/^([^:]+):/);
+        if (match) {
+          const speaker = match[1].trim();
+          speakers.set(speaker.toLowerCase(), speaker);
+        }
+      }
+      
+      // Identify user (Me, I) vs other person
+      let userName = context?.userName || context?.user_name || 'You';
+      let otherName = context?.otherName || context?.other_name || 'Them';
+      
+      // Common patterns to identify speakers
+      const userIndicators = ['me', 'i', 'myself'];
+      const otherIndicators = ['her', 'him', 'them', 'they'];
+      
+      // If we have form context with partial names, use those
+      if (context?.userName) {
+        userName = context.userName;
+      }
+      if (context?.otherName) {
+        otherName = context.otherName;
+      }
+      
+      // Extract all actual names from conversation (not pronouns)
+      const actualNames = [];
+      for (const [key, value] of speakers) {
+        if (!userIndicators.includes(key) && !otherIndicators.includes(key) && key.length > 1) {
+          actualNames.push(value);
+        }
+      }
+      
+      // If we have names from conversation, use them appropriately
+      if (actualNames.length >= 1) {
+        // If no form context at all, assign from conversation
+        if (!context?.userName && !context?.otherName) {
+          // First actual name found becomes the "other" person (usually who initiated)
+          otherName = actualNames[0];
+          // If there's a second name, that's likely the user
+          if (actualNames.length >= 2) {
+            userName = actualNames[1];
+          } else {
+            userName = 'You';
+          }
+        } 
+        // If only user provided via form, extract other from conversation
+        else if (context?.userName && !context?.otherName) {
+          // Look for name that's NOT the user name
+          const foundOther = actualNames.find(name => name !== context.userName);
+          if (foundOther) {
+            otherName = foundOther;
+          }
+        }
+        // If only other provided via form, extract user from conversation
+        else if (!context?.userName && context?.otherName) {
+          // Look for name that's NOT the other name
+          const foundUser = actualNames.find(name => name !== context.otherName);
+          if (foundUser) {
+            userName = foundUser;
+          }
+        }
+      }
+      
+      // Handle cases where user indicators are present
+      for (const [key, value] of speakers) {
+        if (userIndicators.includes(key)) {
+          userName = 'You';
+        }
+      }
+      
+      return {
+        user: userName,
+        other: otherName
+      };
+    };
+    
+    const names = extractNamesFromConversation(message, context);
+    
+    return {
+      // Single source of truth for names
+      userName: names.user,
+      otherName: names.other,
+      
+      // Pronouns
+      userPronouns: context?.userPronouns || context?.known_pronouns?.user || 'they/them',
+      otherPronouns: context?.otherPartyPronouns || context?.known_pronouns?.other_party || 'they/them',
+      
+      // Core context
+      relationshipType: context?.contextType || context?.context?.toLowerCase() || 'dating',
+      background: context?.background || context?.background_context || '',
+      userQuestion: context?.userQuestion || '',
+      gutFeeling: context?.gutFeel || context?.gut_feeling || '',
+      
+      // The actual conversation
+      conversation: message
+    };
+  };
+  
+  const cleanContext = buildCleanContext(message, context);
+  
+  // API Call 1: Truth Receipt (Main Analysis)
+  console.log('📊 API Call 1: Truth Receipt analysis...');
   const shareShotAnalysis = await analyzeWithGPT(message, context);
   
-  // Generate live Deep Dive using Sage's Deep Dive prompt (same context)
+  console.log('✅ Truth Receipt complete');
+
+  // API Call 2: Deep Dive (Premium Analysis)
+  console.log('🔍 API Call 2: Deep Dive analysis...');
   let alignedDeepDive = null;
   try {
-    const ddPrompt = (await import('@/lib/prompts/deepDivePrompt')).deepDivePrompt;
-    const ddSystem = ddPrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark);
+    const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
+    const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark);
+
     const provider = (import.meta.env.VITE_AI_PROVIDER || 'openai').toLowerCase();
     
     // 🔍 TELEMETRY - Track what's actually happening
@@ -1016,7 +1205,7 @@ export const generateAlignedResults = async (message, context) => {
       const body = {
         model: openAIModel,
         messages: [
-          { role: 'system', content: ddSystem },
+          { role: 'system', content: deepDiveSystemPrompt },
           { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${message}` }
         ],
         temperature: 1.2,
@@ -1049,7 +1238,7 @@ export const generateAlignedResults = async (message, context) => {
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: ddSystem + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
       });
       const data = await response.json();
       rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -1218,21 +1407,20 @@ export const generateAlignedResults = async (message, context) => {
     };
   }
   
-  console.log('🔍 FINAL DEEP DIVE RESULT:', alignedDeepDive);
-  console.log('🔍 DEEP DIVE KEYS:', alignedDeepDive ? Object.keys(alignedDeepDive) : 'null/undefined');
+  console.log('✅ Deep Dive complete');
   
-  // Generate Immunity Training for premium users
+  // API Call 3: Immunity Training (Premium Protection)
+  console.log('🛡️ API Call 3: Immunity Training...');
   let immunityTraining = null;
   try {
-    const immunityPrompt = (await import('@/lib/prompts/immunityPrompt')).immunityPrompt;
-    const immunitySystem = immunityPrompt
+    const { immunityPrompt } = await import('../prompts/immunityPrompt');
+    const immunitySystemPrompt = immunityPrompt
       .replace('{archetype}', shareShotAnalysis.archetype)
       .replace('{message}', message)
       .replace('{redFlags}', shareShotAnalysis.redFlags)
       .replace('{confidenceRemark}', shareShotAnalysis.confidenceRemark);
     
     const provider = (import.meta.env.VITE_AI_PROVIDER || 'openai').toLowerCase();
-    console.log('🛡️ Immunity Training using provider:', provider);
     const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
     const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
 
@@ -1242,7 +1430,7 @@ export const generateAlignedResults = async (message, context) => {
       const body = {
         model: openAIModel,
         messages: [
-          { role: 'system', content: immunitySystem },
+          { role: 'system', content: immunitySystemPrompt },
           { role: 'user', content: `TEXTS:\n${message}` }
         ],
         temperature: 0.8,
@@ -1276,7 +1464,7 @@ export const generateAlignedResults = async (message, context) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          contents: [{ role: 'user', parts: [{ text: immunitySystem + `\n\nTEXTS:\n${message}` }] }], 
+          contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nTEXTS:\n${message}` }] }], 
           generationConfig: { temperature: 0.8, maxOutputTokens: 1500 } 
         })
       });
@@ -1313,24 +1501,42 @@ export const generateAlignedResults = async (message, context) => {
     
     immunityTraining = sanitizeImmunity(immunityTraining);
     
-    console.log('🛡️ IMMUNITY TRAINING GENERATED:', immunityTraining ? Object.keys(immunityTraining) : 'failed');
+    console.log('✅ Immunity Training complete');
   } catch (e) {
     console.error('🚨 IMMUNITY TRAINING GENERATION FAILED:', e);
-    immunityTraining = null;
+    console.log('⚠️ Immunity Training failed, using fallback');
+    immunityTraining = {
+      redFlagDrills: "Watch for the patterns you saw today",
+      patternBreakers: "When they do this again, you'll know",
+      immunityShield: "Your standards are your protection",
+      earlyWarnings: "Trust your gut from the start",
+      exitStrategy: "You deserve consistency",
+      riskLevel: shareShotAnalysis.redFlags <= 3 ? 'low' : shareShotAnalysis.redFlags <= 6 ? 'medium' : 'high',
+      safetyNote: "Only you decide next steps. If you feel unsafe, limit contact and reach out to trusted support."
+    };
   }
   
-  // Merge deep dive red flag tags back into main result
+  // Combine all results into final response
+  console.log('🔄 Combining all 3 API results...');
   const finalResult = {
     ...shareShotAnalysis,
     deepDive: alignedDeepDive,
     immunityTraining: immunityTraining,
-    isAligned: true
+    isAligned: true,
+    analysisComplete: true
   };
   
   // If Deep Dive has red flag tags, merge them into the main result
   if (alignedDeepDive?.red_flag_tags && alignedDeepDive.red_flag_tags.length > 0) {
     finalResult.redFlagTags = alignedDeepDive.red_flag_tags;
   }
+  
+  console.log('✅ All 3 API calls complete! Analysis ready with proper names:', {
+    userName: cleanContext.userName,
+    otherName: cleanContext.otherName,
+    hasDeepDive: !!alignedDeepDive,
+    hasImmunity: !!immunityTraining
+  });
   
   return finalResult;
 };
