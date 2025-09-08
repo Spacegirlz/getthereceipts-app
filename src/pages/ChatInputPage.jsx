@@ -48,6 +48,9 @@ const ChatInputPage = () => {
   // Upgrade modal state
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
+  // Form data preservation key
+  const FORM_DATA_KEY = 'chatInputFormData';
+  
   // Character limits
   const TEXTS_LIMIT = 2500;
   const BACKGROUND_LIMIT = 500;
@@ -91,6 +94,47 @@ const ChatInputPage = () => {
   
   const currentMessage = generateMessage();
 
+  // Save form data to localStorage
+  const saveFormData = () => {
+    const formData = {
+      texts,
+      background,
+      gutFeel,
+      userName,
+      otherName,
+      contextType,
+      otherPartyPronouns,
+      userPronouns,
+      userQuestion,
+      extractedTexts
+    };
+    localStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData));
+  };
+
+  // Load form data from localStorage
+  const loadFormData = () => {
+    try {
+      const saved = localStorage.getItem(FORM_DATA_KEY);
+      if (saved) {
+        const formData = JSON.parse(saved);
+        setTexts(formData.texts || '');
+        setBackground(formData.background || '');
+        setGutFeel(formData.gutFeel || '');
+        setUserName(formData.userName || '');
+        setOtherName(formData.otherName || '');
+        setContextType(formData.contextType || '');
+        setOtherPartyPronouns(formData.otherPartyPronouns || '');
+        setUserPronouns(formData.userPronouns || '');
+        setUserQuestion(formData.userQuestion || '');
+        setExtractedTexts(formData.extractedTexts || []);
+        // Clear saved data after restoring
+        localStorage.removeItem(FORM_DATA_KEY);
+      }
+    } catch (error) {
+      console.error('Error loading saved form data:', error);
+    }
+  };
+
   const handleBack = () => navigate('/');
   
   const textsPlaceholder = `[Paste your conversation here...]
@@ -115,6 +159,11 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
   const backgroundPlaceholder = `My ex from 3 months ago`;
 
   // Fetch user credits on component mount
+  // Load saved form data on component mount
+  useEffect(() => {
+    loadFormData();
+  }, []);
+  
   useEffect(() => {
     const fetchCredits = async () => {
       if (user?.id) {
@@ -134,6 +183,8 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
   const handleSubmit = async () => {
     // Check if user is logged in first
     if (!user) {
+      // Save form data before opening auth modal
+      saveFormData();
       openModal();
       toast({
         title: 'Create Account for Free Daily Receipt',
