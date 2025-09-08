@@ -45,9 +45,11 @@ const MainHeader = () => {
           </nav>
           {user ? (
             <>
-              <Button variant="ghost" className="text-white hover:bg-white/10" onClick={() => navigate('/dashboard')}>
-                <LayoutDashboard className="mr-2 h-4 w-4"/> Dashboard
-              </Button>
+              <Link to="/dashboard">
+                <Button variant="ghost" className="text-white hover:bg-white/10">
+                  <LayoutDashboard className="mr-2 h-4 w-4"/> Dashboard
+                </Button>
+              </Link>
               <Button variant="ghost" className="text-white hover:bg-white/10" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4"/>
               </Button>

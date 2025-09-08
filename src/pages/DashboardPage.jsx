@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap, LogIn, LogOut, User } from 'lucide-react';
+import LinkButton from '@/components/LinkButton';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
 import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits } from '@/lib/services/creditsSystem';
@@ -239,8 +240,8 @@ const DashboardPage = () => {
             <p className="text-gray-400">Welcome back, {user?.email || 'User'}</p>
           </div>
           <div className="flex gap-2">
-            <Button className="viral-button" onClick={() => navigate('/chat-input')}><PlusCircle className="mr-2 h-4 w-4" /> New Receipt</Button>
-            <Button variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20" onClick={() => navigate('/refer')}><Gift className="mr-2 h-4 w-4" /> Refer Friends</Button>
+            <LinkButton to="/chat-input" className="viral-button"><PlusCircle className="mr-2 h-4 w-4" /> New Receipt</LinkButton>
+            <LinkButton to="/refer" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20"><Gift className="mr-2 h-4 w-4" /> Refer Friends</LinkButton>
             {user ? (
               <Button variant="outline" className="text-white border-red-400 hover:bg-red-500/20" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" /> Sign Out
@@ -274,7 +275,7 @@ const DashboardPage = () => {
             </h2>
             <p className="text-2xl font-bold gradient-text">{getCreditsDisplay()}</p>
             {userCredits.subscription === 'free' && (
-              <p className="text-sm text-gray-400 mt-1">Resets daily at midnight</p>
+              <p className="text-sm text-gray-400 mt-1">Resets daily at midnight UTC (8pm ET / 5pm PT)</p>
             )}
           </div>
 
@@ -309,13 +310,13 @@ const DashboardPage = () => {
               )}
               
               {userCredits?.subscription === 'free' && (
-                <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/pricing')}>
+                <LinkButton to="/pricing" size="sm" variant="outline" className="text-xs">
                   Upgrade Plan
-                </Button>
+                </LinkButton>
               )}
-              <Button size="sm" variant="secondary" className="text-xs" onClick={() => navigate('/refer')}>
+              <LinkButton to="/refer" size="sm" variant="secondary" className="text-xs">
                 Refer Friends
-              </Button>
+              </LinkButton>
             </div>
           </div>
         </motion.div>
@@ -337,19 +338,19 @@ const DashboardPage = () => {
                 <>
                   <h3 className="text-2xl font-bold">Privacy First 🛡️</h3>
                   <p className="text-gray-400 mb-6">Your receipts aren't saved by default. Upgrade to Premium to enable receipt saving and build your personal analysis library.</p>
-                  <Button className="viral-button" onClick={() => navigate('/pricing')}>Upgrade for Receipt History</Button>
+                  <LinkButton to="/pricing" className="viral-button">Upgrade for Receipt History</LinkButton>
                 </>
               ) : !saveReceipts ? (
                 <>
                   <h3 className="text-2xl font-bold">Receipt Saving Off</h3>
                   <p className="text-gray-400 mb-6">Your receipts aren't being saved. Turn on "Save Receipts" above to start building your analysis library.</p>
-                  <Button className="viral-button" onClick={() => navigate('/chat-input')}>Get Your First Receipt</Button>
+                  <LinkButton to="/chat-input" className="viral-button">Get Your First Receipt</LinkButton>
                 </>
               ) : (
                 <>
                   <h3 className="text-2xl font-bold">No Receipts Yet</h3>
                   <p className="text-gray-400 mb-6">You haven't decoded any messages yet. Start analyzing to build your receipt history!</p>
-                  <Button className="viral-button" onClick={() => navigate('/chat-input')}>Get Your First Receipt</Button>
+                  <LinkButton to="/chat-input" className="viral-button">Get Your First Receipt</LinkButton>
                 </>
               )}
             </div>

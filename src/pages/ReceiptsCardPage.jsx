@@ -13,6 +13,7 @@ import ImmunityTraining from '@/components/ImmunityTraining';
 import { Helmet } from 'react-helmet';
 import { supabase } from '@/lib/database/customSupabaseClient';
 import { Loader2, ArrowLeft, Share2, Shield, Brain, Sparkles, Crown, Gift } from 'lucide-react';
+import LinkButton from '@/components/LinkButton';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { saveReceiptToDatabase, canUserSaveReceipts } from '@/lib/services/receiptService';
 import { useAuthModal } from '@/contexts/AuthModalContext';
@@ -451,9 +452,9 @@ const ReceiptsCardPage = () => {
         className="w-full max-w-none relative pb-20"
       >
         {user && receiptId && (
-           <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')} className="absolute -top-10 left-0 text-white hover:bg-white/10">
+           <LinkButton to="/dashboard" variant="ghost" size="sm" className="absolute -top-10 left-0 text-white hover:bg-white/10">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
-          </Button>
+          </LinkButton>
         )}
 
         {/* Credits Remaining Indicator */}
@@ -499,8 +500,8 @@ const ReceiptsCardPage = () => {
 
         {/* 5. CTA SECTION - Bottom */}
         <div className="w-full max-w-2xl mx-auto space-y-6">
-          <Button
-            onClick={() => navigate('/chat-input')}
+          <LinkButton
+            to="/chat-input"
             className="w-full py-6 text-black rounded-full text-xl font-bold hover:scale-105 transition-all duration-300"
             style={{
               background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
@@ -510,7 +511,7 @@ const ReceiptsCardPage = () => {
             }}
           >
             ✨ Decode Another Message
-          </Button>
+          </LinkButton>
           
           <div className="text-center p-6 bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur rounded-2xl border border-purple-500/30">
             <h3 className="text-xl font-bold mb-4 text-white">
@@ -528,13 +529,13 @@ const ReceiptsCardPage = () => {
               >
                 {loadingCheckout ? 'Redirecting...' : '⚡ Go Premium'}
               </Button>
-              <Button
-                onClick={() => navigate('/refer')}
+              <LinkButton
+                to="/refer"
                 variant="outline"
                 className="border-purple-400 text-white hover:bg-purple-500/20 rounded-full py-3"
               >
                 🎁 Earn Free Truth Receipts
-              </Button>
+              </LinkButton>
             </div>
           </div>
         </div>
