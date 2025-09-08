@@ -219,18 +219,18 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     };
 
     return (
-      <div className="bg-black/40 rounded-xl p-4">
-        {/* NO BORDER - just subtle background */}
-        <div className="text-xs uppercase tracking-wider text-white/60 mb-2">
+      <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+        {/* Mobile-optimized spacing and typography */}
+        <div className="text-sm sm:text-xs uppercase tracking-wider text-white/70 mb-2">
           {label}
         </div>
-        <div className={`text-3xl font-bold ${colorClass} mb-2`}>
+        <div className={`text-2xl sm:text-3xl font-bold ${colorClass} mb-3 sm:mb-2`}>
           {(label === 'RED FLAGS' || label === 'GREEN FLAGS') ? `${value}/10` : `${value}%`}
         </div>
-        <div className="px-2">
-          <div className="w-full bg-white/20 rounded-full h-2">
+        <div className="px-1 sm:px-2">
+          <div className="w-full bg-white/20 rounded-full h-3 sm:h-2">
             <div 
-              className={`h-2 rounded-full ${
+              className={`h-3 sm:h-2 rounded-full ${
                 colorClass.includes('red') ? 'bg-red-400' : 
                 colorClass.includes('green') ? 'bg-green-400' : 
                 colorClass.includes('orange') ? 'bg-orange-400' : 'bg-teal-400'
@@ -256,7 +256,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     >
       <div 
         id="receipt-inner-container"
-        className={`relative rounded-[24px] p-6 text-stone-200/90`}
+        className={`relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90`}
         style={{
           background: '#14142e',
           backdropFilter: 'blur(20px) saturate(200%)',
@@ -321,9 +321,9 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           )}
 
-          {/* METRICS GRID */}
+          {/* METRICS GRID - Mobile First */}
           <motion.div 
-            className="grid grid-cols-3 gap-2 mb-2"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-2 mb-4 sm:mb-2"
             initial="hidden"
             animate="visible"
             variants={{
@@ -389,28 +389,28 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             )}
           </div>
 
-          {/* THE VERDICT */}
+          {/* THE VERDICT - Mobile Optimized */}
           {verdict && (
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-3">
-              <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
+            <div className="bg-black/30 p-4 sm:p-4 rounded-xl border border-white/10 mb-4 sm:mb-3">
+              <h3 className="text-teal-400 font-bold text-base sm:text-sm tracking-wide mb-3 sm:mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>THE VERDICT</h3>
-              <p className="text-stone-200/90 text-xl italic leading-relaxed">
+              <p className="text-stone-200/90 text-lg sm:text-xl italic leading-relaxed tracking-wide">
                 {verdict}
               </p>
             </div>
           )}
 
-          {/* COMBINED REAL TEA - Single unified section */}
+          {/* COMBINED REAL TEA - Mobile Optimized */}
           {(realTea || nextMove.length > 0) && (
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-3">
-              <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
+            <div className="bg-black/30 p-4 sm:p-4 rounded-xl border border-white/10 mb-4 sm:mb-3">
+              <h3 className="text-teal-400 font-bold text-base sm:text-sm tracking-wide mb-3 sm:mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🫖 THE REAL TEA</h3>
-              <div className="space-y-2">
+              <div className="space-y-3 sm:space-y-2">
                 {/* User's Question (if provided) */}
                 {parsedUserQuestion && (
-                  <div className="mb-3 pb-3 border-b border-white/10">
-                    <p className="text-amber-300 text-sm font-medium mb-1">Your Question:</p>
-                    <p className="text-stone-300 text-base leading-relaxed italic">
+                  <div className="mb-4 sm:mb-3 pb-3 border-b border-white/10">
+                    <p className="text-amber-300 text-sm font-medium mb-2 sm:mb-1">Your Question:</p>
+                    <p className="text-stone-300 text-base leading-relaxed italic tracking-wide">
                       "{truncateToThreeLines(parsedUserQuestion)}"
                     </p>
                   </div>
@@ -418,21 +418,21 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 
                 {/* Main tea content - try realTea, then teaAndMovePlay, then nextMove */}
                 {realTea ? (
-                  <div className="text-stone-200/90 text-xl leading-relaxed">
+                  <div className="text-stone-200/90 text-lg sm:text-xl leading-relaxed tracking-wide">
                     {realTea}
                   </div>
                 ) : teaAndMovePlay && Array.isArray(teaAndMovePlay) ? (
-                  <div className="space-y-2">
+                  <div className="space-y-3 sm:space-y-2">
                     {teaAndMovePlay.map((line, index) => (
-                      <div key={index} className="text-stone-200/90 text-xl leading-relaxed">
+                      <div key={index} className="text-stone-200/90 text-lg sm:text-xl leading-relaxed tracking-wide">
                         {line}
                       </div>
                     ))}
                   </div>
                 ) : nextMove.length > 0 ? (
-                  <div className="space-y-1">
+                  <div className="space-y-2 sm:space-y-1">
                     {nextMove.slice(0, 2).map((item, index) => (
-                      <div key={index} className="text-stone-200/90 text-xl leading-relaxed">• {item}</div>
+                      <div key={index} className="text-stone-200/90 text-lg sm:text-xl leading-relaxed tracking-wide">• {item}</div>
                     ))}
                   </div>
                 ) : null}
@@ -475,19 +475,19 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           </div>
           
-          {/* ACTION BUTTONS */}
-          <div className="flex gap-2 mb-4">
+          {/* ACTION BUTTONS - Mobile Optimized */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 mb-4">
             <button 
               onClick={onSaveReceipt}
               disabled={isSharing}
-              className="flex-1 bg-white/10 hover:bg-white/20 text-stone-200 font-normal py-2 px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="min-h-[48px] sm:min-h-[44px] flex-1 bg-white/10 hover:bg-white/20 active:scale-95 text-stone-200 font-medium py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 touch-manipulation"
               style={{
                 border: '1px solid rgba(212, 175, 55, 0.6)',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
               }}
             >
-              <Download className="w-4 h-4" />
-              {isSharing ? 'Saving...' : 'Save'}
+              <Download className="w-5 h-5 sm:w-4 sm:h-4" />
+              <span className="text-base sm:text-sm">{isSharing ? 'Saving...' : 'Save'}</span>
             </button>
             <motion.button 
               animate={{ 
@@ -505,15 +505,15 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              className="flex-1 text-black font-bold py-2 px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="min-h-[48px] sm:min-h-[44px] flex-1 text-black font-bold py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 touch-manipulation"
               style={{
                 background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                 border: '1px solid rgba(212, 175, 55, 0.9)',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
               }}
             >
-              <Share2 className="w-4 h-4" />
-              {isSharing ? 'Sharing...' : 'Share Receipt'}
+              <Share2 className="w-5 h-5 sm:w-4 sm:h-4" />
+              <span className="text-base sm:text-sm">{isSharing ? 'Sharing...' : 'Share Receipt'}</span>
             </motion.button>
           </div>
 

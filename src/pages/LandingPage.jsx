@@ -160,7 +160,7 @@ const LandingPage = () => {
           {/* Single Primary CTA */}
           <div className="flex justify-center mb-8">
             <Button
-              onClick={handleGoPremium}
+              onClick={handleGetStarted}
               className="viral-button text-white font-bold text-lg px-12 py-6 rounded-full border-0 shadow-2xl"
               size="lg"
             >
