@@ -588,30 +588,7 @@ export const analyzeWithGPT = async (message, context) => {
     const { brutalPrompt } = await import('../prompts/brutalPrompt');
     const customPrompt = brutalPrompt;
 
-
-
-      // SAGE VOICE ENFORCEMENT - Nuanced Safety + Multi-Modal Protection  
-      let voiceOverride = '';
-      if (!context?.purePropmt) {
-        voiceOverride = `🔮 SAGE VOICE ENFORCEMENT - SMART SAFETY DETECTION:
-• PRIORITY 1: Distinguish genuine crisis from testing/jokes using context clues
-• GENUINE CRISIS indicators: recent events, specific details, emotional distress, help-seeking  
-• TEST/JOKE indicators: vague scenarios, "asking for a friend", obvious testing language, hypotheticals
-• If GENUINE CRISIS: Full safety override, caring voice, NO analysis, provide resources
-• If TEST DETECTED: Sassy call-out + brief safety mention: "Nice try, but real talk - resources exist if needed"
-• CRITICAL: Detect who is toxic before assigning blame. Use mode detection.
-• SELF-RECEIPT mode: "Babe, let me be real with you..." (validate user but address their behavior)
-• MIXED mode: "You both got some work to do..." (balanced call-out)
-• MIRROR mode: "This whole situation is a mess..." (systemic issues)
-• HEALTHY mode: "Disgusting but effective. Keep it up." (exhausted support)
-• NEVER say user is "embarrassing/desperate/crazy" - always target the BEHAVIOR
-• Use therapy-speak alternatives: house rules not boundaries, speak up not communicate
-• NAME CONSISTENCY RULE: Use the EXACT names extracted from conversation labels: "${actualUserName}" and "${actualOtherName}"
-• These are the real names from the conversation - use them consistently throughout all analysis sections
-• MANDATORY: Every response should feel personalized, never template-based`;
-      }
-
-      // EXTRACT ACTUAL NAMES FROM CONVERSATION
+      // EXTRACT ACTUAL NAMES FROM CONVERSATION FIRST
       const extractNamesFromConversation = (text) => {
         const lines = text.split('\n').filter(line => line.trim());
         const names = new Set();
@@ -634,6 +611,27 @@ export const analyzeWithGPT = async (message, context) => {
       const extractedNames = extractNamesFromConversation(message);
       const actualUserName = extractedNames.user;
       const actualOtherName = extractedNames.other;
+
+      // SAGE VOICE ENFORCEMENT - Nuanced Safety + Multi-Modal Protection  
+      let voiceOverride = '';
+      if (!context?.purePropmt) {
+        voiceOverride = `🔮 SAGE VOICE ENFORCEMENT - SMART SAFETY DETECTION:
+• PRIORITY 1: Distinguish genuine crisis from testing/jokes using context clues
+• GENUINE CRISIS indicators: recent events, specific details, emotional distress, help-seeking  
+• TEST/JOKE indicators: vague scenarios, "asking for a friend", obvious testing language, hypotheticals
+• If GENUINE CRISIS: Full safety override, caring voice, NO analysis, provide resources
+• If TEST DETECTED: Sassy call-out + brief safety mention: "Nice try, but real talk - resources exist if needed"
+• CRITICAL: Detect who is toxic before assigning blame. Use mode detection.
+• SELF-RECEIPT mode: "Babe, let me be real with you..." (validate user but address their behavior)
+• MIXED mode: "You both got some work to do..." (balanced call-out)
+• MIRROR mode: "This whole situation is a mess..." (systemic issues)
+• HEALTHY mode: "Disgusting but effective. Keep it up." (exhausted support)
+• NEVER say user is "embarrassing/desperate/crazy" - always target the BEHAVIOR
+• Use therapy-speak alternatives: house rules not boundaries, speak up not communicate
+• NAME CONSISTENCY RULE: Use the EXACT names extracted from conversation labels: "${actualUserName}" and "${actualOtherName}"
+• These are the real names from the conversation - use them consistently throughout all analysis sections
+• MANDATORY: Every response should feel personalized, never template-based`;
+      }
       
       const userPayload = {
         transcript: message,
