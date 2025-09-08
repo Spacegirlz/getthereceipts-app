@@ -529,6 +529,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                   </div>
                 </div>
               </div>
+            </div>
           </div>
         </div>
 
