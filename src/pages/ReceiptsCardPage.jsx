@@ -461,11 +461,6 @@ const ReceiptsCardPage = () => {
           </p>
         </div>
 
-        {/* DEBUG: Check analysis data */}
-        <div className="bg-yellow-500 p-4 text-black mb-4">
-          DEBUG: Analysis exists: {analysis ? 'YES' : 'NO'}, Type: {typeof analysis}
-          {analysis && <div>Keys: {Object.keys(analysis).join(', ')}</div>}
-        </div>
 
         {/* Conditional render - only show content if analysis exists */}
         {analysis ? (
