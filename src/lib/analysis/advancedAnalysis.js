@@ -606,16 +606,48 @@ export const analyzeWithGPT = async (message, context) => {
 • HEALTHY mode: "Disgusting but effective. Keep it up." (exhausted support)
 • NEVER say user is "embarrassing/desperate/crazy" - always target the BEHAVIOR
 • Use therapy-speak alternatives: house rules not boundaries, speak up not communicate
+• NAME CONSISTENCY RULE: Use the EXACT names extracted from conversation labels: "${actualUserName}" and "${actualOtherName}"
+• These are the real names from the conversation - use them consistently throughout all analysis sections
 • MANDATORY: Every response should feel personalized, never template-based`;
       }
 
-      // COMPREHENSIVE USER MESSAGE FORMAT with ALL context data
+      // EXTRACT ACTUAL NAMES FROM CONVERSATION
+      const extractNamesFromConversation = (text) => {
+        const lines = text.split('\n').filter(line => line.trim());
+        const names = new Set();
+        
+        for (const line of lines) {
+          // Look for patterns like "Name:" or "Name :"  
+          const match = line.match(/^([A-Za-z]+)\s*:/);
+          if (match) {
+            names.add(match[1]);
+          }
+        }
+        
+        const nameArray = Array.from(names);
+        return {
+          user: nameArray[0] || context?.user_name || 'User',
+          other: nameArray[1] || context?.other_name || 'Other Person'
+        };
+      };
+      
+      const extractedNames = extractNamesFromConversation(message);
+      const actualUserName = extractedNames.user;
+      const actualOtherName = extractedNames.other;
+      
       const userPayload = {
         transcript: message,
         detectedMode: detectedMode, // Pass heuristic mode detection
         
+        // CRITICAL: Name enforcement instructions
+        NAME_INSTRUCTIONS: `IMPORTANT: Use these EXACT names extracted from the conversation:
+        - Person seeking analysis (usually first speaker): "${actualUserName}"
+        - Other person in conversation: "${actualOtherName}"
+        These names were extracted from the conversation labels. Use them consistently throughout your response.`,
+        
         // CORE USER INFO TAGS
-        user_name: context?.user_name || 'Alex',
+        user_name: actualUserName,
+        other_name: actualOtherName,
         user_pronoun: context?.known_pronouns?.user || 'they/them',
         their_pronoun: context?.known_pronouns?.other_party || 'they/them',
         otherperson_pronoun: context?.known_pronouns?.other_party || 'they/them',
