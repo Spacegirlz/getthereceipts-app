@@ -274,7 +274,7 @@ const DashboardPage = () => {
             </h2>
             <p className="text-2xl font-bold gradient-text">{getCreditsDisplay()}</p>
             {userCredits.subscription === 'free' && (
-              <p className="text-sm text-gray-400 mt-1">Resets monthly</p>
+              <p className="text-sm text-gray-400 mt-1">Resets daily at midnight</p>
             )}
           </div>
 

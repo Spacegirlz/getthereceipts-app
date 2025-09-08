@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { saveReceiptToDatabase, canUserSaveReceipts } from '@/lib/services/receiptService';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useStripe } from '@stripe/react-stripe-js';
+import { getUserCredits } from '@/lib/services/creditsSystem';
 // Age verification imports removed
 // Sage mood images based on red flags
 import greenFlag from '@/assets/green-flag.png'; // 0-3 red flags - Happy Sage
@@ -48,7 +49,7 @@ const ReceiptsCardPage = () => {
   const [receiptData, setReceiptData] = useState(location.state || null);
   const [loading, setLoading] = useState(!location.state);
   const [isSharing, setIsSharing] = useState(false);
-  const [creditsRemaining, setCreditsRemaining] = useState(2); // Mock data
+  const [userCredits, setUserCredits] = useState({ credits: 0, subscription: 'free' });
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const hasRedirectedRef = useRef(false);
   // isPremium now comes from auth context
@@ -220,6 +221,18 @@ const ReceiptsCardPage = () => {
       console.error('Error saving receipt:', error);
     }
   };
+
+  // Fetch user credits
+  useEffect(() => {
+    const fetchCredits = async () => {
+      if (user?.id) {
+        const credits = await getUserCredits(user.id);
+        setUserCredits(credits);
+      }
+    };
+    
+    fetchCredits();
+  }, [user]);
 
   useEffect(() => {
     // Handle redirections and data fetching in a single effect
@@ -446,7 +459,7 @@ const ReceiptsCardPage = () => {
         {!isPremium && (
           <div className="text-center mb-4 p-3 bg-purple-900/20 rounded-lg border border-purple-500/30">
             <p className="text-purple-300 text-sm">
-              {creditsRemaining} Truth Receipts left this month
+              {userCredits.credits || 0} Truth Receipts left today
             </p>
           </div>
         )}

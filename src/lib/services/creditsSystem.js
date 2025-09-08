@@ -32,8 +32,12 @@ export const getUserCredits = async (userId) => {
     
     let creditsRemaining = data.credits_remaining || 1;
     
+    // For premium users, credits are unlimited
+    if (data.subscription_status === 'premium' || data.subscription_status === 'yearly' || data.subscription_status === 'founder') {
+      creditsRemaining = CREDIT_AMOUNTS.PREMIUM_UNLIMITED; // -1 indicates unlimited
+    }
     // For free users, check if we need to reset daily credits
-    if (data.subscription_status === 'free') {
+    else if (data.subscription_status === 'free') {
       const today = now.toISOString().split('T')[0];
       const lastResetDate = data.last_free_receipt_date;
       
