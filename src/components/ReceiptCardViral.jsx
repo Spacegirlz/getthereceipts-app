@@ -217,23 +217,27 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     };
 
     return (
-      <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-        {/* Mobile-optimized spacing and typography */}
-        <div className="text-sm sm:text-xs uppercase tracking-wider text-white/70 mb-2">
+      <div className="bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+        <div className="text-xs uppercase tracking-wider text-white/60 mb-3">
           {label}
         </div>
-        <div className={`text-2xl sm:text-3xl font-bold ${colorClass} mb-3 sm:mb-2`}>
+        <div className={`text-2xl font-bold ${colorClass} mb-4`}>
           {(label === 'RED FLAGS' || label === 'GREEN FLAGS') ? `${value}/10` : `${value}%`}
         </div>
-        <div className="px-1 sm:px-2">
-          <div className="w-full bg-white/20 rounded-full h-3 sm:h-2">
+        <div className="relative">
+          <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
             <div 
-              className={`h-3 sm:h-2 rounded-full ${
-                colorClass.includes('red') ? 'bg-red-400' : 
-                colorClass.includes('green') ? 'bg-green-400' : 
-                colorClass.includes('orange') ? 'bg-orange-400' : 'bg-teal-400'
+              className={`h-3 rounded-full transition-all duration-700 ease-out ${
+                colorClass.includes('red') ? 'bg-gradient-to-r from-red-500 to-red-400' : 
+                colorClass.includes('green') ? 'bg-gradient-to-r from-green-500 to-green-400' : 
+                colorClass.includes('orange') ? 'bg-gradient-to-r from-orange-500 to-orange-400' : 'bg-gradient-to-r from-teal-500 to-teal-400'
               }`}
-              style={{ width: getProgressWidth() }}
+              style={{ 
+                width: getProgressWidth(),
+                boxShadow: `0 0 10px ${colorClass.includes('red') ? 'rgba(239, 68, 68, 0.3)' : 
+                          colorClass.includes('green') ? 'rgba(34, 197, 94, 0.3)' : 
+                          colorClass.includes('orange') ? 'rgba(249, 115, 22, 0.3)' : 'rgba(20, 184, 166, 0.3)'}`
+              }}
             />
           </div>
         </div>
@@ -256,11 +260,11 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
         id="receipt-inner-container"
         className={`relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90`}
         style={{
-          background: '#14142e',
+          background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
           backdropFilter: 'blur(20px) saturate(200%)',
           WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-          border: '2px solid rgba(212, 175, 55, 0.6)',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
+          border: '2px solid rgba(20, 184, 166, 0.4)',
+          boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
         }}>
         {isSavage && (
           <div className="absolute top-4 right-4 z-20">
@@ -283,15 +287,16 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
               <img 
                 src={sageStandardImage}
                 alt="Sage's Truth Receipt" 
-                className="w-24 h-24 object-contain rounded-full border border-white/30 relative z-50"
+                className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
                 style={{
-                  filter: 'brightness(1.1) contrast(1.1)'
+                  filter: 'brightness(1.2) contrast(1.1)',
+                  boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
                 }}
               />
-              <span className="text-lg font-bold tracking-widest relative z-50"
+              <span className="text-sm sm:text-lg font-bold tracking-widest relative z-50"
                 style={{
-                  color: '#D4AF37',
-                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.3)'
+                  color: '#14B8A6',
+                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
                 }}>
                 SAGE'S TRUTH RECEIPT
               </span>
@@ -302,8 +307,8 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {archetypeTitle && (
             <div className="text-center mb-5">
               <div className="flex items-center justify-center gap-4 mb-1">
-                <h2 className={`text-2xl font-black ${getArchetypeColor()} leading-tight`}
-                style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.3)' }}>
+                <h2 className={`text-xl sm:text-2xl font-black ${getArchetypeColor()} leading-tight`}
+                style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 184, 166, 0.2)' }}>
                   {archetypeTitle}
                 </h2>
                 <div className="text-4xl animate-bounce">
@@ -319,13 +324,13 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           )}
 
-          {/* METRICS GRID - Mobile First */}
+          {/* METRICS GRID - Enhanced Visual Design */}
           <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-2 mb-4 sm:mb-2"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6"
             initial="hidden"
             animate="visible"
             variants={{
-              visible: { transition: { staggerChildren: 0.1 } }
+              visible: { transition: { staggerChildren: 0.15 } }
             }}
           >
             <motion.div variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
@@ -358,7 +363,10 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-2 py-1 text-green-300 text-base font-medium whitespace-nowrap"
+                      className="inline-flex items-center justify-center px-3 py-2 bg-green-500/20 border border-green-400/40 rounded-full text-green-300 text-sm font-medium whitespace-nowrap backdrop-blur-sm"
+                      style={{
+                        boxShadow: '0 2px 8px rgba(34, 197, 94, 0.1)'
+                      }}
                     >
                       {chip}
                     </motion.span>
@@ -377,7 +385,10 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-2 py-1 text-red-300 text-base font-medium whitespace-nowrap"
+                      className="inline-flex items-center justify-center px-3 py-2 bg-red-500/20 border border-red-400/40 rounded-full text-red-300 text-sm font-medium whitespace-nowrap backdrop-blur-sm"
+                      style={{
+                        boxShadow: '0 2px 8px rgba(239, 68, 68, 0.1)'
+                      }}
                     >
                       {chip}
                     </motion.span>
@@ -444,14 +455,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
                 style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🔮 SAGE'S PROPHECY</h3>
               <p className="text-stone-200/90 text-xl leading-relaxed">
-                {prophecy
-                  ?.replace(/^Next:\s*/i, 'Next: ')
-                  ?.split(' ')
-                  ?.map((word, i) => 
-                    i === 0 ? word : word.toLowerCase()
-                  )
-                  ?.join(' ')
-                  ?.replace(/\bi\b/g, 'I')}
+                {prophecy}
               </p>
             </div>
           )}
@@ -480,8 +484,8 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
               disabled={isSharing}
               className="min-h-[48px] sm:min-h-[44px] flex-1 bg-white/10 hover:bg-white/20 active:scale-95 text-stone-200 font-medium py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 touch-manipulation"
               style={{
-                border: '1px solid rgba(212, 175, 55, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                border: '1px solid rgba(20, 184, 166, 0.4)',
+                boxShadow: '0 4px 12px rgba(20, 184, 166, 0.1)'
               }}
             >
               <Download className="w-5 h-5 sm:w-4 sm:h-4" />
@@ -503,11 +507,11 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              className="min-h-[48px] sm:min-h-[44px] flex-1 text-black font-bold py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 touch-manipulation"
+              className="min-h-[48px] sm:min-h-[44px] flex-1 text-white font-bold py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 touch-manipulation"
               style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.9)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                background: 'linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)',
+                border: '1px solid rgba(20, 184, 166, 0.8)',
+                boxShadow: '0 4px 12px rgba(20, 184, 166, 0.3)'
               }}
             >
               <Share2 className="w-5 h-5 sm:w-4 sm:h-4" />
