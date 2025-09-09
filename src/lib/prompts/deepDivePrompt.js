@@ -128,7 +128,11 @@ REQUIRED JSON KEYS (exactly):
     // Use ONLY real quotes from THIS conversation
   ],
   "physics": { "you_bring":"What USER brings","they_exploit":"What OTHER exploits","result":"The dynamic" },
-  "playbook": { "next_48h":"string","next_week":"string","your_move":"string" },
+  "playbook": { 
+    "next_48h":"string",
+    "next_week":"string",
+    "your_move":"3 short action-first items in checklist format. Example: 'Mute the chat. Go outside. Text your real friends.' Focus on DOING not feeling. Be specific, direct, and savage."
+  },
   "sages_seal":"string",
   "red_flag_tags":["string"],
   "metrics": { "wastingTime":0, "actuallyIntoYou":0, "redFlags":0 },
