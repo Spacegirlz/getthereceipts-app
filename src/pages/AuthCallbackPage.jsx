@@ -48,8 +48,16 @@ const AuthCallbackPage = () => {
             navigate(`/?error=${encodeURIComponent(exchangeError.message)}`);
           } else {
             console.log('Code exchange successful, user:', data.user?.email);
-            // Mobile-friendly delay
-            setTimeout(() => navigate('/dashboard'), 1000);
+            // Check if user has saved form data and should return to receipts processing
+            const hasSavedFormData = localStorage.getItem('chatInputFormData');
+            if (hasSavedFormData) {
+              console.log('🚀 Auth Callback: Found saved form data, setting auto-submit flag and redirecting to receipts');
+              localStorage.setItem('shouldAutoSubmit', 'true');
+              setTimeout(() => navigate('/receipts'), 1000);
+            } else {
+              console.log('🚀 Auth Callback: No saved form data, redirecting to dashboard');
+              setTimeout(() => navigate('/dashboard'), 1000);
+            }
           }
         } else {
           // This handles the implicit flow (from email link) which uses a hash
@@ -57,10 +65,17 @@ const AuthCallbackPage = () => {
           console.log('Hash params:', Object.fromEntries(hashParams));
           
           if (hashParams.has('access_token')) {
-            console.log('Found access token in hash, navigating to dashboard');
-            // The onAuthStateChange listener in SupabaseAuthContext will handle this
-            // Mobile-friendly delay
-            setTimeout(() => navigate('/dashboard'), 1000);
+            console.log('Found access token in hash');
+            // Check if user has saved form data and should return to receipts processing
+            const hasSavedFormData = localStorage.getItem('chatInputFormData');
+            if (hasSavedFormData) {
+              console.log('🚀 Auth Callback: Found saved form data, setting auto-submit flag and redirecting to receipts');
+              localStorage.setItem('shouldAutoSubmit', 'true');
+              setTimeout(() => navigate('/receipts'), 1000);
+            } else {
+              console.log('🚀 Auth Callback: No saved form data, redirecting to dashboard');
+              setTimeout(() => navigate('/dashboard'), 1000);
+            }
           } else {
             // No code and no hash, something is wrong
             console.error('No auth code or token found');
