@@ -414,7 +414,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
   };
 
   return (
-    <div className="relative w-full max-w-md sm:max-w-2xl md:max-w-4xl mx-auto px-4 sm:px-0">
+    <div className="relative w-full max-w-md sm:max-w-2xl md:max-w-4xl mx-auto px-4 sm:px-0 pb-8 sm:pb-12 md:pb-16">
       
       {/* Main Immunity Card - Mobile-optimized with max-width constraints */}
       <motion.div 
@@ -453,14 +453,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               borderColor: 'rgba(255, 255, 255, 0.08)',
               boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
             }}>
-            {/* Journey Badge */}
-            <div className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                color: '#1a1a1a'
-              }}>
-              ③
-            </div>
             
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-2">
               <span className="text-2xl sm:text-3xl opacity-80">🛡️</span>
@@ -485,27 +477,30 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
 
         {/* Main Section Header: Understanding Your [Archetype] */}
         <div className="mb-8 text-center">
-          <div className="p-6 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl border border-amber-400/30 shadow-lg">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2" 
+          <div className="p-6 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-3xl border border-violet-400/30 shadow-lg">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2" 
               style={{
-                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
               }}>
               Understanding Your {archetypeName?.replace(/^The /, '') || 'Situation'}
             </h2>
-            <p className="text-amber-200/80 text-sm">Knowledge is your first line of defense</p>
+            <p className="text-violet-200/80 text-sm">Knowledge is your first line of defense</p>
           </div>
         </div>
 
         {/* The Archetype Breakdown */}
         <div className="mb-6">
-          <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl border border-amber-500/20 overflow-hidden">
-            <div className="px-4 py-3 bg-amber-500/5 border-b border-amber-500/10">
+          <div className="bg-gradient-to-br from-slate-800/40 to-slate-900/60 rounded-2xl border border-slate-600/30 overflow-hidden relative backdrop-blur-sm"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(8, 145, 178, 0.08) 0%, transparent 50%)'
+            }}>
+            <div className="px-4 py-3 bg-cyan-500/5 border-b border-cyan-500/10">
               <div className="flex items-center gap-2">
                 <span className="text-lg sm:text-xl">🎭</span>
-                <h4 className="text-amber-400 font-bold text-sm sm:text-base tracking-wide uppercase">
+                <h4 className="text-cyan-400 font-bold text-sm sm:text-base tracking-wide uppercase">
                   The {archetypeName?.replace(/^The /, '') || 'Archetype'} Profile
                 </h4>
               </div>
@@ -515,25 +510,26 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               <div className="space-y-4">
                 {/* Core Traits */}
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-amber-400 font-semibold mb-2">
+                  <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-3 flex items-center gap-2">
+                    <span className="text-sm">🛡️</span>
                     Key Characteristics:
                   </div>
-                  <ul className="space-y-2">
+                  <ul className="space-y-3 sm:space-y-2">
                     {(immunity.healthySigns || []).length > 0 ? 
                       immunity.healthySigns.slice(0, 3).map((trait, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-amber-400 text-xs mt-1">•</span>
-                          <span className="text-gray-200 text-sm leading-relaxed">{trait}</span>
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
+                          <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">{trait}</span>
                         </li>
                       )) : 
                       [
                         'Creates emotional highs and lows to maintain control',
-                        'Uses intermittent reinforcement to keep you engaged',
+                        'Uses intermittent reinforcement to keep you engaged', 
                         'Avoids accountability while shifting blame to you'
                       ].map((trait, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-amber-400 text-xs mt-1">•</span>
-                          <span className="text-gray-200 text-sm leading-relaxed">{trait}</span>
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
+                          <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">{trait}</span>
                         </li>
                       ))
                     }
@@ -542,7 +538,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 
                 {/* How They Operate */}
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-amber-400 font-semibold mb-2">
+                  <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-2">
                     How They Operate:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
@@ -554,7 +550,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 
                 {/* Their Goal */}
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-amber-400 font-semibold mb-2">
+                  <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-2">
                     What They Want:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
@@ -669,20 +665,50 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               </h4>
             </div>
             <div className="p-3 sm:p-4">
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                {displayData.patternLoop.map((step, index) => (
-                  <React.Fragment key={step}>
-                    <div className="bg-purple-900/30 text-purple-300 px-2 py-1.5 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0">
-                      {step}
-                    </div>
-                    {index < displayData.patternLoop.length - 1 && (
-                      <span className="text-purple-400 text-sm sm:text-base flex-shrink-0">→</span>
-                    )}
-                  </React.Fragment>
-                ))}
-                {/* Loop indicator */}
-                <div className="w-full flex justify-center mt-2">
-                  <span className="text-purple-400 text-xs opacity-70">
+              {/* Mobile: Horizontal scroll */}
+              <div className="sm:hidden">
+                <div className="overflow-x-auto pb-2" style={{ 
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                  WebkitOverflowScrolling: 'touch'
+                }}>
+                  <div className="flex items-center gap-3 min-w-max px-2">
+                    {displayData.patternLoop.map((step, index) => (
+                      <React.Fragment key={step}>
+                        <div className="bg-purple-900/30 text-purple-300 px-3 py-2 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0 min-w-[80px] hover:bg-purple-800/40 transition-all duration-200">
+                          {step}
+                        </div>
+                        {index < displayData.patternLoop.length - 1 && (
+                          <span className="text-purple-400 text-base flex-shrink-0 animate-pulse">→</span>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-center mt-3">
+                  <span className="text-purple-400 text-xs opacity-70 animate-pulse">
+                    {actualRiskLevel === 'low' ? '↻ Healthy Cycle' : '↻ Endless Loop'}
+                  </span>
+                  <p className="text-purple-300/60 text-[10px] mt-1">← Swipe to explore the cycle →</p>
+                </div>
+              </div>
+              
+              {/* Desktop: Flex wrap */}
+              <div className="hidden sm:block">
+                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+                  {displayData.patternLoop.map((step, index) => (
+                    <React.Fragment key={step}>
+                      <div className="bg-purple-900/30 text-purple-300 px-2 py-1.5 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0 hover:scale-105 hover:bg-purple-800/40 transition-all duration-300 cursor-default">
+                        {step}
+                      </div>
+                      {index < displayData.patternLoop.length - 1 && (
+                        <span className="text-purple-400 text-sm sm:text-base flex-shrink-0 hover:scale-110 transition-transform duration-200">→</span>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+                <div className="w-full flex justify-center mt-3">
+                  <span className="text-purple-400 text-xs opacity-70 hover:opacity-100 transition-opacity duration-300 animate-pulse">
                     {actualRiskLevel === 'low' ? '↻ Healthy Cycle' : '↻ Endless Loop'}
                   </span>
                 </div>
@@ -691,37 +717,90 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </div>
         </div>
 
-        {/* Healthy vs Sketchy Signs - Tabbed Mobile Design */}
-        <div className="mb-6">
-          <div className="bg-gray-900/30 rounded-2xl border border-gray-700/30 overflow-hidden">
-            {/* Tab Headers */}
-            <div className="grid grid-cols-2 border-b border-gray-700/30">
-              <div className="px-4 py-3 bg-green-500/10 border-r border-gray-700/30">
-                <h4 className="text-green-400 font-bold text-xs sm:text-sm text-center">✅ HEALTHY</h4>
+        {/* Immunity Test - Your Next Move */}
+        {displayData.immunityTest && (
+          <div className="mb-6">
+            <div className="bg-gradient-to-br from-cyan-500/10 to-violet-500/10 rounded-2xl border border-cyan-400/30 overflow-hidden backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] cursor-pointer">
+              <div className="px-4 py-3 bg-gradient-to-r from-cyan-500/5 to-violet-500/5 border-b border-cyan-400/20">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-lg animate-pulse">💬</span>
+                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase"
+                    style={{
+                      background: 'linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text'
+                    }}>
+                    Your Next Move
+                  </h4>
+                </div>
               </div>
-              <div className="px-4 py-3 bg-red-500/10">
-                <h4 className="text-red-400 font-bold text-xs sm:text-sm text-center">⚠️ RED FLAGS</h4>
+              
+              <div className="p-4 sm:p-5 md:p-6">
+                <p className="text-gray-200 text-sm sm:text-base leading-relaxed text-center font-medium" 
+                  style={{ 
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+                    lineHeight: '1.6'
+                  }}>
+                  {displayData.immunityTest}
+                </p>
+              </div>
+              
+              {/* Interactive glow effect */}
+              <div className="absolute inset-0 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)',
+                  boxShadow: 'inset 0 0 20px rgba(6, 182, 212, 0.1)'
+                }}>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* See Both Sides - Enhanced Design */}
+        <div className="mb-6">
+          <div className="bg-gradient-to-br from-slate-800/40 to-slate-900/60 rounded-2xl border border-slate-600/30 overflow-hidden backdrop-blur-sm shadow-lg">
+            {/* Main Header */}
+            <div className="px-4 py-3 bg-gradient-to-r from-slate-700/20 to-slate-800/20 border-b border-slate-600/30">
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-lg">⚖️</span>
+                <h4 className="text-slate-200 font-bold text-sm sm:text-base tracking-wide uppercase">See Both Sides</h4>
               </div>
             </div>
             
-            {/* Content - Side by Side on Mobile */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-700/30">
-              <div className="p-3 sm:p-4">
-                <ul className="space-y-2">
+            {/* Tab-style Headers */}
+            <div className="grid grid-cols-2">
+              <div className="px-4 py-3 bg-gradient-to-br from-emerald-500/15 to-green-500/10 border-r border-slate-600/30 relative">
+                <div className="absolute inset-0 bg-emerald-400/5"></div>
+                <h5 className="text-emerald-400 font-bold text-xs sm:text-sm text-center relative z-10">🟢 What's Normal</h5>
+              </div>
+              <div className="px-4 py-3 bg-gradient-to-br from-rose-500/15 to-pink-500/10 relative">
+                <div className="absolute inset-0 bg-rose-400/5"></div>
+                <h5 className="text-rose-400 font-bold text-xs sm:text-sm text-center relative z-10">🚩 Red Flags</h5>
+              </div>
+            </div>
+            
+            {/* Content - Side by Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-600/20">
+              {/* Healthy Signs */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-emerald-500/5 to-green-500/5">
+                <ul className="space-y-3">
                   {displayData.healthySigns.slice(0, 3).map((sign, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-green-400 text-xs mt-0.5">•</span>
-                      <span className="text-green-300 text-xs sm:text-sm leading-relaxed">{sign}</span>
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
+                      <span className="text-emerald-200 text-sm leading-relaxed">{sign}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="p-3 sm:p-4">
-                <ul className="space-y-2">
+              
+              {/* Red Flags */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-rose-500/5 to-pink-500/5">
+                <ul className="space-y-3">
                   {displayData.sketchySigns.slice(0, 3).map((sign, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-red-400 text-xs mt-0.5">•</span>
-                      <span className="text-red-300 text-xs sm:text-sm leading-relaxed">{sign}</span>
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
+                      <span className="text-rose-200 text-sm leading-relaxed">{sign}</span>
                     </li>
                   ))}
                 </ul>
@@ -731,69 +810,122 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
         </div>
 
 
-        {/* Real Talk - Only show if we have actual content */}
+        {/* Sage's Real Talk - Speech Bubble Style */}
         {displayData.teaPlayScript && displayData.teaPlayScript.length > 0 && (
           <div className="mb-6 sm:mb-8">
-            <h4 className="text-teal-400 font-bold text-xs sm:text-sm mb-3 sm:mb-4">💬 REAL TALK</h4>
-            <div className="rounded-xl p-4 sm:p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-              <div className="space-y-3 sm:space-y-4">
-                {displayData.teaPlayScript.map((step, index) => (
-                <motion.div 
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 + index * 0.05 }}
-                  className="flex items-start gap-2 sm:gap-3"
-                >
-                  <span className="text-teal-400 text-sm mt-1 flex-shrink-0">•</span>
-                  <p className="text-stone-300/90 text-sm sm:text-base md:text-lg leading-relaxed break-words" style={{ textShadow: 'none' }}>{step}</p>
-                </motion.div>
-              ))}
+            {/* Speech Bubble Container */}
+            <div className="relative">
+              {/* Sage Icon - Top Left */}
+              <div className="absolute -top-2 -left-2 z-10">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-full flex items-center justify-center border border-purple-400/30 backdrop-blur-sm">
+                  <span className="text-sm">🔮</span>
+                </div>
               </div>
+              
+              {/* Speech Bubble */}
+              <div className="bg-gradient-to-br from-purple-500/10 to-violet-500/15 rounded-3xl p-5 sm:p-6 border border-purple-400/30 relative shadow-lg backdrop-blur-sm"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(124, 58, 237, 0.12) 100%)',
+                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(167, 139, 250, 0.2)'
+                }}>
+                
+                {/* Header */}
+                <div className="flex items-center gap-2 mb-4">
+                  <h4 className="text-purple-300 font-bold text-sm sm:text-base tracking-wide">Sage's Real Talk</h4>
+                  <div className="flex-1 h-px bg-gradient-to-r from-purple-400/50 to-transparent"></div>
+                </div>
+                
+                {/* Content */}
+                <div className="space-y-3 sm:space-y-4">
+                  {displayData.teaPlayScript.map((step, index) => (
+                  <motion.div 
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + index * 0.05 }}
+                    className="flex items-start gap-3"
+                  >
+                    <span className="text-purple-300 text-sm mt-1 flex-shrink-0">→</span>
+                    <p className="text-purple-100/90 text-sm sm:text-base leading-relaxed break-words font-medium" 
+                      style={{ 
+                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+                        lineHeight: '1.6'
+                      }}>
+                      {step}
+                    </p>
+                  </motion.div>
+                ))}
+                </div>
+                
+                {/* Quote Attribution */}
+                <div className="text-right mt-4 pt-3 border-t border-purple-400/20">
+                  <p className="text-purple-300/70 text-xs italic">— Sage</p>
+                </div>
+              </div>
+              
+              {/* Speech Bubble Tail */}
+              <div className="absolute -bottom-2 left-8 w-4 h-4 bg-gradient-to-br from-purple-500/10 to-violet-500/15 border-l border-b border-purple-400/30 transform rotate-45"></div>
+            </div>
+            
+            {/* Action Button */}
+            <div className="text-center mt-6">
+              <button className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 hover:text-purple-100 border border-purple-400/40 hover:border-purple-400/60 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+                <span className="text-xs">💾</span>
+                Save This Wisdom
+              </button>
             </div>
           </div>
         )}
 
-        {/* Immunity Test - Only show if we have dynamic content */}
-        {displayData.immunityTest && (
-          <div className="mb-4 sm:mb-6">
-            <h4 className="text-purple-400 font-bold text-xs sm:text-sm mb-2 sm:mb-3">🧪 IMMUNITY TEST</h4>
-            <div className="rounded-lg p-3 sm:p-4 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-              <p className="text-stone-300/90 text-sm sm:text-base md:text-lg leading-relaxed break-words" style={{ textShadow: 'none' }}>{displayData.immunityTest}</p>
-            </div>
-          </div>
-        )}
 
         {/* Sage's Blessing - Premium Gold Treatment */}
-        <div className="p-4 sm:p-6 relative overflow-hidden" style={{
-          background: 'rgba(255, 255, 255, 0.03)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '16px',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
-        }}>
-          <div className="text-center mb-3 sm:mb-4">
-            <Crown className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2" style={{ color: '#D4AF37' }} />
-            <h4 className="font-bold text-sm sm:text-base md:text-lg tracking-wide" 
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-              SAGE'S BLESSING
-            </h4>
+        <div className="mb-8">
+          <div className="max-w-2xl mx-auto p-6 sm:p-8 relative overflow-hidden" style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)'
+          }}>
+            <div className="text-center mb-6 sm:mb-8">
+              <Crown className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-4" style={{ color: '#D4AF37' }} />
+              <h4 className="font-bold text-base sm:text-lg md:text-xl tracking-wide" 
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>
+                SAGE'S BLESSING
+              </h4>
+            </div>
+            
+            <div className="px-4 sm:px-6 mb-8">
+              <p className="gradient-text text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-center leading-relaxed"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  lineHeight: '1.6'
+                }}>
+                "{immunityData?.sageBlessing || displayData.sagesSeal}"
+              </p>
+            </div>
+            
+            {/* Save Button */}
+            <div className="text-center mb-6">
+              <button className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-600/20 to-yellow-500/20 hover:from-yellow-600/30 hover:to-yellow-500/30 border border-yellow-500/40 hover:border-yellow-400/60 rounded-full text-yellow-200 hover:text-yellow-100 font-medium transition-all duration-300 hover:scale-105 backdrop-blur-sm shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(245, 230, 211, 0.1) 100%)',
+                  boxShadow: '0 4px 16px rgba(212, 175, 55, 0.2)'
+                }}>
+                <span className="text-sm">💾</span>
+                Save This Blessing
+              </button>
+            </div>
+            
+            <p className="text-center text-white/60 text-xs">Blessed by Sage 🔮</p>
           </div>
-          <p className="gradient-text text-sm sm:text-base md:text-lg lg:text-xl font-medium mb-4 sm:mb-6 text-center leading-relaxed"
-            style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-            "{immunityData?.sageBlessing || displayData.sagesSeal}"
-          </p>
-          
-          <p className="text-center text-white/60 text-xs mt-4">Blessed by Sage 🔮</p>
         </div>
 
         {/* Watermark */}
@@ -803,26 +935,30 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
 
       </motion.div>
       
-      {/* Action Buttons - Separate Block */}
+      {/* CTA Footer - Softer Panel */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="mt-6 p-4 sm:p-5 rounded-2xl"
+        className="mt-8 mb-12 p-6 sm:p-8 md:p-10 rounded-3xl backdrop-blur-sm"
         style={{
-          background: 'linear-gradient(180deg, #1a1a3e 0%, #14142e 100%)',
-          borderRadius: '16px',
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
-          border: '1px solid rgba(255, 255, 255, 0.05)'
+          background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(6, 182, 212, 0.05) 50%, rgba(236, 72, 153, 0.06) 100%)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
         }}
       >
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="text-center mb-6">
+          <h5 className="text-white/80 font-medium text-sm sm:text-base mb-2">Ready to level up?</h5>
+          <p className="text-white/60 text-xs sm:text-sm">Save your insights and share your growth</p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
           <button 
             onClick={handleSaveBadge}
-            className="flex-1 bg-white/10 hover:bg-white/20 active:scale-95 text-stone-300 font-medium py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[48px] touch-manipulation"
+            className="flex-1 bg-white/5 hover:bg-white/10 active:scale-95 text-white/80 hover:text-white font-medium py-3.5 px-5 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] touch-manipulation border border-white/10 hover:border-white/20"
             style={{
-              border: '1px solid rgba(212, 175, 55, 0.4)',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
             }}
           >
             <LogOut className="w-4 h-4 flex-shrink-0" />
@@ -830,11 +966,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </button>
           <button 
             onClick={handleShareTrophy}
-            className="flex-1 text-black font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[48px] active:scale-95 touch-manipulation"
+            className="flex-1 text-white font-medium py-3.5 px-5 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] active:scale-95 touch-manipulation hover:scale-105"
             style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              border: '1px solid rgba(212, 175, 55, 0.8)',
-              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
+              background: 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 4px 16px rgba(139, 92, 246, 0.25)'
             }}
           >
             <Zap className="w-4 h-4 flex-shrink-0" />

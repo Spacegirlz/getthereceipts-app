@@ -356,10 +356,29 @@ const ReceiptsCardPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-purple-400 mb-4" />
-          <p>Serving the tea... it's hot!</p>
+      <div className="min-h-screen flex items-center justify-center text-white p-4" style={{
+        background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+        backgroundAttachment: 'fixed'
+      }}>
+        <div className="text-center bg-gradient-to-br from-slate-900/50 to-indigo-900/30 rounded-3xl border border-white/10 backdrop-blur-sm p-8 max-w-md mx-auto">
+          <div className="relative">
+            {/* Animated background */}
+            <div className="absolute inset-0 rounded-3xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-cyan-500/10 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-tl from-indigo-500/5 to-teal-500/10" 
+                style={{
+                  animation: 'float 6s ease-in-out infinite'
+                }}></div>
+            </div>
+            
+            <div className="relative z-10">
+              <Loader2 className="h-16 w-16 animate-spin text-purple-400 mb-6 mx-auto" />
+              <p className="text-lg font-medium text-gray-200 mb-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                Serving the tea... it's hot! ☕️
+              </p>
+              <p className="text-sm text-gray-400">Preparing your truth receipt</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -468,7 +487,7 @@ const ReceiptsCardPage = () => {
 
         {/* Page Title */}
         <div className="text-center mb-6 md:mb-8 py-2 md:py-4 px-2">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 md:mb-6 heading-font gradient-text px-2 md:px-4 py-1 md:py-2 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 md:mb-8 heading-font gradient-text px-2 md:px-4 py-1 md:py-2 leading-tight">
             Sage's Truth Receipts
           </h1>
           <p className="text-gray-400 text-base md:text-lg mb-4 md:mb-6 px-2">
@@ -503,14 +522,17 @@ const ReceiptsCardPage = () => {
           <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-2 backdrop-blur-md border border-slate-600/40 shadow-lg">
             <div className="flex items-center gap-1">
               <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30">
-                <span className="text-xs font-medium">Truth</span>
+                <span className="text-xs">📄</span>
+                <span className="text-xs font-medium">Receipt</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </button>
               <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
+                <span className="text-xs">☕</span>
                 <span className="text-xs font-medium">Tea</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </button>
               <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
+                <span className="text-xs">🛡️</span>
                 <span className="text-xs font-medium">Immunity</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </button>
@@ -549,10 +571,10 @@ const ReceiptsCardPage = () => {
               <Button
                 onClick={handleFounderCheckout}
                 disabled={loadingCheckout}
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold rounded-full py-3 hover:scale-105 transition"
+                className="bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold rounded-full py-3 hover:scale-105 transition"
                 style={{
-                  border: '1px solid rgba(234, 179, 8, 0.8)',
-                  boxShadow: '0 0 10px rgba(234, 179, 8, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 8px rgba(0, 0, 0, 0.15)'
+                  border: '1px solid rgba(139, 92, 246, 0.8)',
+                  boxShadow: '0 0 10px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(167, 139, 250, 0.4), 0 4px 8px rgba(0, 0, 0, 0.15)'
                 }}
               >
                 {loadingCheckout ? 'Redirecting...' : '⚡ Go Premium'}

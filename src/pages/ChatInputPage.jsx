@@ -414,7 +414,9 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
         </div>
 
         {isLoading ? (
-          <AnalysisLoader />
+          <div className="bg-gradient-to-br from-slate-900/50 to-indigo-900/30 rounded-3xl border border-white/10 backdrop-blur-sm">
+            <AnalysisLoader />
+          </div>
         ) : (
           <div className="space-y-8">
             

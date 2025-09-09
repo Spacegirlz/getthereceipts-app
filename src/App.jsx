@@ -37,7 +37,10 @@ function App() {
         <meta name="twitter:title" content="Get The Receipts - Decode Any Text Message Instantly" />
         <meta name="twitter:description" content="Got a confusing text? Get the receipts! Answer quick questions, paste their message, and discover what they really meant with our viral text decoder." />
       </Helmet>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col" style={{
+        background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+        backgroundAttachment: 'fixed'
+      }}>
         <MainHeader />
         <main className="flex-grow">
           <AnimatePresence mode="wait">

@@ -15,6 +15,12 @@
   }
 }
 
+/* Custom animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+
 
 :root {
   --background: 240 10% 3.9%;
@@ -196,6 +202,11 @@ body::before {
   100% {
     left: 150%;
   }
+}
+
+/* Hide scrollbars for Pattern Loop */
+.overflow-x-auto::-webkit-scrollbar {
+  display: none;
 }
 
 /* Premium luxury animations */

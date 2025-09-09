@@ -23,8 +23,8 @@ const TabbedReceiptInterface = ({
   const tabs = [
     {
       id: 'receipt',
-      label: 'Truth Receipt',
-      icon: Receipt,
+      label: 'Receipt',
+      icon: '📄',
       component: (
         <ReceiptCardViral 
           results={analysis}
@@ -37,8 +37,8 @@ const TabbedReceiptInterface = ({
     },
     {
       id: 'deepdive',
-      label: "Sage's Tea",
-      icon: Brain,
+      label: "Tea",
+      icon: '☕',
       component: (
         <DeepDive 
           deepDive={analysis?.deepDive}
@@ -52,8 +52,8 @@ const TabbedReceiptInterface = ({
     },
     {
       id: 'immunity',
-      label: 'Immunity Training',
-      icon: Shield,
+      label: 'Immunity',
+      icon: '🛡️',
       component: (
         <ImmunityTraining 
           immunityData={analysis?.immunityTraining}
@@ -146,7 +146,7 @@ const TabbedReceiptInterface = ({
       {/* Tab Navigation with Arrow Controls */}
       <div className="mb-8">
         <div className="relative">
-          <div className="flex items-center justify-between bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-3 backdrop-blur-md border border-slate-600/40 shadow-lg">
+          <div className="flex items-center justify-between bg-gradient-to-r from-slate-800/70 to-slate-900/70 rounded-2xl p-2.5 backdrop-blur-md border-2 border-slate-500/50 shadow-xl shadow-slate-900/40">
             {/* Left Arrow */}
             <button
               onClick={() => navigateToTab(activeTab - 1)}
@@ -159,16 +159,15 @@ const TabbedReceiptInterface = ({
 
             {/* Tab Labels */}
             <div className="flex-1 flex justify-center">
-              <div className="flex items-center gap-1 sm:gap-2">
+              <div className="flex items-center gap-1">
                 {tabs.map((tab, index) => {
-                  const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => handleTabClick(index)}
                       disabled={isTransitioning}
                       className={`
-                        group relative px-3 py-2.5 rounded-xl flex items-center gap-1.5 transition-all duration-300 ease-out transform hover:scale-105
+                        group relative px-2.5 py-2 rounded-xl flex items-center gap-1.5 transition-all duration-300 ease-out transform hover:scale-105
                         ${activeTab === index 
                           ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30' 
                           : 'text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40'
@@ -176,7 +175,7 @@ const TabbedReceiptInterface = ({
                         ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
                     >
-                      <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="text-sm flex-shrink-0">{tab.icon}</span>
                       <span className="text-xs font-medium whitespace-nowrap">{tab.label}</span>
                       {tab.isPremium && !isPremium && (
                         <Lock className="w-2.5 h-2.5 text-amber-400 animate-pulse" />
