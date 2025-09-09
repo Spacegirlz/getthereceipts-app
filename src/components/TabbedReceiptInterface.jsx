@@ -404,7 +404,6 @@ const TabbedReceiptInterface = ({
               <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-2 backdrop-blur-md border border-slate-600/40 shadow-lg">
                 <div className="flex items-center gap-1">
                   {tabs.map((tab, index) => {
-                    const Icon = tab.icon;
                     return (
                       <button
                         key={tab.id}
@@ -419,7 +418,7 @@ const TabbedReceiptInterface = ({
                           ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       >
-                        <Icon className="w-3 h-3 flex-shrink-0" />
+                        <span className="w-3 h-3 flex-shrink-0 text-center">{tab.icon}</span>
                         <span className="text-[10px] font-medium">{tab.label.split(' ')[0]}</span>
                         {tab.isPremium && !isPremium && (
                           <Lock className="w-2 h-2 text-amber-400 animate-pulse" />

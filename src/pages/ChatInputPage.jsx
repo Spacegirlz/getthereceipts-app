@@ -109,6 +109,11 @@ const ChatInputPage = () => {
       userQuestion,
       extractedTexts
     };
+    console.log('💾 ChatInput: Saving form data to localStorage', { 
+      textsLength: texts.length, 
+      contextType, 
+      hasBackground: !!background 
+    });
     localStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData));
   };
 
@@ -117,6 +122,7 @@ const ChatInputPage = () => {
     try {
       const saved = localStorage.getItem(FORM_DATA_KEY);
       if (saved) {
+        console.log('📂 ChatInput: Loading saved form data...');
         const formData = JSON.parse(saved);
         setTexts(formData.texts || '');
         setBackground(formData.background || '');
@@ -128,11 +134,20 @@ const ChatInputPage = () => {
         setUserPronouns(formData.userPronouns || '');
         setUserQuestion(formData.userQuestion || '');
         setExtractedTexts(formData.extractedTexts || []);
+        
+        console.log('📂 ChatInput: Form data restored', { 
+          textsLength: (formData.texts || '').length,
+          contextType: formData.contextType
+        });
+        
         // Clear saved data after restoring
         localStorage.removeItem(FORM_DATA_KEY);
         
         // Set a flag for auto-submit after restoration
         localStorage.setItem('shouldAutoSubmit', 'true');
+        console.log('📂 ChatInput: Auto-submit flag set');
+      } else {
+        console.log('📂 ChatInput: No saved form data found');
       }
     } catch (error) {
       console.error('Error loading saved form data:', error);
@@ -197,19 +212,33 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
   // Auto-submit when credits finish loading (if flag is set)
   useEffect(() => {
     if (!creditsLoading && user && localStorage.getItem('shouldAutoSubmit') === 'true') {
+      console.log('🚀 ChatInput: Auto-submit triggered!', { 
+        textsLength: texts.trim().length, 
+        extractedTextsLength: extractedTexts.length,
+        userEmail: user.email 
+      });
       localStorage.removeItem('shouldAutoSubmit');
       if ((texts.trim() || extractedTexts.length > 0)) {
         // Small delay to ensure UI is ready
         setTimeout(() => {
+          console.log('🚀 ChatInput: Executing auto-submit...');
           handleSubmit();
         }, 500);
+      } else {
+        console.warn('🚀 ChatInput: Auto-submit skipped - no text data available');
       }
     }
   }, [creditsLoading, user, texts, extractedTexts]);
 
   const handleSubmit = async () => {
+    console.log('🚀 ChatInput: handleSubmit called', { 
+      hasUser: !!user, 
+      textsLength: texts.length 
+    });
+    
     // Check if user is logged in first
     if (!user) {
+      console.log('🚀 ChatInput: No user found, saving form data and opening auth modal');
       // Save form data before opening auth modal
       saveFormData();
       openModal();
@@ -580,14 +609,22 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 const wordCount = texts.trim().split(/\s+/).filter(word => word.length > 0).length;
                 const peopleCount = (() => {
                   const lines = texts.split('\n').filter(line => line.trim());
-                  const people = new Set();
+                  const speakerCounts = new Map();
+                  
                   lines.forEach(line => {
                     const match = line.match(/^([^:]+):/);
                     if (match) {
-                      people.add(match[1].trim().toLowerCase());
+                      const speaker = match[1].trim().toLowerCase();
+                      // Filter out common non-speaker patterns
+                      if (!speaker.includes('(') && !speaker.includes('timestamp') && !speaker.includes('date')) {
+                        speakerCounts.set(speaker, (speakerCounts.get(speaker) || 0) + 1);
+                      }
                     }
                   });
-                  return people.size;
+                  
+                  // Only count speakers who have multiple messages (active participants)
+                  const activeSpeakers = Array.from(speakerCounts.entries()).filter(([_, count]) => count >= 2);
+                  return activeSpeakers.length;
                 })();
                 
                 const warnings = [];
@@ -600,11 +637,11 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   });
                 }
                 
-                if (peopleCount > 2) {
+                if (peopleCount > 3) {
                   warnings.push({
                     type: 'warning', 
                     icon: '🤯',
-                    message: `Whoa there, bestie! ${peopleCount} people in one conversation? That's alphabet soup territory. I'm good, but I'm not a mind reader. Consider focusing on the main dynamic between 2 people for the clearest receipts.`
+                    message: `Whoa there, bestie! ${peopleCount} active people in this conversation? That's getting complicated. I work best analyzing the main dynamic between 2-3 people for the clearest receipts.`
                   });
                 }
                 

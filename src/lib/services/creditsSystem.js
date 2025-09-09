@@ -11,6 +11,20 @@ export const CREDIT_AMOUNTS = {
 // Get user credits and subscription info from the users table
 export const getUserCredits = async (userId) => {
   try {
+    // 🚨 LOCALHOST DEVELOPMENT MODE: Return unlimited credits
+    const isLocalhost = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    
+    if (isLocalhost) {
+      console.log('🚨 LOCALHOST: Returning unlimited credits for development');
+      return {
+        credits: CREDIT_AMOUNTS.PREMIUM_UNLIMITED, // -1 = unlimited
+        subscription: 'founder', // Premium tier
+        last_free_receipt_date: new Date().toISOString().split('T')[0],
+        deepDivesRemaining: CREDIT_AMOUNTS.PREMIUM_UNLIMITED // -1 = unlimited
+      };
+    }
+    
     const { data, error } = await supabase
       .from('users')
       .select('credits_remaining, subscription_status, last_free_receipt_date, created_at')

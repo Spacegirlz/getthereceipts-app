@@ -217,27 +217,23 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     };
 
     return (
-      <div className="bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-        <div className="text-xs uppercase tracking-wider text-white/60 mb-3">
+      <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+        {/* Mobile-optimized spacing and typography */}
+        <div className="text-sm sm:text-xs uppercase tracking-wider text-white/70 mb-2">
           {label}
         </div>
-        <div className={`text-2xl font-bold ${colorClass} mb-4`}>
+        <div className={`text-2xl sm:text-3xl font-bold ${colorClass} mb-3 sm:mb-2`}>
           {(label === 'RED FLAGS' || label === 'GREEN FLAGS') ? `${value}/10` : `${value}%`}
         </div>
-        <div className="relative">
-          <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+        <div className="px-1 sm:px-2">
+          <div className="w-full bg-white/20 rounded-full h-3 sm:h-2">
             <div 
-              className={`h-3 rounded-full transition-all duration-700 ease-out ${
-                colorClass.includes('red') ? 'bg-gradient-to-r from-red-500 to-red-400' : 
-                colorClass.includes('green') ? 'bg-gradient-to-r from-green-500 to-green-400' : 
-                colorClass.includes('orange') ? 'bg-gradient-to-r from-orange-500 to-orange-400' : 'bg-gradient-to-r from-teal-500 to-teal-400'
+              className={`h-3 sm:h-2 rounded-full ${
+                colorClass.includes('red') ? 'bg-red-400' : 
+                colorClass.includes('green') ? 'bg-green-400' : 
+                colorClass.includes('orange') ? 'bg-orange-400' : 'bg-teal-400'
               }`}
-              style={{ 
-                width: getProgressWidth(),
-                boxShadow: `0 0 10px ${colorClass.includes('red') ? 'rgba(239, 68, 68, 0.3)' : 
-                          colorClass.includes('green') ? 'rgba(34, 197, 94, 0.3)' : 
-                          colorClass.includes('orange') ? 'rgba(249, 115, 22, 0.3)' : 'rgba(20, 184, 166, 0.3)'}`
-              }}
+              style={{ width: getProgressWidth() }}
             />
           </div>
         </div>
@@ -324,13 +320,13 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           )}
 
-          {/* METRICS GRID - Enhanced Visual Design */}
+          {/* METRICS GRID - Mobile First */}
           <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-2 mb-4 sm:mb-2"
             initial="hidden"
             animate="visible"
             variants={{
-              visible: { transition: { staggerChildren: 0.15 } }
+              visible: { transition: { staggerChildren: 0.1 } }
             }}
           >
             <motion.div variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
@@ -363,10 +359,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-3 py-2 bg-green-500/20 border border-green-400/40 rounded-full text-green-300 text-sm font-medium whitespace-nowrap backdrop-blur-sm"
-                      style={{
-                        boxShadow: '0 2px 8px rgba(34, 197, 94, 0.1)'
-                      }}
+                      className="inline-flex items-center justify-center px-2 py-1 text-green-300 text-base font-medium whitespace-nowrap"
                     >
                       {chip}
                     </motion.span>
@@ -385,10 +378,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-3 py-2 bg-red-500/20 border border-red-400/40 rounded-full text-red-300 text-sm font-medium whitespace-nowrap backdrop-blur-sm"
-                      style={{
-                        boxShadow: '0 2px 8px rgba(239, 68, 68, 0.1)'
-                      }}
+                      className="inline-flex items-center justify-center px-2 py-1 text-red-300 text-base font-medium whitespace-nowrap"
                     >
                       {chip}
                     </motion.span>
@@ -477,49 +467,52 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           </div>
           
-          {/* ACTION BUTTONS - Mobile Optimized */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 mb-4">
-            <button 
-              onClick={onSaveReceipt}
-              disabled={isSharing}
-              className="min-h-[48px] sm:min-h-[44px] flex-1 bg-white/10 hover:bg-white/20 active:scale-95 text-stone-200 font-medium py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 touch-manipulation"
-              style={{
-                border: '1px solid rgba(20, 184, 166, 0.4)',
-                boxShadow: '0 4px 12px rgba(20, 184, 166, 0.1)'
-              }}
-            >
-              <Download className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span className="text-base sm:text-sm">{isSharing ? 'Saving...' : 'Save'}</span>
-            </button>
-            <motion.button 
-              animate={{ 
-                scale: [1, 1.02, 1],
-                boxShadow: [
-                  '0 0 20px rgba(212, 175, 55, 0.3)',
-                  '0 0 30px rgba(212, 175, 55, 0.5)', 
-                  '0 0 20px rgba(212, 175, 55, 0.3)'
-                ]
-              }}
-              onClick={onScreenshot}
-              disabled={isSharing}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="min-h-[48px] sm:min-h-[44px] flex-1 text-white font-bold py-3 sm:py-2 px-4 sm:px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 touch-manipulation"
-              style={{
-                background: 'linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)',
-                border: '1px solid rgba(20, 184, 166, 0.8)',
-                boxShadow: '0 4px 12px rgba(20, 184, 166, 0.3)'
-              }}
-            >
-              <Share2 className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span className="text-base sm:text-sm">{isSharing ? 'Sharing...' : 'Share Receipt'}</span>
-            </motion.button>
+          {/* SAVE/SHARE SECTION - Inside Receipt Card */}
+          <div className="mt-6 pt-4 border-t border-white/10">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center p-4 bg-gradient-to-br from-slate-900/40 to-slate-800/40 backdrop-blur rounded-2xl border border-slate-600/30 shadow-lg">
+              <button 
+                onClick={onSaveReceipt}
+                disabled={isSharing}
+                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
+                style={{
+                  border: '1px solid rgba(212, 175, 55, 0.6)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <Download className="h-4 w-4" />
+                {isSharing ? 'Saving...' : 'Save Receipt'}
+              </button>
+              
+              <motion.button 
+                animate={{ 
+                  scale: [1, 1.02, 1],
+                  boxShadow: [
+                    '0 0 20px rgba(212, 175, 55, 0.3)',
+                    '0 0 30px rgba(212, 175, 55, 0.5)', 
+                    '0 0 20px rgba(212, 175, 55, 0.3)'
+                  ]
+                }}
+                onClick={onScreenshot}
+                disabled={isSharing}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.9)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <Share2 className="h-4 w-4" />
+                {isSharing ? 'Sharing...' : 'Share Receipt'}
+              </motion.button>
+            </div>
           </div>
 
-          {/* WATERMARK */}
+          {/* WATERMARK - Included in shareable area */}
           <div className="text-center mt-4 mb-4">
             <p className="text-xs text-stone-200/90/40 tracking-widest">
               www.getthereceipts.com

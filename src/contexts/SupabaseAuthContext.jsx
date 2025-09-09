@@ -100,19 +100,25 @@ export const AuthProvider = ({ children }) => {
 
     // Minimal auth state change handler to prevent loops
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        console.log('Auth state changed:', _event, session?.user?.email);
-        setSession(session);
-        setUser(session?.user ?? null);
+      (event, session) => {
+        console.log('🔐 Auth state changed:', event, session?.user?.email || 'No user');
         
-        if (session?.user) {
-          const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
-          setIsPremium(isOwner);
-        } else {
-          setIsPremium(false);
+        // Only process certain events to prevent infinite loops
+        if (['SIGNED_IN', 'SIGNED_OUT', 'TOKEN_REFRESHED', 'INITIAL_SESSION'].includes(event)) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
+            setIsPremium(isOwner);
+            console.log('🔐 User authenticated:', session.user.email, 'Premium:', isOwner);
+          } else {
+            setIsPremium(false);
+            console.log('🔐 User signed out');
+          }
+          
+          setLoading(false);
         }
-        
-        setLoading(false);
       }
     );
 
@@ -186,11 +192,60 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Starting Google OAuth...');
       
-      // For development, use localhost redirect
-      const redirectUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'http://localhost:5174/auth/callback'
-        : `${window.location.origin}/auth/callback`;
+      // Check if we're in development mode
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       
+      if (isLocalhost) {
+        console.log('🚨 DEVELOPMENT MODE: Using mock auth instead of Google OAuth');
+        
+        // Mock authentication for localhost development
+        try {
+          const mockUser = {
+            id: '00000000-0000-0000-0000-000000000001', // Valid UUID for development
+            email: 'dev@localhost.com',
+            user_metadata: {
+              full_name: 'Local Developer',
+              email: 'dev@localhost.com'
+            },
+            app_metadata: {},
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            aud: 'authenticated',
+            role: 'authenticated'
+          };
+          
+          const mockSession = {
+            access_token: 'mock-access-token',
+            refresh_token: 'mock-refresh-token',
+            expires_in: 3600,
+            expires_at: Date.now() + 3600000,
+            token_type: 'bearer',
+            user: mockUser
+          };
+          
+          // Simulate auth state change
+          setTimeout(() => {
+            setSession(mockSession);
+            setUser(mockUser);
+            setIsPremium(true); // Give premium for dev
+            setLoading(false);
+            console.log('🚨 LOCALHOST: Mock authentication completed');
+            
+            toast({
+              title: "Development Mode Auth",
+              description: "Signed in as dev@localhost.com",
+            });
+          }, 1000);
+          
+          return { data: { session: mockSession }, error: null };
+        } catch (error) {
+          console.error('Mock auth error:', error);
+          return { error };
+        }
+      }
+      
+      // Production OAuth flow
+      const redirectUrl = `${window.location.origin}/auth/callback`;
       console.log('Using redirect URL:', redirectUrl);
       
       const { data, error } = await withTimeout(

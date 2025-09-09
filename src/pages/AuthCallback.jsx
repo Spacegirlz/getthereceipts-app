@@ -10,6 +10,8 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        console.log('🔐 AuthCallback: Starting auth callback process...');
+        
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -20,9 +22,21 @@ const AuthCallback = () => {
         }
 
         if (data.session) {
+          console.log('🔐 AuthCallback: Session found, user authenticated:', data.session.user.email);
           setStatus('success');
-          setTimeout(() => navigate('/chat-input'), 2000);
+          
+          // Check if there's saved form data that should trigger auto-processing
+          const savedFormData = localStorage.getItem('chatInputFormData');
+          if (savedFormData) {
+            console.log('🔐 AuthCallback: Found saved form data, redirecting to chat-input for auto-submit');
+            // Longer delay to ensure auth context fully propagates
+            setTimeout(() => navigate('/chat-input'), 2500);
+          } else {
+            console.log('🔐 AuthCallback: No saved form data, redirecting to dashboard');
+            setTimeout(() => navigate('/dashboard'), 2000);
+          }
         } else {
+          console.log('🔐 AuthCallback: No session found');
           setStatus('error');
           setTimeout(() => navigate('/'), 3000);
         }
