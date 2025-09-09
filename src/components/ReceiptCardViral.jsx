@@ -322,7 +322,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
 
           {/* METRICS GRID - Mobile First */}
           <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-2 mb-4 sm:mb-2"
+            className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2"
             initial="hidden"
             animate="visible"
             variants={{

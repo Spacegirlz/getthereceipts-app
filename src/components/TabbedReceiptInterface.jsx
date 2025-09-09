@@ -146,16 +146,7 @@ const TabbedReceiptInterface = ({
       {/* Tab Navigation with Arrow Controls */}
       <div className="mb-8">
         <div className="relative max-w-lg mx-auto">
-          <div className="flex items-center justify-between bg-gradient-to-r from-slate-800/70 to-slate-900/70 rounded-2xl p-2 sm:p-3 backdrop-blur-md border-2 border-slate-500/50 shadow-xl shadow-slate-900/40">
-            {/* Left Arrow - Hidden on larger screens */}
-            <button
-              onClick={() => navigateToTab(activeTab - 1)}
-              disabled={activeTab === 0 || isTransitioning}
-              className="p-2 sm:p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out sm:hidden"
-              aria-label="Previous section"
-            >
-              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
+          <div className="flex items-center justify-center bg-gradient-to-r from-slate-800/70 to-slate-900/70 rounded-2xl p-2 sm:p-3 backdrop-blur-md border-2 border-slate-500/50 shadow-xl shadow-slate-900/40">
 
             {/* Tab Labels */}
             <div className="flex-1 flex justify-center">
@@ -219,15 +210,6 @@ const TabbedReceiptInterface = ({
               </div>
             </div>
 
-            {/* Right Arrow - Hidden on larger screens */}
-            <button
-              onClick={() => navigateToTab(activeTab + 1)}
-              disabled={activeTab === tabs.length - 1 || isTransitioning}
-              className="p-2 sm:p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out sm:hidden"
-              aria-label="Next section"
-            >
-              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
           </div>
 
           {/* Progress Indicator */}
