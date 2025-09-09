@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, Lock, Brain, Shield, Sparkles, ChevronLeft, ChevronRight, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -145,61 +145,88 @@ const TabbedReceiptInterface = ({
     <div className="w-full max-w-6xl mx-auto">
       {/* Tab Navigation with Arrow Controls */}
       <div className="mb-8">
-        <div className="relative">
-          <div className="flex items-center justify-between bg-gradient-to-r from-slate-800/70 to-slate-900/70 rounded-2xl p-2.5 backdrop-blur-md border-2 border-slate-500/50 shadow-xl shadow-slate-900/40">
-            {/* Left Arrow */}
+        <div className="relative max-w-lg mx-auto">
+          <div className="flex items-center justify-between bg-gradient-to-r from-slate-800/70 to-slate-900/70 rounded-2xl p-2 sm:p-3 backdrop-blur-md border-2 border-slate-500/50 shadow-xl shadow-slate-900/40">
+            {/* Left Arrow - Hidden on larger screens */}
             <button
               onClick={() => navigateToTab(activeTab - 1)}
               disabled={activeTab === 0 || isTransitioning}
-              className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out"
+              className="p-2 sm:p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out sm:hidden"
               aria-label="Previous section"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             {/* Tab Labels */}
             <div className="flex-1 flex justify-center">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center">
                 {tabs.map((tab, index) => {
+                  const getTabColors = () => {
+                    if (index === 0) { // Receipt
+                      return activeTab === index 
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25 border border-purple-400/30' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-pink-600/20 hover:shadow-md border border-transparent hover:border-purple-400/30';
+                    } else if (index === 1) { // Tea
+                      return activeTab === index 
+                        ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-teal-600/20 hover:to-cyan-600/20 hover:shadow-md border border-transparent hover:border-teal-400/30';
+                    } else { // Immunity
+                      return activeTab === index 
+                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black shadow-lg shadow-amber-500/25 border border-[#D4AF37]/50' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-[#F5E6D3]/20 hover:shadow-md border border-transparent hover:border-[#D4AF37]/30';
+                    }
+                  };
+
+                  const getLockIconColor = () => {
+                    // Make lock/crown icons visible based on active state and tab
+                    if (index === 2 && activeTab === index) {
+                      return 'text-black'; // Black icon on gold background when active
+                    }
+                    return 'text-amber-400'; // Default amber color
+                  };
+
                   return (
-                    <button
-                      key={tab.id}
-                      onClick={() => handleTabClick(index)}
-                      disabled={isTransitioning}
-                      className={`
-                        group relative px-2.5 py-2 rounded-xl flex items-center gap-1.5 transition-all duration-300 ease-out transform hover:scale-105
-                        ${activeTab === index 
-                          ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30' 
-                          : 'text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40'
-                        }
-                        ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
-                      `}
-                    >
-                      <span className="text-sm flex-shrink-0">{tab.icon}</span>
-                      <span className="text-xs font-medium whitespace-nowrap">{tab.label}</span>
-                      {tab.isPremium && !isPremium && (
-                        <Lock className="w-2.5 h-2.5 text-amber-400 animate-pulse" />
-                      )}
-                      {tab.isPremium && isPremium && (
-                        <Crown className="w-2.5 h-2.5 text-amber-400" />
-                      )}
+                    <React.Fragment key={tab.id}>
+                      <button
+                        onClick={() => handleTabClick(index)}
+                        disabled={isTransitioning}
+                        className={`
+                          group relative w-24 sm:w-32 px-2 sm:px-3 py-2.5 sm:py-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 transition-all duration-300 ease-out transform hover:scale-105
+                          ${getTabColors()}
+                          ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
+                        `}
+                      >
+                        {tab.isPremium && !isPremium && (
+                          <Lock className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${getLockIconColor()} animate-pulse absolute top-1 right-1`} />
+                        )}
+                        {tab.isPremium && isPremium && (
+                          <Crown className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${getLockIconColor()} absolute top-1 right-1`} />
+                        )}
+                        <span className="text-base sm:text-xl flex-shrink-0">{tab.icon}</span>
+                        <span className="text-xs sm:text-base font-medium whitespace-nowrap">{tab.label}</span>
+                        
+                        {/* Hover effect overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                      </button>
                       
-                      {/* Hover effect overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    </button>
+                      {/* Divider between tabs */}
+                      {index < tabs.length - 1 && (
+                        <div className="w-px h-8 sm:h-10 bg-slate-600/50 mx-1 sm:mx-2" />
+                      )}
+                    </React.Fragment>
                   );
                 })}
               </div>
             </div>
 
-            {/* Right Arrow */}
+            {/* Right Arrow - Hidden on larger screens */}
             <button
               onClick={() => navigateToTab(activeTab + 1)}
               disabled={activeTab === tabs.length - 1 || isTransitioning}
-              className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out"
+              className="p-2 sm:p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 hover:shadow-md hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 ease-out sm:hidden"
               aria-label="Next section"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 

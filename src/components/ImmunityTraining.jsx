@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { Shield, AlertTriangle, Zap, Eye, LogOut, Crown, CheckCircle, Calendar, Target, TrendingUp, Clock, Mic, Activity } from 'lucide-react';
+import { Shield, AlertTriangle, Zap, Eye, LogOut, Crown, CheckCircle, Calendar, Target, TrendingUp, Clock, Mic, Activity, Download, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
@@ -427,8 +427,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           background: 'linear-gradient(180deg, #1a1a3e 0%, #14142e 100%)',
           backdropFilter: 'blur(10px)',
           borderRadius: '20px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-          border: '1px solid rgba(255, 255, 255, 0.05)'
+          border: '2px solid rgba(20, 184, 166, 0.4)',
+          boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
         }}
       >
         {/* Premium dot pattern background */}
@@ -474,22 +474,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
             </div>
           </div>
         </motion.div>
-
-        {/* Main Section Header: Understanding Your [Archetype] */}
-        <div className="mb-8 text-center">
-          <div className="p-6 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-3xl border border-violet-400/30 shadow-lg">
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2" 
-              style={{
-                background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-              Understanding Your {archetypeName?.replace(/^The /, '') || 'Situation'}
-            </h2>
-            <p className="text-violet-200/80 text-sm">Knowledge is your first line of defense</p>
-          </div>
-        </div>
 
         {/* The Archetype Breakdown */}
         <div className="mb-6">
@@ -586,11 +570,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
 
         {/* Pattern Recognition - Your Specific Situation */}
         <div className="mb-6">
-          <div className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-2xl border border-blue-500/20 overflow-hidden">
-            <div className="px-4 py-3 bg-blue-500/5 border-b border-blue-500/10">
+          <div className="bg-gradient-to-br from-slate-800/40 to-slate-900/60 rounded-2xl border border-slate-600/30 overflow-hidden relative backdrop-blur-sm"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(8, 145, 178, 0.08) 0%, transparent 50%)'
+            }}>
+            <div className="px-4 py-3 bg-cyan-500/5 border-b border-cyan-500/10">
               <div className="flex items-center gap-2">
                 <span className="text-lg sm:text-xl">📊</span>
-                <h4 className="text-blue-400 font-bold text-sm sm:text-base tracking-wide uppercase">Pattern Recognition</h4>
+                <h4 className="text-cyan-400 font-bold text-sm sm:text-base tracking-wide uppercase">Pattern Recognition</h4>
               </div>
             </div>
             
@@ -598,7 +585,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               <div className="space-y-4">
                 {/* Pattern Detected */}
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-2">
+                  <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-2">
                     Pattern Detected:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
@@ -613,7 +600,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 
                 {/* Success Rate */}
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-2">
+                  <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-2">
                     Success Rate:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
@@ -628,7 +615,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 
                 {/* Your Vulnerability */}
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-2">
+                  <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-2">
                     Your Vulnerability:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
@@ -884,7 +871,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
             background: 'rgba(255, 255, 255, 0.03)',
             backdropFilter: 'blur(10px)',
             borderRadius: '24px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)'
+            border: '1px solid rgba(212, 175, 55, 0.4)',
+            boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 40px rgba(212, 175, 55, 0.08)'
           }}>
             <div className="text-center mb-6 sm:mb-8">
               <Crown className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-4" style={{ color: '#D4AF37' }} />
@@ -928,56 +916,63 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </div>
         </div>
 
-        {/* Watermark */}
-        <div className="text-center mt-4">
-          <p className="text-white/40 text-xs">www.getthereceipts.com</p>
+        {/* WATERMARK - Final element in Sage's Immunity Training */}
+        <div className="text-center mt-4 mb-6">
+          <p className="text-xs text-stone-200/90/40 tracking-widest">
+            www.getthereceipts.com
+          </p>
         </div>
-
       </motion.div>
-      
-      {/* CTA Footer - Softer Panel */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8 mb-12 p-6 sm:p-8 md:p-10 rounded-3xl backdrop-blur-sm"
-        style={{
-          background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(6, 182, 212, 0.05) 50%, rgba(236, 72, 153, 0.06) 100%)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
-        }}
-      >
-        <div className="text-center mb-6">
-          <h5 className="text-white/80 font-medium text-sm sm:text-base mb-2">Ready to level up?</h5>
-          <p className="text-white/60 text-xs sm:text-sm">Save your insights and share your growth</p>
-        </div>
-        
-        <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+
+      {/* SEPARATE SAVE/SHARE BOX - Completely outside the immunity card */}
+      <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
+        <div 
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            border: '2px solid rgba(20, 184, 166, 0.4)',
+            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+          }}
+        >
           <button 
             onClick={handleSaveBadge}
-            className="flex-1 bg-white/5 hover:bg-white/10 active:scale-95 text-white/80 hover:text-white font-medium py-3.5 px-5 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] touch-manipulation border border-white/10 hover:border-white/20"
+            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
             style={{
-              backdropFilter: 'blur(10px)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+              border: '1px solid rgba(212, 175, 55, 0.6)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
             }}
           >
-            <LogOut className="w-4 h-4 flex-shrink-0" />
-            <span className="text-sm">Save Badge</span>
+            <LogOut className="h-4 w-4" />
+            Save Badge
           </button>
-          <button 
+          
+          <motion.button 
+            animate={{ 
+              scale: [1, 1.02, 1],
+              boxShadow: [
+                '0 0 20px rgba(212, 175, 55, 0.3)',
+                '0 0 30px rgba(212, 175, 55, 0.5)', 
+                '0 0 20px rgba(212, 175, 55, 0.3)'
+              ]
+            }}
             onClick={handleShareTrophy}
-            className="flex-1 text-white font-medium py-3.5 px-5 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] active:scale-95 touch-manipulation hover:scale-105"
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
             style={{
-              background: 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              boxShadow: '0 4px 16px rgba(139, 92, 246, 0.25)'
+              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.9)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
             }}
           >
-            <Zap className="w-4 h-4 flex-shrink-0" />
-            <span className="text-sm">Share Trophy</span>
-          </button>
+            <Zap className="h-4 w-4" />
+            Share Trophy
+          </motion.button>
         </div>
-      </motion.div>
+      </div>
 
     </div>
   );

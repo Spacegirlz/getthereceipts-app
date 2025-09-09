@@ -250,20 +250,20 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
   };
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative w-full max-w-md sm:max-w-2xl md:max-w-4xl mx-auto px-4 sm:px-0 pb-8 sm:pb-12 md:pb-16">
       {/* The Tea V4 Main Container - 9:16 Format */}
       <motion.div 
         data-deepdive-component
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.3 }}
-        className="p-6 mb-3 hover:scale-[1.01] transition-all duration-300 max-w-2xl mx-auto"
+        className="p-4 sm:p-6 md:p-8 lg:p-10 mb-4 sm:mb-6 md:mb-8 relative hover:scale-[1.01] transition-all duration-300"
         style={{
-          background: '#14142e',
+          background: 'linear-gradient(180deg, #1a1a3e 0%, #14142e 100%)',
           backdropFilter: 'blur(10px)',
-          borderRadius: '16px',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
+          borderRadius: '20px',
+          border: '2px solid rgba(20, 184, 166, 0.4)',
+          boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
         }}
       >
 
@@ -280,14 +280,6 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               borderColor: 'rgba(255, 255, 255, 0.08)',
               boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
             }}>
-            {/* Journey Badge */}
-            <div className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                color: '#1a1a1a'
-              }}>
-              ②
-            </div>
             
             <div className="inline-flex items-center gap-2 mb-2">
               <span className="text-2xl opacity-80">🫖</span>
@@ -328,13 +320,6 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               <div className="text-stone-200 text-base italic mb-4 leading-relaxed">
                 "{deepDive.verdict?.subtext || 'Sage has analyzed the situation'}"
               </div>
-              <button 
-                onClick={() => copyToClipboard(`${deepDive.verdict?.act || analysisData?.verdict?.act || ''} - ${deepDive.verdict?.subtext || analysisData?.verdict?.subtext || ''}`)}
-                className="text-xs text-stone-200/70 hover:text-stone-200 flex items-center gap-1 mx-auto transition-colors"
-              >
-                <Copy className="w-3 h-3" />
-                {copiedText.includes(deepDive.verdict?.act || analysisData?.verdict?.act) ? 'Copied!' : 'Copy Verdict'}
-              </button>
             </div>
           </div>
         </motion.section>
@@ -434,7 +419,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                   <div className="space-y-2 text-sm">
                     <div><span className="font-semibold text-teal-400">Next 48hrs:</span> <span className="text-stone-200 text-base">Predictable move incoming</span></div>
                     <div><span className="font-semibold text-teal-400">Next week:</span> <span className="text-stone-200 text-base">Pattern escalation</span></div>
-                    <div><span className="font-semibold text-teal-400">Trump card:</span> <span className="text-stone-200 text-base">The classic deflection</span></div>
+                    <div><span className="font-semibold text-teal-400">Your Move:</span> <span className="text-stone-200 text-base">The classic deflection</span></div>
                   </div>
                 </div>
               </div>
@@ -498,7 +483,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                     <span className="text-stone-200 text-base">{deepDive.playbook?.next_week || ''}</span>
                   </div>
                   <div className="leading-relaxed">
-                    <span className="font-semibold text-teal-400">Trump card:</span>{' '}
+                    <span className="font-semibold text-teal-400">Your Move:</span>{' '}
                     <span className="text-stone-200 text-base">{deepDive.playbook?.trump_card || ''}</span>
                   </div>
                 </div>
@@ -554,67 +539,69 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-2">
-            <button 
-              onClick={() => copyToClipboard(deepDive.sages_seal || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || '')}
-              className="flex-1 bg-white/10 hover:bg-white/20 text-stone-200 font-normal py-2 px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-              style={{
-                border: '1px solid rgba(212, 175, 55, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <Copy className="w-4 h-4" />
-              {copiedText.includes(deepDive.sages_seal || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal) ? 'Copied!' : 'Copy'}
-            </button>
-            <button 
-              onClick={handleSaveTea}
-              className="flex-1 bg-white/10 hover:bg-white/20 text-stone-200 font-normal py-2 px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-              style={{
-                border: '1px solid rgba(212, 175, 55, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <Download className="w-4 h-4" />
-              Save
-            </button>
-            <motion.button 
-              animate={{ 
-                scale: [1, 1.02, 1],
-                boxShadow: [
-                  '0 0 20px rgba(212, 175, 55, 0.3)',
-                  '0 0 30px rgba(212, 175, 55, 0.5)', 
-                  '0 0 20px rgba(212, 175, 55, 0.3)'
-                ]
-              }}
-              onClick={handleShareTea}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="flex-1 text-black font-bold py-2 px-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.9)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <Share2 className="w-4 h-4" />
-              Share The Tea
-            </motion.button>
-          </div>
           
           <p className="text-center text-white/60 text-xs mt-4">Sealed with Sage's Wisdom 🔮</p>
           </div>
         </motion.section>
 
-        {/* Watermark */}
-        <div className="text-center mt-6">
-          <p className="text-white/40 text-xs">www.getthereceipts.com</p>
+        {/* WATERMARK - Final element in Sage's Tea */}
+        <div className="text-center mt-4 mb-6">
+          <p className="text-xs text-stone-200/90/40 tracking-widest">
+            www.getthereceipts.com
+          </p>
         </div>
 
       </motion.div>
+
+      {/* SEPARATE SAVE/SHARE BOX - Completely outside the tea card */}
+      <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
+        <div 
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            border: '2px solid rgba(20, 184, 166, 0.4)',
+            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+          }}
+        >
+          <button 
+            onClick={handleSaveTea}
+            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+            style={{
+              border: '1px solid rgba(212, 175, 55, 0.6)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+            }}
+          >
+            <Download className="h-4 w-4" />
+            Save Tea
+          </button>
+          
+          <motion.button 
+            animate={{ 
+              scale: [1, 1.02, 1],
+              boxShadow: [
+                '0 0 20px rgba(212, 175, 55, 0.3)',
+                '0 0 30px rgba(212, 175, 55, 0.5)', 
+                '0 0 20px rgba(212, 175, 55, 0.3)'
+              ]
+            }}
+            onClick={handleShareTea}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+            style={{
+              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.9)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+            }}
+          >
+            <Share2 className="h-4 w-4" />
+            Share The Tea
+          </motion.button>
+        </div>
+      </div>
     </div>
   );
 });

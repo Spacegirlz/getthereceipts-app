@@ -467,57 +467,64 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           </div>
           
-          {/* SAVE/SHARE SECTION - Inside Receipt Card */}
-          <div className="mt-6 pt-4 border-t border-white/10">
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center p-4 bg-gradient-to-br from-slate-900/40 to-slate-800/40 backdrop-blur rounded-2xl border border-slate-600/30 shadow-lg">
-              <button 
-                onClick={onSaveReceipt}
-                disabled={isSharing}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
-                style={{
-                  border: '1px solid rgba(212, 175, 55, 0.6)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-                }}
-              >
-                <Download className="h-4 w-4" />
-                {isSharing ? 'Saving...' : 'Save Receipt'}
-              </button>
-              
-              <motion.button 
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                  boxShadow: [
-                    '0 0 20px rgba(212, 175, 55, 0.3)',
-                    '0 0 30px rgba(212, 175, 55, 0.5)', 
-                    '0 0 20px rgba(212, 175, 55, 0.3)'
-                  ]
-                }}
-                onClick={onScreenshot}
-                disabled={isSharing}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
-                style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                  border: '1px solid rgba(212, 175, 55, 0.9)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-                }}
-              >
-                <Share2 className="h-4 w-4" />
-                {isSharing ? 'Sharing...' : 'Share Receipt'}
-              </motion.button>
-            </div>
-          </div>
-
-          {/* WATERMARK - Included in shareable area */}
-          <div className="text-center mt-4 mb-4">
+          {/* WATERMARK - Final element in Sage's Truth Receipt */}
+          <div className="text-center mt-4 mb-6">
             <p className="text-xs text-stone-200/90/40 tracking-widest">
               www.getthereceipts.com
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* SEPARATE SAVE/SHARE BOX - Completely outside the receipt card */}
+      <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
+        <div 
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            border: '2px solid rgba(20, 184, 166, 0.4)',
+            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+          }}
+        >
+          <button 
+            onClick={onSaveReceipt}
+            disabled={isSharing}
+            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
+            style={{
+              border: '1px solid rgba(212, 175, 55, 0.6)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+            }}
+          >
+            <Download className="h-4 w-4" />
+            {isSharing ? 'Saving...' : 'Save Receipt'}
+          </button>
+          
+          <motion.button 
+            animate={{ 
+              scale: [1, 1.02, 1],
+              boxShadow: [
+                '0 0 20px rgba(212, 175, 55, 0.3)',
+                '0 0 30px rgba(212, 175, 55, 0.5)', 
+                '0 0 20px rgba(212, 175, 55, 0.3)'
+              ]
+            }}
+            onClick={onScreenshot}
+            disabled={isSharing}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
+            style={{
+              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.9)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+            }}
+          >
+            <Share2 className="h-4 w-4" />
+            {isSharing ? 'Sharing...' : 'Share Receipt'}
+          </motion.button>
         </div>
       </div>
     </motion.div>

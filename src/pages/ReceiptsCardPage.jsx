@@ -544,15 +544,15 @@ const ReceiptsCardPage = () => {
         </div>
 
         {/* 2. DECODE ANOTHER MESSAGE - Primary CTA */}
-        <div className="w-full max-w-2xl mx-auto mb-16">
+        <div className="w-full max-w-2xl mx-auto mt-16 mb-16">
           <LinkButton
             to="/chat-input"
-            className="w-full py-6 text-white rounded-full text-xl font-bold hover:scale-105 transition-all duration-300"
+            className="w-full py-6 text-black rounded-full text-xl font-bold hover:scale-105 transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)',
-              border: '1px solid rgba(20, 184, 166, 0.8)',
-              boxShadow: '0 0 30px rgba(6, 182, 212, 0.4), 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(34, 197, 194, 0.6)',
-              filter: 'drop-shadow(0 0 20px rgba(6, 182, 212, 0.3))'
+              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+              border: '1px solid rgba(212, 175, 55, 0.9)',
+              boxShadow: '0 0 30px rgba(212, 175, 55, 0.4), 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(212, 175, 55, 0.6)',
+              filter: 'drop-shadow(0 0 20px rgba(212, 175, 55, 0.3))'
             }}
           >
             ✨ Decode Another Message
@@ -562,15 +562,7 @@ const ReceiptsCardPage = () => {
         {/* 3. PREMIUM UPSELL SECTION - Bottom */}
         <div className="w-full max-w-2xl mx-auto mb-16">
           <div className="text-center p-8 bg-gradient-to-br from-slate-900/40 to-slate-800/40 backdrop-blur rounded-3xl border border-slate-600/30 shadow-lg">
-            <h3 className="text-2xl sm:text-3xl font-bold mb-6"
-              style={{
-                background: 'linear-gradient(135deg, #14B8A6 0%, #06B6D4 50%, #0EA5E9 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                backgroundSize: '200% 200%',
-                animation: 'gradient-shift 3s ease infinite'
-              }}>
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6 gradient-text">
               Need More Truth Receipts?
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
