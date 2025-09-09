@@ -48,7 +48,7 @@ const TrendSticker = ({ archetype, trendData }) => {
       <div className={`
         inline-flex items-center gap-2 px-3 py-1.5 
         bg-gradient-to-r ${getTrendColor()}
-        backdrop-blur-sm border rounded-full
+        backdrop-blur-sm rounded-full
         transition-all duration-300 hover:scale-105
         cursor-pointer
       `}>

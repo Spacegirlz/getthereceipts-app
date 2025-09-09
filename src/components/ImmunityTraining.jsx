@@ -252,6 +252,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
       'Future Faker': {
         patternLoop: ["Promise", "Delay", "Excuse", "Repeat"],
         decoder: `The Future Faker operates on hope. They dangle possibilities like "next week" or "soon" but never deliver concrete plans. They've mastered making you feel like you're always one step away from something real.`,
+        whatTheyWant: "To keep you interested and available without committing to anything concrete. They want the emotional connection and attention without the responsibility of follow-through.",
+        keyCharacteristics: [
+          "Makes vague promises about future plans",
+          "Always has excuses when it's time to commit",
+          "Keeps you hopeful but never follows through"
+        ],
         healthySigns: [
           "When they actually need something from you",
           "Brief moments of seemingly genuine interest", 
@@ -274,6 +280,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
       'Gaslighter': {
         patternLoop: ["Confuse", "Deny", "Blame", "Reset"],
         decoder: `The Gaslighter weaponizes your memory against you. They rewrite history in real time, making you question your own experiences. Your clarity becomes their biggest threat.`,
+        whatTheyWant: "Control through confusion. They want you to doubt yourself so completely that you become dependent on their version of reality.",
+        keyCharacteristics: [
+          "Rewrites history to fit their narrative",
+          "Makes you question your own memory", 
+          "Denies things they clearly said or did"
+        ],
         healthySigns: [
           "Rare moments when they admit fault",
           "Times when they seem genuinely confused (not manipulative)",
@@ -296,6 +308,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
       'Breadcrumber': {
         patternLoop: ["Crumb", "Silence", "Mini-Panic", "Repeat"],
         decoder: `The Breadcrumber gives just enough attention to keep you interested, never enough to feel secure. They've perfected the art of minimum viable effort.`,
+        whatTheyWant: "Maximum attention and availability from you with minimal effort on their part. They want to keep you on the hook as a backup option.",
         healthySigns: [
           "Responds quickly when they want something",
           "Brief bursts of consistent communication",
@@ -399,7 +412,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
       menuOfMoves.length > 0 ? menuOfMoves : []
     ),
     immunityTest: immunityData?.immunityTest || twoWeekExperiment?.description || immunity.immunityTest,
-    archetypeDecoder: immunityData?.archetypeDecoder || patternBreakers?.[0] || immunity.decoder,
+    archetypeDecoder: immunityData?.archetypeDecoder || patternBreakers?.[0], // Specific to user's situation
     teaPlayScript: immunityData?.teaPlayScript || immunityData?.realTalk || immunity.realTalk || getTeaPlayForRiskLevel(actualRiskLevel, immunityData?.menuOfMoves),
     sagesSeal: immunityData?.sagesSeal || immunityShield || immunity.blessing
   };
@@ -499,23 +512,17 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                     Key Characteristics:
                   </div>
                   <ul className="space-y-3 sm:space-y-2">
-                    {(immunity.healthySigns || []).length > 0 ? 
-                      immunity.healthySigns.slice(0, 3).map((trait, index) => (
+                    {(immunity.keyCharacteristics || []).length > 0 ? 
+                      immunity.keyCharacteristics.slice(0, 3).map((trait, index) => (
                         <li key={index} className="flex items-start gap-3">
                           <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
                           <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">{trait}</span>
                         </li>
                       )) : 
-                      [
-                        'Creates emotional highs and lows to maintain control',
-                        'Uses intermittent reinforcement to keep you engaged', 
-                        'Avoids accountability while shifting blame to you'
-                      ].map((trait, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
-                          <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">{trait}</span>
-                        </li>
-                      ))
+                      <li className="flex items-start gap-3">
+                        <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
+                        <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words italic">Loading personalized analysis...</span>
+                      </li>
                     }
                   </ul>
                 </div>
@@ -526,8 +533,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                     How They Operate:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
-                    {displayData.archetypeDecoder || immunity.decoder || 
-                      `This archetype operates by creating a cycle of hope and disappointment. They excel at making you feel special initially, then gradually introduce inconsistency and confusion to maintain psychological control.`
+                    {immunityData?.howTheyOperate || immunity.decoder || 
+                      <span className="italic">Loading archetype profile...</span>
                     }
                   </p>
                 </div>
@@ -538,9 +545,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                     What They Want:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
-                    {actualRiskLevel === 'low' 
-                      ? 'A genuine, healthy connection based on mutual respect and consistent communication.'
-                      : 'To maintain emotional power and control while receiving validation, attention, or resources without reciprocating genuine commitment.'
+                    {immunityData?.theirGoal || immunityData?.whatTheyWant || immunityData?.goal || immunity.whatTheyWant ||
+                      <span className="italic">Loading archetype motivations...</span>
                     }
                   </p>
                 </div>
@@ -549,8 +555,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
           </div>
         </div>
 
-        {/* Archetype Decoder - How They Operate */}
-        {displayData.archetypeDecoder && (
+        {/* Archetype Decoder - Your Specific Situation */}
+        {(immunityData?.archetypeDecoder || displayData.archetypeDecoder) && (
           <div className="mb-6">
             <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 rounded-2xl border border-teal-500/20 overflow-hidden">
               <div className="px-4 py-3 bg-teal-500/5 border-b border-teal-500/10">
@@ -561,7 +567,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               </div>
               <div className="p-4 sm:p-5 md:p-6">
                 <p className="text-gray-200 text-sm leading-relaxed">
-                  {displayData.archetypeDecoder}
+                  {immunityData?.archetypeDecoder || displayData.archetypeDecoder}
                 </p>
               </div>
             </div>
@@ -590,10 +596,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
                     {immunityData?.patternDetected || immunityData?.patternDescription || 
-                      (actualRiskLevel === 'low' 
-                        ? 'Healthy relationship patterns with consistent communication and follow-through' 
-                        : `${archetypeName?.replace(/^The /, '') || 'Manipulative'} pattern: creates excitement and connection but fails to deliver on promises or commitments`
-                      )
+                      <span className="italic">Analyzing pattern from your conversation...</span>
                     }
                   </p>
                 </div>
@@ -605,10 +608,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
                     {immunityData?.successRate || immunityData?.repeatLikelihood || 
-                      (actualRiskLevel === 'low' 
-                        ? '95% chance of continued healthy patterns based on consistent behavior' 
-                        : `${Math.floor(Math.random() * 15) + 75}% chance of repeating this pattern based on behavioral analysis`
-                      )
+                      <span className="italic">Calculating pattern likelihood...</span>
                     }
                   </p>
                 </div>
@@ -620,10 +620,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
                     {immunityData?.userVulnerability || immunityData?.whyItHooks || displayData.whyItHooks || 
-                      (actualRiskLevel === 'low'
-                        ? 'Your openness and trust make you a great partner, but also mean you might miss early warning signs.'
-                        : 'You might feel drawn in because they provide just enough positive signals to keep you hopeful, but then create uncertainty that activates your desire to prove yourself worthy of their full attention and commitment.'
-                      )
+                      <span className="italic">Analyzing your specific vulnerabilities...</span>
                     }
                   </p>
                 </div>
