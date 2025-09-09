@@ -121,7 +121,10 @@ VERDICT FORMATTING CRITICAL:
 REQUIRED JSON KEYS (exactly):
 {
   "mode": "${mode}",
-  "verdict": { "act": "[Situation Name With Proper Title Case Only - NO 'You're In' prefix]", "subtext": "string" },
+  "verdict": { 
+    "act": "[Savage situation name. Be creative & brutal. Examples: 'Mixed Signal Hell', 'Breadcrumb Boulevard', 'Gaslight Central', 'Ghosting Ground Zero', 'Situationship Purgatory'. NO 'You're In' prefix]", 
+    "subtext": "One savage line that cuts to the truth" 
+  },
   "receipts": [
     // Pull EXACT quotes from the conversation:
     {"quote":"[actual quote from OTHER]","pattern":"[describe what this shows]","cost":"[emotional cost to USER]"}

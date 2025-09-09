@@ -309,13 +309,13 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
         >
           <div className="flex items-center gap-2 mb-6">
             <Eye className={`w-4 h-4 ${style.accent}`} />
-            <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE REAL TALK</h3>
+            <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE VERDICT</h3>
           </div>
           
           <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
             <div className="text-center">
               <div className={`text-lg font-bold ${style.accent} mb-1`}>
-                You're In {deepDive.verdict?.act || analysisData?.verdict || 'Analysis Complete'}
+                {deepDive.verdict?.act || analysisData?.verdict || 'Analysis Complete'}
               </div>
               <div className="text-stone-200 text-base italic mb-4 leading-relaxed">
                 "{deepDive.verdict?.subtext || 'Sage has analyzed the situation'}"
@@ -416,10 +416,9 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                   <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE PLAYBOOK</h3>
                 </div>
                 <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
-                  <div className="space-y-2 text-sm">
-                    <div><span className="font-semibold text-teal-400">Next 48hrs:</span> <span className="text-stone-200 text-base">Predictable move incoming</span></div>
-                    <div><span className="font-semibold text-teal-400">Next week:</span> <span className="text-stone-200 text-base">Pattern escalation</span></div>
-                    <div><span className="font-semibold text-teal-400">Your Move:</span> <span className="text-stone-200 text-base">The classic deflection</span></div>
+                  <div className="text-center">
+                    <Lock className="w-6 h-6 text-teal-400 mx-auto mb-2" />
+                    <p className="text-stone-200/60 text-sm">Premium content - Upgrade to see the full playbook</p>
                   </div>
                 </div>
               </div>
