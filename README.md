@@ -349,4 +349,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for people navigating modern dating confusion.**
 
-*Get the receipts. Get the clarity. Get your power back.*
+*Get the receipts. Get the clarity. Get your power back.*# Force deploy Tue Sep  9 12:09:26 AEST 2025
