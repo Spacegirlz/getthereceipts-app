@@ -426,42 +426,6 @@ const TabbedReceiptInterface = ({
               </div>
             </div>
 
-            {/* Additional Mobile Navigation - Same style as top */}
-            <div className="flex justify-center mt-6 sm:hidden">
-              <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-2 backdrop-blur-md border border-slate-600/40 shadow-lg">
-                <div className="flex items-center gap-1">
-                  {tabs.map((tab, index) => {
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => handleTabClick(index)}
-                        disabled={isTransitioning}
-                        className={`
-                          group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105
-                          ${activeTab === index 
-                            ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30' 
-                            : 'text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40'
-                          }
-                          ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
-                        `}
-                      >
-                        <span className="w-3 h-3 flex-shrink-0 text-center">{tab.icon}</span>
-                        <span className="text-[10px] font-medium">{tab.label.split(' ')[0]}</span>
-                        {tab.isPremium && !isPremium && (
-                          <Lock className="w-2 h-2 text-amber-400 animate-pulse" />
-                        )}
-                        {tab.isPremium && isPremium && (
-                          <Crown className="w-2 h-2 text-amber-400" />
-                        )}
-                        
-                        {/* Hover effect overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
           </motion.div>
         </AnimatePresence>
       </div>
