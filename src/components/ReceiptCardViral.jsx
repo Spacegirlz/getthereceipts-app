@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, Fragment } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Download, Share2 } from 'lucide-react';
 import TrendSticker from '@/components/TrendSticker';
@@ -242,7 +242,8 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
   };
 
   return (
-    <motion.div
+    <>
+      <motion.div
       id="receipt-card-shareable"
       className="w-full max-w-2xl mx-auto rounded-[24px]"
       style={{
@@ -475,8 +476,9 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           </div>
         </div>
       </div>
+      </motion.div>
 
-      {/* SEPARATE SAVE/SHARE BOX - Completely outside the receipt card */}
+      {/* SEPARATE SAVE/SHARE BOX - Completely outside the receipt card for screenshots */}
       <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
         <div 
           className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
@@ -527,7 +529,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           </motion.button>
         </div>
       </div>
-    </motion.div>
+    </>
   );
 });
 
