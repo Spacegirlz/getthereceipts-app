@@ -139,7 +139,7 @@ const TabbedReceiptInterface = ({
     }
   };
 
-  console.log('TabbedReceiptInterface rendering with:', { analysis, archetypeName, isPremium });
+  // Debug logging removed for production
   
   return (
     <div className="w-full max-w-6xl mx-auto">

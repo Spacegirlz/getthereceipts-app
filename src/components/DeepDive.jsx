@@ -137,7 +137,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
   };
 
   const valence = calculateValence();
-  console.log('🎨 Deep Dive V4 Valence:', valence);
+  // Debug logging removed for production
 
   // Smart color system - Consistent teal with valence icon
   const getValenceStyle = (valence) => {

@@ -191,9 +191,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
   // Get guaranteed flags that will NEVER be empty
   const guaranteedFlags = getGuaranteedFlags();
   
-  // Debug guaranteed flags
-  console.log('Guaranteed flags:', guaranteedFlags);
-  console.log('Is healthy:', isHealthy);
+  // Debug logging removed for production
 
   // Metrics for display  
   const metricsData = {
