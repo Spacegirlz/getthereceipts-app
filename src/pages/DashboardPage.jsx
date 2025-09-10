@@ -335,8 +335,8 @@ const DashboardPage = () => {
               Actions
             </h2>
             <div className="flex flex-col gap-3 w-full">
-              {/* Receipt Saving Toggle for Premium Users */}
-              {(userCredits?.subscription === 'premium' || userCredits?.subscription === 'yearly' || userCredits?.subscription === 'founder') && (
+              {/* Receipt Saving Toggle for Premium Users - DISABLED FOR LAUNCH */}
+              {/* {(userCredits?.subscription === 'premium' || userCredits?.subscription === 'yearly' || userCredits?.subscription === 'founder') && (
                 <div className="flex items-center justify-between p-2 rounded-lg bg-white/5">
                   <div className="flex flex-col">
                     <span className="text-xs font-medium">Save Receipts</span>
@@ -353,7 +353,7 @@ const DashboardPage = () => {
                     className="ml-2"
                   />
                 </div>
-              )}
+              )} */}
               
               {userCredits?.subscription === 'free' && (
                 <LinkButton to="/pricing" size="sm" variant="outline" className="text-xs">
@@ -367,7 +367,8 @@ const DashboardPage = () => {
           </div>
         </motion.div>
 
-        <motion.section
+        {/* Your Receipt History Section - DISABLED FOR LAUNCH */}
+        {/* <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -401,7 +402,7 @@ const DashboardPage = () => {
               )}
             </div>
           )}
-        </motion.section>
+        </motion.section> */}
       </div>
     </>
   );
