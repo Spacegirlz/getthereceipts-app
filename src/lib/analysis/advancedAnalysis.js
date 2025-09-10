@@ -894,7 +894,7 @@ export const analyzeWithGPT = async (message, context) => {
         return {
           mode: 'safety_override',
           safetyOverride: safetyOverride,
-          archetype: 'Safety First 🛡️',
+          archetype: 'Emergency Support 🛡️',
           verdict: safetyOverride.message || 'Your safety is the priority right now.',
           realTea: safetyOverride.message || 'This goes beyond relationship analysis.',
           wastingTime: 0,
@@ -914,6 +914,10 @@ export const analyzeWithGPT = async (message, context) => {
       }
     }
 
+    // Check if this is a crisis situation for metrics override
+    const isCrisisArchetype = (truthReceipt.archetype || result.archetype || '').includes('Emergency Support') || 
+                             (truthReceipt.archetype || result.archetype || '').includes('Crisis');
+
     // Transform to match existing component expectations (wrapped in analysis object)
     let finalResult = {
       // Core truth receipt fields (directly at root level for compatibility)
@@ -922,9 +926,10 @@ export const analyzeWithGPT = async (message, context) => {
       archetype: truthReceipt.archetype || result.archetype || 'The Analyzer 🔮',
       verdict: truthReceipt.verdict || result.verdict || 'Analysis in progress...',
       realTea: truthReceipt.realTea || (result.teaAndMovePlay ? result.teaAndMovePlay.slice(0, 2).join(' ') : 'Tea is brewing...'),
-      wastingTime: Math.max(0, Math.min(100, truthReceipt.wastingTime || result.wastingTime || 50)),
-      actuallyIntoYou: Math.max(0, Math.min(100, truthReceipt.actuallyIntoYou || result.actuallyIntoYou || 50)),
-      redFlags: Math.max(0, Math.min(10, truthReceipt.redFlags || result.redFlags || 5)),
+      // Crisis metrics override
+      wastingTime: isCrisisArchetype ? 0 : Math.max(0, Math.min(100, truthReceipt.wastingTime || result.wastingTime || 50)),
+      actuallyIntoYou: isCrisisArchetype ? 0 : Math.max(0, Math.min(100, truthReceipt.actuallyIntoYou || result.actuallyIntoYou || 50)),
+      redFlags: isCrisisArchetype ? 10 : Math.max(0, Math.min(10, truthReceipt.redFlags || result.redFlags || 5)),
       confidenceScore: Math.max(0, Math.min(100, truthReceipt.confidenceScore || result.confidenceScore || 85)),
       confidenceRemark: truthReceipt.confidenceRemark || result.confidenceRemark || 'CONFUSED',
       yourMove: Array.isArray(truthReceipt.yourMove) ? truthReceipt.yourMove.slice(0, 2) : (result.teaAndMovePlay ? result.teaAndMovePlay.slice(2, 4) : ['Check back later', 'Try again']),

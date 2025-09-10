@@ -5,15 +5,119 @@ import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
 
-const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" }) => {
+const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false }) => {
   const { toast } = useToast();
   // Memoize debug logging to prevent excessive output
   useMemo(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log('🛡️ ImmunityTraining received:', immunityData);
       console.log('🛡️ Type:', typeof immunityData, 'Keys:', immunityData ? Object.keys(immunityData) : 'none');
+      console.log('🆘 Crisis situation:', isCrisisSituation);
     }
-  }, [immunityData]);
+  }, [immunityData, isCrisisSituation]);
+
+  // Crisis-specific content
+  if (isCrisisSituation) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 sm:p-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Crisis Safety Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-red-500/20 border border-red-400/30 rounded-full px-6 py-3 mb-4">
+              <span className="text-2xl">🆘</span>
+              <span className="text-lg font-bold text-red-300">CRISIS SAFETY GUIDANCE</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-4">
+              Your Safety Matters Most
+            </h1>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+              This situation requires immediate attention and professional support. Here's how to protect yourself and others.
+            </p>
+          </div>
+
+          {/* Crisis Resources Grid */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {/* Immediate Safety */}
+            <div className="bg-red-500/10 border border-red-400/30 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-red-300 mb-4 flex items-center gap-2">
+                <span>🚨</span> Immediate Safety
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-red-400 text-lg">•</span>
+                  <p className="text-gray-200">If you're in immediate danger, call 911 or your local emergency number</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-red-400 text-lg">•</span>
+                  <p className="text-gray-200">Get to a safe location away from the situation</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-red-400 text-lg">•</span>
+                  <p className="text-gray-200">Contact a trusted friend or family member immediately</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Professional Support */}
+            <div className="bg-blue-500/10 border border-blue-400/30 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-blue-300 mb-4 flex items-center gap-2">
+                <span>🏥</span> Professional Support
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-400 text-lg">•</span>
+                  <p className="text-gray-200">National Suicide Prevention Lifeline: 988</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-400 text-lg">•</span>
+                  <p className="text-gray-200">RAINN Sexual Assault Hotline: 1-800-656-4673</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-400 text-lg">•</span>
+                  <p className="text-gray-200">Crisis Text Line: Text HOME to 741741</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Universal Safety Principles */}
+          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-400/30 rounded-2xl p-6 mb-8">
+            <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+              <span>🛡️</span> Universal Safety Principles
+            </h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold text-purple-200 mb-2">If You're Experiencing This:</h4>
+                <ul className="space-y-2 text-gray-200">
+                  <li>• Your feelings are valid and real</li>
+                  <li>• This is not your fault</li>
+                  <li>• You deserve safety and support</li>
+                  <li>• Professional help is available 24/7</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-purple-200 mb-2">If You're Observing This:</h4>
+                <ul className="space-y-2 text-gray-200">
+                  <li>• Take the situation seriously</li>
+                  <li>• Encourage professional help</li>
+                  <li>• Don't try to handle it alone</li>
+                  <li>• Report to authorities if needed</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Important Note */}
+          <div className="bg-yellow-500/10 border border-yellow-400/30 rounded-2xl p-6 text-center">
+            <p className="text-yellow-200 text-lg font-medium">
+              <span className="text-2xl mr-2">⚠️</span>
+              This analysis is not a substitute for professional mental health care, medical attention, or emergency services.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Better element detection using computed styles
   const fixGradientElements = (element) => {
@@ -512,18 +616,36 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                     Key Characteristics:
                   </div>
                   <ul className="space-y-3 sm:space-y-2">
-                    {(immunity.keyCharacteristics || []).length > 0 ? 
-                      immunity.keyCharacteristics.slice(0, 3).map((trait, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
-                          <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">{trait}</span>
-                        </li>
-                      )) : 
-                      <li className="flex items-start gap-3">
-                        <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
-                        <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words italic">Loading personalized analysis...</span>
-                      </li>
-                    }
+                    {(() => {
+                      // Safely get array data with proper fallbacks
+                      const characteristics = immunity.keyCharacteristics || 
+                                           immunityData?.keyCharacteristics || 
+                                           immunityData?.characteristics || 
+                                           immunityData?.redFlagDrills || 
+                                           immunityData?.earlyWarnings || 
+                                           [];
+                      
+                      // Ensure it's an array
+                      const safeArray = Array.isArray(characteristics) ? characteristics : [];
+                      
+                      if (safeArray.length > 0) {
+                        return safeArray.slice(0, 3).map((trait, index) => (
+                          <li key={index} className="flex items-start gap-3">
+                            <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
+                            <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">{trait}</span>
+                          </li>
+                        ));
+                      } else {
+                        return (
+                          <li className="flex items-start gap-3">
+                            <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
+                            <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">
+                              {isCrisisSituation ? "Immediate safety intervention required" : "Emergency Support patterns require immediate professional intervention and crisis resources."}
+                            </span>
+                          </li>
+                        );
+                      }
+                    })()}
                   </ul>
                 </div>
                 
@@ -533,7 +655,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                     How They Operate:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
-                    {immunityData?.howTheyOperate || immunity.decoder || 
+                    {immunityData?.whyItHooks || immunityData?.howTheyOperate || immunity.decoder || 
                       <span className="italic">Loading archetype profile...</span>
                     }
                   </p>
@@ -545,7 +667,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                     What They Want:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
-                    {immunityData?.theirGoal || immunityData?.whatTheyWant || immunityData?.goal || immunity.whatTheyWant ||
+                    {immunityData?.patternDetected || immunityData?.theirGoal || immunityData?.whatTheyWant || immunityData?.goal || immunity.whatTheyWant ||
                       <span className="italic">Loading archetype motivations...</span>
                     }
                   </p>
@@ -657,7 +779,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                   WebkitOverflowScrolling: 'touch'
                 }}>
                   <div className="flex items-center gap-3 min-w-max px-2">
-                    {displayData.patternLoop.map((step, index) => (
+                    {Array.isArray(displayData.patternLoop) ? displayData.patternLoop.map((step, index) => (
                       <React.Fragment key={step}>
                         <div className="bg-purple-900/30 text-purple-300 px-3 py-2 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0 min-w-[80px] hover:bg-purple-800/40 transition-all duration-200">
                           {step}
@@ -666,7 +788,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                           <span className="text-purple-400 text-base flex-shrink-0 animate-pulse">→</span>
                         )}
                       </React.Fragment>
-                    ))}
+                    )) : (
+                      <div className="bg-purple-900/30 text-purple-300 px-3 py-2 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0 min-w-[80px]">
+                        Pattern Loading...
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="text-center mt-3">
@@ -680,7 +806,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               {/* Desktop: Flex wrap */}
               <div className="hidden sm:block">
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                  {displayData.patternLoop.map((step, index) => (
+                  {Array.isArray(displayData.patternLoop) ? displayData.patternLoop.map((step, index) => (
                     <React.Fragment key={step}>
                       <div className="bg-purple-900/30 text-purple-300 px-2 py-1.5 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0 hover:scale-105 hover:bg-purple-800/40 transition-all duration-300 cursor-default">
                         {step}
@@ -689,7 +815,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                         <span className="text-purple-400 text-sm sm:text-base flex-shrink-0 hover:scale-110 transition-transform duration-200">→</span>
                       )}
                     </React.Fragment>
-                  ))}
+                  )) : (
+                    <div className="bg-purple-900/30 text-purple-300 px-2 py-1.5 rounded-lg text-xs font-medium text-center border border-purple-500/20 flex-shrink-0">
+                      Pattern Loading...
+                    </div>
+                  )}
                 </div>
                 <div className="w-full flex justify-center mt-3">
                   <span className="text-purple-400 text-xs opacity-70 hover:opacity-100 transition-opacity duration-300 animate-pulse">
@@ -769,24 +899,34 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
               {/* Healthy Signs */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-emerald-500/5 to-green-500/5">
                 <ul className="space-y-3">
-                  {displayData.healthySigns.slice(0, 3).map((sign, index) => (
+                  {Array.isArray(displayData.healthySigns) ? displayData.healthySigns.slice(0, 3).map((sign, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
                       <span className="text-emerald-200 text-sm leading-relaxed">{sign}</span>
                     </li>
-                  ))}
+                  )) : (
+                    <li className="flex items-start gap-3">
+                      <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
+                      <span className="text-emerald-200 text-sm leading-relaxed">No healthy signs detected</span>
+                    </li>
+                  )}
                 </ul>
               </div>
               
               {/* Red Flags */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-rose-500/5 to-pink-500/5">
                 <ul className="space-y-3">
-                  {displayData.sketchySigns.slice(0, 3).map((sign, index) => (
+                  {Array.isArray(displayData.sketchySigns) ? displayData.sketchySigns.slice(0, 3).map((sign, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
                       <span className="text-rose-200 text-sm leading-relaxed">{sign}</span>
                     </li>
-                  ))}
+                  )) : (
+                    <li className="flex items-start gap-3">
+                      <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
+                      <span className="text-rose-200 text-sm leading-relaxed">No red flags detected</span>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -821,7 +961,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                 
                 {/* Content */}
                 <div className="space-y-3 sm:space-y-4">
-                  {displayData.teaPlayScript.map((step, index) => (
+                  {Array.isArray(displayData.teaPlayScript) ? displayData.teaPlayScript.map((step, index) => (
                   <motion.div 
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -838,7 +978,18 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
                       {step}
                     </p>
                   </motion.div>
-                ))}
+                )) : (
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex items-start gap-3"
+                  >
+                    <span className="text-purple-300 text-sm mt-1 flex-shrink-0">→</span>
+                    <p className="text-purple-100/90 text-sm sm:text-base leading-relaxed break-words font-medium">
+                      Sage's wisdom is being prepared...
+                    </p>
+                  </motion.div>
+                )}
                 </div>
                 
                 {/* Quote Attribution */}
@@ -968,6 +1119,13 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter" 
             <Zap className="h-4 w-4" />
             Share Trophy
           </motion.button>
+        </div>
+        
+        {/* Sage's Disclaimer */}
+        <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
+          <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
+            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 18+ only.
+          </p>
         </div>
       </div>
 

@@ -20,6 +20,25 @@ const TabbedReceiptInterface = ({
   const { isPremium } = useAuth();
   const navigate = useNavigate();
 
+  // Check if this is a crisis situation
+  const isCrisisSituation = archetypeName?.includes('Emergency Support') || 
+                           archetypeName?.includes('Crisis') ||
+                           analysis?.archetype?.includes('Emergency Support') ||
+                           analysis?.archetype?.includes('Crisis') ||
+                           analysis?.mode === 'safety_override' ||
+                           analysis?.safetyOverride?.triggered;
+
+  // Debug logging for crisis detection
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🆘 Crisis Detection Debug:', {
+      archetypeName,
+      analysisArchetype: analysis?.archetype,
+      analysisMode: analysis?.mode,
+      safetyOverride: analysis?.safetyOverride,
+      isCrisisSituation
+    });
+  }
+
   const tabs = [
     {
       id: 'receipt',
@@ -52,19 +71,20 @@ const TabbedReceiptInterface = ({
     },
     {
       id: 'immunity',
-      label: 'Immunity',
-      icon: '🛡️',
+      label: isCrisisSituation ? 'Safety' : 'Immunity',
+      icon: isCrisisSituation ? '🆘' : '🛡️',
       component: (
         <ImmunityTraining 
           immunityData={analysis?.immunityTraining}
           archetypeName={archetypeNameForImmunity}
           riskLevel={analysis?.immunityTraining?.riskLevel || 'medium'}
+          isCrisisSituation={isCrisisSituation}
           onSaveReceipt={onSaveReceipt}
           onScreenshot={onScreenshot}
           isSharing={isSharing}
         />
       ),
-      isPremium: true
+      isPremium: !isCrisisSituation // Make crisis safety guidance free
     }
   ];
 
@@ -382,7 +402,7 @@ const TabbedReceiptInterface = ({
               </div>
             )}
             
-            {/* Mobile Navigation Hands - Clickable */}
+            {/* Mobile Navigation - Single Set */}
             <div className="flex justify-center items-center mt-8 sm:hidden">
               <div className="flex items-center gap-6">
                 <button
@@ -394,8 +414,7 @@ const TabbedReceiptInterface = ({
                   👈
                 </button>
                 <div className="text-xs text-gray-400 text-center px-4">
-                  <div>Explore more sections</div>
-                  <div className="text-[10px] text-gray-500 mt-1">Tap hands or use arrows above</div>
+                  <div>Swipe or tap to explore</div>
                 </div>
                 <button
                   onClick={() => navigateToTab(activeTab + 1)}

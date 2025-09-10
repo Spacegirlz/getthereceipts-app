@@ -19,7 +19,7 @@ const ChatInputPage = () => {
   const location = useLocation();
   const { toast } = useToast();
   const { user, session } = useAuth();
-  const { openModal } = useAuthModal();
+  const { openModal, closeModal } = useAuthModal();
 
   const { quizAnswers } = location.state || {};
   const [texts, setTexts] = useState('');
@@ -49,6 +49,9 @@ const ChatInputPage = () => {
   // Upgrade modal state
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
+  // Anonymous/Observational mode state
+  const [analysisMode, setAnalysisMode] = useState(null); // null, 'personal' or 'anonymous'
+  
   // Form data preservation key
   const FORM_DATA_KEY = 'chatInputFormData';
   
@@ -60,19 +63,37 @@ const ChatInputPage = () => {
   const generateMessage = () => {
     let message = '';
     
-    // Include names and relationship context for clarity
-    if (userName.trim() && otherName.trim()) {
-      message += `USER: ${userName.trim()} (${userPronouns || 'they/them'})\n`;
-      message += `OTHER: ${otherName.trim()} (${otherPartyPronouns || 'they/them'})\n`;
-    }
-    if (contextType) {
-      message += `RELATIONSHIP: ${contextType}\n\n`;
+    // Auto-detect if this is an observational conversation (dialogue format)
+    const combinedText = texts.trim() + ' ' + (extractedTexts || []).join(' ');
+    const isDialogueFormat = /\w+\d*\s*:\s*/.test(combinedText) && combinedText.includes(':');
+    const hasMultipleSpeakers = (combinedText.match(/\w+\d*\s*:/g) || []).length >= 2;
+    
+    const shouldUseObservationalMode = analysisMode === 'anonymous' || (isDialogueFormat && hasMultipleSpeakers);
+    
+    // Handle analysis mode
+    if (shouldUseObservationalMode) {
+      message += `ANALYSIS MODE: Observational - Analyzing someone else's conversation from one person's perspective\n\n`;
+      
+      // For anonymous mode, still maintain perspective structure but with generic labels
+      if (texts.trim()) {
+        message += `CONVERSATION:\n${texts.trim()}\n\n`;
+      }
     } else {
-      message += '\n';
+      // Personal mode - include names and relationship context
+      if (userName.trim() && otherName.trim()) {
+        message += `USER: ${userName.trim()} (${userPronouns || 'they/them'})\n`;
+        message += `OTHER: ${otherName.trim()} (${otherPartyPronouns || 'they/them'})\n`;
+      }
+      if (contextType) {
+        message += `RELATIONSHIP: ${contextType}\n\n`;
+      } else {
+        message += '\n';
+      }
+      if (texts.trim()) {
+        message += `EVIDENCE:\n${texts.trim()}\n\n`;
+      }
     }
-    if (texts.trim()) {
-      message += `EVIDENCE:\n${texts.trim()}\n\n`;
-    }
+    
     // Add extracted text from images
     if (extractedTexts.length > 0) {
       message += `EXTRACTED TEXT FROM IMAGES:\n`;
@@ -218,6 +239,11 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
         userEmail: user.email 
       });
       localStorage.removeItem('shouldAutoSubmit');
+      
+      // Close any open modals before auto-submit
+      setShowUpgradeModal(false);
+      closeModal();
+      
       if ((texts.trim() || extractedTexts.length > 0)) {
         // Small delay to ensure UI is ready
         setTimeout(() => {
@@ -233,8 +259,49 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
   const handleSubmit = async () => {
     console.log('🚀 ChatInput: handleSubmit called', { 
       hasUser: !!user, 
-      textsLength: texts.length 
+      textsLength: texts.length,
+      analysisMode 
     });
+    
+    // Check if analysis mode is selected
+    if (!analysisMode) {
+      toast({
+        title: 'Analysis Mode Required',
+        description: 'Please select whether this is your conversation or you\'re observing others.',
+      });
+      return;
+    }
+
+    // Check if tea/text input is provided (either pasted or from screenshots)
+    if (!texts.trim() && extractedTexts.length === 0) {
+      toast({
+        title: 'Tea Required',
+        description: 'Please paste your conversation or upload screenshots with text.',
+      });
+      return;
+    }
+
+    // Check if relationship type is selected (only for personal mode)
+    if (analysisMode === 'personal' && !contextType) {
+      toast({
+        title: 'Relationship Required',
+        description: 'Please select the relationship dynamic.',
+      });
+      return;
+    }
+
+    // Check if main person is identified (required for both modes)
+    if (!userName.trim()) {
+      const title = analysisMode === 'anonymous' ? 'Main Person Required' : 'Your Name Required';
+      const description = analysisMode === 'anonymous' 
+        ? 'Please identify the main person whose perspective to analyze from.'
+        : 'Please enter your name or use "Me" to stay anonymous.';
+      toast({
+        title,
+        description,
+      });
+      return;
+    }
     
     // Check if user is logged in first
     if (!user) {
@@ -459,77 +526,198 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 <h3 className="text-xl font-bold text-stone-100">The Cast</h3>
               </div>
               
-              <p className="text-stone-300 text-sm mb-4">
-                Who's in this story? This helps Sage understand the dynamic. You can leave it blank for max privacy.
+              {analysisMode === 'personal' ? (
+                <>
+                  <p className="text-stone-300 text-sm mb-4">
+                    Who's in this story? <span className="text-orange-400">*Required</span> - This helps Sage understand the dynamic from <strong>your perspective</strong>. Use real names or stay anonymous with "Me" and "Person 1".
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Your Name */}
+                    <div>
+                      <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value.slice(0, 20))}
+                        placeholder="Your Name (e.g., Alex, Me, Person 1)"
+                        className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors placeholder-gray-500"
+                        disabled={isLoading}
+                      />
+                    </div>
+
+                    {/* Their Name */}
+                    <div>
+                      <input
+                        type="text"
+                        value={otherName}
+                        onChange={(e) => setOtherName(e.target.value.slice(0, 50))}
+                        placeholder="Their Name (e.g., Taylor, Person 2)"
+                        className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors placeholder-gray-500"
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Pronouns (Optional) */}
+                  <div className="mt-4">
+                    <label className="text-stone-400 text-xs mb-2 block">Pronouns (Optional)</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-stone-400 mb-2">You:</p>
+                        <div className="flex gap-2">
+                          {['she/her', 'he/him', 'they/them'].map((pronoun) => (
+                            <button
+                              key={pronoun}
+                              onClick={() => setUserPronouns(pronoun)}
+                              className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
+                                userPronouns === pronoun
+                                  ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
+                                  : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
+                              }`}
+                            >
+                              {pronoun}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-stone-400 mb-2">Them:</p>
+                        <div className="flex gap-2">
+                          {['he/him', 'she/her', 'they/them'].map((pronoun) => (
+                            <button
+                              key={pronoun}
+                              onClick={() => setOtherPartyPronouns(pronoun)}
+                              className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
+                                otherPartyPronouns === pronoun
+                                  ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
+                                  : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
+                              }`}
+                            >
+                              {pronoun}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : analysisMode === 'anonymous' ? (
+                <>
+                  <p className="text-stone-300 text-sm mb-4">
+                    Whose perspective should Sage analyze from? <span className="text-orange-400">*Required</span> - Choose one person from the conversation. Use labels like "Person 1", "Guy 1", or whatever they're called in your text.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Main Person */}
+                    <div>
+                      <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value.slice(0, 20))}
+                        placeholder="Main Person (e.g., Person 1, Guy 1, Sarah)"
+                        className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors placeholder-gray-500"
+                        disabled={isLoading}
+                      />
+                    </div>
+
+                    {/* Other Person */}
+                    <div>
+                      <input
+                        type="text"
+                        value={otherName}
+                        onChange={(e) => setOtherName(e.target.value.slice(0, 50))}
+                        placeholder="Other Person (e.g., Person 2, Guy 2, Mike)"
+                        className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors placeholder-gray-500"
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Pronouns (Optional) */}
+                  <div className="mt-4">
+                    <label className="text-stone-400 text-xs mb-2 block">Pronouns (Optional - helps with analysis)</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-stone-400 mb-2">Main Person:</p>
+                        <div className="flex gap-2">
+                          {['she/her', 'he/him', 'they/them'].map((pronoun) => (
+                            <button
+                              key={pronoun}
+                              onClick={() => setUserPronouns(pronoun)}
+                              className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
+                                userPronouns === pronoun
+                                  ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
+                                  : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
+                              }`}
+                            >
+                              {pronoun}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-stone-400 mb-2">Other Person:</p>
+                        <div className="flex gap-2">
+                          {['he/him', 'she/her', 'they/them'].map((pronoun) => (
+                            <button
+                              key={pronoun}
+                              onClick={() => setOtherPartyPronouns(pronoun)}
+                              className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
+                                otherPartyPronouns === pronoun
+                                  ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
+                                  : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
+                              }`}
+                            >
+                              {pronoun}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-6">
+                  <div className="text-4xl mb-3">👇</div>
+                  <p className="text-stone-400 text-sm">
+                    Please select an analysis mode above to continue
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Analysis Mode Toggle */}
+            <div className={`bg-black/30 p-4 rounded-xl border transition-all ${
+              !analysisMode ? 'border-orange-500/50 shadow-lg shadow-orange-500/20' : 'border-white/10'
+            }`}>
+              <p className="text-stone-300 text-sm mb-1">
+                Is this your conversation or are you analyzing someone else's? <span className="text-orange-400">*Required</span>
               </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Your Name */}
-                <div>
-                  <input
-                    type="text"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value.slice(0, 20))}
-                    placeholder="Your Name (e.g., Alex)"
-                    className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors placeholder-gray-500"
-                    disabled={isLoading}
-                  />
-                </div>
-
-                {/* Their Name */}
-                <div>
-                  <input
-                    type="text"
-                    value={otherName}
-                    onChange={(e) => setOtherName(e.target.value.slice(0, 50))}
-                    placeholder="Their Name (e.g., Taylor)"
-                    className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors placeholder-gray-500"
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
-
-              {/* Pronouns (Optional) - kept but simplified */}
-              <div className="mt-4">
-                <label className="text-stone-400 text-xs mb-2 block">Pronouns</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-stone-400 mb-2">You:</p>
-                    <div className="flex gap-2">
-                      {['she/her', 'he/him', 'they/them'].map((pronoun) => (
-                        <button
-                          key={pronoun}
-                          onClick={() => setUserPronouns(pronoun)}
-                          className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
-                            userPronouns === pronoun
-                              ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
-                              : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
-                          }`}
-                        >
-                          {pronoun}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-stone-400 mb-2">Them:</p>
-                    <div className="flex gap-2">
-                      {['he/him', 'she/her', 'they/them'].map((pronoun) => (
-                        <button
-                          key={pronoun}
-                          onClick={() => setOtherPartyPronouns(pronoun)}
-                          className={`px-1.5 py-0.5 rounded text-[10px] transition-all flex-1 min-w-0 ${
-                            otherPartyPronouns === pronoun
-                              ? 'bg-purple-600/20 border border-purple-500 text-stone-100'
-                              : 'bg-black/20 border border-gray-600 text-stone-300 hover:border-purple-500/60'
-                          }`}
-                        >
-                          {pronoun}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              {!analysisMode && (
+                <p className="text-orange-400 text-xs mb-3">Please select an analysis mode to continue</p>
+              )}
+              <div className="mt-3"></div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setAnalysisMode('personal')}
+                  className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                    analysisMode === 'personal'
+                      ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  }`}
+                >
+                  My Conversation
+                </button>
+                <button
+                  onClick={() => setAnalysisMode('anonymous')}
+                  className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                    analysisMode === 'anonymous'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  }`}
+                >
+                  Observing Others
+                </button>
               </div>
             </div>
 
@@ -697,7 +885,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)' }}>
                   3
                 </div>
-                <h3 className="text-xl font-bold text-stone-100">The Vibe</h3>
+                <h3 className="text-xl font-bold text-stone-100">The Relationship</h3>
               </div>
               
               <p className="text-stone-300 text-sm mb-4">
@@ -705,21 +893,21 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
               </p>
               
               <div>
-                <label className="text-stone-400 text-xs mb-2 block">What's the general vibe?</label>
+                <label className="text-stone-400 text-xs mb-2 block">What's the relationship dynamic? <span className="text-orange-400">*Required</span></label>
                 <select
                   value={contextType}
                   onChange={(e) => setContextType(e.target.value)}
                   className="w-full p-4 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors"
                   disabled={isLoading}
                 >
-                  <option value="">Select vibe...</option>
-                  <option value="early-dating">Early Dating (1-3 dates)</option>
-                  <option value="situationship">Situationship (It's complicated)</option>
-                  <option value="relationship">Established Relationship</option>
-                  <option value="ex-breakup">Exes / Breakup</option>
-                  <option value="friendship">Friendship / Platonic</option>
-                  <option value="family">Family Drama</option>
-                  <option value="curious">Just Curious / For Fun</option>
+                  <option value="">Select relationship...</option>
+                  <option value="situationship">Situationship</option>
+                  <option value="dating">Dating</option>
+                  <option value="ex-drama">Ex Drama</option>
+                  <option value="friends">Friends</option>
+                  <option value="marriage">Marriage</option>
+                  <option value="family">Family</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
             </div>
