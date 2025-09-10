@@ -245,8 +245,8 @@ const ReceiptsCardPage = () => {
         setReceiptData(location.state);
         setLoading(false);
         
-        // Receipt saving disabled
-        // await saveReceiptIfEnabled(location.state, location.state?.originalMessage);
+        // Save receipt if user has saving enabled
+        await saveReceiptIfEnabled(location.state, location.state?.originalMessage);
         
         // Age verification removed - handled at input level
         

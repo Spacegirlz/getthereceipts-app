@@ -11,12 +11,16 @@ import { supabase } from '@/lib/database/customSupabaseClient';
  */
 export const saveReceiptToDatabase = async (userId, message, analysisResult, receiptType = 'truth', tokensUsed = 0) => {
   try {
+    console.log('💾 saveReceiptToDatabase called:', { userId, message: message?.slice(0, 50), receiptType });
+    
     // First check if user has save_receipts enabled
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('save_receipts, subscription_status')
       .eq('id', userId)
       .single();
+
+    console.log('💾 User data from database:', { userData, userError });
 
     if (userError) {
       console.error('Error fetching user data:', userError);
@@ -35,8 +39,11 @@ export const saveReceiptToDatabase = async (userId, message, analysisResult, rec
     }
 
     if (!hasSavingEnabled) {
+      console.log('💾 Receipt saving disabled for user');
       return { success: false, error: 'User has receipt saving disabled' };
     }
+
+    console.log('💾 User can save receipts, checking limit...');
 
     // Check receipt limit (50 max)
     const { data: existingReceipts, error: countError } = await supabase
@@ -76,6 +83,7 @@ export const saveReceiptToDatabase = async (userId, message, analysisResult, rec
       return { success: false, error: 'Failed to save receipt' };
     }
 
+    console.log('💾 Receipt saved successfully:', receiptData);
     return { success: true, data: receiptData };
   } catch (error) {
     console.error('Unexpected error in saveReceiptToDatabase:', error);
