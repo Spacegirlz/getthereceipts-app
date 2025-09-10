@@ -38,6 +38,24 @@ export const saveReceiptToDatabase = async (userId, message, analysisResult, rec
       return { success: false, error: 'User has receipt saving disabled' };
     }
 
+    // Check receipt limit (50 max)
+    const { data: existingReceipts, error: countError } = await supabase
+      .from('receipts')
+      .select('id')
+      .eq('user_id', userId);
+
+    if (countError) {
+      console.error('Error checking receipt count:', countError);
+      return { success: false, error: 'Failed to check receipt limit' };
+    }
+
+    if (existingReceipts && existingReceipts.length >= 50) {
+      return { 
+        success: false, 
+        error: 'Receipt limit reached (50 max). Please delete some receipts before saving new ones.' 
+      };
+    }
+
     // Save the receipt to database
     const { data: receiptData, error: receiptError } = await supabase
       .from('receipts')

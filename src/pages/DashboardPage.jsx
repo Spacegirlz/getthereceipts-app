@@ -6,7 +6,7 @@ import { useAuthModal } from '@/contexts/AuthModalContext';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap, LogIn, LogOut, User } from 'lucide-react';
+import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap, LogIn, LogOut, User, Trash2 } from 'lucide-react';
 import LinkButton from '@/components/LinkButton';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
@@ -169,6 +169,37 @@ const DashboardPage = () => {
     openModal('sign_in');
   };
 
+  const handleDeleteReceipt = async (receiptId, event) => {
+    event.stopPropagation(); // Prevent navigation when clicking delete
+    
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('receipts')
+        .delete()
+        .eq('id', receiptId)
+        .eq('user_id', user.id); // Security: only delete own receipts
+
+      if (error) throw error;
+      
+      // Remove from local state
+      setReceipts(prev => prev.filter(r => r.id !== receiptId));
+      
+      toast({
+        title: "Receipt Deleted",
+        description: "Receipt has been permanently removed from your dashboard",
+      });
+    } catch (error) {
+      console.error('Error deleting receipt:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to delete receipt',
+      });
+    }
+  };
+
   const MiniReceiptCard = ({ receipt }) => {
     if (!receipt) return null;
     
@@ -185,15 +216,25 @@ const DashboardPage = () => {
     return (
       <motion.div
         whileHover={{ scale: 1.05, y: -5 }}
-        className="rounded-2xl p-4 text-white cursor-pointer h-full flex flex-col justify-between bg-gray-800/50"
+        className="rounded-2xl p-4 text-white cursor-pointer h-full flex flex-col justify-between bg-gray-800/50 relative group"
         onClick={() => navigate(`/receipts/${receipt.id}`, { state: { ...receipt, analysis: analysisResult } })}
       >
         <div>
           <h3 className="font-bold text-lg truncate">{analysisResult.archetype || 'Analysis'}</h3>
           <p className="text-sm opacity-80 truncate">{receipt.original_message || 'No message'}</p>
         </div>
-        <div className="mt-4 text-xs opacity-70">
-          {formatDate(receipt.created_at)}
+        <div className="mt-4 flex justify-between items-center">
+          <span className="text-xs opacity-70">
+            {formatDate(receipt.created_at)}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6 text-red-400 hover:text-red-300 hover:bg-red-500/20"
+            onClick={(e) => handleDeleteReceipt(receipt.id, e)}
+          >
+            <Trash2 className="h-3 w-3" />
+          </Button>
         </div>
       </motion.div>
     );
@@ -299,7 +340,12 @@ const DashboardPage = () => {
                 <div className="flex items-center justify-between p-2 rounded-lg bg-white/5">
                   <div className="flex flex-col">
                     <span className="text-xs font-medium">Save Receipts</span>
-                    <span className="text-xs text-gray-400">Store receipts on dashboard</span>
+                    <span className="text-xs text-gray-400">
+                      {receipts.length}/50 saved
+                      {receipts.length >= 45 && (
+                        <span className="text-yellow-400 ml-1">⚠️ Near limit</span>
+                      )}
+                    </span>
                   </div>
                   <Switch
                     checked={saveReceipts}
