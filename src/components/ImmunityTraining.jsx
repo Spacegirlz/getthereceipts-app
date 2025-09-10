@@ -13,6 +13,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       console.log('🛡️ ImmunityTraining received:', immunityData);
       console.log('🛡️ Type:', typeof immunityData, 'Keys:', immunityData ? Object.keys(immunityData) : 'none');
       console.log('🆘 Crisis situation:', isCrisisSituation);
+      console.log('🛡️ Available fields for characteristics:', {
+        keyCharacteristics: immunityData?.keyCharacteristics,
+        characteristics: immunityData?.characteristics,
+        redFlagDrills: immunityData?.redFlagDrills,
+        earlyWarnings: immunityData?.earlyWarnings,
+        sketchySigns: immunityData?.sketchySigns,
+        healthySigns: immunityData?.healthySigns
+      });
     }
   }, [immunityData, isCrisisSituation]);
 
@@ -623,6 +631,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                                            immunityData?.characteristics || 
                                            immunityData?.redFlagDrills || 
                                            immunityData?.earlyWarnings || 
+                                           immunityData?.sketchySigns ||
+                                           immunityData?.healthySigns ||
                                            [];
                       
                       // Ensure it's an array
@@ -640,7 +650,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                           <li className="flex items-start gap-3">
                             <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
                             <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">
-                              {isCrisisSituation ? "Immediate safety intervention required" : "Emergency Support patterns require immediate professional intervention and crisis resources."}
+                              {isCrisisSituation ? "Immediate safety intervention required" : "Loading personalized analysis..."}
                             </span>
                           </li>
                         );
