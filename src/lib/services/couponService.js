@@ -21,9 +21,24 @@ export const redeemCoupon = async (couponCode, userId) => {
     }
     
     if (!data.success) {
+      // Provide user-friendly error messages
+      let userMessage = data.error;
+      
+      if (data.error.includes('Premium users already have unlimited credits')) {
+        userMessage = "🎉 You're already Premium! You have unlimited credits - no coupon needed!";
+      } else if (data.error.includes('already used this coupon')) {
+        userMessage = "❌ You've already used this coupon code. Each code can only be used once per account.";
+      } else if (data.error.includes('Invalid coupon code')) {
+        userMessage = "🔍 Coupon not found. Please check the spelling or try a different code. Some codes expire after limited uses.";
+      } else if (data.error.includes('reached its usage limit')) {
+        userMessage = "⏰ This coupon has reached its usage limit. Try a different code!";
+      } else if (data.error.includes('expired')) {
+        userMessage = "⏰ This coupon has expired. Try a different code!";
+      }
+      
       return {
         success: false,
-        error: data.error
+        error: userMessage
       };
     }
     
