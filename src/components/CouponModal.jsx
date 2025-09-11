@@ -10,27 +10,25 @@ import { Gift, Sparkles, X } from 'lucide-react';
 const CouponModal = ({ isOpen, onClose }) => {
   const [couponCode, setCouponCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const { user } = useAuth();
   const { toast } = useToast();
 
   const handleRedeem = async (e) => {
     e.preventDefault();
     
+    // Clear previous messages
+    setErrorMessage('');
+    setSuccessMessage('');
+    
     if (!couponCode.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Enter a coupon code",
-        description: "Please enter a valid coupon code."
-      });
+      setErrorMessage("Please enter a valid coupon code.");
       return;
     }
 
     if (!user) {
-      toast({
-        variant: "destructive",
-        title: "Please sign in",
-        description: "You need to be signed in to redeem coupons."
-      });
+      setErrorMessage("You need to be signed in to redeem coupons.");
       return;
     }
 
@@ -40,35 +38,41 @@ const CouponModal = ({ isOpen, onClose }) => {
       const result = await redeemCoupon(couponCode.trim(), user.id);
       
       if (result.success) {
+        setSuccessMessage(`🎉 Success! You got ${result.receiptsCount} ${result.isPremium ? 'premium' : 'basic'} receipts from ${result.couponName}!`);
+        
+        // Also show toast for success
         toast({
           title: "🎉 Coupon Redeemed!",
           description: `You got ${result.receiptsCount} ${result.isPremium ? 'premium' : 'basic'} receipts from ${result.couponName}!`,
         });
         
-        // Close modal and reset form
-        setCouponCode('');
-        onClose();
-        
-        // Refresh the page to update credits display
-        window.location.reload();
+        // Close modal and reset form after a delay
+        setTimeout(() => {
+          setCouponCode('');
+          setSuccessMessage('');
+          onClose();
+          // Refresh the page to update credits display
+          window.location.reload();
+        }, 2000);
       } else {
-        toast({
-          variant: "destructive",
-          title: "Coupon Error",
-          description: result.error
-        });
+        setErrorMessage(result.error);
       }
     } catch (error) {
       console.error('Coupon redemption error:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong. Please try again."
-      });
+      setErrorMessage("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Clear messages when modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setErrorMessage('');
+      setSuccessMessage('');
+      setCouponCode('');
+    }
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -98,6 +102,20 @@ const CouponModal = ({ isOpen, onClose }) => {
                 disabled={isLoading}
               />
             </div>
+            
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-400 text-sm">
+                {errorMessage}
+              </div>
+            )}
+            
+            {/* Success Message */}
+            {successMessage && (
+              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-green-400 text-sm">
+                {successMessage}
+              </div>
+            )}
             
             <Button 
               type="submit" 
