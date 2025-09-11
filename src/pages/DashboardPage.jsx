@@ -284,13 +284,16 @@ const DashboardPage = () => {
           </div>
           <div className="flex gap-2">
             <LinkButton to="/chat-input" className="viral-button"><PlusCircle className="mr-2 h-4 w-4" /> New Receipt</LinkButton>
-            <Button 
-              variant="outline" 
-              className="text-white border-yellow-400 hover:bg-yellow-500/20"
-              onClick={() => setIsCouponModalOpen(true)}
-            >
-              <Gift className="mr-2 h-4 w-4" /> Have a Coupon?
-            </Button>
+            {/* Only show coupon button for free users */}
+            {userCredits.subscription === 'free' && (
+              <Button 
+                variant="outline" 
+                className="text-white border-yellow-400 hover:bg-yellow-500/20"
+                onClick={() => setIsCouponModalOpen(true)}
+              >
+                <Gift className="mr-2 h-4 w-4" /> Have a Coupon?
+              </Button>
+            )}
             <LinkButton to="/refer" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20"><Gift className="mr-2 h-4 w-4" /> Refer Friends</LinkButton>
             {user ? (
               <Button variant="outline" className="text-white border-red-400 hover:bg-red-500/20" onClick={handleLogout}>
