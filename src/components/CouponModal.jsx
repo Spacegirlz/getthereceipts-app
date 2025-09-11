@@ -76,7 +76,7 @@ const CouponModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md relative z-[100]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Gift className="h-6 w-6 text-purple-500" />
@@ -91,6 +91,20 @@ const CouponModal = ({ isOpen, onClose }) => {
             </p>
           </div>
           
+          {/* Error Message - Above form */}
+          {errorMessage && (
+            <div className="bg-red-500/20 border-2 border-red-500/40 rounded-lg p-4 text-red-300 text-center font-medium mb-4">
+              {errorMessage}
+            </div>
+          )}
+          
+          {/* Success Message - Above form */}
+          {successMessage && (
+            <div className="bg-green-500/20 border-2 border-green-500/40 rounded-lg p-4 text-green-300 text-center font-medium mb-4">
+              {successMessage}
+            </div>
+          )}
+
           <form onSubmit={handleRedeem} className="space-y-4">
             <div>
               <Input
@@ -102,20 +116,6 @@ const CouponModal = ({ isOpen, onClose }) => {
                 disabled={isLoading}
               />
             </div>
-            
-            {/* Error Message */}
-            {errorMessage && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-400 text-sm">
-                {errorMessage}
-              </div>
-            )}
-            
-            {/* Success Message */}
-            {successMessage && (
-              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-green-400 text-sm">
-                {successMessage}
-              </div>
-            )}
             
             <Button 
               type="submit" 
