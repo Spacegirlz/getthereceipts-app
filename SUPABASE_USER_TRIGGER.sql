@@ -15,7 +15,7 @@ BEGIN
     END,
     CASE 
       WHEN NEW.email = 'piet@virtualsatchel.com' THEN 999999
-      ELSE 1
+      ELSE 3
     END,
     CURRENT_DATE,
     NOW(),

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/database/customSupabaseClient';
 
 export const CREDIT_AMOUNTS = {
   FREE_USER_DAILY: 1, // 1 credit per day for free users
+  NEW_USER_BONUS: 3, // 3 credits for new users on signup
   EMERGENCY_PACK: 5,
   PREMIUM_UNLIMITED: -1,
   FOUNDER_UNLIMITED: -1,
@@ -34,7 +35,7 @@ export const getUserCredits = async (userId) => {
     if (error) {
       console.error('Error fetching user credits:', error);
       return {
-        credits: 1,
+        credits: CREDIT_AMOUNTS.NEW_USER_BONUS, // 3 credits for new users
         subscription: 'free',
         last_free_receipt_date: null
       };
@@ -58,20 +59,30 @@ export const getUserCredits = async (userId) => {
       const needsDailyReset = !lastResetDate || lastResetDate !== today;
       
       if (needsDailyReset) {
-        // Reset to 1 credit and update last reset date
-        creditsRemaining = CREDIT_AMOUNTS.FREE_USER_DAILY;
+        // Check if user is still in their new user bonus period
+        const userCreatedDate = new Date(data.created_at);
+        const daysSinceSignup = Math.floor((now - userCreatedDate) / (1000 * 60 * 60 * 24));
         
-        // Update the database with new credits and reset date
-        const { error: updateError } = await supabase
-          .from('users')
-          .update({
-            credits_remaining: creditsRemaining,
-            last_free_receipt_date: today
-          })
-          .eq('id', userId);
+        // If user signed up today and still has bonus credits, don't reset
+        if (daysSinceSignup === 0 && creditsRemaining > 1) {
+          // User is still in their first day with bonus credits, don't reset
+          console.log('User still in new user bonus period, not resetting credits');
+        } else {
+          // Reset to 1 credit per day (standard free tier)
+          creditsRemaining = CREDIT_AMOUNTS.FREE_USER_DAILY;
           
-        if (updateError) {
-          console.error('Error updating daily credit reset:', updateError);
+          // Update the database with new credits and reset date
+          const { error: updateError } = await supabase
+            .from('users')
+            .update({
+              credits_remaining: creditsRemaining,
+              last_free_receipt_date: today
+            })
+            .eq('id', userId);
+            
+          if (updateError) {
+            console.error('Error updating daily credit reset:', updateError);
+          }
         }
       }
     }
@@ -86,7 +97,7 @@ export const getUserCredits = async (userId) => {
   } catch (err) {
     console.error('getUserCredits error:', err);
     return {
-      credits: 1,
+      credits: CREDIT_AMOUNTS.NEW_USER_BONUS, // 3 credits for new users
       subscription: 'free',
       last_reset: new Date().toISOString(),
       deep_dives_used: 0,
@@ -114,7 +125,7 @@ export const initializeUserCredits = async (userId) => {
     const { error } = await supabase
       .from('users')
       .update({
-        credits_remaining: 1,
+        credits_remaining: CREDIT_AMOUNTS.NEW_USER_BONUS, // 3 credits for new users
         last_free_receipt_date: new Date().toISOString().split('T')[0]
       })
       .eq('id', userId);

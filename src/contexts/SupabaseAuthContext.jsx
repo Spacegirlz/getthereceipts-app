@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
                 id: userId,
                 email: email,
                 subscription_status: isOwner ? 'yearly' : 'free',
-                credits_remaining: isOwner ? 999999 : 1,
+                credits_remaining: isOwner ? 999999 : 3,
                 last_free_receipt_date: new Date().toISOString().split('T')[0]
               }),
             3000
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
           console.error('Error creating user record:', insertError);
           // Return fallback data even if insert fails
         }
-        return { subscription_status: isOwner ? 'yearly' : 'free', credits_remaining: isOwner ? 999999 : 1 };
+        return { subscription_status: isOwner ? 'yearly' : 'free', credits_remaining: isOwner ? 999999 : 3 };
       }
       
       return data;
