@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Gift, Zap, Star, Clock, Heart, Copy, Share2, Users, Award } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuthModal } from '@/contexts/AuthModalContext';
 import { getUserReferralCode, processReferral, getReferralLink } from '@/lib/services/referralService';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -13,6 +14,7 @@ const ReferralPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { openModal } = useAuthModal();
   const { toast } = useToast();
   
   const [referralCode, setReferralCode] = useState('');
@@ -137,7 +139,7 @@ const ReferralPage = () => {
             <Button 
               size="lg" 
               className="viral-button font-bold"
-              onClick={() => navigate('/auth')}
+              onClick={() => openModal('sign_up')}
             >
               Sign Up to Start Earning
             </Button>
