@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Sign In</title>
+</head>
+<body>
+    <h1>Test Sign In</h1>
+    <button onclick="signIn()">Sign In with hello@virtualsatchel.com</button>
+    <div id="status"></div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2';
+        
+        const supabaseUrl = 'https://dpzalqyrmjuuhvcquyzc.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwemFscXlybWp1dWh2Y3F1eXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NDgwMjMsImV4cCI6MjA3MTUyNDAyM30.hUwv38jR4O0cC7hEDFQP0zu94zeVyVukc0-eY4fsbX0';
+        
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        
+        window.signIn = async () => {
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: 'hello@virtualsatchel.com',
+                    password: 'your-password-here' // You'll need to enter the actual password
+                });
+                
+                if (error) {
+                    document.getElementById('status').innerHTML = `Error: ${error.message}`;
+                } else {
+                    document.getElementById('status').innerHTML = `Success! User: ${data.user.email}`;
+                }
+            } catch (err) {
+                document.getElementById('status').innerHTML = `Exception: ${err.message}`;
+            }
+        };
+    </script>
+</body>
+</html>

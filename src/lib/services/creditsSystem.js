@@ -17,12 +17,12 @@ export const getUserCredits = async (userId) => {
       (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     
     if (isLocalhost) {
-      console.log('🚨 LOCALHOST: Returning unlimited credits for development');
+      console.log('🚨 LOCALHOST: Everyone gets 3 credits for testing');
       return {
-        credits: CREDIT_AMOUNTS.PREMIUM_UNLIMITED, // -1 = unlimited
-        subscription: 'founder', // Premium tier
+        credits: 3, // Everyone gets 3 credits for testing
+        subscription: 'free', // Show as free tier for testing
         last_free_receipt_date: new Date().toISOString().split('T')[0],
-        deepDivesRemaining: CREDIT_AMOUNTS.PREMIUM_UNLIMITED // -1 = unlimited
+        deepDivesRemaining: 3 // Limited for testing
       };
     }
     

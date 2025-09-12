@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { getUserReferralCode, processReferral, getReferralLink } from '@/lib/services/referralService';
 import { useToast } from '@/components/ui/use-toast';
+import ReferralQRCode from '@/components/ReferralQRCode';
 
 const ReferralPage = () => {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ const ReferralPage = () => {
       if (result.success) {
         toast({
           title: "🎉 Referral Processed!",
-          description: `You earned a reward coupon: ${result.rewardCoupon}`,
+          description: `You earned 3 credits for the referral!`,
         });
         // Remove the code from URL
         navigate('/refer', { replace: true });
@@ -105,6 +106,7 @@ const ReferralPage = () => {
     );
   }
 
+
   return (
     <div className="min-h-screen text-white px-4 py-8 overflow-hidden">
       <Helmet>
@@ -121,6 +123,7 @@ const ReferralPage = () => {
       </header>
       
       <main className="max-w-4xl mx-auto flex flex-col items-center text-center min-h-[80vh] justify-center">
+        
         {!user ? (
           // Not logged in - show sign up prompt
           <motion.div 
@@ -204,6 +207,12 @@ const ReferralPage = () => {
                 </p>
               </div>
 
+              {/* QR Code Section */}
+              <ReferralQRCode 
+                referralLink={referralLink}
+                className="mb-6"
+              />
+
               {/* How it works */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center">
@@ -220,6 +229,43 @@ const ReferralPage = () => {
                   <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-2">Earn Rewards</h3>
                   <p className="text-gray-400 text-sm">Get coupon codes for premium receipts!</p>
+                </div>
+              </div>
+
+              {/* OG Founder Milestones */}
+              <div className="bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-xl p-6 mb-6">
+                <h3 className="text-xl font-bold mb-4 text-center">🎯 OG Founder Milestones</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-purple-400">Free Premium Month</h4>
+                      <span className="text-sm text-gray-400">10 referrals</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, (stats.totalReferrals / 10) * 100)}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {Math.max(0, 10 - stats.totalReferrals)} more needed
+                    </p>
+                  </div>
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-yellow-400">OG Founders Pass</h4>
+                      <span className="text-sm text-gray-400">50 referrals</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, (stats.totalReferrals / 50) * 100)}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {Math.max(0, 50 - stats.totalReferrals)} more needed
+                    </p>
+                  </div>
                 </div>
               </div>
               

@@ -12,6 +12,7 @@ import CouponModal from '@/components/CouponModal';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
 import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits } from '@/lib/services/creditsSystem';
+import ReferralProgressCard from '@/components/ReferralProgressCard';
 
 const DashboardPage = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -105,14 +106,18 @@ const DashboardPage = () => {
     if (!subscription) return 'Free Daily Receipt';
     if (subscription === 'premium') return 'Premium Monthly';
     if (subscription === 'yearly') return 'Premium Yearly - OG Founder';
-    if (subscription === 'founder') return 'OG Founder - Unlimited';
+    if (subscription === 'founder') return 'OG Founder (Dev Mode)';
     return 'Free Daily Receipt';
   };
 
   const getCreditsDisplay = () => {
     if (!userCredits) return '0';
-    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') {
+    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly') {
       return 'Unlimited';
+    }
+    // OG Founders get 3 credits, not unlimited
+    if (userCredits.subscription === 'founder') {
+      return String(userCredits.credits || 3);
     }
     return String(userCredits.credits || 0);
   };
@@ -378,6 +383,18 @@ const DashboardPage = () => {
             </div>
           </div>
         </motion.div>
+
+        {/* Referral Progress Section */}
+        {user && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
+            <ReferralProgressCard userId={user.id} userCredits={userCredits} />
+          </motion.section>
+        )}
 
         {/* Your Receipt History Section - DISABLED FOR LAUNCH */}
         {/* <motion.section

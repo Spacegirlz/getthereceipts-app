@@ -136,5 +136,5 @@ export const getReferralStats = async (userId) => {
 // Get referral link for user
 export const getReferralLink = (referralCode) => {
   const baseUrl = window.location.origin;
-  return `${baseUrl}/refer?code=${referralCode}`;
+  return `${baseUrl}/?ref=${referralCode}`;
 };

@@ -21,12 +21,16 @@ export const AuthProvider = ({ children }) => {
     if (!userId) return null;
     
     try {
-      const isOwner = email === 'piet@virtualsatchel.com' || email === 'piet@pietmarie.com';
-      
-      // For development, return owner status immediately to avoid database issues
-      if (process.env.NODE_ENV === 'development' && isOwner) {
-        console.log('🚀 DEV MODE: Giving premium access to owner:', email);
-        return { subscription_status: 'yearly', credits_remaining: 999999 };
+      // In development mode, show correct plan types but give 3 credits for testing
+      if (process.env.NODE_ENV === 'development') {
+        const isOwner = email === 'piet@virtualsatchel.com' || email === 'piet@pietmarie.com';
+        console.log('🚀 DEV MODE: Giving 3 credits to all accounts for testing:', email);
+        
+        if (isOwner) {
+          return { subscription_status: 'yearly', credits_remaining: 3 }; // Real OG Founders
+        } else {
+          return { subscription_status: 'free', credits_remaining: 3 }; // Regular users
+        }
       }
       
       const { data, error } = await withTimeout(
@@ -149,7 +153,13 @@ export const AuthProvider = ({ children }) => {
       options.data = { referral_code: referralCode };
     }
 
-    const { error } = await supabase.auth.signUp({
+    // In development mode, try to sign in immediately after signup
+    if (process.env.NODE_ENV === 'development') {
+      // Don't require email confirmation in dev mode
+      options.emailRedirectTo = undefined;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options,
@@ -162,13 +172,29 @@ export const AuthProvider = ({ children }) => {
         description: error.message || "Something went wrong",
       });
     } else {
-       toast({
-        title: "Check your email!",
-        description: "We've sent a confirmation link to your email address.",
-      });
+      // Check if user needs email confirmation
+      if (data?.user && !data?.session) {
+        // User created but needs email confirmation
+        toast({
+          title: "Check your email!",
+          description: "We've sent a confirmation link to your email address.",
+        });
+      } else if (data?.session) {
+        // User is immediately signed in (development mode)
+        toast({
+          title: "Account Created!",
+          description: "You're now signed in and ready to go!",
+        });
+      } else {
+        // Fallback message
+        toast({
+          title: "Account Created!",
+          description: "Please check your email to confirm your account.",
+        });
+      }
     }
 
-    return { error };
+    return { data, error };
   }, [toast, referralCode]);
 
   const signIn = useCallback(async (email, password) => {

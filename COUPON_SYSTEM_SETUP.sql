@@ -28,7 +28,7 @@ CREATE TABLE coupon_usage (
 INSERT INTO coupon_codes (code, coupon_name, tier, receipts_count, is_premium, max_uses) VALUES
 -- Premium Receipts (5 credits)
 ('CASAAMOR3', 'Casa Amor 3', 'Basic', 3, false, 100),
-('VIPVILLA5', 'VIP Villa 5', 'Premium', 5, true, 50),
+('≈VIPVILLA5', 'VIP Villa 5', 'Premium', 5, true, 50),
 ('FINALROSE', 'The Final Rose', 'Premium', 3, true, 75),
 ('LOVEBOMB5', 'Love Bomb Loot', 'Basic', 5, false, 100),
 ('KDRAMA3', 'K-Drama Cliffhanger', 'Basic', 3, false, 100),

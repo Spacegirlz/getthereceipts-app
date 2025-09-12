@@ -7,6 +7,7 @@ import ReceiptsCardPage from '@/pages/ReceiptsCardPage';
 import PricingPage from '@/pages/PricingPage';
 import AboutPage from '@/pages/AboutPage';
 import ReferralPage from '@/pages/ReferralPage';
+import EnhancedReferralPage from '@/pages/EnhancedReferralPage';
 import DashboardPage from '@/pages/DashboardPage';
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
 import TermsOfServicePage from '@/pages/TermsOfServicePage';
@@ -61,11 +62,7 @@ function App() {
               <Route path="/test-analysis" element={<TestAnalysis />} />
               <Route path="/test-receipt" element={<TestReceipt />} />
               <Route path="/test-receipt-flow" element={<TestReceiptPage />} />
-              <Route path="/dashboard" element={
-                <PrivateRoute>
-                  <DashboardPage />
-                </PrivateRoute>
-              } />
+              <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/settings" element={
                 <PrivateRoute>
                   <SettingsPage />
