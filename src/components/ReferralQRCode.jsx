@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Download, Share2, Sparkles, QrCode } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -157,20 +157,11 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
           {/* QR Code Preview with luxury styling */}
           <div className="mb-8">
             <div className="inline-block p-6 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border-4 border-purple-500/30">
-              <QRCode
+              <QRCodeSVG
                 value={referralLink}
                 size={200}
                 level="H"
                 includeMargin={true}
-                renderAs="svg"
-                imageSettings={{
-                  src: '/logo.png', // Add your logo here
-                  x: null,
-                  y: null,
-                  height: 40,
-                  width: 40,
-                  excavate: true,
-                }}
                 fgColor="#1a1a1a"
                 bgColor="#ffffff"
               />
