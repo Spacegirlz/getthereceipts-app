@@ -1,204 +1,124 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import QRCode from 'qrcode.react';
 import { Button } from '@/components/ui/button';
-import { Download, Share2, Sparkles } from 'lucide-react';
+import { Download, Share2, Sparkles, QrCode } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const ReferralQRCode = ({ referralLink, className = "" }) => {
-  const canvasRef = useRef(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Generate luxe branded QR code
-  const generateLuxeQR = async () => {
+  // Download QR code as image
+  const downloadQRCode = async () => {
     if (!referralLink) return;
-
-    setIsGenerating(true);
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    const size = 500; // Larger for high-end feel
-    canvas.width = size;
-    canvas.height = size;
-
-    // Luxe background with multiple gradients
-    const bgGradient = ctx.createLinearGradient(0, 0, size, size);
-    bgGradient.addColorStop(0, '#0F0C29');
-    bgGradient.addColorStop(0.3, '#24243e');
-    bgGradient.addColorStop(0.7, '#302B63');
-    bgGradient.addColorStop(1, '#0F0C29');
-    ctx.fillStyle = bgGradient;
-    ctx.fillRect(0, 0, size, size);
-
-    // Add luxury border with multiple layers
-    const borderGradient = ctx.createLinearGradient(0, 0, size, size);
-    borderGradient.addColorStop(0, '#FFD700');
-    borderGradient.addColorStop(0.5, '#FFA500');
-    borderGradient.addColorStop(1, '#FFD700');
-    ctx.strokeStyle = borderGradient;
-    ctx.lineWidth = 6;
-    ctx.strokeRect(3, 3, size - 6, size - 6);
-
-    // Inner luxury border
-    ctx.strokeStyle = '#E6E6FA';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(12, 12, size - 24, size - 24);
-
-    // Header section with luxury styling
-    const headerGradient = ctx.createLinearGradient(0, 0, size, 0);
-    headerGradient.addColorStop(0, '#8B5CF6');
-    headerGradient.addColorStop(0.5, '#EC4899');
-    headerGradient.addColorStop(1, '#8B5CF6');
-    ctx.fillStyle = headerGradient;
-    ctx.fillRect(25, 25, size - 50, 80);
-
-    // Add sparkle effect to header
-    ctx.fillStyle = '#FFD700';
-    for (let i = 0; i < 8; i++) {
-      const x = 25 + Math.random() * (size - 50);
-      const y = 25 + Math.random() * 80;
-      ctx.beginPath();
-      ctx.arc(x, y, 2, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-
-    // Main logo text with luxury font styling
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    ctx.shadowBlur = 4;
-    ctx.fillText('Get The Receipts', size / 2, 65);
-
-    // Tagline with elegant styling
-    ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillStyle = '#F3F4F6';
-    ctx.shadowBlur = 2;
-    ctx.fillText('Stop second-guessing their texts', size / 2, 90);
-
-    // QR Code section with luxury frame
-    const qrSize = 220;
-    const qrX = (size - qrSize) / 2;
-    const qrY = 130;
-
-    // QR code background with gradient
-    const qrBgGradient = ctx.createLinearGradient(qrX, qrY, qrX + qrSize, qrY + qrSize);
-    qrBgGradient.addColorStop(0, '#FFFFFF');
-    qrBgGradient.addColorStop(1, '#F8FAFC');
-    ctx.fillStyle = qrBgGradient;
-    ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
-
-    // QR code border with luxury styling
-    ctx.strokeStyle = '#8B5CF6';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
-
-    // Inner QR border
-    ctx.strokeStyle = '#EC4899';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10);
-
-    // Generate QR code as data URL
-    const qrCanvas = document.createElement('canvas');
-    qrCanvas.width = qrSize;
-    qrCanvas.height = qrSize;
-    const qrCtx = qrCanvas.getContext('2d');
     
-    // Create QR code
-    const qrImg = new Image();
-    qrImg.onload = () => {
-      qrCtx.fillStyle = '#FFFFFF';
-      qrCtx.fillRect(0, 0, qrSize, qrSize);
-      qrCtx.drawImage(qrImg, 0, 0, qrSize, qrSize);
+    setIsGenerating(true);
+    
+    try {
+      // Create a temporary canvas to render the QR code
+      const canvas = document.createElement('canvas');
+      const size = 500;
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
       
-      // Draw QR code onto main canvas
-      ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
-
-      // Call to action with luxury styling
-      ctx.shadowBlur = 0;
+      // Luxe background
+      const bgGradient = ctx.createLinearGradient(0, 0, size, size);
+      bgGradient.addColorStop(0, '#0F0C29');
+      bgGradient.addColorStop(0.3, '#24243e');
+      bgGradient.addColorStop(0.7, '#302B63');
+      bgGradient.addColorStop(1, '#0F0C29');
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, size, size);
+      
+      // Add luxury border
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(3, 3, size - 6, size - 6);
+      
+      // Header section
+      const headerGradient = ctx.createLinearGradient(0, 0, size, 0);
+      headerGradient.addColorStop(0, '#8B5CF6');
+      headerGradient.addColorStop(0.5, '#EC4899');
+      headerGradient.addColorStop(1, '#8B5CF6');
+      ctx.fillStyle = headerGradient;
+      ctx.fillRect(25, 25, size - 50, 80);
+      
+      // Logo text
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Get The Receipts', size / 2, 65);
+      
+      // Tagline
+      ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#F3F4F6';
+      ctx.fillText('Stop second-guessing their texts', size / 2, 90);
+      
+      // QR Code area
+      const qrSize = 220;
+      const qrX = (size - qrSize) / 2;
+      const qrY = 130;
+      
+      // QR background
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+      
+      // QR border
+      ctx.strokeStyle = '#8B5CF6';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+      
+      // Simple QR pattern (placeholder)
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(qrX, qrY, qrSize, qrSize);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(qrX + 10, qrY + 10, qrSize - 20, qrSize - 20);
+      
+      // Call to action
       ctx.fillStyle = '#FFFFFF';
       ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillText('Scan to sign up', size / 2, qrY + qrSize + 40);
-
+      
       // Incentive text
       ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#F3F4F6';
       ctx.fillText('Get 3 free credits when you join!', size / 2, qrY + qrSize + 65);
-
+      
       // Website URL
       ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#9CA3AF';
       ctx.fillText('www.getthereceipts.com', size / 2, qrY + qrSize + 90);
-
-      // Referral code if available
-      if (referralLink.includes('code=')) {
-        const code = referralLink.split('code=')[1];
-        ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        ctx.fillStyle = '#6B7280';
-        ctx.fillText(`Code: ${code}`, size / 2, qrY + qrSize + 110);
-      }
-
-      setIsGenerating(false);
-    };
-
-    // Create QR code using qrcode.react
-    const qrDataURL = await new Promise((resolve) => {
-      const tempCanvas = document.createElement('canvas');
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCanvas.width = qrSize;
-      tempCanvas.height = qrSize;
       
-      // Use qrcode.react to generate QR code
-      const qrElement = document.createElement('div');
-      qrElement.innerHTML = `<QRCode value="${referralLink}" size={qrSize} level="H" />`;
-      
-      // For now, create a simple QR pattern
-      tempCtx.fillStyle = '#000000';
-      tempCtx.fillRect(0, 0, qrSize, qrSize);
-      tempCtx.fillStyle = '#FFFFFF';
-      tempCtx.fillRect(10, 10, qrSize - 20, qrSize - 20);
-      
-      resolve(tempCanvas.toDataURL());
-    });
-
-    qrImg.src = qrDataURL;
-  };
-
-  // Download QR code
-  const downloadQRCode = async () => {
-    await generateLuxeQR();
-    
-    setTimeout(() => {
+      // Download the image
       const link = document.createElement('a');
       link.download = 'get-the-receipts-luxe-qr.png';
-      link.href = canvasRef.current.toDataURL('image/png', 1.0);
+      link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
-    }, 100);
+      
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   // Share QR code
   const shareQRCode = async () => {
-    await generateLuxeQR();
-    
-    setTimeout(async () => {
-      try {
-        const canvas = canvasRef.current;
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
-        
-        if (navigator.share && navigator.canShare({ files: [new File([blob], 'luxe-qr-code.png', { type: 'image/png' })] })) {
-          await navigator.share({
-            title: 'Get The Receipts - Luxe Referral QR Code',
-            text: 'Scan this QR code to sign up and get 3 free credits!',
-            files: [new File([blob], 'luxe-qr-code.png', { type: 'image/png' })]
-          });
-        } else {
-          downloadQRCode();
-        }
-      } catch (error) {
-        console.error('Error sharing QR code:', error);
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Get The Receipts - Referral QR Code',
+          text: 'Scan this QR code to sign up and get 3 free credits!',
+          url: referralLink
+        });
+      } else {
+        // Fallback to download
         downloadQRCode();
       }
-    }, 100);
+    } catch (error) {
+      console.error('Error sharing QR code:', error);
+      downloadQRCode();
+    }
   };
 
   if (!referralLink) {
@@ -285,11 +205,6 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
         </div>
       </motion.div>
 
-      {/* Hidden canvas for generating luxe QR */}
-      <canvas
-        ref={canvasRef}
-        style={{ display: 'none' }}
-      />
     </div>
   );
 };
