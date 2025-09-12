@@ -72,7 +72,7 @@ const AuthModal = () => {
 
     return (
         <Dialog open={isOpen} onOpenChange={closeModal}>
-            <DialogContent className="sm:max-w-md meme-card text-white relative z-50">
+            <DialogContent className="sm:max-w-md meme-card text-white relative z-10">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-center gradient-text">
                         {view === 'sign_in' ? 'Welcome Back!' : 'Create Your Account'}
