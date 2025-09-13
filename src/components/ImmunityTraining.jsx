@@ -490,10 +490,28 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
     const strategy = archetypeStrategies[archetypeClean] || {
       patternLoop: ["Hook", "Test", "Push", "Reset"],
       decoder: `${archetypeClean} patterns exploit your positive qualities. They target people who value genuine connection and turn it against them.`,
-      healthySigns: [],
-      sketchySigns: [], 
-      immunityTest: null,
-      realTalk: null,
+      keyCharacteristics: [
+        "Uses emotional connection as leverage",
+        "Tests your boundaries repeatedly", 
+        "Pushes limits when you show vulnerability"
+      ],
+      healthySigns: [
+        "Respects your boundaries when set",
+        "Communicates clearly about intentions",
+        "Shows consistent behavior patterns"
+      ],
+      sketchySigns: [
+        "Boundary testing increases over time",
+        "Uses your emotions against you",
+        "Pattern of push-pull dynamics"
+      ], 
+      immunityTest: `Set a clear boundary with ${archetypeClean} and watch their reaction. Do they respect it or push back?`,
+      realTalk: [
+        `${archetypeClean} patterns aren't accidents - they're strategies.`,
+        "Your positive qualities aren't weaknesses to exploit.",
+        "Healthy connections don't require constant boundary enforcement.",
+        "Trust your instincts when something feels off."
+      ],
       blessing: `${archetypeClean} patterns can't fool someone who knows their worth. Trust your instincts and protect your energy.`
     };
     
