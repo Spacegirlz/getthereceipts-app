@@ -14,7 +14,38 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
     setIsGenerating(true);
     
     try {
-      // Create a temporary canvas to render the QR code
+      // First, create an SVG QR code to get the actual QR data
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      document.body.appendChild(tempDiv);
+      
+      // Create QR code SVG element
+      const qrSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      qrSvg.setAttribute('width', '220');
+      qrSvg.setAttribute('height', '220');
+      
+      // Generate QR code using qrcode library manually
+      const QRCode = await import('qrcode');
+      const qrDataURL = await QRCode.toDataURL(referralLink, {
+        width: 220,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        },
+        errorCorrectionLevel: 'H'
+      });
+      
+      // Create image from QR data URL
+      const qrImage = new Image();
+      qrImage.src = qrDataURL;
+      
+      await new Promise((resolve) => {
+        qrImage.onload = resolve;
+      });
+      
+      // Create a temporary canvas to render the complete design
       const canvas = document.createElement('canvas');
       const size = 500;
       canvas.width = size;
@@ -68,11 +99,8 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
       ctx.lineWidth = 4;
       ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
       
-      // Simple QR pattern (placeholder)
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(qrX, qrY, qrSize, qrSize);
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(qrX + 10, qrY + 10, qrSize - 20, qrSize - 20);
+      // Draw the actual QR code image
+      ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
       
       // Call to action
       ctx.fillStyle = '#FFFFFF';
@@ -89,9 +117,12 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
       ctx.fillStyle = '#9CA3AF';
       ctx.fillText('www.getthereceipts.com', size / 2, qrY + qrSize + 90);
       
+      // Cleanup
+      document.body.removeChild(tempDiv);
+      
       // Download the image
       const link = document.createElement('a');
-      link.download = 'get-the-receipts-luxe-qr.png';
+      link.download = 'get-the-receipts-luxe-qr-code.png';
       link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
       
@@ -176,7 +207,7 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
               className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-700 hover:via-pink-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
             >
               <Download className="h-5 w-5 mr-2" />
-              {isGenerating ? 'Generating...' : 'Download Luxe QR Code'}
+              {isGenerating ? 'Generating...' : 'Download your QR Code'}
             </Button>
             
             <Button
