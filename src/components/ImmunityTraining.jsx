@@ -486,15 +486,50 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       }
     };
     
+    // Dynamic archetype characteristic generator
+    const generateArchetypeCharacteristics = (archetype) => {
+      const archetypeLower = archetype.toLowerCase();
+      
+      // Generate characteristics based on archetype name patterns
+      if (archetypeLower.includes('supportive') || archetypeLower.includes('healthy') || archetypeLower.includes('keeper')) {
+        return [
+          `${archetype} personalities prioritize open, honest communication`,
+          `They demonstrate consistent actions that match their words`,
+          `Emotional availability and vulnerability are natural traits for them`
+        ];
+      } else if (archetypeLower.includes('future') || archetypeLower.includes('faker')) {
+        return [
+          `${archetype} types excel at making promises without concrete timelines`,
+          `They often use vague language to maintain plausible deniability`,
+          `Hope and potential are their primary tools for maintaining interest`
+        ];
+      } else if (archetypeLower.includes('breadcrumb') || archetypeLower.includes('hot') || archetypeLower.includes('cold')) {
+        return [
+          `${archetype} patterns involve strategic intermittent reinforcement`,
+          `They master the art of giving just enough attention to maintain hope`,
+          `Inconsistency is their signature move, not a character flaw`
+        ];
+      } else if (archetypeLower.includes('ghost') || archetypeLower.includes('disappear')) {
+        return [
+          `${archetype} behavior includes sudden communication blackouts`,
+          `They treat availability as entirely optional and one-sided`,
+          `Reappearance often comes with elaborate justifications`
+        ];
+      } else {
+        // Generic fallback for any archetype
+        return [
+          `${archetype} personalities often exhibit specific behavioral patterns`,
+          `They tend to use particular communication strategies consistently`,
+          `Understanding their core motivations reveals their true intentions`
+        ];
+      }
+    };
+
     // Get strategy or create dynamic one
     const strategy = archetypeStrategies[archetypeClean] || {
       patternLoop: ["Hook", "Test", "Push", "Reset"],
       decoder: `${archetypeClean} patterns exploit your positive qualities. They target people who value genuine connection and turn it against them.`,
-      keyCharacteristics: [
-        "Uses emotional connection as leverage",
-        "Tests your boundaries repeatedly", 
-        "Pushes limits when you show vulnerability"
-      ],
+      keyCharacteristics: generateArchetypeCharacteristics(archetypeClean),
       healthySigns: [
         "Respects your boundaries when set",
         "Communicates clearly about intentions",
