@@ -5,7 +5,7 @@ import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
 
-const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false }) => {
+const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false, isPremium = false }) => {
   const { toast } = useToast();
   // Memoize debug logging to prevent excessive output
   useMemo(() => {
@@ -944,8 +944,63 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         </div>
 
 
-        {/* Sage's Real Talk - Speech Bubble Style */}
-        {displayData.teaPlayScript && displayData.teaPlayScript.length > 0 && (
+        {/* Premium Paywall - Show tease for free users */}
+        {!isPremium && !isCrisisSituation ? (
+          <div className="mb-8">
+            {/* Premium Tease */}
+            <div className="bg-gradient-to-br from-amber-500/10 to-yellow-500/10 rounded-3xl p-6 sm:p-8 border border-amber-400/30 relative overflow-hidden backdrop-blur-sm shadow-lg">
+              {/* Unlock Icon */}
+              <div className="absolute top-4 right-4">
+                <div className="w-10 h-10 bg-amber-500/20 rounded-full flex items-center justify-center border border-amber-400/40">
+                  <Lock className="w-5 h-5 text-amber-400" />
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="text-center mb-6">
+                <Crown className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-amber-300 mb-3">Get The Full Immunity Training</h3>
+                <p className="text-amber-200/90 text-lg leading-relaxed max-w-md mx-auto">
+                  Unlock Sage's Real Talk, personalized protection strategies, and your custom blessing.
+                </p>
+              </div>
+              
+              {/* Premium Features Preview */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div className="bg-amber-500/10 rounded-2xl p-4 border border-amber-400/20">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-2xl">🔮</span>
+                    <h4 className="text-amber-300 font-semibold">Sage's Real Talk</h4>
+                  </div>
+                  <p className="text-amber-200/70 text-sm">Get brutally honest insights about your specific situation</p>
+                </div>
+                <div className="bg-amber-500/10 rounded-2xl p-4 border border-amber-400/20">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-2xl">👑</span>
+                    <h4 className="text-amber-300 font-semibold">Personal Blessing</h4>
+                  </div>
+                  <p className="text-amber-200/70 text-sm">Receive your custom protection mantra from Sage</p>
+                </div>
+              </div>
+              
+              {/* CTA Button */}
+              <div className="text-center">
+                <button
+                  onClick={() => window.location.href = '/pricing'}
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-black font-bold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg text-lg"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  ⚡ Go Premium
+                  <Crown className="w-5 h-5" />
+                </button>
+                <p className="text-amber-200/60 text-sm mt-3">Unlimited receipts • Full immunity training • Premium analysis</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Sage's Real Talk - Speech Bubble Style */}
+            {displayData.teaPlayScript && displayData.teaPlayScript.length > 0 && (
           <div className="mb-6 sm:mb-8">
             {/* Speech Bubble Container */}
             <div className="relative">
@@ -1074,12 +1129,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </div>
         </div>
 
-        {/* WATERMARK - Final element in Sage's Immunity Training */}
-        <div className="text-center mt-4 mb-6">
-          <p className="text-xs text-stone-200/90/40 tracking-widest">
-            www.getthereceipts.com
-          </p>
-        </div>
+            {/* WATERMARK - Final element in Sage's Immunity Training */}
+            <div className="text-center mt-4 mb-6">
+              <p className="text-xs text-stone-200/90/40 tracking-widest">
+                www.getthereceipts.com
+              </p>
+            </div>
+          </>
+        )}
       </motion.div>
 
       {/* SEPARATE SAVE/SHARE BOX - Completely outside the immunity card */}

@@ -79,6 +79,7 @@ const TabbedReceiptInterface = ({
           archetypeName={archetypeNameForImmunity}
           riskLevel={analysis?.immunityTraining?.riskLevel || 'medium'}
           isCrisisSituation={isCrisisSituation}
+          isPremium={isPremium}
           onSaveReceipt={onSaveReceipt}
           onScreenshot={onScreenshot}
           isSharing={isSharing}
