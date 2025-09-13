@@ -101,6 +101,31 @@ const DashboardPage = () => {
     }
   }, [user, authLoading, fetchData, navigate]);
 
+  // Force refresh credit data when dashboard becomes visible (after navigation)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user?.id) {
+        console.log('🔄 Dashboard visible - refreshing credit data...');
+        fetchData(user.id);
+      }
+    };
+
+    const handleFocus = () => {
+      if (user?.id) {
+        console.log('🔄 Dashboard focused - refreshing credit data...');
+        fetchData(user.id);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [user?.id, fetchData]);
+
 
   const getPlanName = (subscription) => {
     if (!subscription) return 'Free Daily Receipt';
@@ -327,9 +352,21 @@ const DashboardPage = () => {
           </div>
           
           <div className="meme-card p-6 rounded-2xl">
-            <h2 className="font-bold text-xl mb-2 flex items-center">
-              <Receipt className="mr-2 h-5 w-5 text-green-400" />
-              Credits
+            <h2 className="font-bold text-xl mb-2 flex items-center justify-between">
+              <span className="flex items-center">
+                <Receipt className="mr-2 h-5 w-5 text-green-400" />
+                Credits
+              </span>
+              <button
+                onClick={() => {
+                  console.log('🔄 Manual credit refresh requested');
+                  if (user?.id) fetchData(user.id);
+                }}
+                className="text-xs px-2 py-1 bg-green-500/20 hover:bg-green-500/30 text-green-300 rounded-md transition-colors"
+                title="Refresh credits"
+              >
+                Refresh
+              </button>
             </h2>
             <p className="text-2xl font-bold gradient-text">{getCreditsDisplay()}</p>
             {userCredits.subscription === 'free' && (
