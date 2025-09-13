@@ -29,14 +29,18 @@ module.exports = async function handler(req, res) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
+  console.log(`🎣 Webhook received: ${event.type}`);
+
   // Handle successful payment
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const userEmail = session.customer_details?.email;
     const amountPaid = session.amount_total / 100; // Convert cents to dollars
     
+    console.log(`💳 Payment completed: ${userEmail} paid $${amountPaid}`);
+    
     if (!userEmail) {
-      console.error('No email in session');
+      console.error('❌ No email in session');
       return res.status(200).json({ received: true });
     }
     
@@ -55,19 +59,36 @@ module.exports = async function handler(req, res) {
       subscriptionType = 'yearly';
     }
     
-    // Update user credits directly
+    console.log(`🎯 Adding ${creditsToAdd} credits to ${userEmail}`);
+    
+    // Get current credits first
+    const { data: currentUser, error: fetchError } = await supabase
+      .from('users')
+      .select('credits_remaining')
+      .eq('email', userEmail)
+      .single();
+    
+    if (fetchError) {
+      console.error('❌ Error fetching user:', fetchError);
+      return res.status(200).json({ received: true });
+    }
+    
+    // Add to existing credits (don't overwrite)
+    const newCredits = (currentUser.credits_remaining || 0) + creditsToAdd;
+    
+    // Update user credits
     const { data, error } = await supabase
       .from('users')
       .update({ 
-        credits_remaining: creditsToAdd,
+        credits_remaining: newCredits,
         subscription_status: subscriptionType
       })
       .eq('email', userEmail);
       
     if (error) {
-      console.error('Error updating user:', error);
+      console.error('❌ Error updating user:', error);
     } else {
-      console.log(`Added ${creditsToAdd} credits for ${userEmail}`);
+      console.log(`✅ Successfully added ${creditsToAdd} credits to ${userEmail} (total: ${newCredits})`);
     }
   }
 
@@ -77,8 +98,6 @@ module.exports = async function handler(req, res) {
 // Webhook configuration for Vercel
 module.exports.config = {
   api: {
-    bodyParser: {
-      sizeLimit: '1mb',
-    },
+    bodyParser: false, // Disable bodyParser for Stripe webhooks (need raw body)
   },
 };
