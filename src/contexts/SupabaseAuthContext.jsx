@@ -84,14 +84,23 @@ export const AuthProvider = ({ children }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Simple owner check - no database calls to prevent loops
-          const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
+          // Check actual database subscription status instead of hardcoding
+          const { data: userData, error } = await supabase
+            .from('users')
+            .select('subscription_status')
+            .eq('id', session.user.id)
+            .single();
+          
+          const actualIsPremium = userData?.subscription_status === 'premium' || 
+                                 userData?.subscription_status === 'yearly' || 
+                                 userData?.subscription_status === 'founder';
+          
           console.log('🔐 Auth Debug:', { 
             email: session.user.email, 
-            isOwner, 
-            premiumStatus: isOwner 
+            databaseStatus: userData?.subscription_status,
+            actualIsPremium 
           });
-          setIsPremium(isOwner);
+          setIsPremium(actualIsPremium);
         }
       } catch (error) {
         console.error('Error getting initial session:', error);
@@ -113,9 +122,19 @@ export const AuthProvider = ({ children }) => {
           setUser(session?.user ?? null);
           
           if (session?.user) {
-            const isOwner = session.user.email === 'piet@virtualsatchel.com' || session.user.email === 'piet@pietmarie.com';
-            setIsPremium(isOwner);
-            console.log('🔐 User authenticated:', session.user.email, 'Premium:', isOwner);
+            // Check actual database subscription status
+            const { data: userData, error } = await supabase
+              .from('users')
+              .select('subscription_status')
+              .eq('id', session.user.id)
+              .single();
+            
+            const actualIsPremium = userData?.subscription_status === 'premium' || 
+                                   userData?.subscription_status === 'yearly' || 
+                                   userData?.subscription_status === 'founder';
+            
+            setIsPremium(actualIsPremium);
+            console.log('🔐 User authenticated:', session.user.email, 'Database Status:', userData?.subscription_status, 'Premium:', actualIsPremium);
           } else {
             setIsPremium(false);
             console.log('🔐 User signed out');
