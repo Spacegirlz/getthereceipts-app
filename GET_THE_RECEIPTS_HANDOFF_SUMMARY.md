@@ -3,7 +3,46 @@
 
 ---
 
-## 🚀 **LATEST UPDATES - September 13, 2025**
+## 🚀 **LATEST UPDATES - September 13, 2025 - QR Code Fixes**
+
+### **🔧 QR Code Referral System - Critical Fixes Applied**
+**Issues Resolved:** Multiple critical problems with the QR code download functionality on `/refer` page.
+
+**Problems Fixed:**
+1. ✅ **Button Text Updated** - Changed from "Download Luxe QR Code" to "Download your QR Code" per requirements
+2. ✅ **Filename Fixed** - Changed download filename from `get-the-receipts-luxe-qr.png` to `get-the-receipts-luxe-qr-code.png`
+3. ✅ **QR Code Actually Appears** - Fixed critical bug where downloaded image contained a fake QR pattern instead of real QR code
+4. ✅ **Unique User URLs** - Verified each user gets unique QR code containing their specific referral URL (`baseUrl/?ref={userReferralCode}`)
+
+**Technical Implementation:**
+```javascript
+// NEW: Real QR code generation using qrcode library
+const QRCode = await import('qrcode');
+const qrDataURL = await QRCode.toDataURL(referralLink, {
+  width: 220,
+  margin: 1,
+  errorCorrectionLevel: 'H'
+});
+
+// Draw actual QR code to canvas instead of placeholder pattern
+const qrImage = new Image();
+qrImage.src = qrDataURL;
+ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+```
+
+**Files Modified:**
+- `src/components/ReferralQRCode.jsx` - Complete QR generation overhaul with real QR code rendering
+
+### **🔧 Credit Deduction System - Previously Fixed**
+**Issues Resolved:** Freemium daily credits were not deducting per use.
+
+**Files Modified:**
+- `src/lib/services/creditsSystem.js` - Added missing `deductCredits` function
+- `src/pages/ChatInputPage.jsx` - Implemented credit deduction after successful analysis
+
+---
+
+## 🚀 **PREVIOUS UPDATES - September 13, 2025**
 
 ### **🔧 Critical Build Fixes Completed**
 **Major Issue Resolved:** Vercel deployment was failing due to QR code component import errors and Vite configuration issues.
