@@ -737,7 +737,8 @@ export const analyzeWithGPT = async (message, context) => {
         userPronouns: cleanContext.userPronouns,
         otherPronouns: cleanContext.otherPronouns,
         relationshipType: cleanContext.relationshipType,
-        background: cleanContext.background,
+        background: cleanContext.background || context?.background || '',
+        userQuestion: cleanContext.userQuestion || context?.userQuestion || '',
         
         // Legacy support for existing prompts
         user_name: actualUserName,
@@ -1518,6 +1519,7 @@ export const generateAlignedResults = async (message, context) => {
   console.log('🔄 Combining all 3 API results...');
   const finalResult = {
     ...shareShotAnalysis,
+    userQuestion: context?.userQuestion || context?.user_question || null,
     deepDive: alignedDeepDive,
     immunityTraining: immunityTraining,
     isAligned: true,

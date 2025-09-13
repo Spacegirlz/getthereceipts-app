@@ -34,7 +34,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     return questionMatch ? questionMatch[1].trim() : null;
   };
 
-  const parsedUserQuestion = userQuestion || extractUserQuestion(originalMessage);
+  const parsedUserQuestion = results?.userQuestion || null;
 
   // Function to truncate question to approximately 33 words (3 lines)
   const truncateToThreeLines = (text, maxWords = 33) => {
