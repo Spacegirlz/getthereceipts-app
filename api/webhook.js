@@ -65,6 +65,89 @@ module.exports = async function handler(req, res) {
     await handlePaymentSuccess(userEmail, amountPaid, 'subscription', invoice);
   }
 
+  // Handle subscription cancellations
+  if (event.type === 'customer.subscription.deleted') {
+    const subscription = event.data.object;
+    const customerId = subscription.customer;
+    
+    console.log(`🚫 Subscription cancelled: ${subscription.id} for customer ${customerId}`);
+    
+    // Get customer email from Stripe
+    const customer = await stripe.customers.retrieve(customerId);
+    const userEmail = customer.email;
+    
+    if (userEmail) {
+      await handleSubscriptionDowngrade(userEmail, 'cancelled');
+    }
+  }
+
+  // Handle failed subscription payments
+  if (event.type === 'invoice.payment_failed') {
+    const invoice = event.data.object;
+    const userEmail = invoice.customer_email;
+    const attemptCount = invoice.attempt_count;
+    
+    console.log(`❌ Payment failed: ${userEmail}, attempt ${attemptCount}`);
+    
+    if (userEmail) {
+      // After multiple failed attempts, downgrade to free
+      if (attemptCount >= 3) {
+        console.log(`🔄 Max payment attempts reached, downgrading ${userEmail} to free`);
+        await handleSubscriptionDowngrade(userEmail, 'payment_failed');
+      }
+    }
+  }
+
+  // Handle subscription updates/downgrades
+  if (event.type === 'customer.subscription.updated') {
+    const subscription = event.data.object;
+    const customerId = subscription.customer;
+    const status = subscription.status;
+    
+    console.log(`📝 Subscription updated: ${subscription.id}, status: ${status}`);
+    
+    // Get customer email
+    const customer = await stripe.customers.retrieve(customerId);
+    const userEmail = customer.email;
+    
+    if (userEmail && (status === 'canceled' || status === 'unpaid' || status === 'past_due')) {
+      await handleSubscriptionDowngrade(userEmail, status);
+    }
+  }
+
+  // Shared subscription downgrade function
+  async function handleSubscriptionDowngrade(userEmail, reason) {
+    console.log(`⬇️ Downgrading ${userEmail} to free tier (reason: ${reason})`);
+    
+    // Get current user data
+    const { data: currentUser, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', userEmail)
+      .single();
+    
+    if (fetchError) {
+      console.error('❌ Error fetching user for downgrade:', fetchError);
+      return;
+    }
+    
+    // Downgrade to free tier with 1 daily credit
+    const { error } = await supabase
+      .from('users')
+      .update({ 
+        credits_remaining: 1, // Reset to 1 free daily credit
+        subscription_status: 'free',
+        last_free_receipt_date: new Date().toISOString().split('T')[0]
+      })
+      .eq('email', userEmail);
+      
+    if (error) {
+      console.error('❌ Error downgrading user:', error);
+    } else {
+      console.log(`✅ Successfully downgraded ${userEmail} to free tier (1 daily credit)`);
+    }
+  }
+
   // Shared payment processing function
   async function handlePaymentSuccess(userEmail, amountPaid, mode, paymentObject) {
     // Determine credits and subscription type based on amount
