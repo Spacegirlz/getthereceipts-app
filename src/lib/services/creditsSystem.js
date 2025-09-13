@@ -204,3 +204,59 @@ export const resetDeepDives = async (userId) => {
   // Reset logic if needed
   return { success: true };
 };
+
+// Deduct credits from user account
+export const deductCredits = async (userId, amount = 1) => {
+  try {
+    // 🚨 LOCALHOST DEVELOPMENT MODE: Skip deduction
+    const isLocalhost = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    
+    if (isLocalhost) {
+      console.log('🚨 LOCALHOST: Skipping credit deduction for testing');
+      return { success: true };
+    }
+
+    // Get current user data
+    const { data: userData, error: fetchError } = await supabase
+      .from('users')
+      .select('credits_remaining, subscription_status, email')
+      .eq('id', userId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching user data for deduction:', fetchError);
+      return { success: false, error: fetchError };
+    }
+
+    // Don't deduct for unlimited users (premium/yearly/founder)
+    if (userData.subscription_status === 'premium' || 
+        userData.subscription_status === 'yearly' || 
+        userData.subscription_status === 'founder') {
+      console.log('Premium user - no credit deduction needed');
+      return { success: true };
+    }
+
+    // Deduct credits for free users
+    const newCredits = Math.max(0, (userData.credits_remaining || 0) - amount);
+    
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ 
+        credits_remaining: newCredits,
+        last_free_receipt_date: new Date().toISOString().split('T')[0]
+      })
+      .eq('id', userId);
+
+    if (updateError) {
+      console.error('Error deducting credits:', updateError);
+      return { success: false, error: updateError };
+    }
+
+    console.log(`✅ Deducted ${amount} credit(s) from user ${userData.email}. Remaining: ${newCredits}`);
+    return { success: true, newCredits };
+  } catch (error) {
+    console.error('deductCredits error:', error);
+    return { success: false, error };
+  }
+};

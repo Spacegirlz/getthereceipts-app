@@ -11,7 +11,7 @@ import { useAuthModal } from '@/contexts/AuthModalContext';
 import { Helmet } from 'react-helmet';
 import AnalysisLoader from '@/components/AnalysisLoader';
 import { generateAlignedResults } from '@/lib/analysis/advancedAnalysis';
-import { getUserCredits } from '@/lib/services/creditsSystem';
+import { getUserCredits, deductCredits } from '@/lib/services/creditsSystem';
 import sageCharacter from '@/assets/sage-dark-circle.png';
 
 const ChatInputPage = () => {
@@ -427,6 +427,22 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       };
       
       const analysisResult = await generateAlignedResults(currentMessage, analysisContext);
+
+      // Deduct credits after successful analysis (only for logged-in users)
+      if (user?.id && !isPremium) {
+        console.log('💳 Deducting credit for analysis...');
+        const deductionResult = await deductCredits(user.id, 1);
+        if (deductionResult.success) {
+          console.log('✅ Credit deducted successfully');
+          // Update local credit state
+          setUserCredits(prev => ({
+            ...prev,
+            credits: deductionResult.newCredits || (prev.credits - 1)
+          }));
+        } else {
+          console.error('❌ Failed to deduct credit:', deductionResult.error);
+        }
+      }
 
       const uniqueId = Math.random().toString(36).substr(2, 9);
       
