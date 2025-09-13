@@ -56,19 +56,36 @@ export const getUserCredits = async (userId) => {
       const today = now.toISOString().split('T')[0];
       const lastResetDate = data.last_free_receipt_date;
       
+      console.log('🔍 Daily reset check:', {
+        today,
+        lastResetDate,
+        currentCredits: creditsRemaining,
+        userId: userId.substring(0, 8) + '...'
+      });
+      
       const needsDailyReset = !lastResetDate || lastResetDate !== today;
       
       if (needsDailyReset) {
+        console.log('🔄 Daily reset needed - checking bonus period...');
+        
         // Check if user is still in their new user bonus period
         const userCreatedDate = new Date(data.created_at);
         const daysSinceSignup = Math.floor((now - userCreatedDate) / (1000 * 60 * 60 * 24));
         
+        console.log('📅 User bonus check:', {
+          userCreatedDate: userCreatedDate.toISOString(),
+          daysSinceSignup,
+          currentCredits: creditsRemaining,
+          hasExcessCredits: creditsRemaining > 1
+        });
+        
         // If user signed up today and still has bonus credits, don't reset
         if (daysSinceSignup === 0 && creditsRemaining > 1) {
           // User is still in their first day with bonus credits, don't reset
-          console.log('User still in new user bonus period, not resetting credits');
+          console.log('⏭️ User still in new user bonus period, not resetting credits');
         } else {
           // Reset to 1 credit per day (standard free tier)
+          console.log(`🔄 Resetting credits from ${creditsRemaining} to ${CREDIT_AMOUNTS.FREE_USER_DAILY}`);
           creditsRemaining = CREDIT_AMOUNTS.FREE_USER_DAILY;
           
           // Update the database with new credits and reset date
@@ -82,8 +99,12 @@ export const getUserCredits = async (userId) => {
             
           if (updateError) {
             console.error('Error updating daily credit reset:', updateError);
+          } else {
+            console.log('✅ Daily reset complete - credits set to 1');
           }
         }
+      } else {
+        console.log('✅ No daily reset needed - using current credits:', creditsRemaining);
       }
     }
 
