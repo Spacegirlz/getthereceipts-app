@@ -3,7 +3,68 @@
 
 ---
 
-## 🚀 **LATEST UPDATES - September 13, 2025 - QR Code Fixes**
+## 🚀 **LATEST UPDATES - September 13, 2025 - User Question Display Fixes**
+
+### **🔧 Critical User Question Display - Fixed**
+**Issue Resolved:** User questions were not appearing in generated receipts despite being entered in the form.
+
+**Root Cause:** Question data was not properly passed through the entire analysis pipeline from UI → Analysis → Receipt Display.
+
+**Critical Fixes Applied:**
+1. ✅ **Added userQuestion to finalResult** - `src/lib/analysis/advancedAnalysis.js:1521`
+   ```javascript
+   const finalResult = {
+     ...shareShotAnalysis,
+     userQuestion: context?.userQuestion || context?.user_question || null, // ADDED
+     deepDive: alignedDeepDive,
+     immunityTraining: immunityTraining,
+     isAligned: true,
+     analysisComplete: true
+   };
+   ```
+
+2. ✅ **Simplified question access in ReceiptCardViral** - `src/components/ReceiptCardViral.jsx:37`
+   ```javascript
+   // OLD (fragile regex): 
+   const parsedUserQuestion = userQuestion || extractUserQuestion(originalMessage);
+   
+   // NEW (direct access):
+   const parsedUserQuestion = results?.userQuestion || null;
+   ```
+
+3. ✅ **Ensured background/userQuestion in AI payload** - `src/lib/analysis/advancedAnalysis.js:740-741`
+   ```javascript
+   const userPayload = {
+     // ... existing fields
+     background: cleanContext.background || context?.background || '',
+     userQuestion: cleanContext.userQuestion || context?.userQuestion || '', // ADDED
+   };
+   ```
+
+**Files Modified:**
+- `src/lib/analysis/advancedAnalysis.js` - Added userQuestion to finalResult and userPayload
+- `src/components/ReceiptCardViral.jsx` - Simplified question access pattern
+
+**Impact:** User questions like "Should I text them back?" now properly appear in generated receipts.
+
+### **🔧 Name Detection System - Previously Fixed**
+**Issues Resolved:** Field name inconsistency causing generic "USER"/"THEM" instead of actual names.
+
+**Critical Fix:** Fixed mismatch between ChatInputPage (sends `user_name`) and advancedAnalysis (expected `userName`).
+
+**Enhanced Features:**
+- ✅ Multiple field format checking: `context?.userName || context?.user_name || context?.user_side`
+- ✅ Color mapping for screenshots: `"blue = Person 1, grey = Person 2"`
+- ✅ Smart conversation pattern detection with improved regex
+- ✅ Console logging for debugging name detection
+
+**Files Modified:**
+- `src/lib/analysis/advancedAnalysis.js` - Complete `extractNamesFromConversation` function overhaul
+- `src/pages/ChatInputPage.jsx` - Added color mapping UI and form persistence
+
+---
+
+## 🚀 **PREVIOUS UPDATES - September 13, 2025 - QR Code Fixes**
 
 ### **🔧 QR Code Referral System - Critical Fixes Applied**
 **Issues Resolved:** Multiple critical problems with the QR code download functionality on `/refer` page.
