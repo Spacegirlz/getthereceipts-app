@@ -190,6 +190,91 @@ const LandingPage = () => {
           </motion.div>
         </motion.div>
 
+        {/* Meet Sage - Character Introduction */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="w-full max-w-5xl mx-auto mb-24 md:mb-32 mt-16 md:mt-24"
+        >
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+              Meet Sage — Your AI Dating Decoder
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-300 font-medium">
+              She's seen a million toxic texts.<br />
+              She'll tell you the truth about yours.
+            </p>
+          </div>
+
+          {/* Three Core Points */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {/* Point 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="text-center p-8 bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur-sm rounded-2xl border border-purple-500/20"
+            >
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">1</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">Trained by the group chat.</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Sage doesn't guess. She's read it all — breadcrumbers, ghosters, gaslighters. 
+                She spots the patterns you've been trained to ignore.
+              </p>
+            </motion.div>
+
+            {/* Point 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+              className="text-center p-8 bg-gradient-to-br from-teal-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl border border-teal-500/20"
+            >
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-teal-500 to-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">2</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">No fluff, just facts.</h3>
+              <p className="text-gray-300 leading-relaxed">
+                She doesn't do therapy talk. She gives it to you clean: what they said, 
+                what it means, and what they're likely to do next.
+              </p>
+            </motion.div>
+
+            {/* Point 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="text-center p-8 bg-gradient-to-br from-green-900/20 to-emerald-900/20 backdrop-blur-sm rounded-2xl border border-green-500/20"
+            >
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">3</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">Privacy-locked. Judgement-free.</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Your chats are never saved. Sage sees the truth, then deletes the tea. 
+                No shame. No tracing. Just clarity.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Authority Quote */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.6 }}
+            className="text-center p-8 bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-600/30"
+          >
+            <p className="text-lg md:text-xl text-gray-300 italic leading-relaxed">
+              "Sage was built by creators sick of second-guessing texts, trained on real-world 
+              relationship patterns, and designed to give you <span className="text-teal-400 font-semibold">the clarity your gut already knew.</span>"
+            </p>
+          </motion.div>
+        </motion.div>
+
         {/* NEW: Instant Demo Section - The Missing Hook */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
