@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }) => {
 
     // Minimal auth state change handler to prevent loops
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log('🔐 Auth state changed:', event, session?.user?.email || 'No user');
         
         // Only process certain events to prevent infinite loops
