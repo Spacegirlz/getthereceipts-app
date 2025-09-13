@@ -45,7 +45,7 @@ export const getUserCredits = async (userId) => {
     const now = new Date();
     const lastReset = data.last_free_receipt_date ? new Date(data.last_free_receipt_date) : null;
     
-    let creditsRemaining = data.credits_remaining || 1;
+    let creditsRemaining = data.credits_remaining ?? 1; // Use nullish coalescing to preserve 0 values
     
     // For premium users, credits are unlimited
     if (data.subscription_status === 'premium' || data.subscription_status === 'yearly' || data.subscription_status === 'founder') {
@@ -130,19 +130,27 @@ export const getUserCredits = async (userId) => {
 // Initialize user credits (called when user signs up)
 export const initializeUserCredits = async (userId) => {
   try {
-    // Check if user already exists
+    // Check if user already exists - don't use .single() as it throws errors
     const { data: existingUser, error: checkError } = await supabase
       .from('users')
       .select('id')
       .eq('id', userId)
-      .single();
+      .limit(1);
 
-    if (existingUser) {
+    // If user exists or there's an error checking, don't initialize
+    if (existingUser && existingUser.length > 0) {
+      console.log('✅ User already exists, skipping credit initialization');
       return { success: true }; // User already exists
     }
 
-    // User doesn't exist, this should be handled by the user creation trigger
-    // But we can update their credits if needed
+    if (checkError) {
+      console.error('Error checking user existence:', checkError);
+      // Don't initialize if we can't verify - this prevents accidental resets
+      return { success: false, error: checkError };
+    }
+
+    // Only create/update if user truly doesn't exist
+    console.log('🆕 New user detected, initializing with bonus credits');
     const { error } = await supabase
       .from('users')
       .update({
