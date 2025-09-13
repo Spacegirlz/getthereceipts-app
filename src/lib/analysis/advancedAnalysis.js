@@ -1059,92 +1059,85 @@ export const generateAlignedResults = async (message, context) => {
   // Build clean context for all API calls
   const buildCleanContext = (message, context) => {
     const extractNamesFromConversation = (text, context) => {
-      // Priority 1: Use form-provided names if available
-      if (context?.userName && context?.otherName) {
+      // Priority 1: Check ALL possible field name formats (CRITICAL FIX)
+      const userName = context?.userName || context?.user_name || context?.user_side;
+      const otherName = context?.otherName || context?.other_name || context?.their_name;
+      
+      console.log('🔍 Name Detection:', { userName, otherName, context });
+      
+      if (userName && otherName) {
         return {
-          user: context.userName.trim(),
-          other: context.otherName.trim()
+          user: userName.trim(),
+          other: otherName.trim()
         };
       }
       
-      // Priority 2: Try to extract from conversation patterns
+      // Priority 2: Check for color-based identification (for screenshots)
+      if (context?.colorMapping) {
+        // Example: "blue = Piet, grey = Nanna"
+        const mappings = context.colorMapping.split(',').map(m => {
+          const [color, name] = m.split('=').map(s => s.trim());
+          return { color, name };
+        });
+        
+        // Use first mapping for user, second for other
+        if (mappings.length >= 2) {
+          return {
+            user: mappings[0].name,
+            other: mappings[1].name
+          };
+        }
+      }
+      
+      // Priority 3: Auto-detect from conversation patterns
       const lines = text.split('\n').filter(line => line.trim());
       const speakers = new Map();
       
+      // Look for patterns like "Name:", "Name (time):", etc.
       for (const line of lines) {
-        // Look for patterns like "Her:", "Him:", "Me:", "Alex:", etc.
-        const match = line.match(/^([^:]+):/);
-        if (match) {
-          const speaker = match[1].trim();
-          speakers.set(speaker.toLowerCase(), speaker);
-        }
-      }
-      
-      // Identify user (Me, I) vs other person
-      let userName = context?.userName || context?.user_name || 'You';
-      let otherName = context?.otherName || context?.other_name || 'Them';
-      
-      // Common patterns to identify speakers
-      const userIndicators = ['me', 'i', 'myself'];
-      const otherIndicators = ['her', 'him', 'them', 'they'];
-      
-      // If we have form context with partial names, use those
-      if (context?.userName) {
-        userName = context.userName;
-      }
-      if (context?.otherName) {
-        otherName = context.otherName;
-      }
-      
-      // Extract all actual names from conversation (not pronouns)
-      const actualNames = [];
-      for (const [key, value] of speakers) {
-        if (!userIndicators.includes(key) && !otherIndicators.includes(key) && key.length > 1) {
-          actualNames.push(value);
-        }
-      }
-      
-      // If we have names from conversation, use them appropriately
-      if (actualNames.length >= 1) {
-        // If no form context at all, assign from conversation
-        if (!context?.userName && !context?.otherName) {
-          // First actual name found becomes the "other" person (usually who initiated)
-          otherName = actualNames[0];
-          // If there's a second name, that's likely the user
-          if (actualNames.length >= 2) {
-            userName = actualNames[1];
-          } else {
-            userName = 'You';
-          }
-        } 
-        // If only user provided via form, extract other from conversation
-        else if (context?.userName && !context?.otherName) {
-          // Look for name that's NOT the user name
-          const foundOther = actualNames.find(name => name !== context.userName);
-          if (foundOther) {
-            otherName = foundOther;
-          }
-        }
-        // If only other provided via form, extract user from conversation
-        else if (!context?.userName && context?.otherName) {
-          // Look for name that's NOT the other name
-          const foundUser = actualNames.find(name => name !== context.otherName);
-          if (foundUser) {
-            userName = foundUser;
+        const patterns = [
+          /^([^:]+):/,                    // "Name:"
+          /^([^(]+)\s*\([^)]+\):/,       // "Name (time):"
+          /^([^:]+):\s*/                  // "Name: "
+        ];
+        
+        for (const pattern of patterns) {
+          const match = line.match(pattern);
+          if (match) {
+            const speaker = match[1].trim();
+            if (speaker && speaker.length > 0 && speaker.length < 20) {
+              speakers.set(speaker.toLowerCase(), speaker);
+            }
+            break;
           }
         }
       }
       
-      // Handle cases where user indicators are present
-      for (const [key, value] of speakers) {
-        if (userIndicators.includes(key)) {
-          userName = 'You';
-        }
+      // Identify speakers
+      const speakerArray = Array.from(speakers.values());
+      
+      // Smart detection: First non-pronoun name is likely "other", second is "user"
+      const pronouns = ['me', 'i', 'myself', 'her', 'him', 'them', 'they'];
+      const actualNames = speakerArray.filter(s => 
+        !pronouns.includes(s.toLowerCase()) && s.length > 1
+      );
+      
+      if (actualNames.length >= 2) {
+        return {
+          user: actualNames[1],  // Second speaker is often the user
+          other: actualNames[0]  // First speaker is often who initiated
+        };
+      } else if (actualNames.length === 1) {
+        return {
+          user: userName || 'You',
+          other: actualNames[0]
+        };
       }
       
+      // Fallback with partial context
       return {
-        user: userName,
-        other: otherName
+        user: userName || 'You',
+        other: otherName || 'Them'
       };
     };
     

@@ -34,6 +34,7 @@ const ChatInputPage = () => {
   const [otherPartyPronouns, setOtherPartyPronouns] = useState('');
   const [userPronouns, setUserPronouns] = useState('');
   const [userQuestion, setUserQuestion] = useState('');
+  const [colorMapping, setColorMapping] = useState('');
   
   // Image upload state
   const [extractedTexts, setExtractedTexts] = useState([]);
@@ -128,6 +129,7 @@ const ChatInputPage = () => {
       otherPartyPronouns,
       userPronouns,
       userQuestion,
+      colorMapping,
       extractedTexts
     };
     console.log('💾 ChatInput: Saving form data to localStorage', { 
@@ -154,6 +156,7 @@ const ChatInputPage = () => {
         setOtherPartyPronouns(formData.otherPartyPronouns || '');
         setUserPronouns(formData.userPronouns || '');
         setUserQuestion(formData.userQuestion || '');
+        setColorMapping(formData.colorMapping || '');
         setExtractedTexts(formData.extractedTexts || []);
         
         console.log('📂 ChatInput: Form data restored', { 
@@ -406,6 +409,9 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
         gut_feeling: gutFeel,
         user_vibe: gutFeel,
         emotional_state: gutFeel,
+        
+        // Color mapping for screenshots
+        colorMapping: colorMapping,
         
         // Meta information for AI processing awareness
         has_user_name: !!userName.trim(),
@@ -956,6 +962,24 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                     {userQuestion.length}/{QUESTION_LIMIT}
                   </span>
                 </div>
+              </div>
+
+              {/* Color Mapping for Screenshots */}
+              <div>
+                <label className="text-stone-400 text-xs mb-2 block">
+                  For screenshots: Map colors to names (Optional)
+                </label>
+                <Input
+                  type="text"
+                  value={colorMapping}
+                  onChange={(e) => setColorMapping(e.target.value)}
+                  placeholder="e.g., blue = Person 1, grey = Person 2"
+                  className="w-full p-3 text-sm bg-gray-800 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors"
+                  disabled={isLoading}
+                />
+                <p className="text-xs text-stone-400 mt-1">
+                  If sharing a screenshot, tell us which color bubble is which person
+                </p>
               </div>
             </div>
 
