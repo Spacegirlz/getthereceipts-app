@@ -602,24 +602,12 @@ const PricingPage = () => {
             </p>
             <p className="text-gray-400 mb-6">That's just $2.49/month for unlimited clarity.</p>
             
-            {/* Countdown Timer */}
-            <div className="flex justify-center gap-4 mb-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-400">6</div>
-                <div className="text-xs text-gray-400">DAYS</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-400">7</div>
-                <div className="text-xs text-gray-400">HOURS</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-400">39</div>
-                <div className="text-xs text-gray-400">MIN</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-400">51</div>
-                <div className="text-xs text-gray-400">SEC</div>
-              </div>
+            {/* Limited Time Notice - Removed Fake Countdown */}
+            <div className="mb-6">
+              <div className="text-yellow-400 font-bold text-lg mb-2">⚡ LIMITED TIME OFFER</div>
+              <p className="text-gray-300 text-sm">
+                Founder pricing won't last forever. Lock it in while you can.
+              </p>
             </div>
             
             <Button

@@ -19,13 +19,13 @@ module.exports = async function handler(req, res) {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    // Determine mode based on price ID
-    const isSubscription = priceId.includes('1RzgEZG71EqeOEZejcCAFxQs') || priceId.includes('1RzgBYG71EqeOEZer7ojcw0R');
-    const mode = isSubscription ? 'subscription' : 'payment';
-
-    // Validate price exists
+    // Validate price exists and determine mode
+    let mode = 'payment';
     try {
-      await stripe.prices.retrieve(priceId);
+      const price = await stripe.prices.retrieve(priceId);
+      // Use Stripe API to determine if it's a subscription
+      mode = price.recurring ? 'subscription' : 'payment';
+      console.log(`Price ${priceId}: ${price.unit_amount/100} ${price.currency}, mode: ${mode}`);
     } catch (priceError) {
       console.error('Price validation error:', priceError);
       return res.status(400).json({ 
