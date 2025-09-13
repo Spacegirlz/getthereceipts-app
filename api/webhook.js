@@ -31,64 +31,97 @@ module.exports = async function handler(req, res) {
 
   console.log(`🎣 Webhook received: ${event.type}`);
 
-  // Handle successful payment
+  // Handle successful checkout (one-time payments and subscription setup)
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const userEmail = session.customer_details?.email;
     const amountPaid = session.amount_total / 100; // Convert cents to dollars
+    const mode = session.mode; // 'payment' for one-time, 'subscription' for recurring
     
-    console.log(`💳 Payment completed: ${userEmail} paid $${amountPaid}`);
+    console.log(`💳 Payment completed: ${userEmail} paid $${amountPaid} (mode: ${mode})`);
     
     if (!userEmail) {
       console.error('❌ No email in session');
       return res.status(200).json({ received: true });
     }
     
-    // Determine credits based on amount
+    await handlePaymentSuccess(userEmail, amountPaid, mode, session);
+  }
+
+  // Handle subscription invoice payments (monthly/yearly renewals)
+  if (event.type === 'invoice.payment_succeeded') {
+    const invoice = event.data.object;
+    const userEmail = invoice.customer_email;
+    const amountPaid = invoice.amount_paid / 100; // Convert cents to dollars
+    const subscriptionId = invoice.subscription;
+    
+    console.log(`💳 Subscription payment: ${userEmail} paid $${amountPaid} (subscription: ${subscriptionId})`);
+    
+    if (!userEmail) {
+      console.error('❌ No email in invoice');
+      return res.status(200).json({ received: true });
+    }
+    
+    await handlePaymentSuccess(userEmail, amountPaid, 'subscription', invoice);
+  }
+
+  // Shared payment processing function
+  async function handlePaymentSuccess(userEmail, amountPaid, mode, paymentObject) {
+    // Determine credits and subscription type based on amount
     let creditsToAdd = 0;
     let subscriptionType = 'free';
     
     if (amountPaid === 1.99) {
       creditsToAdd = 5; // Emergency Pack
-      subscriptionType = 'free';
+      subscriptionType = 'free'; // Stays free, just adds credits
     } else if (amountPaid === 6.99) {
-      creditsToAdd = 30; // Monthly
-      subscriptionType = 'premium';
+      creditsToAdd = -1; // Unlimited for monthly premium
+      subscriptionType = 'premium'; // Monthly subscription
     } else if (amountPaid === 29.99) {
-      creditsToAdd = 999999; // Yearly founder
-      subscriptionType = 'yearly';
+      creditsToAdd = -1; // Unlimited for yearly
+      subscriptionType = 'yearly'; // Yearly subscription
+    } else {
+      console.log(`⚠️ Unknown payment amount: $${amountPaid} - treating as emergency pack`);
+      creditsToAdd = 5;
+      subscriptionType = 'free';
     }
     
-    console.log(`🎯 Adding ${creditsToAdd} credits to ${userEmail}`);
+    console.log(`🎯 Processing ${userEmail}: ${creditsToAdd === -1 ? 'unlimited' : creditsToAdd} credits, subscription: ${subscriptionType}`);
     
-    // Get current credits first
+    // Get current user data
     const { data: currentUser, error: fetchError } = await supabase
       .from('users')
-      .select('credits_remaining')
+      .select('credits_remaining, subscription_status')
       .eq('email', userEmail)
       .single();
     
     if (fetchError) {
       console.error('❌ Error fetching user:', fetchError);
-      return res.status(200).json({ received: true });
+      return;
     }
     
-    // Add to existing credits (don't overwrite)
-    const newCredits = (currentUser.credits_remaining || 0) + creditsToAdd;
+    // Calculate new credits
+    let newCredits;
+    if (creditsToAdd === -1) {
+      newCredits = -1; // Unlimited for subscriptions
+    } else {
+      newCredits = (currentUser.credits_remaining || 0) + creditsToAdd; // Add to existing
+    }
     
-    // Update user credits
+    // Update user subscription and credits
     const { data, error } = await supabase
       .from('users')
       .update({ 
         credits_remaining: newCredits,
-        subscription_status: subscriptionType
+        subscription_status: subscriptionType,
+        last_free_receipt_date: new Date().toISOString().split('T')[0]
       })
       .eq('email', userEmail);
       
     if (error) {
       console.error('❌ Error updating user:', error);
     } else {
-      console.log(`✅ Successfully added ${creditsToAdd} credits to ${userEmail} (total: ${newCredits})`);
+      console.log(`✅ Successfully updated ${userEmail}: ${newCredits === -1 ? 'unlimited' : newCredits} credits, subscription: ${subscriptionType}`);
     }
   }
 
