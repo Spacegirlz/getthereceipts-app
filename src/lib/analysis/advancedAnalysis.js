@@ -991,15 +991,47 @@ export const analyzeWithGPT = async (message, context) => {
     return finalResult;
     
   } catch (error) {
-    console.error('OpenAI API error:', error);
+    console.error('Primary API error:', error);
     console.error('Error details:', {
       message: error.message,
       stack: error.stack,
       context: actualContext,
+      primaryProvider: provider,
       hasOpenAIKey: !!import.meta.env.VITE_OPENAI_API_KEY,
       hasGoogleKey: !!import.meta.env.VITE_GOOGLE_API_KEY
     });
-    // Fallback to local analysis if API fails
+    
+    // Try backup API provider if available
+    const backupProvider = provider === 'openai' ? 'google' : 'openai';
+    const hasBackupKey = backupProvider === 'openai' ? 
+      !!import.meta.env.VITE_OPENAI_API_KEY : 
+      !!import.meta.env.VITE_GOOGLE_API_KEY;
+    
+    if (hasBackupKey) {
+      console.log(`🔄 Attempting backup API: ${backupProvider}`);
+      try {
+        // Retry with backup provider by recursively calling with different provider
+        const originalProvider = import.meta.env.VITE_AI_PROVIDER;
+        // Temporarily override provider selection
+        import.meta.env.VITE_AI_PROVIDER = backupProvider;
+        
+        const backupResult = await generateAlignedResults(message, context);
+        
+        // Restore original provider
+        import.meta.env.VITE_AI_PROVIDER = originalProvider;
+        
+        console.log(`✅ Backup API ${backupProvider} succeeded`);
+        return backupResult;
+        
+      } catch (backupError) {
+        console.error(`❌ Backup API ${backupProvider} also failed:`, backupError);
+        // Restore original provider
+        import.meta.env.VITE_AI_PROVIDER = originalProvider;
+      }
+    }
+    
+    // Final fallback to local analysis if all APIs fail
+    console.log('🔄 Falling back to local analysis');
     return generateAdvancedResults(message, { ...context, context: actualContext });
   }
 };
