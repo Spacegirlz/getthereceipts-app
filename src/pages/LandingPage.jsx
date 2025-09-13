@@ -198,8 +198,22 @@ const LandingPage = () => {
           className="w-full max-w-5xl mx-auto mb-24 md:mb-32 mt-16 md:mt-24"
         >
           <div className="text-center mb-16">
+            {/* Sage Photo */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-8"
+            >
+              <img 
+                src={sageLanding} 
+                alt="Sage - Your AI Dating Decoder" 
+                className="w-full h-full object-contain rounded-full"
+              />
+            </motion.div>
+            
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Meet Sage — Your AI Dating Decoder
+              Meet Sage - Your AI Dating Decoder
             </h2>
             <p className="text-xl md:text-2xl text-gray-300 font-medium">
               She's seen a million toxic texts.<br />
@@ -221,7 +235,7 @@ const LandingPage = () => {
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Trained by the group chat.</h3>
               <p className="text-gray-300 leading-relaxed">
-                Sage doesn't guess. She's read it all — breadcrumbers, ghosters, gaslighters. 
+                Sage doesn't guess. She's read it all - breadcrumbers, ghosters, gaslighters. 
                 She spots the patterns you've been trained to ignore.
               </p>
             </motion.div>
@@ -1039,7 +1053,7 @@ const LandingPage = () => {
             One Bad Date Costs More Than a Year of Clarity.
           </h2>
           <p className="text-gray-300 mb-8 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-            That feeling of confusion is costing you more than just your peace of mind—it's costing you time. Our OG Founder's Deal gives you unlimited access to Sage's wisdom for just <strong className="text-green-400">$2.49/month</strong> (billed annually at $29.99). Lock in your 70% discount before this one-time offer disappears forever.
+            That feeling of confusion is costing you more than just your peace of mind - it's costing you time. Our OG Founder's Deal gives you unlimited access to Sage's wisdom for just <strong className="text-green-400">$2.49/month</strong> (billed annually at $29.99). Lock in your 70% discount before this one-time offer disappears forever.
           </p>
           <div className="flex flex-col gap-4 justify-center mb-4">
             <Button onClick={handleGoPremium} className="viral-button text-white font-bold py-4 text-xl px-12 shadow-2xl">
