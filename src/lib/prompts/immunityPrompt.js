@@ -130,6 +130,14 @@ Read through the actual messages and identify:
 4. User's responses and overall dynamic
 5. Specific examples from THIS conversation
 
+KEYCHARACTERISTICS GENERATION:
+Based on the conversation analysis, generate 3 specific behavioral patterns as bullet points:
+- Extract actual communication behaviors they demonstrated
+- Identify core motivations behind their actions 
+- Describe their specific strategies or approaches
+- Make each bullet point conversational and specific to THIS conversation
+- Focus on what makes them tick, not generic archetype descriptions
+
 ANALYZE THE CONVERSATION for PATTERN RECOGNITION:
 Generate specific insights based on THIS conversation:
 - "patternDetected": "OTHER's specific behavior pattern, not generic (e.g., 'maybe merchant routine: sweet texts but zero actual plans')"
@@ -148,6 +156,11 @@ CRITICAL FLAG RULES:
 - Make it conversational and relatable
 
 {
+  "keyCharacteristics": [
+    "Generate the first specific behavioral pattern from THIS conversation as a bullet point",
+    "Generate the second core motivation from THIS conversation as a bullet point", 
+    "Generate a third communication strategy from THIS conversation as a bullet point"
+  ],
   "whyItHooks": "Why THIS SPECIFIC behavior pattern hooked the user (pull from actual conversation examples)",
   "patternLoop": ["Action1", "Action2", "Action3", "Action4"] - 4 words describing THEIR specific pattern from this conversation,
   "patternDetected": "OTHER's specific behavior pattern from THIS conversation, not generic",
