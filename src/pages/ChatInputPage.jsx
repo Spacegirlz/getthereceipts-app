@@ -1191,32 +1191,14 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
 
               {/* Offers */}
               <div className="space-y-4 mb-6">
-                {/* Quick Fix Pack - Most Prominent */}
-                <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl p-5 border-2 border-purple-400/50 relative">
-                  <div className="absolute -top-3 left-4 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                {/* OG Founders Option - Most Prominent */}
+                <div className="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 rounded-xl p-5 border-2 border-yellow-400/50 relative">
+                  <div className="absolute -top-3 left-4 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full">
                     POPULAR
                   </div>
-                  <h3 className="text-xl font-bold text-stone-100 mb-2">Quick Fix Pack</h3>
+                  <h3 className="text-xl font-bold text-stone-100 mb-2">OG Founders</h3>
                   <p className="text-gray-300 text-sm mb-4">
-                    Get 5 more premium receipts instantly to solve this situation now.
-                  </p>
-                  <Button
-                    onClick={() => navigate('/pricing')}
-                    className="w-full py-3 text-lg font-bold text-white rounded-xl"
-                    style={{
-                      background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
-                      boxShadow: '0 4px 15px rgba(139, 92, 246, 0.4)'
-                    }}
-                  >
-                    Get 5 Receipts for $1.99
-                  </Button>
-                </div>
-
-                {/* Premium Option */}
-                <div className="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 rounded-xl p-5 border border-yellow-400/30">
-                  <h3 className="text-xl font-bold text-stone-100 mb-2">Go Premium</h3>
-                  <p className="text-gray-300 text-sm mb-4">
-                    Get unlimited receipts, forever. Never get stuck in a spiral again.
+                    Lock in the founding price forever. Unlimited receipts + exclusive founder perks.
                   </p>
                   <Button
                     onClick={() => navigate('/pricing')}
@@ -1224,6 +1206,24 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                     style={{
                       background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                       boxShadow: '0 4px 15px rgba(212, 175, 55, 0.4)'
+                    }}
+                  >
+                    Join OG Founders - $29.99/year
+                  </Button>
+                </div>
+
+                {/* Monthly Premium */}
+                <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl p-5 border border-purple-400/30">
+                  <h3 className="text-xl font-bold text-stone-100 mb-2">Go Premium</h3>
+                  <p className="text-gray-300 text-sm mb-4">
+                    Get unlimited receipts, forever. Never get stuck in a spiral again.
+                  </p>
+                  <Button
+                    onClick={() => navigate('/pricing')}
+                    className="w-full py-3 text-lg font-bold text-white rounded-xl"
+                    style={{
+                      background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+                      boxShadow: '0 4px 15px rgba(139, 92, 246, 0.4)'
                     }}
                   >
                     Upgrade to Unlimited - $6.99/mo

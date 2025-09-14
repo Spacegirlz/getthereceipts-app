@@ -134,10 +134,327 @@ const LandingPage = () => {
             Stop second-guessing their texts.
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-300 mb-16 max-w-2xl mx-auto text-center">
-            You're not spiraling - you're decoding.<br />
-            Sage calls out the games <em>before</em> you get played.
+          <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto text-center">
+            <strong>Not sure what that text meant? Let Sage decode it for you.</strong>
           </p>
+
+          <p className="text-base md:text-lg text-gray-400 mb-12 max-w-lg mx-auto text-center italic">
+            3 free Receipts. No sign-up stress. Just answers.
+          </p>
+
+          {/* Primary CTA with Trust Features */}
+          <div className="flex justify-center mb-8">
+            <Button
+              onClick={handleGetStarted}
+              className="viral-button text-white font-bold text-lg px-12 py-6 rounded-full border-0 shadow-2xl"
+              size="lg"
+            >
+              Get Your Free Receipts →
+            </Button>
+          </div>
+
+          {/* Trust Bar - Simplified */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-center mb-24"
+          >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-gray-300 text-sm mb-4">
+              <div className="flex items-center gap-2">
+                <span>• No data stored. Ever.</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>• Bank-grade encryption.</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>• 13+ only. For entertainment purposes.</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Meet Sage - Character Introduction */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="w-full max-w-5xl mx-auto mb-24 md:mb-32 mt-16 md:mt-24"
+          >
+            <div className="text-center mb-16 p-8">
+              {/* Sage Photo */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-8"
+              >
+                <img 
+                  src={sageLanding} 
+                  alt="Sage - Your AI Dating Decoder" 
+                  className="w-full h-full object-contain rounded-full"
+                />
+              </motion.div>
+              
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+                Meet Sage. Your AI chat-decoding bestie.
+              </h2>
+              <p className="text-lg md:text-xl text-gray-300 font-medium mb-4">
+                Not a therapist. Not your mom.
+              </p>
+              <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                Just the voice of reason when you're too close to the situation, or your brain's running every possible scenario at once.
+              </p>
+            </div>
+
+            {/* What Sage Decodes */}
+            <div className="mb-12">
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-8">Built to decode…</h3>
+              <div className="space-y-6 max-w-3xl">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.6 }}
+                  className="flex items-start gap-4"
+                >
+                  <span className="text-2xl mt-1">💬</span>
+                  <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium text-pink-400">The 2am spirals</span> - when one "k" keeps you up all night replaying the chat.</p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.6 }}
+                  className="flex items-start gap-4"
+                >
+                  <span className="text-2xl mt-1">💔</span>
+                  <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium text-purple-400">Situationships</span> - when you don't know if it's a catch-up, a date, or just a dead end.</p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.6 }}
+                  className="flex items-start gap-4"
+                >
+                  <span className="text-2xl mt-1">🔥</span>
+                  <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium text-red-400">Hot-and-cold exes</span> - when they swear it's over but still lurk on every story.</p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.9, duration: 0.6 }}
+                  className="flex items-start gap-4"
+                >
+                  <span className="text-2xl mt-1">🤝</span>
+                  <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium text-teal-400">Confusing friendships</span> - when "I'm fine" feels anything but fine.</p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0, duration: 0.6 }}
+                  className="flex items-start gap-4"
+                >
+                  <span className="text-2xl mt-1">💗</span>
+                  <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium text-green-400">Even the good ones</span> - when you just want proof your relationship really is on the right track.</p>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Sage's Tone */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0, duration: 0.6 }}
+              className="p-8"
+            >
+              <p className="text-2xl md:text-3xl text-white leading-relaxed mb-4 font-bold">
+                Sage is built to decode...
+              </p>
+              <p className="text-base text-gray-300 mb-2">
+                She says the thing your gut already knows, but your brain keeps arguing with.
+              </p>
+              <p className="text-base text-gray-300">
+                Honest, sharp, and always on your side.
+              </p>
+            </motion.div>
+
+            <div className="text-center mt-8">
+              <Button
+                onClick={handleGetStarted}
+                className="viral-button text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl"
+                size="lg"
+              >
+                Get a Receipt →
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* How Sage Delivers the Truth */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="text-center mb-12 w-full max-w-4xl mx-auto mt-20 md:mt-24"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-16 text-center text-white leading-tight py-4">
+              How Sage Delivers the Truth
+            </h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24 md:mb-32 w-full max-w-6xl mx-auto"
+          >
+            <div className="meme-card p-6 rounded-2xl text-center">
+              <MessageSquare className="h-12 w-12 text-pink-400 mx-auto mb-4" />
+              <h3 className="font-bold text-lg mb-3 text-pink-400">💬 Paste the chaos</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Drop in the confusing thread. Sage sees what your friends missed.
+              </p>
+            </div>
+            <div className="meme-card p-6 rounded-2xl text-center">
+              <Zap className="h-12 w-12 text-teal-400 mx-auto mb-4" />
+              <h3 className="font-bold text-lg mb-3 text-teal-400">🧠 Get your truth</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                No more guessing. Sage names the pattern and calls it clean.
+              </p>
+            </div>
+            <div className="meme-card p-6 rounded-2xl text-center">
+              <TrendingUp className="h-12 w-12 text-green-400 mx-auto mb-4" />
+              <h3 className="font-bold text-lg mb-3 text-green-400">🔮 See their next move</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Sage's Prophecy predicts their likely next play so you stop waiting.
+              </p>
+            </div>
+            <div className="meme-card p-6 rounded-2xl text-center">
+              <Gift className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+              <h3 className="font-bold text-lg mb-3 text-blue-400">📸 Save the proof</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Screenshot it. Share it. Use it in the group chat. Sage backs your gut.
+              </p>
+            </div>
+          </motion.div>
+
+          <div className="text-center mb-24 md:mb-32">
+            <Button
+              onClick={handleGetStarted}
+              className="viral-button text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl"
+              size="lg"
+            >
+              Try It Free →
+            </Button>
+          </div>
+
+          {/* Who Uses This */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="w-full max-w-4xl mx-auto mb-24 md:mb-32 mt-20 md:mt-24"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-16 gradient-text">
+              Get The Receipts is for you if...
+            </h2>
+            
+            <div className="space-y-6 mb-12 max-w-3xl">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="flex items-start gap-4"
+              >
+                <span className="text-2xl mt-1">🌀</span>
+                <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium">The spiral zone</span> - You're spiraling over one text.</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="flex items-start gap-4"
+              >
+                <span className="text-2xl mt-1">🔄</span>
+                <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium">The reread loop</span> - You keep rereading a chat hoping it means more.</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="flex items-start gap-4"
+              >
+                <span className="text-2xl mt-1">❓</span>
+                <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium">The big question</span> - You just need to know if this is love - or just convenience.</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="flex items-start gap-4"
+              >
+                <span className="text-2xl mt-1">🚩</span>
+                <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium">Work drama detector</span> - You're starting to wonder if your boss is actually gaslighting you.</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="flex items-start gap-4"
+              >
+                <span className="text-2xl mt-1">✨</span>
+                <p className="text-gray-300 text-lg leading-relaxed text-left"><span className="font-medium">Validation station</span> - Things feel good, but you still want proof it's as real as you think.</p>
+              </motion.div>
+            </div>
+
+            <blockquote className="mb-12">
+              <p className="text-lg md:text-xl text-cyan-300 italic leading-relaxed">
+                "Sometimes I just want someone to say, 'Yes. He really does like you.'"
+              </p>
+            </blockquote>
+
+            <div className="text-center">
+              <Button
+                onClick={handleGetStarted}
+                className="viral-button text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl"
+                size="lg"
+              >
+                See What Sage Says →
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Real Receipts Examples */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="w-full max-w-4xl mx-auto mb-24 md:mb-32 mt-20 md:mt-24"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-center text-white">
+              Real Receipts
+            </h2>
+            <p className="text-gray-400 text-center mb-16 italic">(anonymized examples)</p>
+            
+            <div className="space-y-8 mb-12 text-center max-w-2xl mx-auto">
+              <p className="text-gray-300 italic text-lg leading-relaxed">
+                "What this really says: He wants you around, but on his terms. Sage score: 🚩🚩"
+              </p>
+              <p className="text-gray-300 italic text-lg leading-relaxed">
+                "That's not flirting. That's emotional breadcrumbing."
+              </p>
+              <p className="text-gray-300 italic text-lg leading-relaxed">
+                "This friend loves you—but they keep making it about them. It's not your job to shrink so they feel bigger."
+              </p>
+            </div>
+
+            <div className="text-center">
+              <Button
+                onClick={handleGetStarted}
+                className="viral-button text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl"
+                size="lg"
+              >
+                Get Yours →
+              </Button>
+            </div>
+          </motion.div>
 
           {/* Premium Secondary Headline */}
           <div className="relative mb-16">
@@ -225,105 +542,6 @@ const LandingPage = () => {
             </div>
             <p className="text-xs text-gray-500 max-w-md mx-auto">
               🔒 Your private conversations are analyzed instantly and deleted immediately. No trace. No judgment. Just clarity.
-            </p>
-          </motion.div>
-        </motion.div>
-
-        {/* Meet Sage - Character Introduction */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="w-full max-w-5xl mx-auto mb-24 md:mb-32 mt-16 md:mt-24"
-        >
-          <div className="text-center mb-16">
-            {/* Sage Photo */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-8"
-            >
-              <img 
-                src={sageLanding} 
-                alt="Sage - Your AI Dating Decoder" 
-                className="w-full h-full object-contain rounded-full"
-              />
-            </motion.div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Meet Sage - Your AI Dating Decoder
-            </h2>
-            <p className="text-xl md:text-2xl text-gray-300 font-medium">
-              She's seen a million toxic texts.<br />
-              She'll tell you the truth about yours.
-            </p>
-          </div>
-
-          {/* Three Core Points */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {/* Point 1 */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="text-center p-8 bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur-sm rounded-2xl border border-purple-500/20"
-            >
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">1</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">Trained by the group chat.</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Sage doesn't guess. She's read it all - breadcrumbers, ghosters, gaslighters. 
-                She spots the patterns you've been trained to ignore.
-              </p>
-            </motion.div>
-
-            {/* Point 2 */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-              className="text-center p-8 bg-gradient-to-br from-teal-900/20 to-blue-900/20 backdrop-blur-sm rounded-2xl border border-teal-500/20"
-            >
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-teal-500 to-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">2</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">No fluff, just facts.</h3>
-              <p className="text-gray-300 leading-relaxed">
-                She doesn't do therapy talk. She gives it to you clean: what they said, 
-                what it means, and what they're likely to do next.
-              </p>
-            </motion.div>
-
-            {/* Point 3 */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="text-center p-8 bg-gradient-to-br from-green-900/20 to-emerald-900/20 backdrop-blur-sm rounded-2xl border border-green-500/20"
-            >
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">3</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">Privacy-locked. Judgement-free.</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Your chats are never saved. Sage sees the truth, then deletes the tea. 
-                No shame. No tracing. Just clarity.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Authority Quote */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.6 }}
-            className="text-center p-8 bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-600/30"
-          >
-            <p className="text-lg md:text-xl text-gray-300 italic leading-relaxed">
-              "Sage was built by creators sick of second-guessing texts, trained on real-world 
-              relationship patterns, and designed to give you <span className="text-teal-400 font-semibold">the clarity your gut already knew.</span>"
             </p>
           </motion.div>
         </motion.div>
@@ -622,55 +840,6 @@ const LandingPage = () => {
           </motion.div>
         </div>
 
-        <div className="w-full max-w-6xl mx-auto mt-20 md:mt-32">
-          {/* Features Section: How Sage Delivers Clarity */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
-              How Sage Delivers the Truth
-            </h2>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 md:mb-32"
-          >
-            <div className="meme-card p-6 rounded-2xl text-center">
-              <MessageSquare className="h-12 w-12 text-pink-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-pink-400">💬 Paste the chaos</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                Drop in the confusing thread. Sage sees what your friends missed.
-              </p>
-            </div>
-            <div className="meme-card p-6 rounded-2xl text-center">
-              <Zap className="h-12 w-12 text-teal-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-teal-400">🧠 Get your truth</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                No more guessing. Sage names the pattern and calls it clean.
-              </p>
-            </div>
-            <div className="meme-card p-6 rounded-2xl text-center">
-              <TrendingUp className="h-12 w-12 text-green-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-green-400">🔮 See their next move</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                Sage's Prophecy predicts their likely next play so you stop waiting.
-              </p>
-            </div>
-            <div className="meme-card p-6 rounded-2xl text-center">
-              <Gift className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-blue-400">📸 Save the proof</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                Screenshot it. Share it. Use it in the group chat. Sage backs your gut.
-              </p>
-            </div>
-          </motion.div>
-        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -826,11 +995,15 @@ const LandingPage = () => {
           transition={{ delay: 1.0, duration: 0.8 }}
           className="w-full max-w-5xl mx-auto mb-20 md:mb-32 mt-20 md:mt-32 text-center"
         >
-          <h2 className="text-4xl font-bold gradient-text mb-2">Choose Your Clarity Level</h2>
-          <p className="text-2xl text-gray-400/80 mb-4">Your peace of mind is priceless. (But we made it affordable.)</p>
-          <p className="text-lg text-gray-300 mb-10 max-w-3xl mx-auto">
-            Get one free receipt every day to see how it works. When you're ready to stop guessing for good, our Founder's Deal is the smartest investment you can make in your dating life.
-          </p>
+          <h2 className="text-4xl font-bold gradient-text mb-6">You get 3 Receipts free. Then it's one a day.</h2>
+          
+          <div className="text-center mb-10">
+            <p className="text-xl text-gray-300 mb-4">Want more?</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-lg text-gray-300">
+              <div>• Unlimited monthly: <span className="text-teal-400 font-semibold">$6.99</span></div>
+              <div>• Founders Pass: <span className="text-purple-400 font-semibold">$29.99 / year</span></div>
+            </div>
+          </div>
           
           {/* Netflix-Style Clean Cards - All Same Size */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -838,12 +1011,12 @@ const LandingPage = () => {
             <div className="meme-card p-8 rounded-2xl flex flex-col justify-between" style={{ minHeight: '420px' }}>
               <div>
                 <div className="text-center mb-6">
-                  <h3 className="font-bold text-2xl mb-3 text-teal-400">Free Daily Receipt</h3>
+                  <h3 className="font-bold text-2xl mb-3 text-teal-400">Start Free</h3>
                   <div className="text-4xl font-black text-white mb-2">$0</div>
-                  <p className="text-gray-400 text-sm">per month</p>
+                  <p className="text-gray-400 text-sm">3 free Receipts, then 1/day</p>
                 </div>
                 <div className="space-y-3 text-sm text-gray-300 text-left">
-                  <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🧠</span><span><strong className="text-white">1 Truth Receipt daily</strong> with full analysis</span></div>
+                  <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🧠</span><span><strong className="text-white">3 Truth Receipts to try</strong> then 1 daily</span></div>
                   <div className="pl-6 space-y-1">
                     <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Pattern analysis (Breadcrumber, Ghoster, etc.)</div>
                     <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Sage's Tea included (verdict breakdown)</div>
@@ -853,7 +1026,7 @@ const LandingPage = () => {
                 </div>
               </div>
               <Button onClick={handleGetStarted} variant="outline" className="border-teal-400 text-white hover:bg-teal-500/20 w-full mt-6">
-                Start Free Today
+                Start Free →
               </Button>
             </div>
             
@@ -1202,20 +1375,45 @@ const LandingPage = () => {
         </motion.div>
       </div>
       
-      <footer className="w-full bg-transparent py-8 px-4 text-center text-gray-500 text-sm">
-        <div className="container mx-auto">
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm mb-4">
-            <Link to="/about" className="text-gray-400 hover:text-white transition-colors">About</Link>
-            <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
-            <Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
-            <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
-          </div>
-          <p className="mb-3">For Entertainment & Insight Purposes. Sage provides patterns and perspectives, not professional advice. Always trust your gut first, then verify with us.</p>
-          <span className="text-gray-400 mt-4 block">© 2025 Get The Receipts. All rights reserved.</span>
-          <p className="mt-2">Support: <a href="mailto:support@getthereceipts.com" className="text-gray-400 hover:text-white transition-colors">support@getthereceipts.com</a></p>
+      <div className="max-w-4xl mx-auto">
+        {/* Navigation Links */}
+        <div className="mt-16 flex flex-wrap justify-center gap-6 mb-8">
+          <Link to="/about" className="text-gray-400 hover:text-white transition-colors">About</Link>
+          <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
+          <Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
+          <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+          <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
         </div>
-      </footer>
+
+        {/* Privacy & Footer Block */}
+        <div className="mt-8 mb-8 p-8 bg-gradient-to-r from-slate-900/50 to-blue-900/30 rounded-2xl border border-slate-500/20">
+          <div className="text-center">
+            <div className="mb-6">
+              <div className="text-2xl mb-4">🔒</div>
+              <h3 className="text-xl font-bold text-white mb-4">Your privacy comes first.</h3>
+              <div className="space-y-3 text-gray-300 text-sm max-w-2xl mx-auto">
+                <p>Every chat is processed anonymously, never stored, and never used for training or machine learning models.</p>
+                <p>When Sage's job is done, the message is gone — for good.</p>
+              </div>
+            </div>
+            
+            <div className="border-t border-gray-600/30 pt-6">
+              <p className="text-gray-400 text-sm mb-3">
+                18+ only. Entertainment use. Not therapy, legal or medical advice.
+              </p>
+              <p className="text-gray-400 text-sm mb-4">
+                By using this site, you agree to our Terms & Privacy Policy.
+              </p>
+              <p className="text-gray-300 text-sm mb-3">
+                © 2025 Get The Receipts. All rights reserved.
+              </p>
+              <p className="text-gray-500 text-sm">
+                Support: <a href="mailto:support@getthereceipts.com" className="text-blue-400 hover:text-blue-300 transition-colors">support@getthereceipts.com</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

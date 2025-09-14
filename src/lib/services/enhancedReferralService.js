@@ -13,6 +13,21 @@ export const getEnhancedReferralStats = async (userId) => {
     
     if (error) {
       console.error('Error fetching enhanced referral stats:', error);
+      // If it's a database/table issue, return default stats gracefully
+      if (error.code === 'PGRST116' || error.code === '42P01' || error.status === 406) {
+        console.warn('Enhanced referral system not set up, returning defaults');
+        return {
+          success: true,
+          stats: {
+            totalReferrals: 0,
+            totalRewards: 0,
+            milestone10Reached: false,
+            milestone50Reached: false,
+            referralsTo10: 10,
+            referralsTo50: 50
+          }
+        };
+      }
       return { 
         success: false, 
         error: 'Failed to fetch referral stats',

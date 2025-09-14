@@ -16,7 +16,7 @@ const PrivacyPolicyPage = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 px-4 py-2 rounded-full mb-4">
             <span className="text-blue-400">🔒</span>
-            <span className="text-blue-400 text-sm font-medium">Zero-Knowledge Privacy</span>
+            <span className="text-blue-400 text-sm font-medium">Privacy First Policy</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black mb-6 gradient-text">Privacy Policy</h1>
           <p className="text-xl text-gray-300 mb-4">Your messages are analyzed and immediately forgotten</p>

@@ -278,7 +278,7 @@ const AboutPage = () => {
               Sage reads patterns, not people. Trust your gut first. Then verify with us.
             </p>
             <p className="text-gray-500 text-xs mb-3">
-              13+ with parental consent • Not therapy, legal, or medical advice • Use at your own risk
+              18+ only • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-500 text-sm">
               Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>

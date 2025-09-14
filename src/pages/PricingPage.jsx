@@ -435,9 +435,9 @@ const PricingPage = () => {
         </Button>
 
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-24">
           <motion.h1 
-            className="text-4xl md:text-5xl font-bold mb-6 text-white"
+            className="text-5xl md:text-7xl font-black mb-10 text-white"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -448,29 +448,20 @@ const PricingPage = () => {
           </motion.h1>
           
           <motion.p 
-            className="text-xl text-gray-300 max-w-2xl mx-auto mb-4"
+            className="text-xl text-gray-300 max-w-2xl mx-auto mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
             Truth Receipts in 60 seconds. No shame. No storage. Just clarity.
           </motion.p>
-          
-          <motion.blockquote 
-            className="text-lg text-gray-400 italic max-w-lg mx-auto mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            Clarity isn't luxury. It's protection.
-          </motion.blockquote>
 
           {/* Trust Badges */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-gray-400 text-sm"
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-gray-400 text-sm mt-8"
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
@@ -487,17 +478,6 @@ const PricingPage = () => {
           </motion.div>
         </div>
 
-        {/* Decision Crossroad Section */}
-        <div className="text-center mb-16 mt-8">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-white">How much </span>
-            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-teal-400 bg-clip-text text-transparent">proof</span>
-            <span className="text-white"> do you need?</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Start small. Stay safe. Or unlock everything.
-          </p>
-        </div>
 
         {/* Pricing Grid - Enhanced Spacing */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4 mb-8">
@@ -927,39 +907,38 @@ const PricingPage = () => {
           </div>
         </div>
 
-        {/* Footer */}
-        <footer className="mt-16 pt-12 pb-8 border-t border-gray-700/50">
-          <div className="max-w-4xl mx-auto px-4">
-            {/* Navigation Links */}
-            <div className="flex flex-wrap justify-center gap-6 mb-8">
-              <a href="/about" className="text-gray-400 hover:text-white transition-colors">About</a>
-              <a href="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a>
-              <a href="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</a>
-              <a href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-              <a href="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-            </div>
-            
-            {/* Disclaimer */}
-            <div className="text-center mb-6">
-              <p className="text-gray-400 text-sm leading-relaxed max-w-3xl mx-auto mb-3">
-                For Entertainment & Insight Purposes Only. Sage provides patterns and perspectives, not professional advice. Always trust your gut first, then verify with us.
-              </p>
-              <p className="text-gray-500 text-xs leading-relaxed max-w-3xl mx-auto">
-                18+ only • Not therapy, legal or medical advice • Use at your own risk • If experiencing emotional distress, contact a licensed mental health professional
-              </p>
-            </div>
-            
-            {/* Copyright and Contact */}
-            <div className="text-center">
-              <p className="text-gray-500 text-sm mb-2">
-                © 2025 Get The Receipts. All rights reserved.
-              </p>
-              <p className="text-gray-500 text-sm">
-                Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>
-              </p>
-            </div>
+        {/* Navigation Links */}
+        <div className="mt-16 flex flex-wrap justify-center gap-6 mb-8">
+          <a href="/about" className="text-gray-400 hover:text-white transition-colors">About</a>
+          <a href="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a>
+          <a href="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</a>
+          <a href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+          <a href="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+        </div>
+
+        {/* Perfect Footer Block */}
+        <div className="mt-8 mb-8 p-6 bg-gradient-to-r from-gray-900/60 to-purple-900/40 rounded-2xl border border-gray-600/30">
+          <div className="text-center">
+            <p className="text-gray-300 text-sm mb-3">
+              © 2025 Get The Receipts. All rights reserved.
+            </p>
+            <p className="text-gray-400 text-sm mb-3">
+              For Entertainment & Insight Purposes Only.<br />
+              Sage reads patterns, not people. Trust your gut first. Then verify with us.
+            </p>
+            <p className="text-gray-500 text-xs mb-3">
+              18+ only • Not therapy, legal, or medical advice • Use at your own risk
+            </p>
+            <p className="text-gray-500 text-sm">
+              Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>
+            </p>
           </div>
-        </footer>
+        </div>
+
+        {/* Back to Home */}
+        <div className="text-center mb-16">
+          <a href="/" className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4">Back to Home</a>
+        </div>
       </div>
 
       {/* Purchase Notification Popup */}

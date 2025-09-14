@@ -129,20 +129,16 @@ const DashboardPage = () => {
 
   const getPlanName = (subscription) => {
     if (!subscription) return 'Free Daily Receipt';
-    if (subscription === 'premium') return 'Premium Monthly';
-    if (subscription === 'yearly') return 'Premium Yearly - OG Founder';
-    if (subscription === 'founder') return 'OG Founder (Dev Mode)';
+    if (subscription === 'premium') return 'Unlimited Monthly';
+    if (subscription === 'yearly') return 'OG Founder Yearly';
+    if (subscription === 'founder') return 'OG Founder Yearly';
     return 'Free Daily Receipt';
   };
 
   const getCreditsDisplay = () => {
     if (!userCredits) return '0';
-    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly') {
+    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') {
       return 'Unlimited';
-    }
-    // OG Founders get 3 credits, not unlimited
-    if (userCredits.subscription === 'founder') {
-      return String(userCredits.credits || 3);
     }
     return String(userCredits.credits || 0);
   };
