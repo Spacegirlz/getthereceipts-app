@@ -79,6 +79,16 @@ PERSPECTIVE CLARITY:
 - When referring to USER: Use USER consistently
 - When referring to OTHER: Use OTHER consistently
 
+ARCHETYPE HEALTH CHECK (CRITICAL - DO THIS FIRST):
+Based on the archetype "${archetype}" and confidence "${confidenceRemark}":
+
+DETERMINE MODE BY CONFIDENCE REMARK:
+- If confidenceRemark contains "ACTUALLY DECENT" or "THIS ONE'S ACTUALLY" → mode = 'healthy'
+- If confidenceRemark contains "CONFUSED" or "SURE YOU'RE CONFUSED" → mode = 'mirror' 
+- If confidenceRemark contains "TOXIC AF" or "SURE THIS IS TOXIC" → mode = 'mirror'
+
+OVERRIDE: This check overrides any passed mode parameter. The archetype and confidence determine everything.
+
 VOICE SWITCH (use provided mode EXACTLY; never blend):
 - self_receipt: call out USER's tactics; playful, zero shame; 1 script line.
 - mirror: both messy; no villain; dry clarity.

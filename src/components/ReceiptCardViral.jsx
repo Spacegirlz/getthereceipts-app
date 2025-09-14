@@ -531,6 +531,16 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           </motion.button>
         </div>
         
+        {/* Privacy Badge */}
+        <div className="mt-3 text-center space-y-2">
+          <p className="text-xs text-gray-500 bg-gray-900/30 px-3 py-1.5 rounded-full inline-flex items-center gap-1 border border-gray-700/50">
+            🔐 Private result. Original chat was deleted instantly.
+          </p>
+          <p className="text-xs text-amber-200 bg-amber-900/20 px-3 py-1.5 rounded-full inline-flex items-center gap-1 border border-amber-600/30">
+            👁️ Based only on your message. Not a full-context reading.
+          </p>
+        </div>
+        
         {/* Sage's Disclaimer */}
         <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
           <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">

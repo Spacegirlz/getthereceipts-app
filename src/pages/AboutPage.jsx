@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Heart, Shield, Zap } from 'lucide-react';
+import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 
 const AboutPage = () => {
   const navigate = useNavigate();
@@ -73,6 +74,39 @@ const AboutPage = () => {
         </div>
       </motion.div>
 
+      {/* Meet Sage Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
+        className="max-w-4xl mx-auto mb-16"
+      >
+        <div className="meme-card p-8 rounded-3xl">
+          <div className="text-center mb-6">
+            <div className="flex justify-center mb-4">
+              <img 
+                src={sagePurpleSwirl} 
+                alt="Sage - Your AI Text Whisperer" 
+                className="w-32 h-32 object-contain floating-emoji"
+              />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-2">Meet Sage</h2>
+            <p className="text-pink-400 font-semibold text-lg italic">Your resident text whisperer</p>
+          </div>
+          
+          <div className="prose prose-lg text-gray-300 max-w-none text-center">
+            <p className="text-lg leading-relaxed">
+              Sage reads the vibes, catches the subtext, and serves up insights with a side of sass. 
+              She's that friend who notices when someone's "fine" isn't really fine, or when "k" 
+              means someone's definitely not okay. 
+            </p>
+            <p className="text-lg leading-relaxed mt-4">
+              <span className="text-purple-400 font-semibold">Part pattern detective, part conversation therapist, all AI-powered realness.</span>
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Values Section */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -87,8 +121,8 @@ const AboutPage = () => {
             <Heart className="h-16 w-16 text-pink-400 mx-auto mb-6" />
             <h3 className="text-xl font-bold text-white mb-4">Empowerment</h3>
             <p className="text-gray-300">
-              We believe everyone deserves clarity in their relationships. No more guessing games, 
-              no more mixed signals. Get the truth and make informed decisions.
+              Get the clarity you deserve. Because sometimes you need an outside perspective to confirm 
+              what your gut's been telling you all along. No more guessing games, no more mixed signals.
             </p>
           </div>
           
@@ -124,20 +158,79 @@ const AboutPage = () => {
           
           <div className="text-gray-300 space-y-4">
             <p>
-              <span className="font-bold text-pink-400">Real talk:</span> Get The Receipts is designed 
-              for entertainment and insight purposes only. While our AI is pretty smart and trained on 
-              tons of data, we can't guarantee 100% accuracy in reading minds (yet).
+              <span className="font-bold text-pink-400">Real talk:</span> Sage uses advanced AI to spot patterns humans might miss. 
+              She reads between the lines with surprising insight - though remember, she's analyzing words, not reading minds. 
+              Think of her as your witty friend who's really good at noticing things.
             </p>
             
             <p>
-              Use our analysis as a fun way to gain perspective, but remember that real communication 
-              happens when you actually talk to people. Don't make major life decisions based solely 
-              on our receipts cards.
+              Use her analysis as one perspective among many, but remember that real communication 
+              happens when you actually talk to people. Your intuition combined with Sage's insights? 
+              That's where the magic happens.
             </p>
             
             <p className="font-bold text-yellow-400">
               TL;DR: We're here for the tea, the laughs, and the insights - but don't sue us if your 
               ex ghosts you again. 💀
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* FAQ Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.8 }}
+        className="max-w-4xl mx-auto mb-16"
+      >
+        <h2 className="text-3xl font-bold text-white mb-8 text-center">Common Questions</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="meme-card p-6 rounded-2xl">
+            <h3 className="text-lg font-bold text-white mb-3">❓ Can Sage be wrong?</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Sometimes the truth is subtle. Sage reads what's written, not the full story or hidden context. 
+              If a reading doesn't land or feel right, it might not be the right moment, or there might be 
+              missing pieces. <span className="text-purple-400 font-semibold">Trust your gut first. Then check again.</span>
+            </p>
+          </div>
+          
+          <div className="meme-card p-6 rounded-2xl">
+            <h3 className="text-lg font-bold text-white mb-3">🎭 Is Sage a real person?</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Sage is an AI assistant with personality. She uses advanced language models to analyze patterns in text 
+              and deliver insights with attitude. Think of her as your digital bestie who happens to be powered by 
+              cutting-edge tech and has analyzed thousands of conversations.
+            </p>
+          </div>
+          
+          <div className="meme-card p-6 rounded-2xl">
+            <h3 className="text-lg font-bold text-white mb-3">🔮 How does Sage "read" my texts?</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Sage analyzes patterns in language, timing, word choice, and emotional markers. She picks up on things 
+              like response delays, tone shifts, and conversation flow. But remember - she only sees what you paste, 
+              not the full relationship context.
+            </p>
+          </div>
+          
+          <div className="meme-card p-6 rounded-2xl">
+            <h3 className="text-lg font-bold text-white mb-3">🔒 What happens to my conversations?</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              They disappear instantly after your analysis. We don't store, share, or train AI models on your conversations. 
+              Your secrets stay between you and Sage, and then they're gone forever.
+            </p>
+          </div>
+        </div>
+        
+        {/* Accuracy Disclaimer */}
+        <div className="mt-8 p-6 bg-gradient-to-r from-amber-900/20 to-orange-900/20 rounded-2xl border border-amber-500/30">
+          <div className="text-center">
+            <p className="text-amber-200 font-semibold mb-2">💡 Remember</p>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Sage is incredibly insightful, but she's not a mind reader or a crystal ball. She's here to give you 
+              perspective and help you trust your instincts - not to make your decisions for you. The best receipts 
+              come when you combine her insights with your own intuition.
             </p>
           </div>
         </div>
@@ -163,6 +256,41 @@ const AboutPage = () => {
           Start Getting Receipts 🧾
         </Button>
       </motion.div>
+
+      <div className="max-w-4xl mx-auto">
+        {/* Navigation Links */}
+        <div className="mt-16 flex flex-wrap justify-center gap-6 mb-8">
+          <Link to="/about" className="text-gray-400 hover:text-white transition-colors">About</Link>
+          <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
+          <Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
+          <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+          <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+        </div>
+
+        {/* Perfect Footer Block */}
+        <div className="mt-8 mb-8 p-6 bg-gradient-to-r from-gray-900/60 to-purple-900/40 rounded-2xl border border-gray-600/30">
+          <div className="text-center">
+            <p className="text-gray-300 text-sm mb-3">
+              © 2025 Get The Receipts. All rights reserved.
+            </p>
+            <p className="text-gray-400 text-sm mb-3">
+              For Entertainment & Insight Purposes Only.<br />
+              Sage reads patterns, not people. Trust your gut first. Then verify with us.
+            </p>
+            <p className="text-gray-500 text-xs mb-3">
+              13+ with parental consent • Not therapy, legal, or medical advice • Use at your own risk
+            </p>
+            <p className="text-gray-500 text-sm">
+              Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>
+            </p>
+          </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="text-center mb-16">
+          <Link to="/" className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4">Back to Home</Link>
+        </div>
+      </div>
     </div>
   );
 };

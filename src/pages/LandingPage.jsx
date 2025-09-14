@@ -26,12 +26,12 @@ const LandingPage = () => {
 
   const faqs = [
     {
-      question: "Is this... actually accurate?",
+      question: "How does Sage know what's really going on?",
       answer: "Real talk: Our AI is scarily good because it's trained on millions of real-world situations, not just textbook theories. Think of Sage as your brutally honest friend who has seen every game in the book. While this is for \"entertainment,\" our 94% pattern accuracy means your gut was probably right. We just give you the receipts to prove it."
     },
     {
       question: "Who will know I used this app?",
-      answer: "Your privacy is our entire foundation. You alone choose what you share. Your conversations are analyzed in real-time and are never stored unless you explicitly create an account and choose to save your history. We don't want your drama; we just want to give you clarity. Your secret is safe with us."
+      answer: "Your privacy is our entire foundation. You alone choose what you share. Your conversations are analyzed in real-time and are never stored, never used for AI training, and deleted immediately unless you explicitly create an account and choose to save your history. We don't want your drama; we just want to give you clarity. Your secret is safe with us."
     },
     {
       question: "Can I trust the AI's judgment over my own feelings?",
@@ -134,28 +134,62 @@ const LandingPage = () => {
             Stop second-guessing their texts.
           </h1>
           
-          {/* Meet Sage - Visual Introduction */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="flex justify-center mb-8"
-          >
-            <img 
-              src={sageLanding} 
-              alt="Meet Sage - Your AI Dating Advisor"
-              className="w-48 md:w-60 h-auto object-contain drop-shadow-2xl"
-            />
-          </motion.div>
-          
           <p className="text-lg md:text-xl text-gray-300 mb-16 max-w-2xl mx-auto text-center">
-            You're not overthinking; you're looking for clarity. Sage is the friend in your corner who calls out the games before you get played.
+            You're not spiraling - you're decoding.<br />
+            Sage calls out the games <em>before</em> you get played.
           </p>
 
-          {/* Secondary Headline / Action Prompt */}
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-            Got a text? <span className="gradient-text">Get the Receipts.</span>
-          </h2>
+          {/* Premium Secondary Headline */}
+          <div className="relative mb-16">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/10 to-transparent blur-3xl"></div>
+            <div className="relative bg-gradient-to-br from-slate-900/50 via-purple-900/30 to-slate-900/50 backdrop-blur-xl rounded-3xl border border-purple-500/20 p-12 md:p-16 max-w-5xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
+                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                  Paste the chat. You know the one.
+                </span>
+              </h2>
+
+              {/* Emotional Context Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div className="text-center p-6 bg-gradient-to-br from-red-900/20 to-pink-900/20 rounded-xl border border-red-500/20">
+                  <div className="text-2xl mb-3">🕐</div>
+                  <p className="text-lg font-medium text-red-300">"you up?"</p>
+                  <p className="text-sm text-gray-400 mt-2">2am desperation</p>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-orange-900/20 to-yellow-900/20 rounded-xl border border-orange-500/20">
+                  <div className="text-2xl mb-3">😅</div>
+                  <p className="text-lg font-medium text-orange-300">"haha nvm"</p>
+                  <p className="text-sm text-gray-400 mt-2">Forced casual</p>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-blue-900/20 to-indigo-900/20 rounded-xl border border-blue-500/20">
+                  <div className="text-2xl mb-3">🚩</div>
+                  <p className="text-lg font-medium text-blue-300">"not ready"</p>
+                  <p className="text-sm text-gray-400 mt-2">Classic deflection</p>
+                </div>
+              </div>
+
+              {/* Value Proposition */}
+              <div className="text-center">
+                <p className="text-xl md:text-2xl font-semibold text-white mb-4">
+                  Sage sees what your gut already knew.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span>No judgment</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span>No storage</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span>Just receipts</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Single Primary CTA */}
           <div className="flex justify-center mb-8">
@@ -168,25 +202,30 @@ const LandingPage = () => {
             </Button>
           </div>
 
-          {/* Trust Bar - Immediately below CTA */}
+          {/* Enhanced Trust Bar - Immediately below CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-gray-300 text-sm mb-24"
+            className="text-center mb-24"
           >
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-teal-400" />
-              <span>Bank-level encryption</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-gray-300 text-sm mb-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5 text-teal-400" />
+                <span>Bank-level encryption</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Eye className="h-5 w-5 text-teal-400" />
+                <span>Never stored or used for training</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-teal-400" />
+                <span>Deleted in 60 seconds</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Eye className="h-5 w-5 text-teal-400" />
-              <span>Your chats are never stored</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-teal-400" />
-              <span>Results in 60 seconds</span>
-            </div>
+            <p className="text-xs text-gray-500 max-w-md mx-auto">
+              🔒 Your private conversations are analyzed instantly and deleted immediately. No trace. No judgment. Just clarity.
+            </p>
           </motion.div>
         </motion.div>
 
@@ -289,12 +328,71 @@ const LandingPage = () => {
           </motion.div>
         </motion.div>
 
+        {/* Premium Emotional Reframe Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="w-full max-w-5xl mx-auto mb-20 md:mb-24 mt-20 md:mt-24"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-teal-500/10 to-transparent blur-3xl"></div>
+            <div className="relative bg-gradient-to-br from-slate-800/40 via-teal-900/20 to-slate-800/40 backdrop-blur-xl rounded-3xl border border-teal-500/20 p-12 md:p-16 text-center">
+              
+              {/* Icon */}
+              <div className="w-16 h-16 mx-auto mb-8 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center">
+                <span className="text-2xl">🧠</span>
+              </div>
+
+              {/* Headline */}
+              <h3 className="text-4xl md:text-5xl font-bold mb-8">
+                <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                  You're not overthinking.
+                </span>
+                <br />
+                <span className="text-white">You're emotionally literate.</span>
+              </h3>
+
+              {/* Process Flow */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-white font-bold">1</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Drop the chat</h4>
+                  <p className="text-gray-300 text-sm">That's been haunting you</p>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-white font-bold">2</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Sage analyzes</h4>
+                  <p className="text-gray-300 text-sm">Tone, power, and red flags</p>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-white font-bold">3</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Truth delivered</h4>
+                  <p className="text-gray-300 text-sm">The clarity you needed</p>
+                </div>
+              </div>
+
+              {/* CTA Line */}
+              <div className="bg-gradient-to-r from-transparent via-teal-500/20 to-transparent h-px mb-8"></div>
+              <p className="text-xl md:text-2xl font-medium text-teal-300">
+                Just paste it — the truth's coming.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* NEW: Instant Demo Section - The Missing Hook */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
-          className="w-full max-w-4xl mx-auto mb-20 md:mb-32 mt-20 md:mt-32 text-center"
+          className="w-full max-w-4xl mx-auto mb-20 md:mb-32 text-center"
         >
           <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-8">
             See it work in 10 seconds:
@@ -545,30 +643,30 @@ const LandingPage = () => {
           >
             <div className="meme-card p-6 rounded-2xl text-center">
               <MessageSquare className="h-12 w-12 text-pink-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-pink-400">Decode Their Chaos</h3>
+              <h3 className="font-bold text-lg mb-3 text-pink-400">💬 Paste the chaos</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
-                Paste the confusing texts, screenshots, even their "nothing" replies. Our AI analyzes the patterns to show you what's really going on.
+                Drop in the confusing thread. Sage sees what your friends missed.
               </p>
             </div>
             <div className="meme-card p-6 rounded-2xl text-center">
               <Zap className="h-12 w-12 text-teal-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-teal-400">Get Your Truth Receipt</h3>
+              <h3 className="font-bold text-lg mb-3 text-teal-400">🧠 Get your truth</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
-                No more guessing. Get a clear verdict on the dynamic, from "The Breadcrumber" to "The Gaslighter," and see the exact red flags you're missing.
+                No more guessing. Sage names the pattern and calls it clean.
               </p>
             </div>
             <div className="meme-card p-6 rounded-2xl text-center">
               <TrendingUp className="h-12 w-12 text-green-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-green-400">See Their Next Move</h3>
+              <h3 className="font-bold text-lg mb-3 text-green-400">🔮 See their next move</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
-                Our "Sage's Prophecy" feature predicts their likely next action based on their behavior, so you can stop reacting and start anticipating.
+                Sage's Prophecy predicts their likely next play so you stop waiting.
               </p>
             </div>
             <div className="meme-card p-6 rounded-2xl text-center">
               <Gift className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-3 text-blue-400">Share the Proof</h3>
+              <h3 className="font-bold text-lg mb-3 text-blue-400">📸 Save the proof</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
-                Send the undeniable receipts to your group chat or save them for yourself. The truth speaks for itself.
+                Screenshot it. Share it. Use it in the group chat. Sage backs your gut.
               </p>
             </div>
           </motion.div>
@@ -595,7 +693,7 @@ const LandingPage = () => {
               
               <div className="pt-4 text-center">
                 <p className="text-lg md:text-xl font-bold text-white mb-2">
-                  Stop letting them get away with it. It's time to pull the receipts.
+                  Stop spiraling alone. It's time to see what's <em>really</em> going on.
                 </p>
               </div>
             </div>
@@ -1055,10 +1153,23 @@ const LandingPage = () => {
           <p className="text-gray-300 mb-8 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
             That feeling of confusion is costing you more than just your peace of mind - it's costing you time. Our OG Founder's Deal gives you unlimited access to Sage's wisdom for just <strong className="text-green-400">$2.49/month</strong> (billed annually at $29.99). Lock in your 70% discount before this one-time offer disappears forever.
           </p>
+          <div className="text-center mb-6">
+            <p className="text-white font-semibold text-lg mb-2">
+              This is the last time you'll get Sage for less than $3/month.
+            </p>
+            <p className="text-gray-300 text-base">
+              Secure your clarity - before it disappears.
+            </p>
+          </div>
           <div className="flex flex-col gap-4 justify-center mb-4">
             <Button onClick={handleGoPremium} className="viral-button text-white font-bold py-4 text-xl px-12 shadow-2xl">
               Lock In My Founder's Price
             </Button>
+          </div>
+          <div className="text-center mb-4">
+            <p className="text-xs text-gray-500 bg-gray-900/30 px-4 py-2 rounded-full inline-flex items-center gap-2 border border-gray-700/50 mb-4">
+              🛡️ Never stored. Never used for training. Deleted instantly.
+            </p>
           </div>
           <p className="text-gray-400 text-sm">
             Not ready to commit?{' '}

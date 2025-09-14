@@ -51,6 +51,11 @@ const ChatInputPage = () => {
   // Upgrade modal state
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
+  // First-use disclaimer modal state
+  const [showFirstUseModal, setShowFirstUseModal] = useState(false);
+  const [hasAcceptedDisclaimer, setHasAcceptedDisclaimer] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+  
   // Anonymous/Observational mode state
   const [analysisMode, setAnalysisMode] = useState(null); // null, 'personal' or 'anonymous'
   
@@ -259,6 +264,24 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       }
     }
   }, [creditsLoading, user, texts, extractedTexts]);
+
+  // First-use disclaimer detection
+  useEffect(() => {
+    const hasSeenDisclaimer = localStorage.getItem('hasSeenSageDisclaimer');
+    if (!hasSeenDisclaimer) {
+      setShowFirstUseModal(true);
+    } else {
+      setHasAcceptedDisclaimer(true);
+    }
+  }, []);
+
+  const handleAcceptDisclaimer = () => {
+    if (checkboxChecked) {
+      localStorage.setItem('hasSeenSageDisclaimer', 'true');
+      setHasAcceptedDisclaimer(true);
+      setShowFirstUseModal(false);
+    }
+  };
 
   const handleSubmit = async () => {
     console.log('🚀 ChatInput: handleSubmit called', { 
@@ -802,6 +825,17 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 )}
               </div>
               
+              {/* Sage's Perspective Reminder */}
+              <div className="mb-3 p-3 bg-purple-900/20 rounded-lg border border-purple-500/30">
+                <div className="flex items-start gap-2">
+                  <span className="text-purple-400 text-sm">👁️</span>
+                  <div className="text-xs text-gray-300">
+                    <span className="font-semibold text-purple-300">Sage reads what's written, not what's unsaid.</span> 
+                    <span className="text-gray-400 ml-1">She sees patterns from your text - not tone of voice, past context, or the full story.</span>
+                  </div>
+                </div>
+              </div>
+              
               <Textarea
                 value={texts}
                 onChange={(e) => setTexts(e.target.value.slice(0, TEXTS_LIMIT))}
@@ -813,6 +847,9 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 <span className={`text-xs ${texts.length > TEXTS_LIMIT * 0.8 ? 'text-orange-400' : 'text-stone-400'} ${texts.length > TEXTS_LIMIT * 0.95 ? 'text-red-400' : ''}`}>
                   {texts.length}/{TEXTS_LIMIT}
                 </span>
+                <p className="text-xs text-gray-500 flex items-center gap-1">
+                  🛡️ Never stored. Never used for training. Deleted instantly.
+                </p>
               </div>
               
               {/* Sage's Input Quality Warnings */}
@@ -1036,15 +1073,27 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 </p>
               )}
               
+              {/* Light Privacy Reminder */}
+              <div className="flex items-center justify-center gap-1 text-xs text-gray-400 mt-3">
+                <span>🔐</span>
+                <span>Your chat is private & never used for training • Entertainment use only</span>
+              </div>
+              
               {/* Legal Disclaimer */}
               <div className="text-center text-xs text-gray-500 mt-6 p-4 bg-gray-900/50 rounded-lg">
                 <p className="font-bold mb-2">⚖️ The Legal Tea</p>
-                <p className="leading-relaxed">
+                <p className="leading-relaxed mb-3">
                   Look, we're really good at reading the room and serving up insights, but we're not your therapist, 
                   not licensed professionals, and for the love of all that's holy, don't take life changing advice 
                   from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with 
                   someone else's lived experience.
                 </p>
+                <div className="border-t border-gray-700 pt-3">
+                  <p className="text-gray-400 text-xs">
+                    <strong>Important:</strong> If you're experiencing emotional distress or crisis, please contact a licensed mental health professional. 
+                    Crisis Text Line: Text HOME to 741741 • Suicide Prevention: 988
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -1196,6 +1245,102 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
               >
                 ✕
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* First-Use Disclaimer Modal */}
+        {showFirstUseModal && (
+          <motion.div 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              background: 'rgba(0, 0, 0, 0.9)',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            <motion.div 
+              className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 rounded-3xl p-8 max-w-lg w-full border border-purple-400/30"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', duration: 0.5 }}
+              style={{
+                backdropFilter: 'blur(20px)',
+                boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              {/* Sage Avatar */}
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">🔮</div>
+                <h2 className="text-2xl font-bold text-white mb-2">Meet Sage</h2>
+                <p className="text-purple-200 text-sm">Your AI truth-teller & pattern reader</p>
+              </div>
+              
+              {/* Main Message */}
+              <div className="bg-black/20 rounded-2xl p-6 mb-6 border border-purple-400/20">
+                <h3 className="text-lg font-semibold text-white mb-4">Here's what I need you to know:</h3>
+                
+                <div className="space-y-3 text-gray-200 text-sm">
+                  <div className="flex items-start gap-3">
+                    <span className="text-purple-400 text-lg">👁️</span>
+                    <div>
+                      <p className="font-semibold text-white">I see patterns, not minds</p>
+                      <p>I read what you show me - the words, the timing, the energy. I can't see tone of voice, past fights, or your full story.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <span className="text-blue-400 text-lg">🎭</span>
+                    <div>
+                      <p className="font-semibold text-white">I'm fiction, not fact</p>
+                      <p>Think of me as your most intuitive friend with a PhD in human behavior - insightful, but not infallible.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <span className="text-green-400 text-lg">🔒</span>
+                    <div>
+                      <p className="font-semibold text-white">Your secrets stay secret</p>
+                      <p>Your chats disappear the moment I'm done. No storage, no training, no judgment.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Checkbox Agreement */}
+              <div className="flex items-start gap-3 mb-6 p-4 bg-yellow-900/20 rounded-xl border border-yellow-400/30">
+                <input 
+                  type="checkbox" 
+                  id="sage-agreement"
+                  className="mt-1 w-4 h-4 text-purple-600 bg-gray-800 border-gray-600 rounded focus:ring-purple-500"
+                  checked={checkboxChecked}
+                  onChange={(e) => setCheckboxChecked(e.target.checked)}
+                />
+                <label htmlFor="sage-agreement" className="text-sm text-gray-200 leading-relaxed">
+                  <span className="font-semibold text-white">I understand</span> that Sage reads patterns from my text, not my mind. 
+                  This is for <span className="text-yellow-300">entertainment and insight</span>, not professional advice. 
+                  I'm 18+ and ready for some truth.
+                </label>
+              </div>
+
+              {/* Action Button */}
+              <Button
+                onClick={handleAcceptDisclaimer}
+                disabled={!checkboxChecked}
+                className="w-full py-4 text-lg font-bold text-black rounded-xl transition-all"
+                style={{
+                  background: checkboxChecked 
+                    ? 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)' 
+                    : '#4a4a4a',
+                  boxShadow: checkboxChecked 
+                    ? '0 4px 15px rgba(212, 175, 55, 0.4)' 
+                    : 'none',
+                  opacity: checkboxChecked ? 1 : 0.5
+                }}
+              >
+                {checkboxChecked ? "Let's Get Some Receipts 🧾" : "Please read and check the box above"}
+              </Button>
             </motion.div>
           </motion.div>
         )}
