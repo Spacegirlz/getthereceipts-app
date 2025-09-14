@@ -75,7 +75,8 @@ const ChatInputPage = () => {
     const isDialogueFormat = /\w+\d*\s*:\s*/.test(combinedText) && combinedText.includes(':');
     const hasMultipleSpeakers = (combinedText.match(/\w+\d*\s*:/g) || []).length >= 2;
     
-    const shouldUseObservationalMode = analysisMode === 'anonymous' || (isDialogueFormat && hasMultipleSpeakers);
+    const shouldUseObservationalMode = analysisMode === 'anonymous' || 
+                                       (analysisMode !== 'personal' && isDialogueFormat && hasMultipleSpeakers);
     
     // Handle analysis mode
     if (shouldUseObservationalMode) {

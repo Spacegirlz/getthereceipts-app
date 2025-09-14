@@ -502,17 +502,40 @@ const parseConversationSides = (message, context) => {
   console.log('🔍 Parsing conversation for mode detection:', { userName, totalLines: lines.length });
   
   lines.forEach(line => {
+    // Enhanced parsing to handle multiple formats
+    const trimmedLine = line.trim();
+    if (!trimmedLine) return;
+
+    // Format 1: "Alex (10:41 PM): text" - with timestamp
     if (line.includes(`${userName} (`)) {
-      // Handle format "Alex (10:41 PM): text"
       const text = line.substring(line.indexOf('):') + 2);
       userText += ' ' + text;
-      console.log(`  ✅ ${userName} line:`, text.slice(0, 50));
-    } else if (line.includes('(') && line.includes('):') && !line.includes('—')) {
-      // Handle other party format "Mateo (10:42 PM): text"  
+      console.log(`  ✅ ${userName} line (with timestamp):`, text.slice(0, 50));
+    }
+    // Format 2: "Alex: text" - simple format (NEW)
+    else if (line.startsWith(`${userName}:`)) {
+      const text = line.substring(line.indexOf(':') + 1).trim();
+      userText += ' ' + text;
+      console.log(`  ✅ ${userName} line (simple format):`, text.slice(0, 50));
+    }
+    // Format 3: Other party with timestamp "Mateo (10:42 PM): text"
+    else if (line.includes('(') && line.includes('):') && !line.includes('—')) {
       const text = line.substring(line.indexOf('):') + 2);
       otherText += ' ' + text;
       const speaker = line.substring(0, line.indexOf(' ('));
-      console.log(`  ✅ ${speaker} line:`, text.slice(0, 50));
+      console.log(`  ✅ ${speaker} line (with timestamp):`, text.slice(0, 50));
+    }
+    // Format 4: Other party simple format "Name: text" (NEW)
+    else if (line.includes(':') && !line.includes('(') && !line.includes('—')) {
+      const colonIndex = line.indexOf(':');
+      const speaker = line.substring(0, colonIndex).trim();
+      const text = line.substring(colonIndex + 1).trim();
+      
+      // Only process if speaker is not the known user and looks like a valid name
+      if (speaker !== userName && speaker.length > 0 && speaker.length < 20 && text.length > 0) {
+        otherText += ' ' + text;
+        console.log(`  ✅ ${speaker} line (simple format):`, text.slice(0, 50));
+      }
     }
   });
   
