@@ -21,7 +21,7 @@ const SocialProofTicker = () => {
   ];
 
   return (
-    <div className="relative w-full h-12 overflow-hidden bg-gray-900/50 mt-8 rounded-full border-2 border-purple-500/30">
+    <div className="relative w-full h-12 overflow-hidden bg-gray-900/50 mt-8 rounded-full border-2 border-blue-500/30">
       <div className="absolute top-0 left-0 w-max h-full flex items-center animate-scroll">
         {items.concat(items).map((item, index) => (
           <span key={index} className="text-gray-300 text-md mx-6 whitespace-nowrap">
@@ -163,7 +163,7 @@ const PricingPage = () => {
       tag: 'Never spiral alone again.',
       buttonText: 'Unlock Unlimited Clarity',
       priceId: 'price_1RzgEZG71EqeOEZejcCAFxQs',
-      buttonClass: 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold shadow-lg shadow-purple-500/25',
+      buttonClass: 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold shadow-lg shadow-blue-500/25',
       icon: '🔥',
       microcopy: 'For the ones who spiral in silence'
     },
@@ -195,19 +195,15 @@ const PricingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen text-white px-4 py-8 relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 text-white overflow-hidden px-4 py-8 relative">
       <Helmet>
         <title>Pricing - Get The Receipts</title>
         <meta name="description" content="Choose your truth level. From free daily receipts to unlimited chaos decoded." />
       </Helmet>
 
-      {/* Luxe Background */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0" style={{backgroundColor: '#0C0E1B'}} />
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-blue-900/10 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(157,95,255,0.08),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(0,224,224,0.05),transparent_50%)]" />
-      </div>
+      {/* Background Elements */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.3),rgba(255,255,255,0))] pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.15),rgba(255,255,255,0))] pointer-events-none" />
 
       {/* Matte Rich Design System */}
       <style jsx="true">{`
@@ -442,7 +438,7 @@ const PricingPage = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             Your gut already knew.<br />
-            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 via-blue-400 to-blue-400 bg-clip-text text-transparent">
               Sage just puts it in writing.
             </span>
           </motion.h1>
@@ -627,8 +623,8 @@ const PricingPage = () => {
           transition={{ delay: 0.8 }}
         >
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/10 to-transparent blur-3xl"></div>
-            <div className="relative bg-gradient-to-br from-slate-900/60 via-purple-900/20 to-slate-900/60 backdrop-blur-xl rounded-3xl border border-purple-500/20 p-12 md:p-16 text-center">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/10 to-transparent blur-3xl"></div>
+            <div className="relative bg-gradient-to-br from-slate-900/60 via-purple-900/20 to-slate-900/60 backdrop-blur-xl rounded-3xl border border-blue-500/20 p-12 md:p-16 text-center">
               
               {/* Enhanced Trust Message */}
               <div className="text-center mb-12">
@@ -649,7 +645,7 @@ const PricingPage = () => {
               <div className="max-w-5xl mx-auto mb-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Left Card - Gut Noticing */}
-                  <div className="relative p-8 bg-gradient-to-b from-red-900/10 via-purple-900/15 to-violet-900/20 rounded-2xl backdrop-blur-sm border border-purple-500/10">
+                  <div className="relative p-8 bg-gradient-to-b from-red-900/10 via-purple-900/15 to-violet-900/20 rounded-2xl backdrop-blur-sm border border-blue-500/10">
                     <div className="text-center">
                       <div className="text-4xl mb-6">😕</div>
                       <h4 className="text-2xl font-bold text-white mb-4 leading-tight">
@@ -706,7 +702,7 @@ const PricingPage = () => {
                   </Button>
                   <Button
                     onClick={() => navigate('/chat-input')}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold py-3 px-5 rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/25"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold py-3 px-5 rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25"
                   >
                     Get My First Receipt
                   </Button>
@@ -868,13 +864,13 @@ const PricingPage = () => {
                   Start Free
                 </Button>
                 <Button
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold py-3 px-5 rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/25"
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold py-3 px-5 rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25"
                   onClick={() => handleCheckout('price_1RzgEZG71EqeOEZejcCAFxQs', 'Premium')}
                 >
                   Go Unlimited
                 </Button>
                 <Button
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold py-3 px-5 rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/25"
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold py-3 px-5 rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25"
                   onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founder')}
                 >
                   Claim Founder Status
@@ -886,7 +882,7 @@ const PricingPage = () => {
 
         {/* Privacy & Trust Footnote */}
         <div className="text-center mt-16 pb-12 max-w-3xl mx-auto">
-          <div className="bg-gradient-to-br from-slate-900/40 via-purple-900/10 to-slate-900/40 backdrop-blur-xl rounded-2xl border border-purple-500/10 p-8">
+          <div className="bg-gradient-to-br from-slate-900/40 via-purple-900/10 to-slate-900/40 backdrop-blur-xl rounded-2xl border border-blue-500/10 p-8">
             <div className="text-center mb-6">
               <div className="text-2xl mb-3">🔒</div>
               <h3 className="text-xl font-bold text-white mb-4">Your privacy comes first.</h3>
@@ -901,7 +897,7 @@ const PricingPage = () => {
                 18+ only. Entertainment use. Not therapy, legal or medical advice.
               </p>
               <p className="text-gray-500 text-xs">
-                By using this site, you agree to our <a href="/terms-of-service" className="text-purple-400 hover:text-purple-300 underline">Terms</a> & <a href="/privacy-policy" className="text-purple-400 hover:text-purple-300 underline">Privacy Policy</a>.
+                By using this site, you agree to our <a href="/terms-of-service" className="text-blue-400 hover:text-blue-300 underline">Terms</a> & <a href="/privacy-policy" className="text-blue-400 hover:text-blue-300 underline">Privacy Policy</a>.
               </p>
             </div>
           </div>
@@ -930,14 +926,14 @@ const PricingPage = () => {
               18+ only • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-500 text-sm">
-              Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>
+              Support: <a href="mailto:support@getthereceipts.com" className="text-blue-400 hover:text-blue-300 transition-colors">support@getthereceipts.com</a>
             </p>
           </div>
         </div>
 
         {/* Back to Home */}
         <div className="text-center mb-16">
-          <a href="/" className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4">Back to Home</a>
+          <a href="/" className="text-blue-400 hover:text-blue-300 transition-colors underline underline-offset-4">Back to Home</a>
         </div>
       </div>
 

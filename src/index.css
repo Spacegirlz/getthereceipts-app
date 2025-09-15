@@ -29,20 +29,24 @@
   --card-foreground: 0 0% 98%;
   --popover: 240 10% 3.9%;
   --popover-foreground: 0 0% 98%;
-  --primary: 262.1 83.3% 57.8%;
+  --primary: 248 77% 70%;
   --primary-foreground: 0 0% 98%;
   --secondary: 240 3.7% 15.9%;
   --secondary-foreground: 0 0% 98%;
   --muted: 240 5% 64.9%;
   --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
+  --accent: 217 91% 60%;
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
-  --ring: 262.1 83.3% 57.8%;
+  --ring: 248 77% 70%;
   --radius: 0.75rem;
+  --brand-purple: 248 77% 70%;
+  --brand-blue: 217 91% 60%;
+  --brand-gradient-start: #8B5CF6;
+  --brand-gradient-end: #3B82F6;
 }
 
 * {
@@ -82,17 +86,34 @@ body::before {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+  background: linear-gradient(135deg, #a08bf4, #06B6D4, #8B5CF6, #3B82F6, #a08bf4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradient-shift 3s ease-in-out infinite;
-  background-size: 200% 200%;
+  animation: gradient-shift 4s ease-in-out infinite;
+  background-size: 300% 300%;
 }
 
 @keyframes gradient-shift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+}
+
+/* Brand utility classes */
+.brand-gradient {
+  background: linear-gradient(135deg, var(--brand-gradient-start) 0%, var(--brand-gradient-end) 100%);
+}
+
+.brand-gradient-deep {
+  background: linear-gradient(135deg, #7C3AED 0%, #2563EB 100%);
+}
+
+.brand-gradient-light {
+  background: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+}
+
+.brand-gradient-accent {
+  background: linear-gradient(135deg, #C4B5FD 0%, #93C5FD 100%);
 }
 
 @keyframes sparkle {
@@ -1319,7 +1340,7 @@ body::before {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 18px !important;
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.5 !important;
   color: #FFFFFF;
   font-style: italic;
   margin: 0;
@@ -1327,6 +1348,7 @@ body::before {
   letter-spacing: -0.2px;
   position: relative;
   z-index: 2;
+  overflow-wrap: break-word;
 }
 
 /* METRICS - BIG AND CLEAR LIKE PROTOTYPE */
@@ -1589,12 +1611,13 @@ body::before {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 18px !important;
   font-weight: 400;
-  line-height: 1.3;
+  line-height: 1.5 !important;
   color: #FFFFFF;
   margin: 0;
   letter-spacing: -0.2px;
   position: relative;
   z-index: 2;
+  overflow-wrap: break-word;
 }
 
 .action-title-block {
@@ -1622,11 +1645,12 @@ body::before {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 18px !important;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.6 !important;
   color: #FFFFFF;
   padding-left: 20px;
   position: relative;
   letter-spacing: -0.2px;
+  overflow-wrap: break-word;
 }
 
 .action-item-block::before {
@@ -2084,6 +2108,62 @@ body::before {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: gradient-shift 3s ease-in-out infinite;
+}
+
+/* =================================================================== */
+/* FIX FOR TEXT OVERLAP IN SAVED/SHARED IMMUNITY TRAINING IMAGE     */
+/* =================================================================== */
+/* This targets elements only within the Immunity Training component   */
+/* to ensure proper line-height during dom-to-image rendering.       */
+
+[data-immunity-component] .leading-snug,
+[data-immunity-component] .leading-relaxed {
+  /* We use !important here to guarantee these styles are applied by */
+  /* the rendering library, overriding any incorrect defaults.        */
+  line-height: 1.6 !important;
+}
+
+/* A broader fallback for any other text elements inside the card */
+[data-immunity-component] p,
+[data-immunity-component] li,
+[data-immunity-component] div {
+    /* This ensures even text without a specific leading- class gets space */
+    line-height: 1.5 !important;
+}
+
+/* Specific fix for Key Characteristics bullet points */
+[data-immunity-component] ul li,
+[data-immunity-component] .space-y-3 li,
+[data-immunity-component] .space-y-2 li {
+    line-height: 1.6 !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 4px !important;
+}
+
+/* Target the span elements inside list items specifically */
+[data-immunity-component] li span {
+    line-height: 1.6 !important;
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* Extra spacing for break-words elements */
+[data-immunity-component] .break-words {
+    line-height: 1.7 !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Add just a pixel or two after the 3rd bullet point in Key Characteristics */
+[data-immunity-component] ul li:nth-child(3) {
+    margin-bottom: 14px !important;
+    padding-bottom: 2px !important;
+}
+
+/* Add subtle spacing after "How They Operate" section */
+[data-immunity-component] .space-y-4 > div:nth-child(2) {
+    margin-bottom: 16px !important;
+    padding-bottom: 2px !important;
 }
 
 /* VIRAL FOOTER - COMPACT */

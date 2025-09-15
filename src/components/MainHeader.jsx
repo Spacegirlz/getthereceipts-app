@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ const MainHeader = () => {
   const { user, signOut } = useAuth();
   const { openModal } = useAuthModal();
   const navigate = useNavigate();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -24,6 +25,11 @@ const MainHeader = () => {
     await signOut();
     navigate('/');
   };
+
+  // Hide header on landing page since it has its own navigation
+  if (location.pathname === '/') {
+    return null;
+  }
 
   return (
     <motion.header 

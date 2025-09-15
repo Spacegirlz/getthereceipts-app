@@ -684,21 +684,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   </div>
                   <ul className="space-y-3 sm:space-y-2">
                     {(() => {
-                      // Safely get array data with proper fallbacks
-                      const characteristics = immunity.keyCharacteristics || 
-                                           immunityData?.keyCharacteristics || 
-                                           immunityData?.characteristics || 
-                                           immunityData?.redFlagDrills || 
-                                           immunityData?.earlyWarnings || 
-                                           immunityData?.sketchySigns ||
-                                           immunityData?.healthySigns ||
-                                           [];
+                      // CORRECTED LOGIC: Prioritize AI's response and default to empty array if missing
+                      const characteristics = immunityData?.keyCharacteristics || [];
                       
-                      // Ensure it's an array
-                      const safeArray = Array.isArray(characteristics) ? characteristics : [];
-                      
-                      if (safeArray.length > 0) {
-                        return safeArray.slice(0, 3).map((trait, index) => (
+                      if (characteristics.length > 0) {
+                        return characteristics.slice(0, 3).map((trait, index) => (
                           <li key={index} className="flex items-start gap-3">
                             <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
                             <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">{trait}</span>
@@ -708,8 +698,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                         return (
                           <li className="flex items-start gap-3">
                             <span className="text-cyan-400 text-sm mt-0.5 flex-shrink-0">•</span>
-                            <span className="text-gray-200 text-sm leading-snug sm:leading-relaxed break-words">
-                              {isCrisisSituation ? "Immediate safety intervention required" : "Loading personalized analysis..."}
+                            <span className="text-gray-200/70 text-sm italic leading-snug sm:leading-relaxed break-words">
+                              Sage is analyzing the unique signals of this healthy pattern.
                             </span>
                           </li>
                         );
