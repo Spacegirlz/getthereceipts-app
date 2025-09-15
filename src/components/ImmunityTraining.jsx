@@ -509,6 +509,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           `They master the art of giving just enough attention to maintain hope`,
           `Inconsistency is their signature move, not a character flaw`
         ];
+      } else if (archetypeLower.includes('mixed signal')) {
+        return [
+          `They thrive on ambiguity, often sending contradictory messages to keep you guessing`,
+          `Their communication lacks clear intent, forcing you to do all the emotional labor of interpretation`,
+          `This pattern is often used to maintain distance while keeping you as an option`
+        ];
       } else if (archetypeLower.includes('ghost') || archetypeLower.includes('disappear')) {
         return [
           `${archetype} behavior includes sudden communication blackouts`,

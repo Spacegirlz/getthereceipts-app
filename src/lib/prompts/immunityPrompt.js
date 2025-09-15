@@ -157,9 +157,9 @@ CRITICAL FLAG RULES:
 
 {
   "keyCharacteristics": [
-    "Generate the first specific behavioral pattern from THIS conversation as a bullet point",
-    "Generate the second core motivation from THIS conversation as a bullet point", 
-    "Generate a third communication strategy from THIS conversation as a bullet point"
+    "CRITICAL: Generate the first specific behavioral pattern from THIS conversation. DO NOT use generic descriptions. Example: 'Uses vague future promises like 'sometime' to avoid commitment'. Must be conversation-specific.",
+    "CRITICAL: Generate the second core motivation based on THIS conversation. Example: 'Keeps you engaged with low-effort texts when they are bored'. Must reference actual behavior shown.",
+    "CRITICAL: Generate a third communication strategy observed in THIS conversation. Example: 'Goes silent for days, then reappears with a casual 'hey' to restart the cycle'. Must be specific to their pattern."
   ],
   "whyItHooks": "Why THIS SPECIFIC behavior pattern hooked the user (pull from actual conversation examples)",
   "patternLoop": ["Action1", "Action2", "Action3", "Action4"] - 4 words describing THEIR specific pattern from this conversation,
@@ -218,7 +218,12 @@ FINAL CHECK BEFORE OUTPUT:
 - Am I using USER and OTHER consistently? ✓
 - Did I pull quotes from THIS conversation only? ✓
 - Am I being dynamic, not templated? ✓
-- Is this response specific to their situation? ✓`;
+- Is this response specific to their situation? ✓
+- Did I generate 3 SPECIFIC, CONVERSATION-BASED keyCharacteristics? ✓
+- Are my keyCharacteristics dynamic and unique to this situation (not generic)? ✓
+
+CRITICAL RESPONSE REQUIREMENT:
+You MUST return complete, conversation-specific content for ALL JSON fields, especially keyCharacteristics. Do not leave any field empty or with placeholder text. Each keyCharacteristics item must be a complete sentence describing specific behavior from this conversation.`;
 
 export const generateImmunityTraining = async (archetype, message, redFlags, confidenceRemark) => {
   const prompt = immunityPrompt
