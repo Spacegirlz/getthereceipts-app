@@ -7,7 +7,7 @@ import { useAuthModal } from '@/contexts/AuthModalContext';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageLanding from '@/assets/sage-landing.png';
 
-const LandingPage = () => {
+const LandingPageRedesign = () => {
   const navigate = useNavigate();
   const { openModal } = useAuthModal();
   const [liveUserCount, setLiveUserCount] = useState(1247);
@@ -477,4 +477,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default LandingPageRedesign;
