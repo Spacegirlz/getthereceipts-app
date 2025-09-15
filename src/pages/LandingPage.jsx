@@ -134,16 +134,15 @@ const LandingPage = () => {
 
             {/* Main Headline */}
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight text-center">
-              Get the truth about<br />
-              <span className="gradient-text">any text in 60 seconds</span>
+              <span className="gradient-text">Stop second-guessing that text</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto text-center">
-              Stop overthinking. Start knowing. Sage's AI reveals what they really mean.
+              💬 Your gut already knew. Sage decodes it in 60 seconds.
             </p>
 
             {/* Primary CTA Button */}
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4">
               <Button
                 onClick={handleGetStarted}
                 className="bg-gradient-to-r from-teal-400 to-blue-500 hover:from-teal-500 hover:to-blue-600 text-black font-bold text-lg px-12 py-6 rounded-full border-0 shadow-2xl transition-all duration-300 hover:scale-105"
@@ -152,6 +151,11 @@ const LandingPage = () => {
                 Get Your First Receipt Free →
               </Button>
             </div>
+
+            {/* Tagline */}
+            <p className="text-sm text-gray-400 mb-8 max-w-md mx-auto text-center">
+              ✨ Free daily decode. Screenshot it. Share it. Move on.
+            </p>
 
             {/* Trust Indicators */}
             <motion.div
