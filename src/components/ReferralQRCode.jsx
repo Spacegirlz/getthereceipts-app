@@ -69,7 +69,7 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
       // Header section
       const headerGradient = ctx.createLinearGradient(0, 0, size, 0);
       headerGradient.addColorStop(0, '#8B5CF6');
-      headerGradient.addColorStop(0.5, '#EC4899');
+      headerGradient.addColorStop(0.5, '#3B82F6');
       headerGradient.addColorStop(1, '#8B5CF6');
       ctx.fillStyle = headerGradient;
       ctx.fillRect(25, 25, size - 50, 80);
@@ -122,7 +122,7 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
       
       // Download the image
       const link = document.createElement('a');
-      link.download = 'get-the-receipts-luxe-qr-code.png';
+      link.download = 'get-the-receipts-qr-code.png';
       link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
       
@@ -170,13 +170,13 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
         className="relative"
       >
         {/* Luxe container with premium styling */}
-        <div className="relative bg-gradient-to-br from-purple-900/30 via-pink-900/20 to-indigo-900/30 rounded-3xl p-8 border border-purple-500/30 shadow-2xl backdrop-blur-sm">
+        <div className="relative bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-indigo-900/30 rounded-3xl p-8 border border-purple-500/30 shadow-2xl backdrop-blur-sm">
           {/* Sparkle effects */}
           <div className="absolute top-4 right-4">
             <Sparkles className="h-6 w-6 text-yellow-400 animate-pulse" />
           </div>
           <div className="absolute top-8 left-6">
-            <Sparkles className="h-4 w-4 text-pink-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
+            <Sparkles className="h-4 w-4 text-blue-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
           </div>
           
           <h3 className="text-2xl font-bold mb-6 text-white flex items-center justify-center gap-2">
@@ -204,7 +204,7 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
             <Button
               onClick={downloadQRCode}
               disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-700 hover:via-pink-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
+              className="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 hover:from-purple-700 hover:via-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
             >
               <Download className="h-5 w-5 mr-2" />
               {isGenerating ? 'Generating...' : 'Download your QR Code'}
