@@ -62,7 +62,7 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
       ctx.fillRect(0, 0, size, size);
       
       // Add luxury border
-      ctx.strokeStyle = '#FFD700';
+      ctx.strokeStyle = '#8B5CF6';
       ctx.lineWidth = 6;
       ctx.strokeRect(3, 3, size - 6, size - 6);
       
@@ -173,16 +173,16 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
         <div className="relative bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-indigo-900/30 rounded-3xl p-8 border border-purple-500/30 shadow-2xl backdrop-blur-sm">
           {/* Sparkle effects */}
           <div className="absolute top-4 right-4">
-            <Sparkles className="h-6 w-6 text-yellow-400 animate-pulse" />
+            <Sparkles className="h-6 w-6 text-violet-400 animate-pulse" />
           </div>
           <div className="absolute top-8 left-6">
             <Sparkles className="h-4 w-4 text-blue-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
           </div>
           
           <h3 className="text-2xl font-bold mb-6 text-white flex items-center justify-center gap-2">
-            <Sparkles className="h-6 w-6 text-yellow-400" />
+            <Sparkles className="h-6 w-6 text-violet-400" />
             Share Your QR Code
-            <Sparkles className="h-6 w-6 text-yellow-400" />
+            <Sparkles className="h-6 w-6 text-violet-400" />
           </h3>
           
           {/* QR Code Preview with luxury styling */}
