@@ -214,13 +214,21 @@ const AuthModal = () => {
                 <div className="flex flex-col gap-4 py-4">
                      <Button
                         variant="outline"
-                        className="w-full bg-white text-black hover:bg-gray-200"
+                        className="w-full bg-white text-black hover:bg-gray-200 border-2 border-green-400 shadow-lg"
                         onClick={handleGoogleSignIn}
                         disabled={loading}
                     >
                         <GoogleIcon className="mr-2 h-4 w-4" />
-                        Sign in with Google
+                        {view === 'sign_up' ? 'Sign up with Google (Recommended)' : 'Sign in with Google'}
                     </Button>
+                    
+                    {view === 'sign_up' && (
+                        <div className="text-center">
+                            <p className="text-xs text-green-400 font-medium">
+                                ⚡ Instant signup • No email confirmation needed
+                            </p>
+                        </div>
+                    )}
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
