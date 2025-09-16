@@ -63,7 +63,7 @@ const ChatInputPage = () => {
   const FORM_DATA_KEY = 'chatInputFormData';
   
   // Character limits
-  const TEXTS_LIMIT = 2500;
+  const TEXTS_LIMIT = 5000;
   const BACKGROUND_LIMIT = 500;
   const QUESTION_LIMIT = 300;
   
@@ -502,7 +502,12 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 text-stone-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 text-white overflow-hidden flex flex-col items-center justify-center p-4 relative">
+      {/* Background Elements */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.3),rgba(255,255,255,0))] pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.15),rgba(255,255,255,0))] pointer-events-none" />
+
+      
       <Helmet>
         <title>Get Your Truth Receipt - Sage's Dating Analysis</title>
         <meta name="description" content="Get instant AI-powered dating advice. Share your texts and context, get your personalized truth receipt from Sage." />
@@ -796,43 +801,12 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 Your messages are analyzed and immediately discarded unless you choose to save them. Your drama stays yours.
               </p>
               
-              {/* Image Upload Option */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Upload className="h-4 w-4 text-purple-400" />
-                  <span className="text-sm font-medium text-stone-300">Upload Screenshots (Optional)</span>
-                </div>
-                <ImageUpload 
-                  onTextExtracted={(extractedText, fileName) => {
-                    setExtractedTexts(prev => [...prev, extractedText]);
-                    toast({
-                      title: "Text Extracted! 📸",
-                      description: `Successfully extracted text from ${fileName}`,
-                    });
-                  }}
-                  maxFiles={2}
-                  maxSize={5 * 1024 * 1024}
-                />
-                
-                {extractedTexts.length > 0 && (
-                  <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
-                    <p className="text-green-400 text-sm font-medium mb-2">
-                      ✅ Text extracted from {extractedTexts.length} image{extractedTexts.length > 1 ? 's' : ''}
-                    </p>
-                    <p className="text-green-300 text-xs">
-                      This text will be included in your analysis along with any pasted messages.
-                    </p>
-                  </div>
-                )}
-              </div>
-              
               {/* Sage's Perspective Reminder */}
               <div className="mb-3 p-3 bg-purple-900/20 rounded-lg border border-purple-500/30">
                 <div className="flex items-start gap-2">
                   <span className="text-purple-400 text-sm">👁️</span>
                   <div className="text-xs text-gray-300">
-                    <span className="font-semibold text-purple-300">Sage reads what's written, not what's unsaid.</span> 
-                    <span className="text-gray-400 ml-1">She sees patterns from your text - not tone of voice, past context, or the full story.</span>
+                    <span className="font-semibold text-purple-300">Sage reminder: Only upload conversations you have the right to share.</span>
                   </div>
                 </div>
               </div>
@@ -937,6 +911,36 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   </div>
                 ) : null;
               })()}
+              
+              {/* Image Upload Option */}
+              <div className="mt-6 mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Upload className="h-4 w-4 text-purple-400" />
+                  <span className="text-sm font-medium text-stone-300">Upload Screenshots (Optional)</span>
+                </div>
+                <ImageUpload 
+                  onTextExtracted={(extractedText, fileName) => {
+                    setExtractedTexts(prev => [...prev, extractedText]);
+                    toast({
+                      title: "Text Extracted! 📸",
+                      description: `Successfully extracted text from ${fileName}`,
+                    });
+                  }}
+                  maxFiles={2}
+                  maxSize={5 * 1024 * 1024}
+                />
+                
+                {extractedTexts.length > 0 && (
+                  <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+                    <p className="text-green-400 text-sm font-medium mb-2">
+                      ✅ Text extracted from {extractedTexts.length} image{extractedTexts.length > 1 ? 's' : ''}
+                    </p>
+                    <p className="text-green-300 text-xs">
+                      This text will be included in your analysis along with any pasted messages.
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Step 3: The Vibe (Optional) */}
@@ -968,6 +972,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   <option value="friends">Friends</option>
                   <option value="marriage">Marriage</option>
                   <option value="family">Family</option>
+                  <option value="work">Work</option>
                   <option value="other">Other</option>
                 </select>
               </div>
@@ -1069,7 +1074,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                     onClick={() => navigate('/pricing')}
                     className="text-yellow-400 underline hover:text-yellow-300 transition-colors"
                   >
-                    Tap here to get a Quick Fix Pack or go Premium
+                    Tap here to get Unlimited receipts on Premium
                   </button>
                 </p>
               )}
@@ -1278,36 +1283,6 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 <p className="text-purple-200 text-sm">Your AI truth-teller & pattern reader</p>
               </div>
               
-              {/* Main Message */}
-              <div className="bg-black/20 rounded-2xl p-6 mb-6 border border-purple-400/20">
-                <h3 className="text-lg font-semibold text-white mb-4">Here's what I need you to know:</h3>
-                
-                <div className="space-y-3 text-gray-200 text-sm">
-                  <div className="flex items-start gap-3">
-                    <span className="text-purple-400 text-lg">👁️</span>
-                    <div>
-                      <p className="font-semibold text-white">I see patterns, not minds</p>
-                      <p>I read what you show me - the words, the timing, the energy. I can't see tone of voice, past fights, or your full story.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <span className="text-blue-400 text-lg">🎭</span>
-                    <div>
-                      <p className="font-semibold text-white">I'm fiction, not fact</p>
-                      <p>Think of me as your most intuitive friend with a PhD in human behavior - insightful, but not infallible.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <span className="text-green-400 text-lg">🔒</span>
-                    <div>
-                      <p className="font-semibold text-white">Your secrets stay secret</p>
-                      <p>Your chats disappear the moment I'm done. No storage, no training, no judgment.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               {/* Checkbox Agreement */}
               <div className="flex items-start gap-3 mb-6 p-4 bg-yellow-900/20 rounded-xl border border-yellow-400/30">
@@ -1319,9 +1294,8 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   onChange={(e) => setCheckboxChecked(e.target.checked)}
                 />
                 <label htmlFor="sage-agreement" className="text-sm text-gray-200 leading-relaxed">
-                  <span className="font-semibold text-white">I understand</span> that Sage reads patterns from my text, not my mind. 
                   This is for <span className="text-yellow-300">entertainment and insight</span>, not professional advice. 
-                  I'm 13+ (under 18 with parental consent) and ready for some truth.
+                  I'm 13+ (with parental consent under 18) and ready for some <span className="text-pink-300">clarity, fun and roasting with love</span>.
                 </label>
               </div>
 
@@ -1347,10 +1321,17 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
         )}
       </motion.div>
       
+      {/* Sage Limitations Disclaimer */}
+      <div className="text-center mt-8 pb-4">
+        <p className="text-sm leading-relaxed max-w-2xl mx-auto" style={{ color: '#a58ad5' }}>
+          Sage reads patterns, not people. She doesn't know tone of voice, facial expressions, or what happened five texts before. She doesn't know you. She only sees what's written and analyzes that.
+        </p>
+      </div>
+      
       {/* Age Disclaimer */}
       <div className="text-center mt-8 pb-4">
         <p className="text-white/40 text-xs">
-          This service is intended for users 13+ only (under 18 requires parental consent)
+          This service is intended for users 13+ with parental guidance if under 18
         </p>
       </div>
     </div>
