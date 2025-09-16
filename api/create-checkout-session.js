@@ -1,15 +1,37 @@
 const Stripe = require('stripe');
 
 module.exports = async function handler(req, res) {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    console.log('📥 Checkout session request:', {
+      method: req.method,
+      body: req.body,
+      headers: req.headers['content-type']
+    });
+
     const { priceId, userId } = req.body || {};
 
+    console.log('🔍 Extracted data:', { priceId, userId });
+
     if (!priceId) {
-      return res.status(400).json({ error: 'Price ID is required' });
+      console.error('❌ Missing priceId in request body:', req.body);
+      return res.status(400).json({ 
+        error: 'Price ID is required',
+        received: { priceId, userId, body: req.body }
+      });
     }
 
     if (!process.env.STRIPE_SECRET_KEY) {
@@ -22,15 +44,24 @@ module.exports = async function handler(req, res) {
     // Validate price exists and determine mode
     let mode = 'payment';
     try {
+      console.log(`🔍 Validating price: ${priceId}`);
       const price = await stripe.prices.retrieve(priceId);
       // Use Stripe API to determine if it's a subscription
       mode = price.recurring ? 'subscription' : 'payment';
-      console.log(`Price ${priceId}: ${price.unit_amount/100} ${price.currency}, mode: ${mode}`);
+      console.log(`✅ Price validated: ${priceId} - ${price.unit_amount/100} ${price.currency}, mode: ${mode}`);
     } catch (priceError) {
-      console.error('Price validation error:', priceError);
+      console.error('❌ Price validation error:', priceError);
+      console.error('Price validation error details:', {
+        priceId,
+        errorType: priceError.type,
+        errorCode: priceError.code,
+        errorMessage: priceError.message
+      });
       return res.status(400).json({ 
         error: 'Invalid price ID',
-        details: priceError.message 
+        priceId,
+        details: priceError.message,
+        type: priceError.type
       });
     }
 
