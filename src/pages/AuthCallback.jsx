@@ -12,7 +12,13 @@ const AuthCallback = () => {
       try {
         console.log('🔐 AuthCallback: Starting auth callback process...');
         
-        const { data, error } = await supabase.auth.getSession();
+        // Add timeout to prevent infinite waiting
+        const sessionPromise = supabase.auth.getSession();
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Session fetch timeout')), 10000)
+        );
+        
+        const { data, error } = await Promise.race([sessionPromise, timeoutPromise]);
         
         if (error) {
           console.error('Auth callback error:', error);
@@ -29,11 +35,11 @@ const AuthCallback = () => {
           const savedFormData = localStorage.getItem('chatInputFormData');
           if (savedFormData) {
             console.log('🔐 AuthCallback: Found saved form data, redirecting to chat-input for auto-submit');
-            // Longer delay to ensure auth context fully propagates
-            setTimeout(() => navigate('/chat-input'), 2500);
+            // Shorter delay since we fixed the auth context loading issue
+            setTimeout(() => navigate('/chat-input'), 1500);
           } else {
             console.log('🔐 AuthCallback: No saved form data, redirecting to dashboard');
-            setTimeout(() => navigate('/dashboard'), 2000);
+            setTimeout(() => navigate('/dashboard'), 1000);
           }
         } else {
           console.log('🔐 AuthCallback: No session found');
@@ -43,11 +49,23 @@ const AuthCallback = () => {
       } catch (error) {
         console.error('Auth callback exception:', error);
         setStatus('error');
-        setTimeout(() => navigate('/'), 3000);
+        // Shorter error timeout for better UX
+        setTimeout(() => navigate('/'), 2000);
       }
     };
 
-    handleAuthCallback();
+    // Add safety timeout for the entire callback process
+    const safetyTimeout = setTimeout(() => {
+      console.warn('🔐 AuthCallback: Safety timeout triggered, redirecting to home');
+      setStatus('error');
+      navigate('/');
+    }, 15000);
+
+    handleAuthCallback().finally(() => {
+      clearTimeout(safetyTimeout);
+    });
+
+    return () => clearTimeout(safetyTimeout);
   }, [navigate]);
 
   return (

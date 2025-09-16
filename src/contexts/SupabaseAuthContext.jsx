@@ -84,23 +84,39 @@ export const AuthProvider = ({ children }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check actual database subscription status instead of hardcoding
-          const { data: userData, error } = await supabase
-            .from('users')
-            .select('subscription_status')
-            .eq('id', session.user.id)
-            .single();
-          
-          const actualIsPremium = userData?.subscription_status === 'premium' || 
-                                 userData?.subscription_status === 'yearly' || 
-                                 userData?.subscription_status === 'founder';
-          
-          console.log('🔐 Auth Debug:', { 
-            email: session.user.email, 
-            databaseStatus: userData?.subscription_status,
-            actualIsPremium 
-          });
-          setIsPremium(actualIsPremium);
+          try {
+            // Check actual database subscription status with timeout
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('Database query timeout')), 5000)
+            );
+            
+            const queryPromise = supabase
+              .from('users')
+              .select('subscription_status')
+              .eq('id', session.user.id)
+              .single();
+            
+            const { data: userData, error } = await Promise.race([queryPromise, timeoutPromise]);
+            
+            if (error) {
+              console.warn('🔐 Initial session database query error:', error, 'Defaulting to free tier');
+              setIsPremium(false);
+            } else {
+              const actualIsPremium = userData?.subscription_status === 'premium' || 
+                                     userData?.subscription_status === 'yearly' || 
+                                     userData?.subscription_status === 'founder';
+              
+              console.log('🔐 Initial session Auth Debug:', { 
+                email: session.user.email, 
+                databaseStatus: userData?.subscription_status,
+                actualIsPremium 
+              });
+              setIsPremium(actualIsPremium);
+            }
+          } catch (error) {
+            console.warn('🔐 Initial session database query failed:', error, 'Defaulting to free tier');
+            setIsPremium(false);
+          }
         }
       } catch (error) {
         console.error('Error getting initial session:', error);
@@ -122,24 +138,41 @@ export const AuthProvider = ({ children }) => {
           setUser(session?.user ?? null);
           
           if (session?.user) {
-            // Check actual database subscription status
-            const { data: userData, error } = await supabase
-              .from('users')
-              .select('subscription_status')
-              .eq('id', session.user.id)
-              .single();
-            
-            const actualIsPremium = userData?.subscription_status === 'premium' || 
-                                   userData?.subscription_status === 'yearly' || 
-                                   userData?.subscription_status === 'founder';
-            
-            setIsPremium(actualIsPremium);
-            console.log('🔐 User authenticated:', session.user.email, 'Database Status:', userData?.subscription_status, 'Premium:', actualIsPremium);
+            try {
+              // Check actual database subscription status with timeout
+              const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Database query timeout')), 5000)
+              );
+              
+              const queryPromise = supabase
+                .from('users')
+                .select('subscription_status')
+                .eq('id', session.user.id)
+                .single();
+              
+              const { data: userData, error } = await Promise.race([queryPromise, timeoutPromise]);
+              
+              if (error) {
+                console.warn('🔐 Database query error:', error, 'Defaulting to free tier');
+                setIsPremium(false);
+              } else {
+                const actualIsPremium = userData?.subscription_status === 'premium' || 
+                                       userData?.subscription_status === 'yearly' || 
+                                       userData?.subscription_status === 'founder';
+                
+                setIsPremium(actualIsPremium);
+                console.log('🔐 User authenticated:', session.user.email, 'Database Status:', userData?.subscription_status, 'Premium:', actualIsPremium);
+              }
+            } catch (error) {
+              console.warn('🔐 Database query failed:', error, 'Defaulting to free tier');
+              setIsPremium(false);
+            }
           } else {
             setIsPremium(false);
             console.log('🔐 User signed out');
           }
           
+          // Always set loading to false regardless of database query success/failure
           setLoading(false);
         }
       }
