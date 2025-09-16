@@ -457,7 +457,7 @@ const TermsOfServicePage = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold mt-1">→</span>
-                  <span>Contacting support@getthereceipts.com</span>
+                  <span>Contacting sage@getthereceipts.com</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold mt-1">→</span>
@@ -658,10 +658,10 @@ const TermsOfServicePage = () => {
             </h2>
             <p className="text-xl text-gray-300 mb-6">We're here to help clarify any concerns about our Terms of Service.</p>
             <a 
-              href="mailto:support@getthereceipts.com" 
+              href="mailto:sage@getthereceipts.com" 
               className="inline-block text-blue-400 text-xl font-semibold bg-blue-500/10 border border-blue-500 px-8 py-3 rounded-full hover:bg-blue-500/20 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
             >
-              support@getthereceipts.com
+              sage@getthereceipts.com
             </a>
           </div>
         </div>
@@ -689,7 +689,7 @@ const TermsOfServicePage = () => {
               13+ with parental consent • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-500 text-sm">
-              Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>
+              Support: <a href="mailto:sage@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">sage@getthereceipts.com</a>
             </p>
           </div>
         </div>

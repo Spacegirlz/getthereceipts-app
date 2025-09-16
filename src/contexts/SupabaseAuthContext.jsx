@@ -218,10 +218,30 @@ export const AuthProvider = ({ children }) => {
     });
 
     if (error) {
+      console.error('🔐 Signup error:', error);
+      
+      // Handle specific error types
+      let title = "Sign up Failed";
+      let description = error.message || "Something went wrong";
+      
+      if (error.message?.toLowerCase().includes('rate') || 
+          error.message?.toLowerCase().includes('limit') ||
+          error.status === 429) {
+        title = "Too Many Requests";
+        description = "We're experiencing high demand! Please wait a few minutes and try again. Your account is important to us! 🙏";
+      } else if (error.status === 500 || error.message?.toLowerCase().includes('internal server error')) {
+        title = "Service Temporarily Unavailable";
+        description = "Our servers are taking a quick coffee break ☕. Please try again in a few minutes!";
+      } else if (error.message?.toLowerCase().includes('email') && error.message?.toLowerCase().includes('already')) {
+        title = "Account Already Exists";
+        description = "This email is already registered. Try signing in instead, or use 'Forgot Password' if needed.";
+      }
+      
       toast({
         variant: "destructive",
-        title: "Sign up Failed",
-        description: error.message || "Something went wrong",
+        title,
+        description,
+        duration: 8000, // Longer duration for important messages
       });
     } else {
       // Check if user needs email confirmation
