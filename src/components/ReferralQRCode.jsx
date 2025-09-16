@@ -221,9 +221,6 @@ const ReferralQRCode = ({ referralLink, className = "" }) => {
             </Button>
           </div>
 
-          <p className="text-sm text-gray-300 mt-6 font-medium">
-            Perfect for social media, business cards, or print materials
-          </p>
         </div>
       </motion.div>
 
