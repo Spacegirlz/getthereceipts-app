@@ -13,6 +13,11 @@ const LandingPage = () => {
   React.useEffect(() => {
     injectMovingGradientStyles();
   }, []);
+  
+  // Scroll to top on page load to ensure consistent landing position
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   const { openModal } = useAuthModal();
   const [liveUserCount, setLiveUserCount] = useState(2347);
@@ -258,7 +263,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative px-6 lg:px-8 pt-32 pb-32">
+      <section id="home" className="relative px-6 lg:px-8 pt-32 pb-32">
         <div className="mx-auto max-w-7xl">
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
@@ -284,6 +289,7 @@ const LandingPage = () => {
 
             {/* Main Headline */}
             <motion.h1 
+              id="landing_1"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -377,7 +383,7 @@ const LandingPage = () => {
       </section>
 
       {/* Meet Sage Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="about" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -436,7 +442,7 @@ const LandingPage = () => {
       </section>
 
       {/* Interactive Demo Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="demo" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -446,12 +452,15 @@ const LandingPage = () => {
             className="text-center mb-16"
           >
             <motion.div variants={fadeInUp} className="mb-6">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-violet-500/10 to-blue-500/10 border border-violet-500/20 rounded-full px-4 py-2">
+              <button 
+                onClick={handleGetStarted}
+                className="inline-flex items-center space-x-2 bg-gradient-to-r from-violet-500/10 to-blue-500/10 border border-violet-500/20 rounded-full px-4 py-2 hover:from-violet-500/20 hover:to-blue-500/20 transition-all duration-300 cursor-pointer"
+              >
                 <MessageSquare className="h-4 w-4 text-violet-400" />
                 <span className="text-sm text-violet-300 font-medium">
                   💌 Want your own Truth Receipt? Get One →
                 </span>
-              </div>
+              </button>
             </motion.div>
             
             <motion.h2 
@@ -465,6 +474,15 @@ const LandingPage = () => {
               <p>Sage breaks it down in 60 seconds. No fluff. No false hope. Just the truth.</p>
               <p className="text-violet-300">Real texts. Real patterns. Real talk.</p>
               <p className="text-xl font-semibold text-white">Pick a scenario and get your Truth Receipt.</p>
+            </motion.div>
+            
+            <motion.div variants={fadeInUp} className="mt-8">
+              <Button
+                onClick={handleGetStarted}
+                className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300"
+              >
+                Get started now
+              </Button>
             </motion.div>
           </motion.div>
 
@@ -643,6 +661,16 @@ const LandingPage = () => {
                         </div>
                         <div className="text-violet-300 text-sm">{demoResult.confidenceText}</div>
                       </div>
+                      
+                      {/* Get Started Button */}
+                      <div className="text-center mt-8">
+                        <Button
+                          onClick={handleGetStarted}
+                          className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300"
+                        >
+                          Get started now
+                        </Button>
+                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -653,7 +681,7 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="how-it-works" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -704,7 +732,7 @@ const LandingPage = () => {
       </section>
 
       {/* What You Get Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="features" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -838,7 +866,7 @@ const LandingPage = () => {
       </section>
 
       {/* Social Proof Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="testimonials" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -918,7 +946,7 @@ const LandingPage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="faq" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-4xl">
           <motion.div
             initial="initial"
@@ -1011,7 +1039,7 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="pricing" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -1139,7 +1167,7 @@ const LandingPage = () => {
       </section>
 
       {/* Final CTA Section */}
-      <section className="relative px-6 lg:px-8 py-32">
+      <section id="get-started" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-4xl text-center">
           <motion.div
             initial="initial"

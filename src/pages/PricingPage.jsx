@@ -42,6 +42,11 @@ const PricingPage = () => {
   const [loadingPriceId, setLoadingPriceId] = useState(null);
   const [founderCount, setFounderCount] = useState(353); // Dynamic counter - 147 spots remaining
 
+  // Scroll to top on page load to ensure consistent landing position
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Dynamic founder counter that ticks up very slowly
   useEffect(() => {
     const interval = setInterval(() => {
@@ -458,6 +463,7 @@ const PricingPage = () => {
         {/* Hero Section */}
         <div className="text-center mb-24">
           <motion.h1 
+            id="pricing_1"
             className="text-5xl md:text-7xl font-black mb-10 text-white"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
