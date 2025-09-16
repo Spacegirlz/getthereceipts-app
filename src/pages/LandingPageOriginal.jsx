@@ -1243,7 +1243,7 @@ const LandingPage = () => {
             
             <div className="border-t border-gray-600/30 pt-6">
               <p className="text-gray-400 text-sm mb-3">
-                18+ only. Entertainment use. Not therapy, legal or medical advice.
+                13+ only (under 18 requires parental consent). Entertainment use. Not therapy, legal or medical advice.
               </p>
               <p className="text-gray-400 text-sm mb-4">
                 By using this site, you agree to our Terms & Privacy Policy.

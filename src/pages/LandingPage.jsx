@@ -6,8 +6,13 @@ import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageReceiptPage from '@/assets/sage-receipt-page.png';
+import { injectMovingGradientStyles } from '@/utils/gradientUtils';
 
 const LandingPage = () => {
+  // Inject moving gradient styles
+  React.useEffect(() => {
+    injectMovingGradientStyles();
+  }, []);
   const navigate = useNavigate();
   const { openModal } = useAuthModal();
   const [liveUserCount, setLiveUserCount] = useState(2347);
@@ -15,6 +20,7 @@ const LandingPage = () => {
   const [demoResult, setDemoResult] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [hasAnalyzedBefore, setHasAnalyzedBefore] = useState(false);
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, 100]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
@@ -35,119 +41,123 @@ const LandingPage = () => {
 
   const demoData = {
     breadcrumb: {
-      title: 'The 2am "hey" 🍞',
-      question: 'Sage... am I being breadcrumbed?',
+      title: '👻 The 2am "Hey"',
+      question: 'Maya asks: Why is my ex texting me at 2am?',
       conversation: [
-        { sender: 'Ava', text: 'we should hang out soon! 💕', type: 'ava' },
-        { sender: 'Chris', text: 'when works?', type: 'chris' },
-        { sender: 'Ava', text: 'so busy rn but soon!', type: 'ava' },
-        { separator: '— 3 days later, 2:47 AM —' },
-        { sender: 'Ava', text: 'hey you up? 👀', type: 'ava' }
+        { sender: 'Dylan', text: 'Hey', type: 'dylan', time: 'Friday 2:47 AM' },
+        { sender: 'Dylan', text: 'I know it\'s late', type: 'dylan', time: 'Friday 2:47 AM' },
+        { sender: 'Dylan', text: 'Was just thinking about that beach trip we did last summer', type: 'dylan', time: 'Friday 2:51 AM' },
+        { sender: 'Maya', text: 'Why are you texting me?', type: 'maya', time: 'Friday 9:15 AM' },
+        { sender: 'Dylan', text: 'I\'ve been in therapy and realized I really messed things up with us\nNot trying to start anything, just wanted you to know', type: 'dylan', time: 'Friday 9:23 AM' },
+        { sender: 'Dylan', text: 'How have you been though?\nSeeing anyone?', type: 'dylan', time: 'Friday 9:31 AM' }
       ],
       result: {
         pattern: 'The 2am Breadcrumber',
-        verdict: 'Baby, you\'re the backup dancer, not the main act',
+        verdict: 'Bestie, he went from 0 to "therapy breakthrough" in 3.5 messages!',
         intoYou: '18%',
         wastingTime: '92%',
-        redFlags: '6',
-        tea: 'Chris. That 2am "hey" is literally her Plan A falling through. You\'re not the headliner, you\'re the understudy. The math ain\'t mathing.',
-        prophecy: 'More vague promises. More midnight desperation texts. Same circus, different clown.',
-        playbook: 'Screenshot this receipt and RUN. Make her chase YOU for once. Stop being available at her convenience store hours.',
+        redFlags: '9',
+        tea: 'That 2am "hey" is literally his Plan Z falling through. He got rejected, drank, scrolled too far, and landed on you. The therapy name-drop? Classic "I\'ve changed" without changing. You\'re not his redemption arc, you\'re his backup plan.',
+        prophecy: 'Watch: He\'ll suggest "coffee to catch up" within 48 hours. Then trauma dump about his recent ex while fishing for sympathy. Block now or suffer later.',
+        playbook: 'Don\'t respond (silence is self-care)\nBlock if you\'re weak to nostalgia\nScreenshot for the group chat\nRemember why you left',
         confidence: '95%',
-        confidenceText: 'ABSOLUTELY CERTAIN THIS IS BREADCRUMBING'
+        confidenceText: 'RECYCLING CENTER IS CLOSED, BESTIE'
       }
     },
     lovebomb: {
-      title: 'Too nice to be real 💌',
-      question: 'Is this... normal?',
+      title: '📅 Future Faker Energy',
+      question: 'Mike asks: Why does she keep canceling on me?',
       conversation: [
-        { sender: 'Alex', text: 'I\'ve never felt this way about anyone', type: 'alex' },
-        { sender: 'Alex', text: 'you\'re literally perfect', type: 'alex' },
-        { sender: 'Chris', text: 'wow that\'s sweet but we just met', type: 'chris' },
-        { sender: 'Alex', text: 'I know we\'re soulmates. when can I see you again?', type: 'alex' },
-        { sender: 'Alex', text: 'I already told my mom about you', type: 'alex' }
+        { sender: 'Mike', text: 'Still on for dinner this weekend?', type: 'mike', time: 'Thursday 6:32 PM' },
+        { sender: 'Jessica', text: 'Yes! Can\'t wait babe\nLet me check with the girls and get back to you', type: 'jessica', time: 'Thursday 10:47 PM' },
+        { sender: 'Mike', text: 'Hey! Just checking what day works?', type: 'mike', time: 'Saturday 2:15 PM' },
+        { sender: 'Jessica', text: 'Sorry crazy week. Rain check?\nWe should do that trip we talked about soon though', type: 'jessica', time: 'Sunday 11:31 AM' },
+        { sender: 'Jessica', text: 'Miss you ❤️', type: 'jessica', time: 'Sunday 11:32 AM' },
+        { sender: 'Mike', text: 'Did you figure out your schedule?', type: 'mike', time: 'Wednesday 7:45 PM' }
       ],
       result: {
-        pattern: 'Stage 5 Clinger Alert',
-        verdict: 'They went from 0 to wedding planning in 3.5 messages',
-        intoYou: '98%',
-        wastingTime: '85%',
-        redFlags: '9',
-        tea: 'Hey! This is not romantic, it\'s UNHINGED. They told their MOM about you? After ONE conversation? This is how horror movies start.',
-        prophecy: 'Next week they\'ll be planning your future children\'s names. Run.',
-        playbook: 'BLOCK. DELETE. SAGE OUT. This is not love bombing, this is emotional terrorism. Your picker needs immediate repairs.',
-        confidence: '99%',
-        confidenceText: 'RED ALERT: STAGE 5 CLINGER CONFIRMED'
+        pattern: 'The Schedule Phantom',
+        verdict: 'She\'s been "checking with the girls" since the Renaissance',
+        intoYou: '26%',
+        wastingTime: '92%',
+        redFlags: '8',
+        tea: 'Mike, she\'s been "checking her schedule" longer than it takes to get a passport renewed. You\'re not busy, you\'re not important to her. You\'re her Tuesday when everyone else is busy. That heart emoji? Maintenance mode to keep you as backup while she explores other options.',
+        prophecy: 'Next week: another vague excuse with "soon" or "maybe." She\'ll keep you warm but never hot. In a month you\'ll still be having this same conversation.',
+        playbook: 'Stop asking (you\'re embarrassing yourself)\nMatch her energy (which is zero)\nGet back on the apps tonight\nFind someone who knows what day it is',
+        confidence: '97%',
+        confidenceText: 'SHE\'S JUST NOT THAT INTO YOU, KING'
       }
     },
     gaslighter: {
-      title: 'Gaslighting vibes 🧠',
-      question: 'Am I losing my mind???',
+      title: '💚 Green Flag Panic',
+      question: 'Ava asks: Is this too good to be true?',
       conversation: [
-        { sender: 'Chris', text: 'you said you\'d call me yesterday', type: 'chris' },
-        { sender: 'Jordan', text: 'no I didn\'t? you\'re remembering wrong', type: 'jordan' },
-        { sender: 'Chris', text: 'you literally texted "I\'ll call you tomorrow"', type: 'chris' },
-        { sender: 'Jordan', text: 'why are you always so dramatic about everything', type: 'jordan' },
-        { sender: 'Jordan', text: 'maybe you should work on your communication issues', type: 'jordan' }
+        { sender: 'Marcus', text: 'Hey! Noticed you switched from your usual today. The oat vanilla is actually my secret fave too - everything okay?', type: 'marcus', time: 'Tuesday 8:47 AM' },
+        { sender: 'Ava', text: 'Yeah just wanted to try something new haha', type: 'ava', time: 'Tuesday 11:23 AM' },
+        { sender: 'Marcus', text: 'I make mine with an extra shot and brown sugar instead of regular\nWant me to make you one tomorrow?\nOn me :)', type: 'marcus', time: 'Tuesday 11:31 AM' },
+        { sender: 'Ava', text: 'That\'s so sweet! Yes please', type: 'ava', time: 'Tuesday 11:45 AM' },
+        { sender: 'Marcus', text: 'Perfect! Also random but there\'s this bookstore pop-up Saturday at 2?\nCould grab coffee first (not at my work lol I need a break)', type: 'marcus', time: 'Tuesday 11:52 AM' },
+        { sender: 'Ava', text: 'omg yes I love those!', type: 'ava', time: 'Tuesday 12:15 PM' }
       ],
       result: {
-        pattern: 'The Reality Rewriter',
-        verdict: 'They\'re rewriting history like it\'s Wikipedia',
-        intoYou: '8%',
-        wastingTime: '97%',
-        redFlags: '10',
-        tea: 'Listen. Your memory is FINE. They\'re literally watching you question your sanity and ENJOYING it. This is psychological warfare dressed up as dating.',
-        prophecy: 'More lies. More confusion. More making you feel crazy. This is their full-time job.',
-        playbook: 'SCREENSHOT EVERYTHING. Send this receipt to your bestie. Block immediately. Your sanity is not up for negotiation.',
-        confidence: '100%',
-        confidenceText: 'TEXTBOOK GASLIGHTING DETECTED'
+        pattern: 'The Real Deal™',
+        verdict: 'A calendar app and they actually use it. Suspiciously mature.',
+        intoYou: '91%',
+        wastingTime: '8%',
+        redFlags: '9',
+        tea: 'STOP THE PRESSES. Marcus has executive function AND remembers your coffee order. He suggested a SPECIFIC TIME and PLACE. This is rarer than finding a parking spot at Trader Joe\'s. Your toxic ex could never. Stop overthinking before you fumble this unicorn.',
+        prophecy: 'He\'ll text Friday to confirm. You\'ll panic-spiral to three friends about what to wear. He\'ll show up 5 minutes early with your exact coffee order memorized. You\'ll try to find red flags that don\'t exist.',
+        playbook: 'Say YES without playing games\nWear the outfit that makes you feel great\nDon\'t self-sabotage with fake plans\nLet yourself be chosen for once',
+        confidence: '94%',
+        confidenceText: 'THIS ONE\'S ACTUALLY DECENT, YOU\'VE GOT THIS!'
       }
     },
-    coffeeshop: {
-      title: 'Actually decent ☕',
-      question: 'Are they actually into me?',
+    family: {
+      title: '🦃 Family Comparison',
+      question: 'Emma asks: Why does my mom always compare me to my sister?',
       conversation: [
-        { sender: 'Jamie', text: 'hey! how was your presentation today?', type: 'jamie' },
-        { sender: 'Chris', text: 'went really well actually, thanks for asking!', type: 'chris' },
-        { sender: 'Jamie', text: 'that\'s awesome! want to celebrate over coffee this weekend?', type: 'jamie' },
-        { sender: 'Chris', text: 'I\'d love that', type: 'chris' },
-        { sender: 'Jamie', text: 'perfect! Saturday 2pm at Blue Bottle work?', type: 'jamie' }
+        { sender: 'Mom', text: 'So excited everyone\'s coming!\nWhat are you bringing sweetie?', type: 'mom', time: 'Monday 10:32 AM' },
+        { sender: 'Emma', text: 'I can make my mac and cheese!', type: 'emma', time: 'Monday 10:45 AM' },
+        { sender: 'Mom', text: 'That\'s sweet but we have SO much food already. Maybe just a salad?\nSarah\'s bringing her famous stuffing', type: 'mom', time: 'Monday 10:47 AM' },
+        { sender: 'Mom', text: 'BTW are you bringing someone?\nSarah\'s bringing her fiancé David', type: 'mom', time: 'Monday 10:51 AM' },
+        { sender: 'Emma', text: 'No, just me', type: 'emma', time: 'Monday 11:15 AM' },
+        { sender: 'Mom', text: 'That\'s okay honey! You\'re focusing on your career 😊\nSarah got promoted to VP at 26!\nSo inspiring!', type: 'mom', time: 'Monday 11:18 AM' }
       ],
       result: {
-        pattern: 'Coffee Shop Crusher',
-        verdict: 'Two people vibing over coffee? It\'s like a rom-com scene and Jamie\'s all in!',
-        intoYou: '85%',
-        wastingTime: '10%',
-        redFlags: '2',
-        tea: 'Chris, you\'re not crazy for reading those signals! Jamie\'s definitely interested. They\'re dropping hints like breadcrumbs on a trail to your heart - coffee dates and remembered conversations? That\'s a vibe!',
-        prophecy: 'Watch: Jamie\'s going to bring their A-game for that coffee date.',
-        playbook: 'Go on that coffee date! This one\'s actually showing up with genuine interest.',
-        confidence: '90%',
-        confidenceText: 'SURE THIS ONE\'S ACTUALLY DECENT'
-      }
-    },
-    busy: {
-      title: 'The Disappearing Act 👻',
-      question: 'Why does this feel off?',
-      conversation: [
-        { sender: 'Chris', text: 'hey! still on for dinner tonight? 😊', type: 'chris' },
-        { sender: 'Ava', text: 'omggg sorry just saw this! 🙈', type: 'ava' },
-        { sender: 'Ava', text: 'I\'ve been absolutely swamped with work', type: 'ava' },
-        { sender: 'Chris', text: 'no worries! want to reschedule?', type: 'chris' },
-        { sender: 'Ava', text: 'yes definitely! I\'ll check my calendar', type: 'ava' },
-        { separator: '— 5 days later: Still no follow-up —' }
-      ],
-      result: {
-        pattern: 'The Disappearing Act',
-        verdict: 'She\'s busier than the President, apparently',
-        intoYou: '12%',
-        wastingTime: '88%',
+        pattern: 'The Comparison Carol',
+        verdict: 'Everything\'s a competition you didn\'t sign up for',
+        intoYou: '72%',
+        wastingTime: '16%',
         redFlags: '7',
-        tea: 'Real talk. She\'s not busy, she\'s just not that into you. "Definitely" with no follow-up is code for "absolutely never." Stop making excuses for her.',
-        prophecy: 'Radio silence until she needs attention. You\'ll hear from her when her ego needs feeding.',
-        playbook: 'DELETE HER NUMBER. Stop chasing ghosts. If she wanted to see you, you\'d know it. Your energy is too precious for this.',
-        confidence: '92%',
-        confidenceText: 'CLASSIC GHOSTING PATTERN DETECTED'
+        tea: 'Babe, your mom loves you but she\'s got Sarah on a pedestal so high it needs air traffic control. That "focusing on your career" line with the smiley? That\'s mom-speak for "I\'m worried but making it your fault." You\'re not behind schedule - you\'re on YOUR schedule. And your mac and cheese is probably fire.',
+        prophecy: 'She\'ll ask about dating 3 times. Sarah\'s engagement will come up 7 times. You\'ll feel small for exactly 2.5 hours. Then you\'ll remember you\'re doing amazing and she just can\'t see it yet.',
+        playbook: 'Bring the mac and cheese anyway (it\'s better than salad)\n"Good for Sarah" + subject change\nBathroom breaks = mini meditations\nYou\'re not in competition with anyone',
+        confidence: '84%',
+        confidenceText: 'PSYCHIC DAMAGE FACTOR'
+      }
+    },
+    boss: {
+      title: '🤡 Boss Gaslighting',
+      question: 'Tom asks: Is my manager trying to gaslight me?',
+      conversation: [
+        { sender: 'Rachel', text: 'Hey! Quick question about the presentation', type: 'rachel', time: 'Today 3:45 PM' },
+        { sender: 'Tom', text: 'Sure, what\'s up?', type: 'tom', time: 'Today 3:47 PM' },
+        { sender: 'Rachel', text: 'I thought we agreed on a different approach? I specifically remember saying keep it high-level', type: 'rachel', time: 'Today 3:52 PM' },
+        { sender: 'Tom', text: 'Monday\'s meeting we decided on the data-driven format?\nI have the notes', type: 'tom', time: 'Today 3:55 PM' },
+        { sender: 'Rachel', text: 'Hmm I don\'t recall that but let\'s not get stuck on it 😊 Client loved it!\nJust wish we\'d aligned better beforehand', type: 'rachel', time: 'Today 4:03 PM' },
+        { sender: 'Rachel', text: 'Next time let\'s make sure everyone\'s on the same page before you run with something', type: 'rachel', time: 'Today 4:04 PM' }
+      ],
+      result: {
+        pattern: 'The History Rewriter',
+        verdict: 'Makes you doubt documented reality with a smile',
+        intoYou: '0%',
+        wastingTime: '11%',
+        redFlags: '10',
+        tea: 'Oh HELL no. She "doesn\'t recall" the meeting YOU HAVE NOTES FROM? Then hits you with "let\'s not get stuck on it" while literally getting stuck on it? That\'s not confusion, that\'s CONFUSION™️ - the corporate gaslighting special where they scramble your brain then blame you for the eggs. That passive-aggressive "wish we\'d aligned" when YOU LITERALLY ALIGNED? I\'m getting secondhand whiplash from these mental gymnastics.',
+        prophecy: 'She\'ll tell this story at happy hour as "that time Tom went rogue" while you have a whole Google Doc proving otherwise. Your next good idea will mysteriously become "Rachel\'s initiative" by Q3.',
+        playbook: 'Email summaries after EVERY conversation\n"Per our discussion on [DATE]" is your new bestie\nBCC yourself on everything (yes, everything)\nYou\'re not crazy, she\'s just creative with reality',
+        confidence: '96%',
+        confidenceText: 'THE MATH AIN\'T MATHING BUT YOUR NOTES ARE NOTING'
       }
     }
   };
@@ -155,11 +165,23 @@ const LandingPage = () => {
   const analyzeDemo = async (demoType) => {
     setIsAnalyzing(true);
     setDemoResult(null);
+    setHasAnalyzedBefore(true);
     
     setTimeout(() => {
       setDemoResult(demoData[demoType].result);
       setIsAnalyzing(false);
-    }, 2500);
+    }, 1000);
+  };
+
+  const handleDemoTabChange = (key) => {
+    setSelectedDemo(key);
+    if (hasAnalyzedBefore) {
+      // Auto-analyze the new tab since user has analyzed before
+      analyzeDemo(key);
+    } else {
+      // Clear results if user hasn't analyzed before
+      setDemoResult(null);
+    }
   };
 
   const stats = [
@@ -196,13 +218,13 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-950 text-white overflow-hidden">
       {/* Background Elements */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.3),rgba(255,255,255,0))] pointer-events-none" />
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.15),rgba(255,255,255,0))] pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.20),rgba(255,255,255,0))] pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.10),rgba(255,255,255,0))] pointer-events-none" />
       
       {/* Navigation */}
-      <nav className="relative z-50 flex items-center justify-between px-6 lg:px-8 py-6">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-8 py-6 bg-black/85 border-b border-white/10">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -212,7 +234,7 @@ const LandingPage = () => {
           <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
             <span className="text-xl">🔮</span>
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-blue-500 bg-clip-text text-transparent">
+          <span className="text-xl font-bold moving-gradient-text">
             Get The Receipts
           </span>
         </motion.div>
@@ -225,6 +247,7 @@ const LandingPage = () => {
         >
           <Link to="/about" className="text-gray-300 hover:text-white transition-colors">About</Link>
           <Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</Link>
+          <button onClick={() => openModal('login')} className="text-gray-300 hover:text-white transition-colors">Login</button>
           <Button 
             onClick={handleGetStarted}
             className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white px-6 py-2 rounded-full shadow-lg shadow-violet-500/25 transition-all duration-300 hover:scale-105"
@@ -235,7 +258,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative px-6 lg:px-8 pt-20 pb-32">
+      <section className="relative px-6 lg:px-8 pt-32 pb-32">
         <div className="mx-auto max-w-7xl">
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
@@ -270,7 +293,7 @@ const LandingPage = () => {
                 Stop second-guessing
               </span>
               <br />
-              <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent">
+              <span className="moving-gradient-text">
                 their texts.
               </span>
             </motion.h1>
@@ -457,7 +480,7 @@ const LandingPage = () => {
               <motion.button
                 key={key}
                 variants={fadeInUp}
-                onClick={() => setSelectedDemo(key)}
+                onClick={() => handleDemoTabChange(key)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                   selectedDemo === key
                     ? 'bg-gradient-to-r from-violet-500 to-blue-500 text-white shadow-lg shadow-violet-500/25'
@@ -505,14 +528,17 @@ const LandingPage = () => {
                           {item.separator}
                         </div>
                       ) : (
-                        <div className={`flex ${item.type === 'chris' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`flex ${(item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom') ? 'justify-end' : 'justify-start'}`}>
                           <div className={`max-w-xs px-4 py-3 rounded-2xl ${
-                            item.type === 'chris' 
+                            (item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom')
                               ? 'bg-violet-600 text-white ml-8' 
                               : 'bg-slate-700 text-gray-200 mr-8'
                           }`}>
-                            <div className="text-xs opacity-70 mb-1">{item.sender}</div>
-                            <div className="text-sm">{item.text}</div>
+                            <div className="text-xs opacity-70 mb-1 flex justify-between items-center">
+                              <span>{item.sender}</span>
+                              {item.time && <span className="text-xs opacity-50">{item.time}</span>}
+                            </div>
+                            <div className="text-sm whitespace-pre-line">{item.text}</div>
                           </div>
                         </div>
                       )}
@@ -555,16 +581,16 @@ const LandingPage = () => {
                   >
                     {/* Metrics */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                      <div className="text-center p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
-                        <div className="text-2xl font-bold text-red-400 mb-1">Into You: {demoResult.intoYou}</div>
+                      <div className="text-center p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl">
+                        <div className="text-2xl font-bold text-yellow-400 mb-1">Into You: {demoResult.intoYou}</div>
                         <div className="text-sm text-gray-400">Interest Level</div>
                       </div>
                       <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl">
                         <div className="text-2xl font-bold text-orange-400 mb-1">Wasting Time: {demoResult.wastingTime}</div>
                         <div className="text-sm text-gray-400">Time Waste Factor</div>
                       </div>
-                      <div className="text-center p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl">
-                        <div className="text-2xl font-bold text-yellow-400 mb-1">Red Flags: {demoResult.redFlags}</div>
+                      <div className="text-center p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
+                        <div className="text-2xl font-bold text-red-400 mb-1">Red Flags: {demoResult.redFlags}</div>
                         <div className="text-sm text-gray-400">Warning Count</div>
                       </div>
                     </div>
@@ -596,7 +622,14 @@ const LandingPage = () => {
                         <h4 className="font-bold text-green-400 mb-3 flex items-center">
                           📖 Your Playbook:
                         </h4>
-                        <p className="text-gray-300">{demoResult.playbook}</p>
+                        <ul className="text-gray-300 space-y-2">
+                          {demoResult.playbook.split('\n').map((item, index) => (
+                            <li key={index} className="flex items-start">
+                              <span className="text-green-400 mr-2 mt-1">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
 
                       {/* Confidence */}
@@ -767,7 +800,7 @@ const LandingPage = () => {
             </motion.div>
 
             {/* Level 3: Premium */}
-            <motion.div variants={fadeInUp} className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-3xl p-8 relative overflow-hidden">
+            <motion.div variants={fadeInUp} className="bg-gradient-to-br from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-3xl p-8 relative overflow-hidden">
               <div className="absolute top-4 right-4">
                 <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full text-sm font-bold flex items-center">
                   <Crown className="h-4 w-4 mr-1" />
@@ -816,7 +849,7 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
             >
               Join 100K+ People Getting Real Answers
             </motion.h2>
@@ -917,12 +950,16 @@ const LandingPage = () => {
           >
             {[
               {
-                q: "How does Sage know what's really going on?",
-                a: "Real talk: Our AI is scarily good because it's trained on millions of real-world situations, not just textbook theories. Think of Sage as your brutally honest friend who has seen every game in the book. While this is for \"entertainment,\" our 94% pattern accuracy means your gut was probably right. We just give you the receipts to prove it."
+                q: "Why is Privacy First such a big deal here?",
+                a: "Because when you're pasting your real, messy convos into an app, you deserve to feel safe doing it. From day one, we built Get The Receipts to protect your privacy like it's our own. That means no chat logs, no training on your data, no digging into your history. You're not here to hand over secrets, you're here to get clarity, without judgment or surveillance. And that's what we deliver. Every time."
               },
               {
-                q: "Who will know I used this app?",
-                a: "Your privacy is our entire foundation. You alone choose what you share. Your conversations are analyzed in real-time and are never stored, never used for AI training, and deleted immediately unless you explicitly create an account and choose to save your history. We don't want your drama; we just want to give you clarity. Your secret is safe with us."
+                q: "Data: What do you keep, and what do you delete?",
+                a: "We keep only what's needed to run your account and instantly delete everything else.\n\nWhat we keep:\n• Email (for login)\n• Encrypted password\n• Payment info (if you're on a paid plan)\n\nWhat we delete:\n• All receipts and messages after analysis (gone in 3 seconds)\n• Your analysis results (we don't store them)\n• Any record of what you pasted in\n\nWhat we never track:\n• Your behavior, message history, or usage patterns\n• Your conversations for training, marketing, or \"improvement\"\n• Any content unless you choose to save it\n\nWe use zero-storage architecture + real-time processing with contractual no-training AI services. Your data never gets used to \"make the AI better\" because Sage doesn't learn from you. She just helps you learn from your own patterns.\n\nYou stay in full control always."
+              },
+              {
+                q: "How does Sage know what's really going on?",
+                a: "Real talk: Our AI is scarily good because it's trained on millions of real-world situations, not just textbook theories. Think of Sage as your brutally honest friend who has seen every game in the book. While this is for \"entertainment,\" our 94% pattern accuracy means your gut was probably right. We just give you the receipts to prove it."
               },
               {
                 q: "Can I trust the AI's judgment over my own feelings?",
@@ -930,7 +967,7 @@ const LandingPage = () => {
               },
               {
                 q: "What if I don't like what Sage tells me?",
-                a: "Sage isn't here to sugarcoat. She calls out the patterns based on the information you give her. She doesn't have all the context, and she's not a mind reader. So the more details you include, the sharper her receipts will be. Sometimes her read won't match the story you were hoping for, and that's okay. Think of it like holding up a mirror: it's a perspective, not a verdict. You always decide what to do next. Sage's job is to cut down the spirals so you spend less time guessing and more time choosing what you want."
+                a: "Sometimes Sage's read won't match the story you were hoping for, and that's okay. Think of it like holding up a mirror: it's a perspective, not a verdict. You always decide what to do next. Sage's job is to cut down the spirals so you spend less time guessing and more time choosing what you want. Sage isn't here to sugarcoat. She calls out the patterns based on the information you give her. She doesn't have all the context, and she's not a mind reader. So the more details you include, the sharper her receipts will be."
               },
               {
                 q: "What do I get with the free plan?",
@@ -948,7 +985,7 @@ const LandingPage = () => {
                     onClick={() => setOpenFaqIndex(isOpen ? null : index)}
                     className="w-full p-8 text-left flex items-center justify-between hover:bg-white/5 transition-colors"
                   >
-                    <h3 className="text-xl font-bold text-white pr-4">{faq.q}</h3>
+                    <h3 className={`text-xl font-bold pr-4 transition-colors ${isOpen ? 'text-[#6785fc]' : 'text-white'}`}>{faq.q}</h3>
                     <ChevronDown 
                       className={`h-6 w-6 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                     />
@@ -1007,12 +1044,12 @@ const LandingPage = () => {
             {/* Free Plan */}
             <motion.div
               variants={fadeInUp}
-              className="p-8 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl"
+              className="p-8 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl flex flex-col"
             >
               <h3 className="text-2xl font-bold text-white mb-2">Free Daily Plan</h3>
               <div className="text-4xl font-bold text-emerald-400 mb-2">$0<span className="text-lg text-gray-400">/month</span></div>
               <p className="text-gray-400 mb-6">Perfect for occasional clarity</p>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   '3 free receipts to start',
                   'Then 1 receipt per day',
@@ -1036,23 +1073,53 @@ const LandingPage = () => {
             {/* Premium Plan */}
             <motion.div
               variants={fadeInUp}
-              className="p-8 bg-gradient-to-br from-violet-500/20 to-blue-500/20 backdrop-blur-sm border-2 border-violet-500/50 rounded-3xl relative"
+              className="p-8 bg-gradient-to-br from-violet-500/20 to-blue-500/20 backdrop-blur-sm border border-violet-500/20 rounded-3xl flex flex-col"
             >
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-violet-500 to-blue-500 text-white px-6 py-2 rounded-full text-sm font-bold">
-                  MOST POPULAR
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Premium Plan</h3>
-              <div className="text-4xl font-bold text-violet-400 mb-2">$6.99<span className="text-lg text-gray-400">/month</span></div>
+              <h3 className="text-2xl font-bold text-white mb-2">Premium Monthly</h3>
+              <div className="text-4xl font-bold text-blue-400 mb-2">$6.99<span className="text-lg text-gray-400">/month</span></div>
               <p className="text-gray-400 mb-6">For the chronically confused</p>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   'Unlimited receipts',
                   'Sage\'s Immunity Training',
                   'Vibe Check™ analysis',
                   'Priority processing',
                   'Advanced pattern detection'
+                ].map((feature, index) => (
+                  <li key={index} className="flex items-center space-x-3">
+                    <Check className="h-5 w-5 text-blue-400" />
+                    <span className="text-gray-300">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={handleGoPremium}
+                className="w-full bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white py-3 rounded-xl"
+              >
+                Go Premium
+              </Button>
+            </motion.div>
+
+            {/* Founder's Club */}
+            <motion.div
+              variants={fadeInUp}
+              className="p-8 bg-gradient-to-br from-violet-500/10 to-purple-500/10 backdrop-blur-sm border-2 border-violet-500/50 rounded-3xl relative flex flex-col"
+            >
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-gradient-to-r from-violet-500 to-purple-500 text-white px-6 py-2 rounded-full text-sm font-bold">
+                  MOST POPULAR
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">OG Founder's Club</h3>
+              <div className="text-4xl font-bold text-violet-400 mb-2">$29.99<span className="text-lg text-gray-400">/year</span></div>
+              <p className="text-gray-400 mb-6">Save 50% - Limited time</p>
+              <ul className="space-y-3 mb-8 flex-grow">
+                {[
+                  'Everything in Premium',
+                  'Price locked forever',
+                  'Beta features first',
+                  'Direct feedback channel',
+                  'Founder badge on receipts'
                 ].map((feature, index) => (
                   <li key={index} className="flex items-center space-x-3">
                     <Check className="h-5 w-5 text-violet-400" />
@@ -1062,37 +1129,7 @@ const LandingPage = () => {
               </ul>
               <Button
                 onClick={handleGoPremium}
-                className="w-full bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white py-3 rounded-xl"
-              >
-                Go Premium
-              </Button>
-            </motion.div>
-
-            {/* Founder's Club */}
-            <motion.div
-              variants={fadeInUp}
-              className="p-8 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-3xl"
-            >
-              <h3 className="text-2xl font-bold text-white mb-2">Founder's Club Plan</h3>
-              <div className="text-4xl font-bold text-yellow-400 mb-2">$29.99<span className="text-lg text-gray-400">/year</span></div>
-              <p className="text-gray-400 mb-6">Save 70% - Limited time</p>
-              <ul className="space-y-3 mb-8">
-                {[
-                  'Everything in Premium',
-                  'Price locked forever',
-                  'Beta features first',
-                  'Direct feedback channel',
-                  'Founder badge on receipts'
-                ].map((feature, index) => (
-                  <li key={index} className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-yellow-400" />
-                    <span className="text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                onClick={handleGoPremium}
-                className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white py-3 rounded-xl"
+                className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white py-3 rounded-xl"
               >
                 Lock in Founder Price
               </Button>
@@ -1113,7 +1150,7 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+              className="text-4xl md:text-6xl font-bold mb-6 moving-gradient-text"
             >
               Ready to Stop Guessing?
             </motion.h2>
@@ -1188,7 +1225,7 @@ const LandingPage = () => {
             </p>
             <p className="text-gray-500 text-sm mb-3">
               For Entertainment & Insight Purposes Only.<br />
-              18+ only • Not therapy, legal, or medical advice • Use at your own risk
+              13+ only (under 18 requires parental consent) • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-600 text-sm">
               Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>

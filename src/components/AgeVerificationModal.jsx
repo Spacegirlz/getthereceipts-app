@@ -52,7 +52,7 @@ const AgeVerificationModal = ({ isOpen, onConfirm, onDecline }) => {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
           >
-            I'm 18+ and ready to get my Sage Tea 🫖
+            I'm 13+ (under 18 with parental consent) and ready to get my Sage Tea 🫖
           </motion.button>
 
           <motion.button

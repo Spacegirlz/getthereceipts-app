@@ -1321,7 +1321,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 <label htmlFor="sage-agreement" className="text-sm text-gray-200 leading-relaxed">
                   <span className="font-semibold text-white">I understand</span> that Sage reads patterns from my text, not my mind. 
                   This is for <span className="text-yellow-300">entertainment and insight</span>, not professional advice. 
-                  I'm 18+ and ready for some truth.
+                  I'm 13+ (under 18 with parental consent) and ready for some truth.
                 </label>
               </div>
 
@@ -1350,7 +1350,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       {/* Age Disclaimer */}
       <div className="text-center mt-8 pb-4">
         <p className="text-white/40 text-xs">
-          This service is intended for users 18+ only
+          This service is intended for users 13+ only (under 18 requires parental consent)
         </p>
       </div>
     </div>

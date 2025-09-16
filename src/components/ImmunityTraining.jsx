@@ -27,7 +27,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
   // Crisis-specific content
   if (isCrisisSituation) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 sm:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 text-white p-4 sm:p-6">
         <div className="max-w-4xl mx-auto">
           {/* Crisis Safety Header */}
           <div className="text-center mb-8">
@@ -608,11 +608,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         transition={{ delay: 0.2 }}
         className="p-4 sm:p-6 md:p-8 lg:p-10 mb-4 sm:mb-6 md:mb-8 relative"
         style={{
-          background: 'linear-gradient(180deg, #1a1a3e 0%, #14142e 100%)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '20px',
-          border: '2px solid rgba(20, 184, 166, 0.4)',
-          boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+          background: 'linear-gradient(180deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.95) 50%, rgba(20, 25, 45, 0.9) 100%)',
+          backdropFilter: 'blur(25px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(139, 92, 246, 0.3)',
+          boxShadow: '0 12px 45px rgba(139, 92, 246, 0.15), 0 4px 20px rgba(0, 0, 0, 0.2)'
         }}
       >
         {/* Premium dot pattern background */}
@@ -1240,7 +1240,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* Sage's Disclaimer */}
         <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
           <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 18+ only.
+            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 13+ only (under 18 requires parental consent).
           </p>
         </div>
       </div>

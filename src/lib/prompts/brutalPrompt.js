@@ -198,23 +198,23 @@ ARCHETYPE CONSISTENCY CHECK:
 Use this EXACT JSON structure with these EXACT keys:
 
 {
-  "archetype": "The [CONTEXT-AWARE archetype: 
-For HEALTHY (actuallyIntoYou >= 70): 
-  - Dating: Genuine Interest 💕, The Real Deal 💎, Green Flag Energy ✅, Slow Burn Sweetie 🕯️, The Calendar Owner 📅, The Actually Texts Back 📱, Coffee Shop Crusher ☕💕, Follow-Through Phoenix 🔥, Plan Making Machine 🎯
-  - Friendship: Ride or Die 🤝, Consistent Queen 👑, The Vault 🔒, Good Vibes Guardian ✨, Show Up Superstar ⭐
-  - Family: Supportive Anchor ⚓, Boundary Respecter 🛡️, The Actual Adult 👑
+// --- START FINAL FIX (CREATIVE GENERATION) ---
 
-For MIXED (actuallyIntoYou 30-69):
-  - Dating: Mixed Signal Central 🎭, Hot & Cold ❄️🔥, Confused But Cute 🤷, The Maybe Merchant 🤔, Potential Prophet 🔮
-  - Friendship: Part-Time Friend ⏰, Convenience Store 🏪, Fair Weather Friend 🌤️
-  - Family: The Complicated One 🎭, Effort Pending ⏳
-  
-For TOXIC (actuallyIntoYou < 30):
-  - Dating: Breadcrumber 🍞, Ghoster 👻, Future Faker 🎭, Love Bomber 💣, Gaslighter 🔥, Schedule Dodger 🏃‍♂️
-  - Friendship: Energy Vampire 🧛, Drama Queen 🎭, Flaky Friend 🥧, Boundary Pusher 🚫
-  - Family: Guilt Tripper 🎯, Boundary Crosser 🚫, Golden Child 👑, Enabler 🤝
+// CRITICAL ARCHETYPE GENERATION (CONTEXT-AWARE):
+// 1. Adhere to the TONE (Positive/Mixed/Toxic) determined by the 'ANALYSIS ORDER' instructions above.
+// 2. Adhere to the DOMAIN (Dating/Friendship/Family) from the provided RELATIONSHIP CONTEXT.
+// 3. You MUST invent a creative, new archetype. DO NOT use generic examples.
+// 4. The archetype MUST be hyper-specific to the most dominant pattern in THIS conversation.
+// 5. FORMULA: "The [Adjective for Tone/Domain] [Specific Behavior] [Creative Noun] [Emoji]".
 
-OR create your own based on the specific pattern you see] [choose perfect emoji]",
+// EXAMPLE OF CREATIVE PROCESS (DO NOT COPY THESE ARCHETYPES):
+// - CONTEXT: Dating, Toxic | BEHAVIOR: Endless excuses -> Create "The Excuse Olympian 🏅"
+// - CONTEXT: Friendship, Mixed | BEHAVIOR: Only shows up for fun stuff -> Create "The Fair-Weather Part-Timer ☀️"
+// - CONTEXT: Family, Healthy | BEHAVIOR: Respects house rules -> Create "The Boundary Champion 🛡️"
+
+  "archetype": "[Invent a creative, context-aware archetype using the formula and process above. It MUST match the required TONE and DOMAIN.]",
+
+// --- END FINAL FIX ---
   "wastingTime": [0-100 number based on flags],
   "actuallyIntoYou": [0-100 number based on genuine interest], 
   "redFlags": [0-10 total from step 1],

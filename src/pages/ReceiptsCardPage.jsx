@@ -21,6 +21,7 @@ import { useStripe } from '@stripe/react-stripe-js';
 import { getUserCredits } from '@/lib/services/creditsSystem';
 import TabbedReceiptInterface from '@/components/TabbedReceiptInterface';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { injectMovingGradientStyles } from '@/utils/gradientUtils';
 // Age verification imports removed
 // Sage mood images based on red flags
 import greenFlag from '@/assets/green-flag.png'; // 0-3 red flags - Happy Sage
@@ -30,6 +31,11 @@ import redFlag from '@/assets/red-flag.png'; // 7-10 red flags - Savage Sage
 
 
 const ReceiptsCardPage = () => {
+  // Inject moving gradient styles
+  React.useEffect(() => {
+    injectMovingGradientStyles();
+  }, []);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -465,6 +471,34 @@ const ReceiptsCardPage = () => {
         <meta name="twitter:image" content={`${window.location.origin}/og-image.png`} />
       </Helmet>
       
+      {/* Flowing Gradient CSS */}
+      <style jsx="true">{`
+        .gradient-text {
+          background: linear-gradient(-45deg, #60A5FA, #A78BFA, #C084FC, #60A5FA);
+          background-size: 400% 400%;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-fill-color: transparent;
+        }
+
+        .animate-gradient {
+          animation: gradientShift 4s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+      `}</style>
+
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -488,7 +522,7 @@ const ReceiptsCardPage = () => {
 
         {/* Page Title */}
         <div className="text-center mb-6 md:mb-8 py-2 md:py-4 px-2">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 md:mb-8 heading-font gradient-text px-2 md:px-4 py-1 md:py-2 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 md:mb-8 heading-font moving-gradient-text px-2 md:px-4 py-1 md:py-2 leading-tight">
             Sage's Truth Receipts
           </h1>
           <p className="text-gray-400 text-base md:text-lg mb-4 md:mb-6 px-2">
@@ -562,7 +596,7 @@ const ReceiptsCardPage = () => {
         {/* 3. PREMIUM UPSELL SECTION - Bottom */}
         <div className="w-full max-w-2xl mx-auto mb-16">
           <div className="text-center p-8 bg-gradient-to-br from-slate-900/40 to-slate-800/40 backdrop-blur rounded-3xl border border-slate-600/30 shadow-lg">
-            <h3 className="text-2xl sm:text-3xl font-bold mb-6 gradient-text">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6 gradient-text animate-gradient">
               Need More Truth Receipts?
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
