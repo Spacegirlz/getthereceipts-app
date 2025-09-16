@@ -3,7 +3,46 @@
 
 ---
 
-## 🚀 **LATEST UPDATES - September 16, 2025 - DEMO SECTION OVERHAUL & UX IMPROVEMENTS**
+## 🚨 **CRITICAL SECURITY INCIDENT & PAYMENT SYSTEM REPAIR - September 16, 2025**
+
+### **🔒 CRITICAL SECURITY BREACH RESOLVED**
+
+**INCIDENT:** Accidentally committed production Stripe API key to git repository on September 13th, causing Stripe to automatically expire the key and break payment processing.
+
+**ROOT CAUSE:**
+- `.env.production` file committed containing live Stripe secret key: `rk_live_***MdKkuF`
+- Stripe detected exposed key and auto-expired it for security
+- Payment system returned "Expired API Key provided" errors
+
+**IMMEDIATE ACTIONS TAKEN:**
+1. **Security Fix:** Removed `.env.production` from repository
+2. **Prevention:** Added `.env*` to `.gitignore` to prevent future exposure  
+3. **Key Replacement:** Generated new restricted Stripe API key with proper permissions
+4. **Environment Update:** Replaced expired key in all Vercel environments (prod/preview/dev)
+5. **Deployment:** Pushed security fix to production
+
+**NEW STRIPE API KEY PERMISSIONS:**
+```
+Core: Charges (Read), Customers (Write), Events (Read), Payment Intents (Write), 
+      Payment Methods (Write), Products (Read), Tokens (Write)
+Checkout: Checkout Sessions (Write)
+Billing: Coupons (Write), Promotion Codes (Write), Invoices (Write), 
+         Prices (Read), Subscriptions (Write)
+Webhooks: Webhook Endpoints (Write)
+Payment Links: Payment Links (Write)
+```
+
+**CURRENT STATUS:**
+- ✅ Security vulnerability closed
+- ✅ New API key deployed to all environments
+- ⚠️ Payment testing shows `StripeConnectionError` - may need full API key vs restricted
+
+**COMMITS:**
+- `64e9e2e` - 🔒 SECURITY FIX: Remove exposed environment variables
+
+---
+
+## 🚀 **PREVIOUS UPDATES - September 16, 2025 - DEMO SECTION OVERHAUL & UX IMPROVEMENTS**
 
 ### **🎭 COMPLETE DEMO SECTION REDESIGN - COMPLETED**
 
