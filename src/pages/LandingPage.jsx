@@ -429,7 +429,7 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto leading-relaxed"
             >
-              Not sure what that text meant. Or just curious what Sage thinks? Let Sage give you her take.
+              Not sure what that text meant? Let Sage give you her take.
             </motion.p>
 
             <motion.p 
