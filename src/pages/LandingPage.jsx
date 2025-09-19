@@ -41,7 +41,11 @@ const LandingPage = () => {
   useEffect(() => {
     if (!loading && user) {
       console.log('🔐 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
-      navigate('/dashboard');
+      // Add a small delay to prevent hydration issues
+      const redirectTimer = setTimeout(() => {
+        navigate('/dashboard');
+      }, 100);
+      return () => clearTimeout(redirectTimer);
     }
   }, [user, loading, navigate]);
   const [liveUserCount, setLiveUserCount] = useState(2347);

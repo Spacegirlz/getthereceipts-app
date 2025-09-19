@@ -188,10 +188,11 @@ export const AuthProvider = ({ children }) => {
     // Minimal auth state change handler to prevent loops
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔐 Auth state changed:', event, session?.user?.email || 'No user');
-        
-        // Only process certain events to prevent infinite loops
-        if (['SIGNED_IN', 'SIGNED_OUT', 'TOKEN_REFRESHED', 'INITIAL_SESSION'].includes(event)) {
+        try {
+          console.log('🔐 Auth state changed:', event, session?.user?.email || 'No user');
+          
+          // Only process certain events to prevent infinite loops
+          if (['SIGNED_IN', 'SIGNED_OUT', 'TOKEN_REFRESHED', 'INITIAL_SESSION'].includes(event)) {
           setSession(session);
           setUser(session?.user ?? null);
           
@@ -231,6 +232,10 @@ export const AuthProvider = ({ children }) => {
           }
           
           // Always set loading to false regardless of database query success/failure
+          setLoading(false);
+        }
+        } catch (authError) {
+          console.error('🔐 Auth state change error:', authError);
           setLoading(false);
         }
       }
