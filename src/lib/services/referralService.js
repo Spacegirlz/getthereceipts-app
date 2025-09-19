@@ -87,30 +87,13 @@ export const processReferral = async (referralCode, newUserId) => {
       return { success: false, error: data.error };
     }
     
-    // Add the reward coupon to the coupon_codes table
-    if (data.reward_coupon) {
-      const { error: couponError } = await supabase
-        .from('coupon_codes')
-        .insert({
-          code: data.reward_coupon,
-          coupon_name: 'Referral Reward',
-          tier: 'Basic',
-          receipts_count: 3,
-          is_premium: false,
-          max_uses: 1,
-          usage_count: 0
-        });
-      
-      if (couponError) {
-        console.error('Error creating reward coupon:', couponError);
-        // Don't fail the referral, just log the error
-      }
-    }
+    // 🎯 OPTION A: Credits are now handled directly in the database function
+    // No need to create coupons - both users get 3 credits automatically
     
     return {
       success: true,
-      rewardCoupon: data.reward_coupon,
-      message: data.message
+      creditsGiven: data.credits_given || 3,
+      message: data.message || 'Referral processed successfully! Both you and your friend earned 3 credits!'
     };
     
   } catch (error) {

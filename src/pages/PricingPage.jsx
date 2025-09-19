@@ -137,9 +137,9 @@ const PricingPage = () => {
       name: 'Free Truth Receipt',
       price: '$0',
       priceSub: '/forever',
-      subtitle: 'For the quietly anxious',
+      subtitle: 'For testing the waters',
       features: [
-        '1 AI Truth Receipt per day',
+        '1 Receipt from Sage per day',
         'Pattern detection + verdict',
         'Shareable result card',
         'No login or credit card required',
@@ -159,8 +159,8 @@ const PricingPage = () => {
       priceSub: '/month',
       subtitle: 'For the ones who spiral in silence',
       features: [
-        'UNLIMITED Truth Receipts',
-        'Sage\'s Immunity Training™ (learn to spot the patterns yourself)',
+        'UNLIMITED Receipts from Sage',
+        'Sage\'s Pattern Masterclass™ (she\'ll teach you her tricks)',
         'Vibe Check™ real-time detection',
         'Cancel anytime',
         '🔒 Zero storage. Never used for training.'
@@ -480,7 +480,7 @@ const PricingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            Truth Receipts in 60 seconds. No shame. No storage. Just clarity.
+            Receipts in 60 seconds. No shame. No storage. Just Sage's take.
           </motion.p>
 
           {/* Trust Badges */}
@@ -659,9 +659,7 @@ const PricingPage = () => {
               <div className="text-center">
                 <div className="text-3xl mb-4">🔒</div>
                 <p className="text-lg text-gray-300 font-medium tracking-wide leading-relaxed">
-                  Bank-level encryption.<br />
-                  Your chats are never stored, never used for training, and deleted instantly.<br />
-                  <span className="text-gray-400">No judgment. No trace. Just clarity.</span>
+                  Sage doesn't keep tabs on your receipts. Your texts vanish the second she's done reading them. No storage, no training, no judgment.
                 </p>
               </div>
             </div>
@@ -706,10 +704,10 @@ const PricingPage = () => {
                     <div className="text-center">
                       <div className="text-4xl mb-6">🕵️</div>
                       <h4 className="text-2xl font-bold text-white mb-4 leading-tight">
-                        Sage sees what they missed.
+                        Sage catches what they're hiding.
                       </h4>
                       <p className="text-gray-300 leading-relaxed">
-                        She reads the tone, the silence, the shift. <span className="text-violet-300 font-semibold">She says what they won't.</span>
+                        She reads between the lines, catches the silence, calls the BS. <span className="text-violet-300 font-semibold">Someone had to.</span>
                       </p>
                     </div>
                   </div>
@@ -775,7 +773,7 @@ const PricingPage = () => {
               OG Founder Price - Limited Time
             </h3>
             <p className="text-lg md:text-xl mb-4 text-gray-300">
-              Get <span className="font-bold text-white">unlimited Truth Receipts</span> for just <span className="text-yellow-400 font-bold text-2xl">$29.99/year</span>
+              Get <span className="font-bold text-white">unlimited Receipts</span> for just <span className="text-yellow-400 font-bold text-2xl">$29.99/year</span>
             </p>
             <p className="text-gray-300 mb-8">That's less than $2.50/month to never spiral alone again.</p>
             
@@ -835,7 +833,7 @@ const PricingPage = () => {
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <span className="text-red-400 mt-1">❌</span>
-                      <span className="text-gray-300">2/3 of a cocktail you'll regret</span>
+                      <span className="text-gray-300">One overpriced latte you'll Instagram</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="text-red-400 mt-1">❌</span>
@@ -843,7 +841,7 @@ const PricingPage = () => {
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="text-red-400 mt-1">❌</span>
-                      <span className="text-gray-300">1 month of that dating app that ghosted you</span>
+                      <span className="text-gray-300">3 minutes with a psychic who'll lie</span>
                     </div>
                   </div>
                 </div>
@@ -859,15 +857,15 @@ const PricingPage = () => {
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <span className="text-green-400 mt-1">✅</span>
-                      <span className="text-gray-300">Unlimited receipts</span>
+                      <span className="text-gray-300">Unlimited receipts from someone who gets it</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="text-green-400 mt-1">✅</span>
-                      <span className="text-gray-300">Proof for your group chat</span>
+                      <span className="text-gray-300">Screenshots that'll vindicate you in the group chat</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="text-green-400 mt-1">✅</span>
-                      <span className="text-gray-300">Actually knowing what "k." meant</span>
+                      <span className="text-gray-300">Finally knowing if 'k' was aggressive or just lazy</span>
                     </div>
                   </div>
                 </div>
@@ -892,12 +890,12 @@ const PricingPage = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/10 to-transparent blur-3xl"></div>
             <div className="relative bg-gradient-to-br from-slate-900/60 via-green-900/20 to-slate-900/60 backdrop-blur-xl rounded-3xl border border-green-500/20 p-12 md:p-16 text-center">
               
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text animate-gradient">Ready to stop guessing?</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text animate-gradient">Ready for Sage's Take?</h2>
               <p className="text-xl md:text-2xl text-gray-300 mb-4">
-                Drop the chat. Get the receipt.
+                Drop the chat. Get Sage's take. <span className="italic text-violet-300">She's already rolling her eyes at their text.</span>
               </p>
               <p className="text-lg text-gray-400 italic mb-12">
-                One click. No judgment. Just the truth.
+                One click. No judgment. Just perspective.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-3xl mx-auto">
@@ -945,7 +943,7 @@ const PricingPage = () => {
               
               <div className="border-t border-purple-500/30 pt-8">
                 <p className="text-gray-300 text-base mb-6 font-medium">
-                  For entertainment purposes only. Not therapy, legal, or medical advice.
+                  For Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.
                 </p>
                 <p className="text-gray-400 text-sm">
                   By using this site, you agree to our <a href="/terms-of-service" className="text-purple-400 hover:text-purple-300 underline font-medium">Terms</a> & <a href="/privacy-policy" className="text-purple-400 hover:text-purple-300 underline font-medium">Privacy Policy</a>.
@@ -971,7 +969,7 @@ const PricingPage = () => {
                 </span>
               </div>
               <p className="text-gray-400 max-w-md">
-                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie and text decoder.
+                Stop second-guessing their texts. Get clarity in 60 seconds from Sage - she's seen this pattern 47 times already.
               </p>
             </div>
             <div>
@@ -996,8 +994,7 @@ const PricingPage = () => {
               © 2025 Get The Receipts. All rights reserved.
             </p>
             <p className="text-gray-500 text-sm mb-3">
-              For Entertainment & Insight Purposes Only.<br />
-              13+ only (under 18 requires parental consent) • Not therapy, legal, or medical advice • Use at your own risk
+              16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
             </p>
             <p className="text-gray-600 text-sm">
               Support: <a href="mailto:sage@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">sage@getthereceipts.com</a>

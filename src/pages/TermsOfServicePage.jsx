@@ -75,7 +75,7 @@ const TermsOfServicePage = () => {
           <ul className="space-y-3 text-gray-300 mb-6">
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>You are at least 13 years of age (with parental consent if under 18)</span>
+              <span>You are at least 16 years of age</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
@@ -610,7 +610,7 @@ const TermsOfServicePage = () => {
               </div>
               <div className="flex items-start gap-4">
                 <span className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 mt-1">2</span>
-                <p className="text-gray-300">You are at least 13 years old (or have parental consent if under 18)</p>
+                <p className="text-gray-300">You are at least 16 years old</p>
               </div>
               <div className="flex items-start gap-4">
                 <span className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 mt-1">3</span>
@@ -686,7 +686,7 @@ const TermsOfServicePage = () => {
               Sage reads patterns, not people. Trust your gut first. Then verify with us.
             </p>
             <p className="text-gray-500 text-xs mb-3">
-              13+ with parental consent • Not therapy, legal, or medical advice • Use at your own risk
+              16+ • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-500 text-sm">
               Support: <a href="mailto:sage@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">sage@getthereceipts.com</a>

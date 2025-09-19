@@ -294,7 +294,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               </h2>
             </div>
             <div className="text-xs font-bold tracking-wider text-amber-300 opacity-90 mb-4">
-              TRUTH • SERVED • FRESH
+              HOT • TAKES • SERVED
             </div>
             
           </div>
@@ -309,7 +309,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
         >
           <div className="flex items-center gap-2 mb-6">
             <Eye className={`w-4 h-4 ${style.accent}`} />
-            <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE VERDICT</h3>
+            <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>SAGE'S READ</h3>
           </div>
           
           <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
@@ -398,7 +398,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-6">
                   <Play className={`w-4 h-4 ${style.accent}`} />
-                  <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE PHYSICS</h3>
+                  <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE DYNAMICS</h3>
                 </div>
                 <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
                   <div className="space-y-2 text-sm">
@@ -413,7 +413,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-6">
                   <Clock className={`w-4 h-4 ${style.accent}`} />
-                  <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE PLAYBOOK</h3>
+                  <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>SAGE'S PLAYBOOK</h3>
                 </div>
                 <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
                   <div className="text-center">
@@ -438,7 +438,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
             >
               <div className="flex items-center gap-2 mb-6">
                 <Play className={`w-4 h-4 ${style.accent}`} />
-                <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE PHYSICS</h3>
+                <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE DYNAMICS</h3>
               </div>
               
               <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
@@ -468,7 +468,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
             >
               <div className="flex items-center gap-2 mb-6">
                 <Clock className={`w-4 h-4 ${style.accent}`} />
-                <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE PLAYBOOK</h3>
+                <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>SAGE'S PLAYBOOK</h3>
               </div>
               
               <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
@@ -550,8 +550,15 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
           </div>
         </motion.section>
 
+        {/* DISCLAIMER */}
+        <div className="text-center mt-4 mb-4">
+          <p className="text-xs text-stone-400/70 italic">
+            For entertainment purposes - Sage calls it like she sees it
+          </p>
+        </div>
+        
         {/* WATERMARK - Final element in Sage's Tea */}
-        <div className="text-center mt-4 mb-6">
+        <div className="text-center mt-2 mb-6">
           <p className="text-xs text-stone-200/90/40 tracking-widest">
             www.getthereceipts.com
           </p>
@@ -611,7 +618,7 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
         {/* Sage's Disclaimer */}
         <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
           <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 13+ only (under 18 requires parental consent).
+            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 16+.
           </p>
         </div>
       </div>

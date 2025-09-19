@@ -53,7 +53,7 @@ function App() {
               <Route path="/receipts/:id" element={<ReceiptsCardPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/refer" element={<ReferralPage />} />
+              <Route path="/refer" element={<EnhancedReferralPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />

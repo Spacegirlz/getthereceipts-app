@@ -295,7 +295,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                   color: '#14B8A6',
                   textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
                 }}>
-                SAGE'S TRUTH RECEIPT
+                SAGE'S RECEIPT
               </span>
             </div>
           </div>
@@ -395,7 +395,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {verdict && (
             <div className="bg-black/30 p-4 sm:p-4 rounded-xl border border-white/10 mb-4 sm:mb-3">
               <h3 className="text-teal-400 font-bold text-base sm:text-sm tracking-wide mb-3 sm:mb-3"
-                style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>THE VERDICT</h3>
+                style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>SAGE'S TAKE</h3>
               <p className="text-stone-200/90 text-lg sm:text-xl italic leading-relaxed tracking-wide">
                 {verdict}
               </p>
@@ -446,7 +446,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {prophecy && (
             <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-3">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
-                style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🔮 SAGE'S PROPHECY</h3>
+                style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🔮 SAGE BETS...</h3>
               <p className="text-stone-200/90 text-xl leading-relaxed">
                 {prophecy}
               </p>
@@ -458,7 +458,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-teal-400 font-bold text-sm tracking-wide flex items-center">
                 <Brain className="w-4 h-4 mr-2 text-teal-400" />
-                SAGE'S CONFIDENCE
+                SAGE'S DRAMA METER
               </h3>
               <span className="text-xs font-bold text-cyan-400">{confidenceScore}%</span>
             </div>
@@ -470,8 +470,15 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           </div>
           
-          {/* WATERMARK - Final element in Sage's Truth Receipt */}
-          <div className="text-center mt-4 mb-6">
+          {/* DISCLAIMER */}
+          <div className="text-center mt-4 mb-4">
+            <p className="text-xs text-stone-400/70 italic">
+              For entertainment purposes - Sage calls it like she sees it
+            </p>
+          </div>
+          
+          {/* WATERMARK - Final element in Sage's Receipt */}
+          <div className="text-center mt-2 mb-6">
             <p className="text-xs text-stone-200/90/40 tracking-widest">
               www.getthereceipts.com
             </p>
@@ -544,7 +551,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
         {/* Sage's Disclaimer */}
         <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
           <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 13+ only (under 18 requires parental consent).
+            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 16+.
           </p>
         </div>
       </div>

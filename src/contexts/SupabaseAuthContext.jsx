@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import { supabase, withRetry, withTimeout } from '@/lib/database/customSupabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuthModal } from '@/contexts/AuthModalContext';
-import { initializeUserCredits, processReferral } from '@/lib/services/creditsSystem';
+import { initializeUserCredits } from '@/lib/services/creditsSystem';
 
 const AuthContext = createContext(undefined);
 
@@ -11,6 +11,64 @@ export const AuthProvider = ({ children }) => {
   const { referralCode } = useAuthModal();
 
   const [user, setUser] = useState(null);
+
+  // Helper function to award referral bonus using existing system
+  const awardReferralBonus = async (referralCode, newUser, source) => {
+    if (!referralCode || !newUser) return;
+    
+    try {
+      console.log(`🎯 Auth: Processing referral for code: ${referralCode}, new user: ${newUser.email}, source: ${source}`);
+      
+      // Use the existing process_referral database function that handles both parties
+      const { data, error } = await supabase.rpc('process_referral', {
+        referral_code_input: referralCode,
+        new_user_id: newUser.id
+      });
+      
+      if (error) {
+        console.error('❌ Auth: Error processing referral:', error);
+        return;
+      }
+      
+      if (!data.success) {
+        console.warn('⚠️ Auth: Referral processing failed:', data.error);
+        return;
+      }
+      
+      console.log('✅ Auth: Referral processed successfully:', data);
+      
+      // Create the reward coupon that was generated
+      if (data.reward_coupon) {
+        const { error: couponError } = await supabase
+          .from('coupon_codes')
+          .insert({
+            code: data.reward_coupon,
+            coupon_name: 'Referral Reward',
+            tier: 'Basic',
+            receipts_count: 3,
+            is_premium: false,
+            max_uses: 1,
+            usage_count: 0
+          });
+        
+        if (couponError) {
+          console.error('❌ Auth: Error creating reward coupon:', couponError);
+        } else {
+          console.log(`✅ Auth: Reward coupon created: ${data.reward_coupon}`);
+          if (source === 'immediate session') {
+            toast({
+              title: "Bonus! 🎉",
+              description: "You've received 3 bonus credits for joining through a referral!",
+              duration: 5000,
+            });
+          }
+        }
+      }
+      
+    } catch (referralError) {
+      console.error('❌ Auth: Error in referral bonus system:', referralError);
+    }
+  };
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
@@ -252,11 +310,20 @@ export const AuthProvider = ({ children }) => {
           description: "We've sent a confirmation link to your email address.",
         });
       } else if (data?.session) {
-        // User is immediately signed in (development mode)
+        // User is immediately signed in (development mode or OAuth)
         toast({
           title: "Account Created!",
           description: "You're now signed in and ready to go!",
         });
+        
+        // Award referral bonus for immediate sessions
+        await awardReferralBonus(referralCode, data.user, 'immediate session');
+      } else if (data?.user && !data?.session) {
+        // User created but needs email confirmation
+        console.log('🎯 Auth: User created, will process referral after email confirmation');
+        
+        // Award referral bonus immediately for email confirmation users too
+        await awardReferralBonus(referralCode, data.user, 'email confirmation');
       } else {
         // Fallback message
         toast({

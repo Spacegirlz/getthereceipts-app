@@ -1295,7 +1295,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 />
                 <label htmlFor="sage-agreement" className="text-sm text-gray-200 leading-relaxed">
                   This is for <span className="text-yellow-300">entertainment and insight</span>, not professional advice. 
-                  I'm 13+ (with parental consent under 18) and ready for some <span className="text-pink-300">clarity, fun and roasting with love</span>.
+                  I'm 16+ and ready for some <span className="text-pink-300">clarity, fun and roasting with love</span>.
                 </label>
               </div>
 
@@ -1331,7 +1331,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
       {/* Age Disclaimer */}
       <div className="text-center mt-8 pb-4">
         <p className="text-white/40 text-xs">
-          This service is intended for users 13+ with parental guidance if under 18
+          This service is intended for users 16+
         </p>
       </div>
     </div>

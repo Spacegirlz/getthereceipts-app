@@ -382,11 +382,11 @@ const PrivacyPolicyPage = () => {
           <div className="space-y-6">
             <div>
               <h3 className="text-blue-400 font-semibold mb-2">Age Requirement:</h3>
-              <p className="text-gray-300">You must be at least 13 years old to use this service. Users aged 13-17 require parental consent.</p>
+              <p className="text-gray-300">You must be at least 16 years old to use this service.</p>
             </div>
             <div>
               <h3 className="text-blue-400 font-semibold mb-2">Children's Privacy:</h3>
-              <p className="text-gray-300">We comply with COPPA (Children's Online Privacy Protection Act). Users under 13 are not permitted to use the Service. For users aged 13-17, parental consent is required. We do not knowingly collect personal information from children under 13. If we discover we've inadvertently collected such information, we will delete it immediately.</p>
+              <p className="text-gray-300">Users under 16 are not permitted to use the Service. We do not knowingly collect personal information from children under 16. If we discover we've inadvertently collected such information, we will delete it immediately.</p>
             </div>
             <div>
               <h3 className="text-blue-400 font-semibold mb-2">Governing Law:</h3>
@@ -469,7 +469,7 @@ const PrivacyPolicyPage = () => {
               Sage reads patterns, not people. Trust your gut first. Then verify with us.
             </p>
             <p className="text-gray-500 text-xs mb-3">
-              13+ only (under 18 requires parental consent) • Not therapy, legal, or medical advice • Use at your own risk
+              16+ • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-500 text-sm">
               Support: <a href="mailto:sage@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">sage@getthereceipts.com</a>

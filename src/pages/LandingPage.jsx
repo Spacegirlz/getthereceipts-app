@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye, Star, Users, Clock, Trophy, Check, Crown, Rocket } from 'lucide-react';
 import { useAuthModal } from '@/contexts/AuthModalContext';
@@ -18,8 +18,22 @@ const LandingPage = () => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  
   const navigate = useNavigate();
   const { openModal } = useAuthModal();
+  const [searchParams] = useSearchParams();
+  
+  // 🎯 CRITICAL FIX: Capture referral codes from URL
+  useEffect(() => {
+    const referralCode = searchParams.get('ref');
+    if (referralCode) {
+      console.log('🎯 LandingPage: Referral code detected:', referralCode);
+      // Store referral code in localStorage for later processing
+      localStorage.setItem('pendingReferralCode', referralCode);
+      // Show a subtle notification that referral was captured
+      console.log('✅ Referral code saved for processing after signup');
+    }
+  }, [searchParams]);
   const [liveUserCount, setLiveUserCount] = useState(2347);
   const [selectedDemo, setSelectedDemo] = useState('breadcrumb');
   const [demoResult, setDemoResult] = useState(null);
@@ -164,6 +178,78 @@ const LandingPage = () => {
         confidence: '96%',
         confidenceText: 'THE MATH AIN\'T MATHING BUT YOUR NOTES ARE NOTING'
       }
+    },
+    toogood: {
+      title: '💕 Too Good to Be True?',
+      question: 'Alex asks: Is Jordan actually this perfect?',
+      conversation: [
+        { sender: 'Alex', text: 'Hey! Running 5 min late from work\nTraffic is brutal on the 405', type: 'alex', time: 'Monday 7:15 PM' },
+        { sender: 'Jordan', text: 'No worries! Just grabbed us a table. Take your time', type: 'jordan', time: 'Monday 7:18 PM' },
+        { sender: 'Alex', text: 'You\'re the best. Also my mom wants to know if you like lasagna for Sunday dinner 😅', type: 'alex', time: 'Monday 7:19 PM' },
+        { sender: 'Jordan', text: 'Tell her I love it! Should I bring dessert? Wine?', type: 'jordan', time: 'Monday 7:23 PM' },
+        { sender: 'Alex', text: 'She said just yourself but knowing you, you\'ll bring both anyway', type: 'alex', time: 'Monday 7:25 PM' },
+        { sender: 'Jordan', text: 'You know me too well 😊\nDrive safe, see you soon', type: 'jordan', time: 'Monday 7:27 PM' }
+      ],
+      result: {
+        pattern: 'The Actual Adult™',
+        verdict: 'They respond in real-time and make plans that actually happen',
+        intoYou: '94%',
+        wastingTime: '3%',
+        redFlags: '10',
+        tea: 'Bestie, I\'ve analyzed this 47 times looking for the catch and... there isn\'t one? They\'re communicating about being late BEFORE they\'re late? Meeting your mom WITHOUT having a breakdown? The math is actually mathing for once. Stop waiting for the plot twist - sometimes people are just emotionally available and have their life together. Wild concept, I know.',
+        prophecy: 'They\'ll bring both wine AND dessert. Your mom will love them. You\'ll panic that it\'s "too easy" and create problems that don\'t exist. Stop it.',
+        playbook: 'Accept that healthy feels boring at first\nStop looking for red flags in green gardens\nLet yourself be happy (revolutionary, I know)\nMaybe delete your ex\'s number finally?',
+        confidence: '92%',
+        confidenceText: 'SOMETIMES GOOD THINGS JUST HAPPEN, BABE'
+      }
+    },
+    ghost2019: {
+      title: '👻 The Ghost from 2019',
+      question: 'Sam asks: Why is my ex from 5 years ago texting me?',
+      conversation: [
+        { sender: 'Chase', text: 'Sam??? Is this still your number?', type: 'chase', time: 'Tuesday 11:47 PM' },
+        { sender: 'Chase', text: 'Just saw someone who looked exactly like you at Whole Foods', type: 'chase', time: 'Tuesday 11:48 PM' },
+        { sender: 'Sam', text: 'Chase? Why are you texting me?', type: 'sam', time: 'Wednesday 8:32 AM' },
+        { sender: 'Chase', text: 'I know it\'s been forever but I was cleaning out my phone and saw our old pics... we were good together', type: 'chase', time: 'Wednesday 9:15 AM' },
+        { sender: 'Chase', text: 'You still in marketing? Still have that anxiety thing about elevators? lol', type: 'chase', time: 'Wednesday 9:16 AM' },
+        { sender: 'Sam', text: 'It\'s been 5 years dude', type: 'sam', time: 'Wednesday 12:45 PM' }
+      ],
+      result: {
+        pattern: 'The Time Traveler',
+        verdict: 'Still living in 2019 while you\'re in 2024',
+        intoYou: '11%',
+        wastingTime: '98%',
+        redFlags: '8',
+        tea: 'THE GHOST FROM 2019 HAS ENTERED THE CHAT. He\'s "cleaning out his phone" but somehow your number survived 5 years and 3 iPhone upgrades? Sure, Jan. That elevator anxiety callback? He\'s trying to use outdated software to hack into your current operating system. This isn\'t nostalgia, it\'s a recession - his dating market crashed and he\'s checking old investments.',
+        prophecy: 'He\'ll mention "catching up over coffee" next. Then reveal he\'s "between jobs" or "going through something." Your 2019 trauma will text you "miss us" at 1 AM next Thursday.',
+        playbook: 'You\'re not the same person from 2019\nBlock or prepare for monthly "remember when" texts\nThat chapter ended for a reason\nYour glow up doesn\'t include reruns',
+        confidence: '97%',
+        confidenceText: '2019 CALLED, THEY DON\'T WANT HIM BACK EITHER'
+      }
+    },
+    realitytv: {
+      title: '🏝️ Reality TV Energy',
+      question: 'Bella asks: Is this chaos sustainable?',
+      conversation: [
+        { sender: 'Kai', text: 'Bellaaaaa did we really steal a traffic cone last night???', type: 'kai', time: 'Sunday 2:15 PM' },
+        { sender: 'Bella', text: 'LMAOOO I have it in my living room 💀', type: 'bella', time: 'Sunday 2:47 PM' },
+        { sender: 'Kai', text: 'NO WAYYYY\nAlso did I really challenge that guy to arm wrestle for your number?', type: 'kai', time: 'Sunday 2:48 PM' },
+        { sender: 'Bella', text: 'You lost but it was iconic\nHe gave it to you anyway', type: 'bella', time: 'Sunday 2:52 PM' },
+        { sender: 'Kai', text: 'Worth it tbh\nDrinks Tuesday? I promise no traffic cones this time', type: 'kai', time: 'Sunday 2:54 PM' },
+        { sender: 'Bella', text: 'You can\'t promise that and we both know it 😂', type: 'bella', time: 'Sunday 3:01 PM' }
+      ],
+      result: {
+        pattern: 'The Hot Mess Express',
+        verdict: 'Chaotic energy but at least they own it',
+        intoYou: '73%',
+        wastingTime: '95%',
+        redFlags: '6',
+        tea: 'This is giving Love Island meets Jackass meets someone\'s cousin\'s wedding energy and honestly? Respect. They stole city property and arm wrestled a stranger for your digits? That\'s not a red flag, that\'s a whole circus tent and they\'re the ringmaster. Will this last? Absolutely not. Will you have stories? ABSOLUTELY YES. Sometimes you need a little reality TV in your real life.',
+        prophecy: 'Tuesday\'s drinks will end with karaoke, a new tattoo idea, or both. You\'ll date for exactly 3 months of pure chaos. You\'ll either marry them or block them everywhere. No in between.',
+        playbook: 'Hide your valuables\nKeep your friends on speed dial\nDocument everything for the group chat\nEnjoy the show while it lasts',
+        confidence: '89%',
+        confidenceText: 'THIS IS YOUR VILLAIN ERA AND I\'M HERE FOR IT'
+      }
     }
   };
 
@@ -190,9 +276,9 @@ const LandingPage = () => {
   };
 
   const stats = [
-    { value: '2.3M+', label: 'Messages Decoded', subtext: 'Since launch' },
-    { value: '94%', label: 'Accuracy Rate', subtext: 'User verified' },
-    { value: '60s', label: 'Average Time', subtext: 'To get clarity' }
+    { value: '2.3M+', label: 'Hot Takes Delivered', subtext: 'Since launch' },
+    { value: '94%', label: 'Say \'OMG This Is So True\'', subtext: '(Not science, just vibes)' },
+    { value: '60s', label: 'To Stop Spiraling', subtext: 'Average time' }
   ];
 
   const testimonials = [
@@ -205,6 +291,16 @@ const LandingPage = () => {
       text: "The real tea feature is *chef's kiss*. Sometimes you need someone to just tell you the truth.",
       author: "@mike_dating",
       type: "Daily user"
+    },
+    {
+      text: "Used it on my boyfriend's sweet text just to see what happened. Sage called him 'suspiciously well-adjusted' and told me to 'stop looking for problems that don't exist.' I love her.",
+      author: "@secure_attachment_sara",
+      type: "Premium user"
+    },
+    {
+      text: "Ran my ex's 'I miss us' text from 2019 through it for laughs. Sage said 'He misses the free therapy, not you.' My friends and I SCREAMED.",
+      author: "@moved_on_michelle",
+      type: "Founder's Club"
     }
   ];
 
@@ -283,7 +379,7 @@ const LandingPage = () => {
                 <div className="absolute inset-0 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
               </div>
               <span className="text-sm text-emerald-300 font-medium">
-                {liveUserCount.toLocaleString()} people getting receipts right now
+                {liveUserCount.toLocaleString()} people getting Sage's take right now
               </span>
             </motion.div>
 
@@ -311,7 +407,7 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto leading-relaxed"
             >
-              Not sure what that text meant? Let Sage decode it for you.
+              Not sure what that text meant. Or just curious what Sage thinks? Let Sage give you her take.
             </motion.p>
 
             <motion.p 
@@ -320,7 +416,7 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.5 }}
               className="text-lg text-blue-300 mb-12 font-medium"
             >
-              The clarity you need 24/7.
+              Your bestie's hot take 24/7
             </motion.p>
 
             {/* Primary CTA */}
@@ -399,18 +495,21 @@ const LandingPage = () => {
               </div>
               
               <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Your AI bestie and text decoder
+                Your AI bestie with opinions
               </h2>
               
               <div className="space-y-4 text-lg text-gray-300 mb-8">
-                <p>She's seen it all: breadcrumbing, ghosting, gaslighting, and the rest of the emotional gymnastics.</p>
-                <p>Not a therapist. Not your mom.</p>
-                <p className="text-violet-300 font-medium">Just the voice your gut needed, finally written down.</p>
+                <p>She's seen every pattern: breadcrumbing, ghosting, love bombing, and the rest of the emotional circus.</p>
+                <p>Not a therapist. Not your mom. Not even real.</p>
+                <p>Just that friend who's had enough of your spiral and loves you too much to watch it continue. Created for your entertainment (and maybe some perspective).</p>
+                <p>She reads everything: The toxic ex at 2AM. Your perfect partner being perfect (suspicious much?). That text from 2019 you can't stop thinking about. Your group chat drama. Your mom's passive-aggressive holiday planning.</p>
+                <p>Every relationship. Every vibe. Every pattern.</p>
+                <p className="text-violet-300 font-medium">Because sometimes you just want someone else's take - whether you're spiraling, celebrating, or just bored.</p>
               </div>
 
               <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-violet-500/10 to-blue-500/10 rounded-2xl border border-violet-500/20 mb-8">
                 <span className="text-2xl">🪄</span>
-                <span className="text-violet-300 font-medium">Honest. Sharp. Always on your side.</span>
+                <span className="text-violet-300 font-medium">Savage takes. Zero filter. Made with love.</span>
               </div>
 
               <Button
@@ -430,7 +529,7 @@ const LandingPage = () => {
                 <div className="w-full aspect-square bg-gradient-to-br from-violet-400 to-blue-500 rounded-2xl flex items-center justify-center overflow-hidden">
                   <img 
                     src={sagePurpleSwirl} 
-                    alt="Sage - Your AI bestie and text decoder" 
+                    alt="Sage - Your AI bestie with opinions" 
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -458,7 +557,7 @@ const LandingPage = () => {
               >
                 <MessageSquare className="h-4 w-4 text-violet-400" />
                 <span className="text-sm text-violet-300 font-medium">
-                  💌 Want your own Truth Receipt? Get One →
+                  💌 Want your own Sage Receipt? Get One →
                 </span>
               </button>
             </motion.div>
@@ -467,13 +566,13 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
             >
-              What's <em className="text-violet-400">really</em> going on in that chat?
+              What does <em className="text-violet-400">Sage think</em> about that chat?
             </motion.h2>
             
             <motion.div variants={fadeInUp} className="space-y-4 text-lg text-gray-300 max-w-4xl mx-auto">
-              <p>Sage breaks it down in 60 seconds. No fluff. No false hope. Just the truth.</p>
-              <p className="text-violet-300">Real texts. Real patterns. Real talk.</p>
-              <p className="text-xl font-semibold text-white">Pick a scenario and get your Truth Receipt.</p>
+              <p>Sage gives her take in 60 seconds. No fluff. No false hope. Just her perspective. (For entertainment only, but somehow always hits)</p>
+              <p className="text-violet-300">Your texts. Common patterns. Sage's hot takes.</p>
+              <p className="text-xl font-semibold text-white">Pick a scenario and get Sage's Receipt.</p>
             </motion.div>
             
             <motion.div variants={fadeInUp} className="mt-8">
@@ -613,32 +712,32 @@ const LandingPage = () => {
                       </div>
                     </div>
 
-                    {/* Analysis Sections */}
+                    {/* Sage's Take Sections */}
                     <div className="space-y-6 text-left">
                       <div className="p-6 bg-pink-500/10 border border-pink-500/20 rounded-2xl">
                         <h4 className="font-bold text-pink-400 mb-3 flex items-center">
-                          🎯 Pattern: {demoResult.pattern}
+                          🎯 Sage Thinks It's: {demoResult.pattern}
                         </h4>
                         <p className="text-gray-300">{demoResult.verdict}</p>
                       </div>
                       
                       <div className="p-6 bg-purple-500/10 border border-purple-500/20 rounded-2xl">
                         <h4 className="font-bold text-purple-400 mb-3 flex items-center">
-                          ☕ Sage's Tea:
+                          ☕ Sage's Take:
                         </h4>
                         <p className="text-gray-300">{demoResult.tea}</p>
                       </div>
                       
                       <div className="p-6 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl">
                         <h4 className="font-bold text-cyan-400 mb-3 flex items-center">
-                          🔮 The Prophecy:
+                          🔮 What Sage Bets Happens Next:
                         </h4>
                         <p className="text-gray-300">{demoResult.prophecy}</p>
                       </div>
                       
                       <div className="p-6 bg-green-500/10 border border-green-500/20 rounded-2xl">
                         <h4 className="font-bold text-green-400 mb-3 flex items-center">
-                          📖 Your Playbook:
+                          📖 Sage's Suggestions:
                         </h4>
                         <ul className="text-gray-300 space-y-2">
                           {demoResult.playbook.split('\n').map((item, index) => (
@@ -652,7 +751,7 @@ const LandingPage = () => {
 
                       {/* Confidence */}
                       <div className="p-6 bg-violet-500/10 border border-violet-500/20 rounded-2xl text-center">
-                        <div className="text-violet-400 font-bold text-lg mb-2">⚡ Sage's Confidence: {demoResult.confidence}</div>
+                        <div className="text-violet-400 font-bold text-lg mb-2">⚡ Sage's Drama Meter: {demoResult.confidence}</div>
                         <div className="w-full bg-gray-700 rounded-full h-3 mb-2">
                           <div 
                             className="bg-gradient-to-r from-violet-400 to-blue-500 h-3 rounded-full transition-all duration-1000" 
@@ -713,8 +812,8 @@ const LandingPage = () => {
           >
             {[
               { icon: '📱', title: '1. PASTE', desc: 'Drop in the confusing text that\'s keeping you up' },
-              { icon: '🧠', title: '2. ANALYZE', desc: 'Sage\'s AI detects patterns humans miss' },
-              { icon: '🧾', title: '3. RECEIPT', desc: 'Get your complete truth receipt with metrics' },
+              { icon: '🧠', title: '2. ANALYZE', desc: 'Sage spots the patterns you\'re too close to see' },
+              { icon: '🧾', title: '3. RECEIPT', desc: 'Get Sage\'s receipt with her hot take' },
               { icon: '💪', title: '4. IMMUNITY', desc: 'Learn to spot these patterns yourself' }
             ].map((step, index) => (
               <motion.div
@@ -751,13 +850,13 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="text-xl text-gray-300 mb-4"
             >
-              Every Sage Receipt Includes 3 Stages
+              Every Receipt Includes Sage's 3-Part Read
             </motion.p>
             <motion.p 
               variants={fadeInUp}
               className="text-lg text-violet-300"
             >
-              More than just analysis - it's a complete breakdown
+              More than just her take - it's a complete breakdown
             </motion.p>
           </motion.div>
 
@@ -773,8 +872,9 @@ const LandingPage = () => {
             <motion.div variants={fadeInUp} className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-3xl p-8">
               <div className="grid lg:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-3xl font-bold text-emerald-400 mb-4">Level 1: Sage's Truth Receipt (Free)</h3>
-                  <p className="text-gray-300 text-lg mb-6">The foundation - we decode what's really happening</p>
+                  <h3 className="text-3xl font-bold text-emerald-400 mb-4">Level 1: Sage's Receipt Card (Free)</h3>
+                  <p className="text-gray-300 text-lg mb-4">The foundation - Sage's take on what's happening</p>
+                  <p className="text-violet-300 text-lg mb-6 italic">Works on everything from marriage proposals to breadcrumbing, from healthy check-ins to hot mess express, from your boss to your ex to that person you met once and can't forget.</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
                       { icon: '🎯', title: 'Pattern Detection', desc: 'The Breadcrumber, Ghoster, Love Bomber - we name it' },
@@ -841,7 +941,7 @@ const LandingPage = () => {
                   <p className="text-gray-300 text-lg mb-6">Premium: Build your own pattern recognition superpowers</p>
                   <div className="space-y-4">
                     {[
-                      { icon: '🛡️', title: 'Archetype Decoder', desc: 'Deep dive into their personality patterns and motivations' },
+                      { icon: '🛡️', title: 'Archetype Reader', desc: 'Deep dive into their personality patterns and motivations' },
                       { icon: '🔍', title: 'Pattern Loop Recognition', desc: 'Learn to spot cycles before they trap you' },
                       { icon: '💪', title: 'Sage\'s Real Talk', desc: 'Advanced coaching on building emotional immunity' }
                     ].map((feature, index) => (
@@ -978,16 +1078,20 @@ const LandingPage = () => {
           >
             {[
               {
+                q: "Is this actual advice or just for fun?",
+                a: "Sage is an AI character created for entertainment. She's that friend who sees patterns and has opinions - lots of them. While users say her takes are eerily accurate (94% relate hard), she's not a therapist, counselor, or mind reader. Think of her like your horoscope - somehow always relevant, technically entertainment, but you'll screenshot it anyway when it hits different."
+              },
+              {
                 q: "Why is Privacy First such a big deal here?",
                 a: "Because when you're pasting your real, messy convos into an app, you deserve to feel safe doing it. From day one, we built Get The Receipts to protect your privacy like it's our own. That means no chat logs, no training on your data, no digging into your history. You're not here to hand over secrets, you're here to get clarity, without judgment or surveillance. And that's what we deliver. Every time."
               },
               {
                 q: "Data: What do you keep, and what do you delete?",
-                a: "We keep only what's needed to run your account and instantly delete everything else.\n\nWhat we keep:\n• Email (for login)\n• Encrypted password\n• Payment info (if you're on a paid plan)\n\nWhat we delete:\n• All receipts and messages after analysis (gone in 3 seconds)\n• Your analysis results (we don't store them)\n• Any record of what you pasted in\n\nWhat we never track:\n• Your behavior, message history, or usage patterns\n• Your conversations for training, marketing, or \"improvement\"\n• Any content unless you choose to save it\n\nWe use zero-storage architecture + real-time processing with contractual no-training AI services. Your data never gets used to \"make the AI better\" because Sage doesn't learn from you. She just helps you learn from your own patterns.\n\nYou stay in full control always."
+                a: "We keep only what's needed to run your account and instantly delete everything else.\n\nWhat we keep:\n• Email (for login)\n• Encrypted password\n• Payment info (if you're on a paid plan)\n\nWhat we delete:\n• All receipts and messages after Sage's read (gone in 3 seconds)\n• Your receipt results (we don't store them)\n• Any record of what you pasted in\n\nWhat we never track:\n• Your behavior, message history, or usage patterns\n• Your conversations for training, marketing, or \"improvement\"\n• Any content unless you choose to save it\n\nWe use zero-storage architecture + real-time processing with contractual no-training AI services. Your data never gets used to \"make the AI better\" because Sage doesn't learn from you. She just helps you learn from your own patterns.\n\nYou stay in full control always."
               },
               {
                 q: "How does Sage know what's really going on?",
-                a: "Real talk: Our AI is scarily good because it's trained on millions of real-world situations, not just textbook theories. Think of Sage as your brutally honest friend who has seen every game in the book. While this is for \"entertainment,\" our 94% pattern accuracy means your gut was probably right. We just give you the receipts to prove it."
+                a: "Real talk: Our AI is scarily good because it's trained on millions of real-world situations, not just textbook theories. Think of Sage as your brutally honest friend who has seen every game in the book. While this is for \"entertainment,\" our 94% 'that's so true' rate means your gut was probably right. We just give you the receipts to prove it."
               },
               {
                 q: "Can I trust the AI's judgment over my own feelings?",
@@ -999,7 +1103,15 @@ const LandingPage = () => {
               },
               {
                 q: "What do I get with the free plan?",
-                a: "You get one free Truth Receipt every single day. That's a full, deep-dive analysis: the truth receipt, archetype, the verdict and the playbook on us, once a day. No credit card required. Have a crisis at 2 AM? We got you. Get another one tomorrow."
+                a: "You get one free Sage Receipt every single day. That's a full, deep-dive read: Sage's receipt, archetype, the verdict and the playbook on us, once a day. No credit card required. Have a crisis at 2 AM? We got you. Get another one tomorrow."
+              },
+              {
+                q: "Why does Sage sound so sure when it's just for entertainment?",
+                a: "That's her character - the friend who's SO done watching you spiral that everything sounds like fact. It's not. She's an AI with opinions, not a mind reader. But that confidence? That's what your overthinking brain needs to hear sometimes. Take what resonates, leave what doesn't."
+              },
+              {
+                q: "Does Sage only work on toxic situations?",
+                a: "Hell no. Sage reads EVERYTHING. Bring your healthy relationship and she'll validate why it's working. Bring your ex from 2009 for laughs. Bring your mom's guilt trip texts. Bring that Love Island chat you're obsessed with. Sage has takes on all of it - the good, the bad, and the 'what even is this?' She's not just for crisis mode. She's for anyone who wants another perspective (or just wants to see what happens)."
               }
             ].map((faq, index) => {
               const isOpen = openFaqIndex === index;
@@ -1052,7 +1164,7 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
             >
-              Simple, transparent pricing
+              Simple pricing for Sage's hot takes
             </motion.h2>
             <motion.p 
               variants={fadeInUp}
@@ -1076,12 +1188,12 @@ const LandingPage = () => {
             >
               <h3 className="text-2xl font-bold text-white mb-2">Free Daily Plan</h3>
               <div className="text-4xl font-bold text-emerald-400 mb-2">$0<span className="text-lg text-gray-400">/month</span></div>
-              <p className="text-gray-400 mb-6">Perfect for occasional clarity</p>
+              <p className="text-gray-400 mb-6">Perfect for occasional perspective</p>
               <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   '3 free receipts to start',
                   'Then 1 receipt per day',
-                  'Full analysis & insights',
+                  'Full read & insights',
                   'Shareable receipt cards'
                 ].map((feature, index) => (
                   <li key={index} className="flex items-center space-x-3">
@@ -1105,12 +1217,12 @@ const LandingPage = () => {
             >
               <h3 className="text-2xl font-bold text-white mb-2">Premium Monthly</h3>
               <div className="text-4xl font-bold text-blue-400 mb-2">$6.99<span className="text-lg text-gray-400">/month</span></div>
-              <p className="text-gray-400 mb-6">For the chronically confused</p>
+              <p className="text-gray-400 mb-6">For serial overthinkers</p>
               <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   'Unlimited receipts',
                   'Sage\'s Immunity Training',
-                  'Vibe Check™ analysis',
+                  'Vibe Check™ read',
                   'Priority processing',
                   'Advanced pattern detection'
                 ].map((feature, index) => (
@@ -1180,13 +1292,13 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="text-4xl md:text-6xl font-bold mb-6 moving-gradient-text"
             >
-              Ready to Stop Guessing?
+              Ready for Sage's Take?
             </motion.h2>
             <motion.p 
               variants={fadeInUp}
               className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed"
             >
-              Join thousands who've stopped spiraling and started knowing. Get your first receipt free.
+              Join thousands who finally got the perspective they needed. Get your first receipt free.
             </motion.p>
             <motion.div
               variants={fadeInUp}
@@ -1227,7 +1339,7 @@ const LandingPage = () => {
                 </span>
               </div>
               <p className="text-gray-400 max-w-md">
-                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie and text decoder.
+                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
               </p>
             </div>
             <div>
@@ -1252,8 +1364,8 @@ const LandingPage = () => {
               © 2025 Get The Receipts. All rights reserved.
             </p>
             <p className="text-gray-500 text-sm mb-3">
-              For Entertainment & Insight Purposes Only.<br />
-              13+ only (under 18 requires parental consent) • Not therapy, legal, or medical advice • Use at your own risk
+              For Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.<br />
+              16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
             </p>
             <p className="text-gray-600 text-sm">
               Support: <a href="mailto:sage@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">sage@getthereceipts.com</a>

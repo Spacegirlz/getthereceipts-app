@@ -446,7 +446,7 @@ const LandingPageRedesign = () => {
               </p>
               <p className="text-gray-400 text-sm mb-3">
                 For Entertainment & Insight Purposes Only.<br />
-                13+ only (under 18 requires parental consent) • Not therapy, legal, or medical advice • Use at your own risk
+                16+ • Not therapy, legal, or medical advice • Use at your own risk
               </p>
               <p className="text-gray-500 text-sm">
                 Support: <a href="mailto:support@getthereceipts.com" className="text-teal-400 hover:text-teal-300 transition-colors">support@getthereceipts.com</a>

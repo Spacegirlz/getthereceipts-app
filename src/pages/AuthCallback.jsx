@@ -31,6 +31,43 @@ const AuthCallback = () => {
           console.log('🔐 AuthCallback: Session found, user authenticated:', data.session.user.email);
           setStatus('success');
           
+          // 🎯 OPTION A: Process referral with 3 credits to both parties
+          try {
+            // Check for referral code in user metadata (from signup)
+            const userMetadata = data.session.user.user_metadata;
+            let referralCode = userMetadata?.referral_code;
+            
+            // If no referral code in metadata, check localStorage (from landing page)
+            if (!referralCode) {
+              referralCode = localStorage.getItem('pendingReferralCode');
+              if (referralCode) {
+                console.log('🎯 AuthCallback: Found referral code in localStorage:', referralCode);
+                // Clear it from localStorage after processing
+                localStorage.removeItem('pendingReferralCode');
+              }
+            }
+            
+            if (referralCode) {
+              console.log('🎯 AuthCallback: Processing referral for code:', referralCode, 'user:', data.session.user.email);
+              
+              // Use the proper referral processing function that gives 3 credits to both parties
+              const { data: referralResult, error: referralError } = await supabase.rpc('process_referral', {
+                referral_code_input: referralCode,
+                new_user_id: data.session.user.id
+              });
+              
+              if (referralError) {
+                console.error('❌ AuthCallback: Error processing referral:', referralError);
+              } else if (referralResult && referralResult.success) {
+                console.log('✅ AuthCallback: Referral processed successfully! Both users earned 3 credits!');
+              } else {
+                console.log('⚠️ AuthCallback: Referral processing failed:', referralResult?.error);
+              }
+            }
+          } catch (referralError) {
+            console.error('❌ AuthCallback: Error processing referral:', referralError);
+          }
+          
           // Check if there's saved form data that should trigger auto-processing
           const savedFormData = localStorage.getItem('chatInputFormData');
           if (savedFormData) {

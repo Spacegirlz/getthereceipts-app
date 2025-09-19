@@ -651,7 +651,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </h2>
             </div>
             <h3 className="text-sm sm:text-base md:text-lg font-medium tracking-wide sm:tracking-wider text-amber-300 opacity-75 mb-2 mt-2 sm:mt-4 text-center leading-relaxed">
-              {getArchetypeHeader(actualRiskLevel, archetypeName)}
+              Sage's Guide to Your {archetypeName?.replace(/^The /, '') || 'Pattern'}
             </h3>
             <div className="text-xs sm:text-sm text-white/60 mt-1 text-center whitespace-nowrap">
               Premium personalized protection strategies 🏆
@@ -945,11 +945,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             <div className="grid grid-cols-2">
               <div className="px-4 py-3 bg-gradient-to-br from-emerald-500/15 to-green-500/10 border-r border-slate-600/30 relative">
                 <div className="absolute inset-0 bg-emerald-400/5"></div>
-                <h5 className="text-emerald-400 font-bold text-xs sm:text-sm text-center relative z-10">🟢 What's Normal</h5>
+                <h5 className="text-emerald-400 font-bold text-xs sm:text-sm text-center relative z-10">🟢 What's Normal (according to Sage)</h5>
               </div>
               <div className="px-4 py-3 bg-gradient-to-br from-rose-500/15 to-pink-500/10 relative">
                 <div className="absolute inset-0 bg-rose-400/5"></div>
-                <h5 className="text-rose-400 font-bold text-xs sm:text-sm text-center relative z-10">🚩 Red Flags</h5>
+                <h5 className="text-rose-400 font-bold text-xs sm:text-sm text-center relative z-10">🚩 Red Flags (in Sage's opinion)</h5>
               </div>
             </div>
             
@@ -1178,8 +1178,15 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </div>
         </div>
 
+            {/* DISCLAIMER */}
+            <div className="text-center mt-4 mb-4">
+              <p className="text-xs text-stone-400/70 italic">
+                For entertainment purposes - Sage calls it like she sees it
+              </p>
+            </div>
+            
             {/* WATERMARK - Final element in Sage's Immunity Training */}
-            <div className="text-center mt-4 mb-6">
+            <div className="text-center mt-2 mb-6">
               <p className="text-xs text-stone-200/90/40 tracking-widest">
                 www.getthereceipts.com
               </p>
@@ -1240,7 +1247,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* Sage's Disclaimer */}
         <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
           <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 13+ only (under 18 requires parental consent).
+            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 16+.
           </p>
         </div>
       </div>

@@ -297,7 +297,7 @@ const AboutPage = () => {
             </p>
             <p className="text-gray-500 text-sm mb-3">
               For Entertainment & Insight Purposes Only.<br />
-              13+ only (under 18 requires parental consent) • Not therapy, legal, or medical advice • Use at your own risk
+              16+ • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-600 text-sm">
               Support: <a href="mailto:sage@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">sage@getthereceipts.com</a>

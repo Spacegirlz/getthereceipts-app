@@ -191,7 +191,7 @@ const PrivacyPolicy = () => {
 - [ ] Implement data deletion requests
 - [ ] Add privacy controls to user dashboard
 - [ ] Set up GDPR contact email
-- [ ] Add age verification (13+ requirement)
+- [ ] Add age verification (16+ requirement)
 
 ---
 
