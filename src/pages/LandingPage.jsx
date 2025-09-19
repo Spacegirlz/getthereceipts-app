@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye, Star, Users, Clock, Trophy, Check, Crown, Rocket } from 'lucide-react';
 import { useAuthModal } from '@/contexts/AuthModalContext';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageReceiptPage from '@/assets/sage-receipt-page.png';
 import { injectMovingGradientStyles } from '@/utils/gradientUtils';
@@ -21,6 +22,7 @@ const LandingPage = () => {
   
   const navigate = useNavigate();
   const { openModal } = useAuthModal();
+  const { user, loading } = useAuth();
   const [searchParams] = useSearchParams();
   
   // 🎯 CRITICAL FIX: Capture referral codes from URL
@@ -34,6 +36,14 @@ const LandingPage = () => {
       console.log('✅ Referral code saved for processing after signup');
     }
   }, [searchParams]);
+
+  // 🔐 CRITICAL FIX: Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (!loading && user) {
+      console.log('🔐 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
+      navigate('/dashboard');
+    }
+  }, [user, loading, navigate]);
   const [liveUserCount, setLiveUserCount] = useState(2347);
   const [selectedDemo, setSelectedDemo] = useState('breadcrumb');
   const [demoResult, setDemoResult] = useState(null);
@@ -46,6 +56,18 @@ const LandingPage = () => {
 
   const handleGetStarted = () => navigate('/chat-input');
   const handleGoPremium = () => navigate('/pricing');
+
+  // Show loading while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
