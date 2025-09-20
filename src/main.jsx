@@ -12,16 +12,14 @@ import { BrowserRouter } from 'react-router-dom';
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthModalProvider>
-        <AuthProvider>
-          <Elements stripe={stripePromise}>
-            <App />
-          </Elements>
-          <Toaster />
-        </AuthProvider>
-      </AuthModalProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <AuthModalProvider>
+      <AuthProvider>
+        <Elements stripe={stripePromise}>
+          <App />
+        </Elements>
+        <Toaster />
+      </AuthProvider>
+    </AuthModalProvider>
+  </BrowserRouter>
 );
