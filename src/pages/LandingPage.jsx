@@ -42,20 +42,26 @@ const LandingPage = () => {
     }
   }, [searchParams]);
 
-  // 🔐 CRITICAL FIX: Redirect authenticated users to dashboard (client-side only)
-  // BUT ONLY if they're not already on the landing page by choice
+  // 🔐 CRITICAL FIX: Only redirect to dashboard if user came from another page on the site
+  // Allow direct navigation to landing page (typing URL, logo click, etc.)
   useEffect(() => {
     // Only run on client side to prevent hydration mismatch
     if (typeof window === 'undefined') return;
     
-    // Check if user came here intentionally (not from automatic redirect)
+    // Check if user came here intentionally (logo click)
     const cameFromLogo = sessionStorage.getItem('navigatedFromLogo');
     if (cameFromLogo) {
       sessionStorage.removeItem('navigatedFromLogo');
       return; // Don't redirect if they clicked the logo
     }
     
-    if (!loading && user) {
+    // Check if this is direct navigation (no referrer or external referrer)
+    const isDirectNavigation = !document.referrer || 
+                              document.referrer === '' || 
+                              !document.referrer.includes('getthereceipts.com');
+    
+    // Only auto-redirect if user came from another page on the site
+    if (!loading && user && !isDirectNavigation) {
       console.log('🔐 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
       // Add a small delay to prevent hydration issues
       const redirectTimer = setTimeout(() => {
