@@ -1,23 +1,26 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from '@/pages/LandingPage';
-import QuizPage from '@/pages/QuizPage';
-import ChatInputPage from '@/pages/ChatInputPage';
-import ReceiptsCardPage from '@/pages/ReceiptsCardPage';
-import PricingPage from '@/pages/PricingPage';
-import AboutPage from '@/pages/AboutPage';
-import ReferralPage from '@/pages/ReferralPage';
-import EnhancedReferralPage from '@/pages/EnhancedReferralPage';
-import DashboardPage from '@/pages/DashboardPage';
-import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
-import TermsOfServicePage from '@/pages/TermsOfServicePage';
-import SettingsPage from '@/pages/SettingsPage';
-import AuthCallback from '@/pages/AuthCallback';
-import TestMetrics from '@/components/TestMetrics';
-import TestAnalysis from '@/components/TestAnalysis';
-import TestReceipt from '@/pages/TestReceipt';
-import TestReceiptPage from '@/pages/TestReceiptPage';
-import Success from '@/pages/Success';
+import { lazy } from 'react';
+
+// Lazy load heavy components
+const QuizPage = lazy(() => import('@/pages/QuizPage'));
+const ChatInputPage = lazy(() => import('@/pages/ChatInputPage'));
+const ReceiptsCardPage = lazy(() => import('@/pages/ReceiptsCardPage'));
+const PricingPage = lazy(() => import('@/pages/PricingPage'));
+const AboutPage = lazy(() => import('@/pages/AboutPage'));
+const ReferralPage = lazy(() => import('@/pages/ReferralPage'));
+const EnhancedReferralPage = lazy(() => import('@/pages/EnhancedReferralPage'));
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
+const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('@/pages/TermsOfServicePage'));
+const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const AuthCallback = lazy(() => import('@/pages/AuthCallback'));
+const TestMetrics = lazy(() => import('@/components/TestMetrics'));
+const TestAnalysis = lazy(() => import('@/components/TestAnalysis'));
+const TestReceipt = lazy(() => import('@/pages/TestReceipt'));
+const TestReceiptPage = lazy(() => import('@/pages/TestReceiptPage'));
+const Success = lazy(() => import('@/pages/Success'));
 import { Helmet } from 'react-helmet';
 import AuthModal from '@/components/AuthModal';
 import PrivateRoute from '@/components/PrivateRoute';
@@ -38,14 +41,12 @@ function App() {
         <meta name="twitter:title" content="Get The Receipts - Decode Any Text Message Instantly" />
         <meta name="twitter:description" content="Got a confusing text? Get the receipts! Answer quick questions, paste their message, and discover what they really meant with our viral text decoder." />
       </Helmet>
-      <div className="min-h-screen flex flex-col" style={{
-        background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-        backgroundAttachment: 'fixed'
-      }}>
+      <div className="min-h-screen flex flex-col">
         <MainHeader />
         <main className="flex-grow">
           <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
+            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div></div>}>
+              <Routes location={location} key={location.pathname}>
               <Route path="/" element={<LandingPage />} />
               <Route path="/quiz" element={<QuizPage />} />
               <Route path="/chat-input" element={<ChatInputPage />} />
@@ -69,6 +70,7 @@ function App() {
                 </PrivateRoute>
               } />
             </Routes>
+            </Suspense>
           </AnimatePresence>
         </main>
         <AuthModal />
