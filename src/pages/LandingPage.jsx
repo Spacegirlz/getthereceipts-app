@@ -15,8 +15,10 @@ const LandingPage = () => {
     injectMovingGradientStyles();
   }, []);
   
-  // Scroll to top on page load to ensure consistent landing position
+  // Scroll to top on page load to ensure consistent landing position (client-side only)
   React.useEffect(() => {
+    // Only run on client side to prevent hydration mismatch
+    if (typeof window === 'undefined') return;
     window.scrollTo(0, 0);
   }, []);
   
@@ -25,8 +27,11 @@ const LandingPage = () => {
   const { user, loading } = useAuth();
   const [searchParams] = useSearchParams();
   
-  // 🎯 CRITICAL FIX: Capture referral codes from URL
+  // 🎯 CRITICAL FIX: Capture referral codes from URL (client-side only)
   useEffect(() => {
+    // Only run on client side to prevent hydration mismatch
+    if (typeof window === 'undefined') return;
+    
     const referralCode = searchParams.get('ref');
     if (referralCode) {
       console.log('🎯 LandingPage: Referral code detected:', referralCode);
@@ -37,8 +42,11 @@ const LandingPage = () => {
     }
   }, [searchParams]);
 
-  // 🔐 CRITICAL FIX: Redirect authenticated users to dashboard
+  // 🔐 CRITICAL FIX: Redirect authenticated users to dashboard (client-side only)
   useEffect(() => {
+    // Only run on client side to prevent hydration mismatch
+    if (typeof window === 'undefined') return;
+    
     if (!loading && user) {
       console.log('🔐 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
       // Add a small delay to prevent hydration issues
@@ -48,6 +56,8 @@ const LandingPage = () => {
       return () => clearTimeout(redirectTimer);
     }
   }, [user, loading, navigate]);
+
+  // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
   const [liveUserCount, setLiveUserCount] = useState(2347);
   const [selectedDemo, setSelectedDemo] = useState('breadcrumb');
   const [demoResult, setDemoResult] = useState(null);
@@ -58,10 +68,19 @@ const LandingPage = () => {
   const y1 = useTransform(scrollY, [0, 300], [0, 100]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
 
-  const handleGetStarted = () => navigate('/chat-input');
-  const handleGoPremium = () => navigate('/pricing');
+  // Live user count effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveUserCount((prev) => {
+        const change = Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : -Math.floor(Math.random() * 2) - 1;
+        const newCount = prev + change;
+        return Math.max(2300, Math.min(2500, newCount));
+      });
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
-  // Show loading while checking authentication
+  // Show loading while checking authentication - MUST BE AFTER ALL HOOKS
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -73,16 +92,8 @@ const LandingPage = () => {
     );
   }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLiveUserCount((prev) => {
-        const change = Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : -Math.floor(Math.random() * 2) - 1;
-        const newCount = prev + change;
-        return Math.max(2300, Math.min(2500, newCount));
-      });
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+  const handleGetStarted = () => navigate('/chat-input');
+  const handleGoPremium = () => navigate('/pricing');
 
   const demoData = {
     breadcrumb: {
@@ -345,10 +356,10 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-950 text-white overflow-hidden">
-      {/* Background Elements */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.20),rgba(255,255,255,0))] pointer-events-none" />
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.10),rgba(255,255,255,0))] pointer-events-none" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-950 text-white overflow-hidden relative">
+      {/* Background Elements - Simplified to avoid conflicts */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.15),transparent)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.08),transparent)] pointer-events-none" />
       
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-8 py-6 bg-black/85 border-b border-white/10">
@@ -551,7 +562,7 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="relative"
             >
-              <div className="relative z-10 bg-gradient-to-br from-violet-500/20 to-blue-500/20 backdrop-blur-sm border border-white/10 rounded-3xl p-8">
+              <div className="relative z-10 bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 rounded-3xl p-8">
                 <div className="w-full aspect-square bg-gradient-to-br from-violet-400 to-blue-500 rounded-2xl flex items-center justify-center overflow-hidden">
                   <img 
                     src={sagePurpleSwirl} 
@@ -560,7 +571,6 @@ const LandingPage = () => {
                   />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-blue-500 rounded-3xl blur-3xl opacity-20" />
             </motion.div>
           </motion.div>
         </div>

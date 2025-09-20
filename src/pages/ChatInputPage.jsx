@@ -242,6 +242,9 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
 
   // Auto-submit when credits finish loading (if flag is set)
   useEffect(() => {
+    // Only run on client side to prevent hydration mismatch
+    if (typeof window === 'undefined') return;
+    
     if (!creditsLoading && user && localStorage.getItem('shouldAutoSubmit') === 'true') {
       console.log('🚀 ChatInput: Auto-submit triggered!', { 
         textsLength: texts.trim().length, 
@@ -268,6 +271,9 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
 
   // First-use disclaimer detection
   useEffect(() => {
+    // Only run on client side to prevent hydration mismatch
+    if (typeof window === 'undefined') return;
+    
     const hasSeenDisclaimer = localStorage.getItem('hasSeenSageDisclaimer');
     if (!hasSeenDisclaimer) {
       setShowFirstUseModal(true);

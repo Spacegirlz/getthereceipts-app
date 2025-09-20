@@ -8,6 +8,12 @@ export const useAgeVerification = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Only run on client side to prevent hydration mismatch
+    if (typeof window === 'undefined') {
+      setIsLoading(false);
+      return;
+    }
+    
     // Check if user has already been verified
     const verified = localStorage.getItem(AGE_VERIFICATION_KEY);
     if (verified === 'true') {
