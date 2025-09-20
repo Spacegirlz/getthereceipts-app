@@ -40,7 +40,16 @@ const MainHeader = () => {
       }}
     >
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-black gradient-text">
+        <Link 
+          to="/" 
+          className="text-2xl font-black gradient-text"
+          onClick={() => {
+            // Set flag to indicate user clicked logo intentionally
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem('navigatedFromLogo', 'true');
+            }
+          }}
+        >
           GetTheReceipts
         </Link>
         <div className="flex items-center gap-4">

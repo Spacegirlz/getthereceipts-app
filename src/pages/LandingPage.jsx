@@ -43,9 +43,17 @@ const LandingPage = () => {
   }, [searchParams]);
 
   // 🔐 CRITICAL FIX: Redirect authenticated users to dashboard (client-side only)
+  // BUT ONLY if they're not already on the landing page by choice
   useEffect(() => {
     // Only run on client side to prevent hydration mismatch
     if (typeof window === 'undefined') return;
+    
+    // Check if user came here intentionally (not from automatic redirect)
+    const cameFromLogo = sessionStorage.getItem('navigatedFromLogo');
+    if (cameFromLogo) {
+      sessionStorage.removeItem('navigatedFromLogo');
+      return; // Don't redirect if they clicked the logo
+    }
     
     if (!loading && user) {
       console.log('🔐 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
