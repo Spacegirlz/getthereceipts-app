@@ -273,6 +273,10 @@ const PrivacyPolicyPage = () => {
             </li>
             <li className="flex items-start gap-3">
               <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Rewardful:</strong> Affiliate program management for our Receipts and Riches Affiliate Program (tracks referral links and commissions only)</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-blue-400 font-bold mt-1">•</span>
               <span><strong className="text-white">AI Services:</strong> Real-time analysis with contractual no-training guarantees</span>
             </li>
             <li className="flex items-start gap-3">
