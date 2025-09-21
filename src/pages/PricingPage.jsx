@@ -1092,6 +1092,7 @@ const PricingPage = () => {
               <div className="space-y-2">
                 <a href="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
                 <a href="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                <a href="/refund-policy" className="block text-gray-400 hover:text-white transition-colors">Refund Policy</a>
               </div>
             </div>
           </div>
