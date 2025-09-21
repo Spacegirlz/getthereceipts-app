@@ -60,7 +60,7 @@ function App() {
               <Route path="/refer/apply" element={<AffiliateApplicationPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-              <Route path="/refund-policy" element={<RefundPolicyPage />} />
+              <Route path="/refund-policyh" element={<RefundPolicyPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/success" element={<Success />} />
               <Route path="/test-metrics" element={<TestMetrics />} />
