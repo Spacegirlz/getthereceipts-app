@@ -588,15 +588,6 @@ const TermsOfServicePage = () => {
           </p>
         </div>
 
-        {/* Navigation Links */}
-        <div className="mt-16 flex flex-wrap justify-center gap-6 mb-8">
-          <Link to="/about" className="text-gray-400 hover:text-white transition-colors">About</Link>
-          <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
-          <Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
-          <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
-          <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
-          <Link to="/refund-policy" className="text-gray-400 hover:text-white transition-colors">Refund Policy</Link>
-        </div>
 
         {/* Footer */}
         <footer className="relative px-6 lg:px-8 py-16 border-t border-white/10">
