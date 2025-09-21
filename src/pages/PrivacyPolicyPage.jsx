@@ -273,7 +273,7 @@ const PrivacyPolicyPage = () => {
             </li>
             <li className="flex items-start gap-3">
               <span className="text-blue-400 font-bold mt-1">•</span>
-              <span><strong className="text-white">Rewardful:</strong> Affiliate program management for our Receipts and Riches Affiliate Program (tracks referral links and commissions only)</span>
+              <span><strong className="text-white">Rewardful:</strong> Affiliate program management for our Receipts and Riches Affiliate Program. Tracks referral links, commission data, and affiliate performance metrics. Rewardful's privacy policy governs their data handling practices, and they do not access your personal messages or receipt content.</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-blue-400 font-bold mt-1">•</span>
@@ -284,6 +284,42 @@ const PrivacyPolicyPage = () => {
               <span><strong className="text-white">Vercel:</strong> Secure website hosting and deployment</span>
             </li>
           </ul>
+        </section>
+
+        {/* Affiliate Program Data Handling */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">🤝</span>
+            Affiliate Program Data Handling
+          </h2>
+          <p className="text-lg text-gray-300 mb-6">
+            For our Receipts and Riches Affiliate Program, we work with Rewardful to manage affiliate relationships and track referrals. Here's how this affects your privacy:
+          </p>
+          <div className="space-y-4">
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-blue-300 mb-2">What Rewardful Tracks:</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Referral links and click tracking</li>
+                <li>• Commission calculations and payouts</li>
+                <li>• Affiliate performance metrics</li>
+                <li>• Basic account information for affiliate management</li>
+              </ul>
+            </div>
+            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-green-300 mb-2">What Rewardful Does NOT Access:</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Your personal messages or receipt content</li>
+                <li>• AI analysis results or insights</li>
+                <li>• Your communication history</li>
+                <li>• Any sensitive personal data beyond affiliate management</li>
+              </ul>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <p className="text-gray-300">
+                <strong className="text-white">Important:</strong> Rewardful operates under their own privacy policy and data handling practices. We ensure they only receive the minimal data necessary for affiliate program management. Your core service usage (messages, receipts, AI analysis) remains completely separate from affiliate tracking.
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* Security Measures */}
