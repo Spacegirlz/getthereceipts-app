@@ -19,32 +19,44 @@ const PrivacyPolicyPage = () => {
             <span className="text-blue-400 text-sm font-medium">Privacy First Policy</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black mb-6 gradient-text">Privacy Policy</h1>
-          <p className="text-xl text-gray-300 mb-4">Your messages are analyzed and immediately forgotten</p>
-          <p className="text-gray-400 text-sm">Last Updated: September 14, 2025 | Effective Immediately</p>
+          <p className="text-xl text-gray-300 mb-4">Last Updated: September 21, 2025</p>
         </div>
 
-        {/* Zero Storage Banner */}
+        {/* Our Privacy First Philosophy */}
+        <section className="mb-12 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-8">
+          <h2 className="text-3xl font-bold mb-6 text-white">Our Privacy First Philosophy</h2>
+          <p className="text-lg text-gray-300 mb-4">
+            At Get The Receipts, privacy isn't just a feature—it's our foundation. We believe your personal communications should remain exactly that: personal. This Privacy Policy explains our commitment to protecting your privacy and details how we've built our entire service around the principle that your messages are analyzed and immediately forgotten.
+          </p>
+          <p className="text-lg text-gray-300">
+            We designed our architecture from the ground up to ensure that your most sensitive information—your personal communications—never becomes a permanent part of our systems. This isn't just good practice; it's who we are.
+          </p>
+        </section>
+
+        {/* We Store Nothing Banner */}
         <div className="mb-12 p-8 bg-gradient-to-r from-green-500/10 to-blue-500/10 border-2 border-green-500/30 rounded-2xl text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-50"></div>
           <div className="relative z-10">
             <h2 className="text-3xl font-bold mb-3 text-white">🚫 We Store Nothing. Period.</h2>
-            <p className="text-xl text-gray-300">
+            <p className="text-xl text-gray-300 mb-4">
               No receipts. No messages. No history. No tracking.<br/>
               Everything is processed in real-time and immediately discarded.
+            </p>
+            <p className="text-lg text-gray-400">
+              Our zero-storage architecture means that your receipts and messages exist in our system only for the milliseconds needed to analyze them. Once the analysis is complete and delivered to you, everything is permanently deleted from our servers.
             </p>
           </div>
         </div>
 
-        {/* Section 1: What We DON'T Collect */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+        {/* What We Don't Collect */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
             <span className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center text-xl">🚫</span>
-            What We DON'T Collect (Almost Everything)
+            What We Don't Collect (Almost Everything)
           </h2>
-          <div className="bg-green-500/10 border-l-4 border-green-500 p-4 rounded-lg mb-4">
-            <p className="font-semibold text-green-300 mb-2">Zero-Storage Architecture:</p>
-            <p className="text-gray-300">We've built Get The Receipts to be radically private. Your receipts and messages exist only for the milliseconds needed to analyze them.</p>
-          </div>
+          <p className="text-lg text-gray-300 mb-6">
+            We've built Get The Receipts to be radically private. Here's what we don't collect or store:
+          </p>
           <ul className="space-y-3 text-gray-300">
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
@@ -64,99 +76,113 @@ const PrivacyPolicyPage = () => {
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>No cookies for tracking (only essential authentication)</span>
+              <span>No tracking cookies (only essential authentication cookies)</span>
             </li>
           </ul>
         </section>
 
-        {/* Section 2: Minimal Account Data */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center text-xl">👤</span>
-            Minimal Account Information
+        {/* What We Do Collect */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-xl">📋</span>
+            What We Do Collect: The Absolute Minimum
           </h2>
-          <p className="mb-6 text-gray-300">We only store the absolute minimum to make your account work:</p>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-blue-400 font-semibold mb-3">What We Keep:</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 font-bold mt-1">✓</span>
-                  <span>Email address (for login)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 font-bold mt-1">✓</span>
-                  <span>Encrypted password</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 font-bold mt-1">✓</span>
-                  <span>Payment info (via Stripe, if premium)</span>
-                </li>
-              </ul>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-red-400 font-semibold mb-3">What We Never Keep:</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold mt-1">✗</span>
-                  <span>Your actual receipts</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold mt-1">✗</span>
-                  <span>Message contents</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold mt-1">✗</span>
-                  <span>Analysis history</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 3: Real-Time Processing */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center text-xl">⚡</span>
-            How Real-Time Processing Works
-          </h2>
-          <div className="bg-blue-500/10 border-l-4 border-blue-500 p-4 rounded-lg mb-6">
-            <p className="font-semibold text-blue-300 mb-2">The 3-Second Rule:</p>
-            <p className="text-gray-300">Your data exists in our system for approximately 3 seconds - just long enough to analyze and return results.</p>
-          </div>
-          <ol className="space-y-4 text-gray-300 mb-6">
-            <li className="flex items-start gap-3">
-              <span className="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">1</span>
-              <span>You submit a receipt/message</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">2</span>
-              <span>Our AI analyzes it instantly (1-3 seconds)</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">3</span>
-              <span>Results are sent to your screen</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">4</span>
-              <span>Everything is permanently deleted from our servers</span>
-            </li>
-          </ol>
-          <p className="text-gray-400 text-sm">
-            <strong>Technical Implementation:</strong> We use stateless processing with no persistent storage. Data exists only in temporary memory during processing and is garbage-collected immediately after.
+          <p className="text-lg text-gray-300 mb-6">
+            We collect only what's essential to make your account work:
           </p>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-600 rounded-lg">
+              <thead>
+                <tr className="bg-gray-800/50">
+                  <th className="border border-gray-600 px-4 py-3 text-left text-white font-semibold">What We Keep</th>
+                  <th className="border border-gray-600 px-4 py-3 text-left text-white font-semibold">Why We Need It</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border border-gray-600 px-4 py-3 text-gray-300">Email address</td>
+                  <td className="border border-gray-600 px-4 py-3 text-gray-300">For account login and important service communications</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-600 px-4 py-3 text-gray-300">Encrypted password</td>
+                  <td className="border border-gray-600 px-4 py-3 text-gray-300">To secure your account access</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-600 px-4 py-3 text-gray-300">Payment information</td>
+                  <td className="border border-gray-600 px-4 py-3 text-gray-300">Processed securely through Stripe (we never see your card details)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <h3 className="text-lg font-semibold text-red-300 mb-3">What We Never Keep:</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li>• Your actual receipts or messages</li>
+              <li>• Message contents or analysis history</li>
+              <li>• Personal information beyond what's listed above</li>
+            </ul>
+          </div>
         </section>
 
-        {/* Section 4: AI Training Guarantee */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center text-xl">🤖</span>
-            AI Training Guarantee
+        {/* How Our Real-Time Processing Works */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">⚡</span>
+            How Our Real-Time Processing Works
           </h2>
-          <div className="bg-green-500/10 border-l-4 border-green-500 p-4 rounded-lg mb-6">
-            <p className="font-semibold text-green-300 mb-2">Your Data Is Never Used for AI Training</p>
-            <p className="text-gray-300">We have contractual agreements with our AI providers explicitly prohibiting the use of your data for model training or improvement.</p>
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6 mb-6">
+            <h3 className="text-xl font-semibold text-blue-300 mb-3">The 3-Second Rule:</h3>
+            <p className="text-lg text-gray-300">
+              Your data exists in our system for approximately 3 seconds—just long enough to analyze and return results.
+            </p>
           </div>
+          
+          <div className="space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="w-8 h-8 bg-gradient-to-r from-violet-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-1">
+                1
+              </div>
+              <p className="text-gray-300">You submit a receipt or message through our secure interface</p>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-8 h-8 bg-gradient-to-r from-violet-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-1">
+                2
+              </div>
+              <p className="text-gray-300">Our AI analyzes it instantly (1-3 seconds)</p>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-8 h-8 bg-gradient-to-r from-violet-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-1">
+                3
+              </div>
+              <p className="text-gray-300">Results are sent to your screen</p>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-8 h-8 bg-gradient-to-r from-violet-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-1">
+                4
+              </div>
+              <p className="text-gray-300">Everything is permanently deleted from our servers</p>
+            </div>
+          </div>
+
+          <div className="mt-6 p-4 bg-gray-800/50 rounded-lg">
+            <p className="text-gray-300">
+              <strong className="text-white">Technical Implementation:</strong> We use stateless processing with no persistent storage. Data exists only in temporary memory during processing and is immediately garbage-collected afterward.
+            </p>
+          </div>
+        </section>
+
+        {/* AI Training Guarantee */}
+        <section className="mb-12 bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">🛡️</span>
+            AI Training Guarantee: Your Data Stays Yours
+          </h2>
+          <h3 className="text-xl font-semibold text-green-300 mb-4">Your Data Is Never Used for AI Training</h3>
+          <p className="text-lg text-gray-300 mb-6">
+            We have binding contractual agreements with our AI providers that explicitly prohibit the use of your data for model training or improvement. This means:
+          </p>
           <ul className="space-y-3 text-gray-300">
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
@@ -164,7 +190,7 @@ const PrivacyPolicyPage = () => {
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>API calls are configured for zero-logging</span>
+              <span>API calls configured for zero-logging</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
@@ -177,122 +203,94 @@ const PrivacyPolicyPage = () => {
           </ul>
         </section>
 
-        {/* Section 5: About Sage */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl flex items-center justify-center text-xl">🔮</span>
-            About Sage (Our AI Assistant)
+        {/* About Sage */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-xl">🔮</span>
+            About Sage: Our AI Assistant
           </h2>
-          <p className="mb-6 text-gray-300">Sage is a fictional character providing pattern-based insights. Here's what you need to know:</p>
-          <div className="bg-yellow-500/10 border-l-4 border-yellow-500 p-4 rounded-lg mb-6">
-            <p className="font-semibold text-yellow-300 mb-2">Important:</p>
-            <p className="text-gray-300">Sage's insights are for entertainment and reflection only. They are NOT predictions, medical advice, or professional guidance.</p>
+          <p className="text-lg text-gray-300 mb-6">
+            Sage is our fictional AI character who provides pattern-based insights about communication styles and relationship dynamics. Here's what's important to understand:
+          </p>
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-6 mb-6">
+            <p className="text-lg text-gray-300 mb-4">
+              <strong className="text-yellow-300">Sage's insights are for entertainment and reflection only.</strong> They are not predictions, medical advice, or professional guidance. Sage:
+            </p>
+            <ul className="space-y-2 text-gray-300">
+              <li>• Provides emotional pattern recognition based on text analysis</li>
+              <li>• Offers perspective and observations, not certainty</li>
+              <li>• Cannot read minds or predict the future</li>
+              <li>• Should be considered one perspective among many in your decision-making</li>
+            </ul>
           </div>
+        </section>
+
+        {/* Your Rights and Control */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-xl">👤</span>
+            Your Rights and Control
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold text-green-300 mb-4">You Can Always:</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Delete your account instantly through your account settings</li>
+                <li>• Export your minimal account data</li>
+                <li>• Opt out of any communications</li>
+                <li>• Contact us with privacy questions or concerns</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-red-300 mb-4">We Will Never:</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Sell your information to third parties</li>
+                <li>• Share your data without your explicit consent</li>
+                <li>• Store receipts or messages after processing</li>
+                <li>• Track your behavior across other websites</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Third-Party Services */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center text-xl">🔗</span>
+            Third-Party Services: Minimal and Privacy-Focused
+          </h2>
+          <p className="text-lg text-gray-300 mb-6">
+            We use only essential third-party services, all chosen for their strong privacy standards:
+          </p>
           <ul className="space-y-3 text-gray-300">
             <li className="flex items-start gap-3">
-              <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>Provides emotional pattern recognition</span>
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Supabase:</strong> Secure authentication and database hosting (stores only account information, never receipts)</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>Offers perspective, not certainty</span>
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Stripe:</strong> Payment processing (we never see your payment details)</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>Cannot read minds or predict futures</span>
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">AI Services:</strong> Real-time analysis with contractual no-training guarantees</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>Should be one perspective among many</span>
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Vercel:</strong> Secure website hosting and deployment</span>
             </li>
           </ul>
         </section>
 
-        {/* Section 6: Your Rights & Control */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center text-xl">⚖️</span>
-            Your Rights & Control
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-emerald-400 font-semibold mb-3">You Can Always:</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 font-bold mt-1">✓</span>
-                  <span>Delete your account instantly</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 font-bold mt-1">✓</span>
-                  <span>Export your account data</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 font-bold mt-1">✓</span>
-                  <span>Opt out of any communications</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 font-bold mt-1">✓</span>
-                  <span>Request data deletion</span>
-                </li>
-              </ul>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-red-400 font-semibold mb-3">We Will Never:</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold mt-1">✗</span>
-                  <span>Sell your information</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold mt-1">✗</span>
-                  <span>Share data without consent</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold mt-1">✗</span>
-                  <span>Store receipts after processing</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold mt-1">✗</span>
-                  <span>Track your behavior</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 7: Third-Party Services */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">🔗</span>
-            Third-Party Services
-          </h2>
-          <p className="mb-6 text-gray-300">We use minimal third-party services, all chosen for their privacy standards:</p>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-cyan-400 font-semibold mb-3">Supabase</h3>
-              <p className="text-gray-300 text-sm">Secure authentication and database (stores only account info, never receipts)</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-cyan-400 font-semibold mb-3">Stripe</h3>
-              <p className="text-gray-300 text-sm">Payment processing (we never see your card details)</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-cyan-400 font-semibold mb-3">AI Services</h3>
-              <p className="text-gray-300 text-sm">Real-time analysis with contractual no-training guarantees</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/7 transition-colors">
-              <h3 className="text-cyan-400 font-semibold mb-3">Vercel</h3>
-              <p className="text-gray-300 text-sm">Secure hosting and deployment</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 8: Security Measures */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-xl">🔐</span>
+        {/* Security Measures */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">🔐</span>
             Security Measures
           </h2>
+          <p className="text-lg text-gray-300 mb-6">
+            We implement comprehensive security measures to protect the minimal data we do store:
+          </p>
           <ul className="space-y-3 text-gray-300 mb-6">
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
@@ -300,129 +298,134 @@ const PrivacyPolicyPage = () => {
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>Industry-standard password hashing</span>
+              <span>Industry-standard password hashing and storage</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>Regular security audits and updates</span>
+              <span>Regular security audits and system updates</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>Secure HTTPS connections only</span>
+              <span>Secure HTTPS connections for all communications</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>No data to breach (since we don't store it)</span>
+              <span>Most importantly: No sensitive data to breach, since we don't store it</span>
             </li>
           </ul>
-          <div className="bg-blue-500/10 border-l-4 border-blue-500 p-4 rounded-lg">
-            <p className="font-semibold text-blue-300 mb-2">Note:</p>
-            <p className="text-gray-300">While we implement strong security, no system is 100% impenetrable. Our best security feature is that we don't store your sensitive data at all.</p>
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6">
+            <p className="text-gray-300">
+              While we implement robust security measures, no system is 100% impenetrable. Our most effective security feature is our architectural decision not to store your sensitive communications at all.
+            </p>
           </div>
         </section>
 
-        {/* Section 9: Legal Disclaimers & Limitations */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center text-xl">⚠️</span>
-            Legal Disclaimers & Limitations
+        {/* Age Requirement and Safety */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center text-xl">👶</span>
+            Age Requirement and Safety
           </h2>
-          <div className="space-y-6">
-            <div className="bg-amber-500/10 border-l-4 border-amber-500 p-4 rounded-lg">
-              <p className="font-semibold text-amber-300 mb-2">USE AT YOUR OWN RISK</p>
-              <p className="text-gray-300 text-sm">
-                This service is for entertainment and personal insight only. You acknowledge that you use this service entirely at your own risk and are solely responsible for any decisions or actions taken based on the analyses provided.
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-red-400 font-semibold">Critical Limitations:</h3>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-400 font-bold mt-1">⚠️</span>
-                  <span>NOT a substitute for professional advice (legal, medical, financial, tax, or psychological)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-400 font-bold mt-1">⚠️</span>
-                  <span>Analysis results should NOT be used as evidence for any official purpose</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-400 font-bold mt-1">⚠️</span>
-                  <span>We do NOT verify the authenticity of submitted receipts</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-400 font-bold mt-1">⚠️</span>
-                  <span>We make NO guarantees about accuracy, completeness, or reliability</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-400 font-bold mt-1">⚠️</span>
-                  <span>AI systems may produce inaccurate or inappropriate responses</span>
-                </li>
+          <p className="text-lg text-gray-300 mb-4">
+            This Service is intended for users who are at least 16 years old. We have implemented comprehensive safety measures throughout our platform, including content filtering and prominent safety notices on every page.
+          </p>
+          <p className="text-lg text-gray-300">
+            Users aged 16-17 may use the Service, though we encourage parental guidance given the personal nature of relationship analysis. We do not knowingly collect personal information from anyone under 16.
+          </p>
+        </section>
+
+        {/* Data Protection Rights */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">⚖️</span>
+            Your Data Protection Rights
+          </h2>
+          <p className="text-lg text-gray-300 mb-6">
+            Depending on your location, you may have specific rights regarding your personal data:
+          </p>
+          <ul className="space-y-3 text-gray-300">
+            <li className="flex items-start gap-3">
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Right to Access:</strong> Request copies of the personal data we hold about you</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Right to Rectification:</strong> Request correction of any inaccurate information</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Right to Erasure:</strong> Request deletion of your personal data</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-blue-400 font-bold mt-1">•</span>
+              <span><strong className="text-white">Right to Data Portability:</strong> Request transfer of your data to another service</span>
+            </li>
+          </ul>
+          <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+            <p className="text-gray-300">
+              To exercise these rights, contact us at <a href="mailto:support@getthereceipts.com" className="text-blue-400 hover:text-blue-300">support@getthereceipts.com</a>.
+            </p>
+          </div>
+        </section>
+
+        {/* International Data Transfers */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">🌍</span>
+            International Data Transfers
+          </h2>
+          <p className="text-lg text-gray-300">
+            Your minimal account information may be transferred to and maintained on computers located outside your jurisdiction. We use Standard Contractual Clauses and other approved legal mechanisms to ensure your data receives equivalent protection regardless of location.
+          </p>
+        </section>
+
+        {/* Changes to Privacy Policy */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center text-xl">📝</span>
+            Changes to This Privacy Policy
+          </h2>
+          <p className="text-lg text-gray-300">
+            We may update this Privacy Policy to reflect changes in our practices or legal requirements. If we make material changes, we will notify you by email and post a prominent notice on our website before the changes take effect.
+          </p>
+        </section>
+
+        {/* Mental Health and Safety Resources */}
+        <section className="mb-12 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-xl">🆘</span>
+            Mental Health and Safety Resources
+          </h2>
+          <p className="text-lg text-gray-300 mb-6">
+            This service is for entertainment and personal insight only. If you're experiencing emotional distress or crisis, please reach out for professional help:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold text-red-300 mb-3">US Resources:</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• National Suicide Prevention Lifeline: 988</li>
+                <li>• Crisis Text Line: Text HOME to 741741</li>
               </ul>
             </div>
-
             <div>
-              <h3 className="text-red-400 font-semibold mb-3">Liability Waiver:</h3>
-              <p className="text-gray-300 text-sm">To the maximum extent permitted by law, Get The Receipts and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from your use of our service.</p>
-            </div>
-
-            <div>
-              <h3 className="text-red-400 font-semibold mb-3">Indemnification:</h3>
-              <p className="text-gray-300 text-sm">You agree to indemnify, defend, and hold harmless Get The Receipts, its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from your use of the service or violation of these terms.</p>
+              <h3 className="text-lg font-semibold text-red-300 mb-3">International:</h3>
+              <p className="text-gray-300">
+                Visit <a href="https://findahelpline.com" className="text-blue-400 hover:text-blue-300 underline">findahelpline.com</a> for resources in your country
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Section 10: Additional Legal Terms */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-500 rounded-xl flex items-center justify-center text-xl">📋</span>
-            Additional Legal Terms
+        {/* Governing Law */}
+        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-xl">⚖️</span>
+            Governing Law
           </h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-blue-400 font-semibold mb-2">Age Requirement:</h3>
-              <p className="text-gray-300">You must be at least 16 years old to use this service.</p>
-            </div>
-            <div>
-              <h3 className="text-blue-400 font-semibold mb-2">Children's Privacy:</h3>
-              <p className="text-gray-300">Users under 16 are not permitted to use the Service. We do not knowingly collect personal information from children under 16. If we discover we've inadvertently collected such information, we will delete it immediately.</p>
-            </div>
-            <div>
-              <h3 className="text-blue-400 font-semibold mb-2">Governing Law:</h3>
-              <p className="text-gray-300">This policy is governed by applicable laws. Any disputes shall be resolved in the appropriate jurisdiction.</p>
-            </div>
-            <div>
-              <h3 className="text-blue-400 font-semibold mb-2">Policy Updates:</h3>
-              <p className="text-gray-300">We may update this policy at any time. Continued use of the service constitutes acceptance of any changes.</p>
-            </div>
-            <div>
-              <h3 className="text-blue-400 font-semibold mb-2">Severability:</h3>
-              <p className="text-gray-300">If any provision of this policy is found to be unenforceable, the remaining provisions will continue in full force and effect.</p>
-            </div>
-          </div>
+          <p className="text-lg text-gray-300">
+            This Privacy Policy is governed by the laws of Australia, including the Australian Privacy Act 1988 and Australian Privacy Principles (APPs).
+          </p>
         </section>
-
-        {/* Section 11: Mental Health Resources */}
-        <section className="mb-8 bg-white/5 border border-white/10 rounded-2xl p-6 hover:transform hover:translate-y-1 transition-all duration-300">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <span className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center text-xl">💚</span>
-            Mental Health Resources
-          </h2>
-          <p className="mb-6 text-gray-300">If you're experiencing emotional distress or crisis, please reach out for professional help:</p>
-          <div className="bg-blue-500/10 border-l-4 border-blue-500 p-4 rounded-lg">
-            <p className="font-semibold text-blue-300 mb-2">US Resources:</p>
-            <p className="text-gray-300 mb-2">
-              • National Suicide Prevention Lifeline: 988<br/>
-              • Crisis Text Line: Text HOME to 741741
-            </p>
-            <p className="font-semibold text-blue-300 mb-2">International:</p>
-            <p className="text-gray-300">
-              • Visit <a href="https://findahelpline.com" className="text-blue-400 hover:text-blue-300 underline">findahelpline.com</a> for resources in your country
-            </p>
-          </div>
-        </section>
-
 
         {/* Contact CTA Section */}
         <div className="mb-12 p-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl text-center relative overflow-hidden">
@@ -445,6 +448,9 @@ const PrivacyPolicyPage = () => {
         <div className="mb-12 p-6 bg-gray-800/30 rounded-xl border border-gray-700/50">
           <h3 className="text-xl font-semibold text-white mb-4 text-center">Company Information</h3>
           <div className="text-center space-y-2">
+            <p className="text-gray-300">
+              <span className="font-semibold text-white">Company:</span> Get The Receipts Pty Ltd
+            </p>
             <p className="text-gray-300">
               <span className="font-semibold text-white">Address:</span> 36/150 Albert Rd, South Melbourne VIC 3205, Australia
             </p>
@@ -469,6 +475,7 @@ const PrivacyPolicyPage = () => {
           <Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
           <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
           <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+          <Link to="/refund-policy" className="text-gray-400 hover:text-white transition-colors">Refund Policy</Link>
         </div>
 
         {/* Footer */}
@@ -501,6 +508,7 @@ const PrivacyPolicyPage = () => {
                 <div className="space-y-2">
                   <Link to="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
                   <Link to="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+                  <Link to="/refund-policy" className="block text-gray-400 hover:text-white transition-colors">Refund Policy</Link>
                 </div>
               </div>
             </div>
