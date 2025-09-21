@@ -12,11 +12,14 @@ import { useToast } from '@/components/ui/use-toast';
 import ReferralQRCode from '@/components/ReferralQRCode';
 
 const ReferralPage = () => {
+  console.log('🚀 ReferralPage component mounted');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { openModal } = useAuthModal();
   const { toast } = useToast();
+  
+  console.log('👤 ReferralPage user from useAuth:', user);
   
   const [referralCode, setReferralCode] = useState('');
   const [referralLink, setReferralLink] = useState('');
@@ -24,27 +27,68 @@ const ReferralPage = () => {
   const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Emergency fallback - set loading to false after 3 seconds no matter what
+  useEffect(() => {
+    const emergencyTimeout = setTimeout(() => {
+      console.log('🚨 Emergency timeout - forcing loading to false');
+      setLoading(false);
+    }, 3000);
+    
+    return () => clearTimeout(emergencyTimeout);
+  }, []);
+
   // Check if this is a referral link
   const incomingCode = searchParams.get('code');
 
   useEffect(() => {
+    console.log('🔄 ReferralPage useEffect triggered, user:', user);
+    
     const loadReferralData = async () => {
-      if (user) {
-        // Get user's referral code
-        const result = await getUserReferralCode(user.id);
-        if (result.success) {
-          setReferralCode(result.referralCode);
-          setReferralLink(getReferralLink(result.referralCode));
-          setStats({
-            totalReferrals: result.totalReferrals,
-            totalRewards: result.totalRewards
-          });
+      console.log('📊 Starting loadReferralData, user:', user);
+      try {
+        if (user) {
+          console.log('👤 User exists, calling getUserReferralCode...');
+          // Get user's referral code
+          const result = await getUserReferralCode(user.id);
+          console.log('📋 getUserReferralCode result:', result);
+          if (result.success) {
+            setReferralCode(result.referralCode);
+            setReferralLink(getReferralLink(result.referralCode));
+            setStats({
+              totalReferrals: result.totalReferrals,
+              totalRewards: result.totalRewards
+            });
+          }
+        } else {
+          console.log('❌ No user, showing public content');
         }
+      } catch (error) {
+        console.error('❌ Error loading referral data:', error);
+      } finally {
+        console.log('✅ Setting loading to false');
+        setLoading(false);
       }
-      setLoading(false);
     };
 
+    // For non-logged-in users, set loading to false immediately
+    if (!user) {
+      console.log('🚀 No user detected, setting loading to false immediately');
+      setLoading(false);
+      return;
+    }
+
+    // Add timeout to prevent infinite loading for logged-in users
+    const timeoutId = setTimeout(() => {
+      console.log('⏰ Timeout reached, forcing loading to false');
+      setLoading(false);
+    }, 3000); // 3 second timeout
+
     loadReferralData();
+
+    return () => {
+      console.log('🧹 Cleaning up timeout');
+      clearTimeout(timeoutId);
+    };
   }, [user]);
 
   const handleCopyLink = async () => {
@@ -99,9 +143,11 @@ const ReferralPage = () => {
   }, [incomingCode, user, loading]);
 
   if (loading) {
+    console.log('⏳ Still loading, showing spinner. User:', user);
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        <div className="ml-4">Loading your referral dashboard...</div>
       </div>
     );
   }
@@ -300,29 +346,54 @@ const ReferralPage = () => {
         <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
       </div>
 
-      {/* Perfect Footer Block */}
-      <div className="mt-8 mb-8 p-6 bg-gradient-to-r from-gray-900/60 to-purple-900/40 rounded-2xl border border-gray-600/30">
-        <div className="text-center">
-          <p className="text-gray-300 text-sm mb-3">
-            © 2025 Get The Receipts. All rights reserved.
-          </p>
-          <p className="text-gray-400 text-sm mb-3">
-            For Entertainment & Insight Purposes Only.<br />
-            Sage reads patterns, not people. Trust your gut first. Then verify with us.
-          </p>
-          <p className="text-gray-500 text-xs mb-3">
-            16+ • Not therapy, legal, or medical advice • Use at your own risk
-          </p>
-          <p className="text-gray-500 text-sm">
-            Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>
-          </p>
+      {/* Footer */}
+      <footer className="relative px-6 lg:px-8 py-16 border-t border-white/10">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">🔮</span>
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
+                  Get The Receipts
+                </span>
+              </div>
+              <p className="text-gray-400 max-w-md">
+                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Product</h4>
+              <div className="space-y-2">
+                <Link to="/about" className="block text-gray-400 hover:text-white transition-colors">About</Link>
+                <Link to="/pricing" className="block text-gray-400 hover:text-white transition-colors">Pricing</Link>
+                <Link to="/refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <div className="space-y-2">
+                <Link to="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+                <Link to="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-white/10 pt-8 text-center">
+            <p className="text-gray-400 text-sm mb-3">
+              © 2025 Get The Receipts. All rights reserved.
+            </p>
+            <p className="text-gray-500 text-sm mb-3">
+              16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
+            </p>
+            <p className="text-gray-600 text-sm">
+              Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>
+            </p>
+          </div>
         </div>
-      </div>
+      </footer>
 
-      {/* Back to Home */}
-      <div className="text-center mb-16">
-        <Link to="/" className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4">Back to Home</Link>
-      </div>
     </div>
   );
 };

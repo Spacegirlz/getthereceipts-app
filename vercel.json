@@ -25,7 +25,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https:; style-src 'self' 'unsafe-inline' data: blob: https:; font-src 'self' data: blob: https: fonts.gstatic.com fonts.googleapis.com js.stripe.com; img-src 'self' data: https: blob:; connect-src 'self' data: blob: https: wss:; frame-src 'self' https: js.stripe.com; object-src 'none';"
+          "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https:; style-src 'self' 'unsafe-inline' data: blob: https:; font-src 'self' data: blob: https:; img-src 'self' data: https: blob:; connect-src 'self' data: blob: https:; frame-src 'self' https:; object-src 'none';"
         }
       ]
     }

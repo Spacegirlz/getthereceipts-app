@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Heart, Shield, Zap } from 'lucide-react';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
+import { injectMovingGradientStyles } from '@/utils/gradientUtils';
 
 const AboutPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    injectMovingGradientStyles();
+  }, []);
 
   return (
     <div className="min-h-screen px-4 py-8">
@@ -253,7 +258,7 @@ const AboutPage = () => {
           className="viral-button text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl"
           size="lg"
         >
-          Start Getting Receipts 🧾
+          <span className="moving-gradient-text">Start Getting Receipts</span> 🧾
         </Button>
       </motion.div>
 
@@ -271,7 +276,7 @@ const AboutPage = () => {
                 </span>
               </div>
               <p className="text-gray-400 max-w-md">
-                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie and text decoder.
+                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
               </p>
             </div>
             <div>
@@ -300,7 +305,7 @@ const AboutPage = () => {
               16+ • Not therapy, legal, or medical advice • Use at your own risk
             </p>
             <p className="text-gray-600 text-sm">
-              Support: <a href="mailto:sage@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">sage@getthereceipts.com</a>
+              Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>
             </p>
           </div>
         </div>

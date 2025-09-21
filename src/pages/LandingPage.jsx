@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye, Star, Users, Clock, Trophy, Check, Crown, Rocket } from 'lucide-react';
+import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye, Star, Users, Clock, Trophy, Check, Crown, Rocket, Lock } from 'lucide-react';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
@@ -15,10 +15,8 @@ const LandingPage = () => {
     injectMovingGradientStyles();
   }, []);
   
-  // Scroll to top on page load to ensure consistent landing position (client-side only)
+  // Scroll to top on page load to ensure consistent landing position
   React.useEffect(() => {
-    // Only run on client side to prevent hydration mismatch
-    if (typeof window === 'undefined') return;
     window.scrollTo(0, 0);
   }, []);
   
@@ -27,11 +25,8 @@ const LandingPage = () => {
   const { user, loading } = useAuth();
   const [searchParams] = useSearchParams();
   
-  // 🎯 CRITICAL FIX: Capture referral codes from URL (client-side only)
+  // 🎯 CRITICAL FIX: Capture referral codes from URL
   useEffect(() => {
-    // Only run on client side to prevent hydration mismatch
-    if (typeof window === 'undefined') return;
-    
     const referralCode = searchParams.get('ref');
     if (referralCode) {
       console.log('🎯 LandingPage: Referral code detected:', referralCode);
@@ -42,26 +37,9 @@ const LandingPage = () => {
     }
   }, [searchParams]);
 
-  // 🔐 CRITICAL FIX: Only redirect to dashboard if user came from another page on the site
-  // Allow direct navigation to landing page (typing URL, logo click, etc.)
+  // 🔐 CRITICAL FIX: Redirect authenticated users to dashboard
   useEffect(() => {
-    // Only run on client side to prevent hydration mismatch
-    if (typeof window === 'undefined') return;
-    
-    // Check if user came here intentionally (logo click)
-    const cameFromLogo = sessionStorage.getItem('navigatedFromLogo');
-    if (cameFromLogo) {
-      sessionStorage.removeItem('navigatedFromLogo');
-      return; // Don't redirect if they clicked the logo
-    }
-    
-    // Check if this is direct navigation (no referrer or external referrer)
-    const isDirectNavigation = !document.referrer || 
-                              document.referrer === '' || 
-                              !document.referrer.includes('getthereceipts.com');
-    
-    // Only auto-redirect if user came from another page on the site
-    if (!loading && user && !isDirectNavigation) {
+    if (!loading && user) {
       console.log('🔐 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
       // Add a small delay to prevent hydration issues
       const redirectTimer = setTimeout(() => {
@@ -72,12 +50,14 @@ const LandingPage = () => {
   }, [user, loading, navigate]);
 
   // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
-  const [liveUserCount, setLiveUserCount] = useState(2347);
+  const [liveUserCount, setLiveUserCount] = useState(1100);
   const [selectedDemo, setSelectedDemo] = useState('breadcrumb');
   const [demoResult, setDemoResult] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [hasAnalyzedBefore, setHasAnalyzedBefore] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [spotsLeft, setSpotsLeft] = useState(73); // Dynamic spots counter
+  const [isChanging, setIsChanging] = useState(false); // Track when counter is changing
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, 100]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
@@ -88,7 +68,7 @@ const LandingPage = () => {
       setLiveUserCount((prev) => {
         const change = Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : -Math.floor(Math.random() * 2) - 1;
         const newCount = prev + change;
-        return Math.max(2300, Math.min(2500, newCount));
+        return Math.max(947, Math.min(1249, newCount));
       });
     }, 4000);
     return () => clearInterval(interval);
@@ -108,6 +88,14 @@ const LandingPage = () => {
 
   const handleGetStarted = () => navigate('/chat-input');
   const handleGoPremium = () => navigate('/pricing');
+  
+  const handleCheckout = async (priceId, tierName) => {
+    if (!user) {
+      openModal('sign_up');
+      return;
+    }
+    navigate('/pricing');
+  };
 
   const demoData = {
     breadcrumb: {
@@ -456,18 +444,18 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed"
             >
-              Not sure what that text meant? Let Sage give you her take.
+              One weird message and your brain's in a loop.
             </motion.p>
 
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="text-lg text-blue-300 mb-12 font-medium"
+              className="text-lg text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
             >
-              Your bestie's hot take 24/7
+              Sage decodes the chat you can't stop replaying. From crushes to coworkers, breakups to besties. She doesn't read minds. She reads patterns. And she's seen it all.
             </motion.p>
 
             {/* Primary CTA */}
@@ -500,7 +488,7 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-400"
+              className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-white mb-8"
             >
               <div className="flex items-center space-x-2">
                 <ShieldCheck className="h-4 w-4 text-emerald-400" />
@@ -508,12 +496,22 @@ const LandingPage = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Zap className="h-4 w-4 text-yellow-400" />
-                <span>Deleted in 60 seconds</span>
+                <span>Privacy First Policy</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Eye className="h-4 w-4 text-red-400" />
+                <Lock className="h-4 w-4 text-blue-400" />
                 <span>Never stored or shared</span>
               </div>
+            </motion.div>
+
+            {/* Free Anonymous Notice */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="text-center text-white text-sm"
+            >
+              FREE Forever • No login to start • Fully anonymous.
             </motion.div>
           </motion.div>
         </div>
@@ -545,7 +543,7 @@ const LandingPage = () => {
                 <span className="text-sm text-violet-300 font-medium">Meet Sage</span>
               </div>
               
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent">
                 Your AI bestie with opinions
               </h2>
               
@@ -553,7 +551,6 @@ const LandingPage = () => {
                 <p>She's seen every pattern: breadcrumbing, ghosting, love bombing, and the rest of the emotional circus.</p>
                 <p>Not a therapist. Not your mom. Not even real.</p>
                 <p>Just that friend who's had enough of your spiral and loves you too much to watch it continue. Created for your entertainment (and maybe some perspective).</p>
-                <p>She reads everything: The toxic ex at 2AM. Your perfect partner being perfect (suspicious much?). That text from 2019 you can't stop thinking about. Your group chat drama. Your mom's passive-aggressive holiday planning.</p>
                 <p>Every relationship. Every vibe. Every pattern.</p>
                 <p className="text-violet-300 font-medium">Because sometimes you just want someone else's take - whether you're spiraling, celebrating, or just bored.</p>
               </div>
@@ -565,10 +562,10 @@ const LandingPage = () => {
 
               <Button
                 onClick={handleGetStarted}
-                className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all duration-300"
+                className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all duration-300 flex items-center space-x-2"
               >
-                👉 Try it free
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <span>Try it free →</span>
+                <span className="text-lg">🪄</span>
               </Button>
             </motion.div>
 
@@ -616,7 +613,7 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
             >
-              What does <em className="text-violet-400">Sage think</em> about that chat?
+              What does <span className="text-white">Sage think</span> about <em className="moving-gradient-text">that chat?</em>
             </motion.h2>
             
             <motion.div variants={fadeInUp} className="space-y-4 text-lg text-gray-300 max-w-4xl mx-auto">
@@ -841,7 +838,7 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
             >
               How It Works
             </motion.h2>
@@ -892,7 +889,7 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
             >
               What You Get
             </motion.h2>
@@ -1016,7 +1013,7 @@ const LandingPage = () => {
       </section>
 
       {/* Social Proof Section */}
-      <section id="testimonials" className="relative px-6 lg:px-8 py-32">
+      <section id="testimonials" className="relative px-6 lg:px-8 py-40">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -1027,7 +1024,7 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent leading-relaxed"
             >
               Join 100K+ People Getting Real Answers
             </motion.h2>
@@ -1107,13 +1104,14 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
             >
               FAQ
             </motion.h2>
             <motion.p 
               variants={fadeInUp}
-              className="text-xl text-gray-300"
+              className="text-xl"
+              style={{ color: '#c5b4e4' }}
             >
               The questions everyone asks (but is afraid to admit)
             </motion.p>
@@ -1124,44 +1122,36 @@ const LandingPage = () => {
             whileInView="animate"
             viewport={{ once: true }}
             variants={staggerChildren}
-            className="space-y-6"
+            className="space-y-4"
           >
             {[
               {
+                q: "Can I try Sage without signing up?",
+                a: "Yep. No account. No strings.\nYou get 1 free Sage Receipt, no login, no credit card, no judgment.\nJust paste your chat and go.\n\nWant more? Join the Free Plan.\nYou'll get 3 bonus Receipts right away, plus 1 full Sage read every day.\nThat's the archetype, verdict, and playbook on us.\nStill no card. Still no pressure."
+              },
+              {
+                q: "What do I get with the free plan?",
+                a: "Sign up = 3 free Receipts, no expiry.\nPlus? You get 1 fresh Sage Receipt every day, no matter what.\nThat's a full decode:\n\n🔍 The read.\n🧠 The archetype.\n🧾 The receipt.\n🧭 The playbook.\n\nAll free. No card needed.\nIf it's 2:00am and your brain won't quit, Sage is here.\nYou'll get another one tomorrow."
+              },
+              {
                 q: "Is this actual advice or just for fun?",
-                a: "Sage is an AI character created for entertainment. She's that friend who sees patterns and has opinions - lots of them. While users say her takes are eerily accurate (94% relate hard), she's not a therapist, counselor, or mind reader. Think of her like your horoscope - somehow always relevant, technically entertainment, but you'll screenshot it anyway when it hits different."
+                a: "Sage is an AI character created for entertainment.\n\nShe's that friend who sees patterns and has opinions, lots of them.\n\nWhile users say her takes are eerily accurate (94% relate hard), she's not a therapist, counselor, or mind reader.\n\nThink of her like your horoscope. Somehow always relevant, technically entertainment, but you'll screenshot it anyway when it hits different."
+              },
+              {
+                q: "Why does Sage sound so sure when it's just for entertainment?",
+                a: "That's her character, the friend who's SO done watching you spiral that everything sounds like fact.\n\nIt's not. She's an AI with opinions, not a mind reader.\n\nBut that confidence? That's what your overthinking brain needs to hear sometimes.\n\nTake what resonates, leave what doesn't."
+              },
+              {
+                q: "Does Sage only work on toxic situations?",
+                a: "Hell no. Sage reads EVERYTHING.\n\nBring your healthy relationship and she'll validate why it's working.\nBring your ex from 2009 for laughs.\nBring your mom's guilt trip texts.\nBring that Love Island chat you're obsessed with.\n\nSage has takes on all of it, the good, the bad, and the 'what even is this?'\n\nShe's not just for crisis mode. She's for anyone who wants another perspective (or just wants to see what happens)."
               },
               {
                 q: "Why is Privacy First such a big deal here?",
-                a: "Because when you're pasting your real, messy convos into an app, you deserve to feel safe doing it. From day one, we built Get The Receipts to protect your privacy like it's our own. That means no chat logs, no training on your data, no digging into your history. You're not here to hand over secrets, you're here to get clarity, without judgment or surveillance. And that's what we deliver. Every time."
+                a: "Because when you're pasting your real, messy convos into an app, you deserve to feel safe doing it.\n\nFrom day one, we built Get The Receipts to protect your privacy like it's our own.\n\nThat means:\n• No chat logs\n• No training on your data\n• No digging into your history\n\nYou're not here to hand over secrets, you're here to get clarity, without judgment or surveillance.\n\nAnd that's what we deliver. Every time."
               },
               {
                 q: "Data: What do you keep, and what do you delete?",
                 a: "We keep only what's needed to run your account and instantly delete everything else.\n\nWhat we keep:\n• Email (for login)\n• Encrypted password\n• Payment info (if you're on a paid plan)\n\nWhat we delete:\n• All receipts and messages after Sage's read (gone in 3 seconds)\n• Your receipt results (we don't store them)\n• Any record of what you pasted in\n\nWhat we never track:\n• Your behavior, message history, or usage patterns\n• Your conversations for training, marketing, or \"improvement\"\n• Any content unless you choose to save it\n\nWe use zero-storage architecture + real-time processing with contractual no-training AI services. Your data never gets used to \"make the AI better\" because Sage doesn't learn from you. She just helps you learn from your own patterns.\n\nYou stay in full control always."
-              },
-              {
-                q: "How does Sage know what's really going on?",
-                a: "Real talk: Our AI is scarily good because it's trained on millions of real-world situations, not just textbook theories. Think of Sage as your brutally honest friend who has seen every game in the book. While this is for \"entertainment,\" our 94% 'that's so true' rate means your gut was probably right. We just give you the receipts to prove it."
-              },
-              {
-                q: "Can I trust the AI's judgment over my own feelings?",
-                a: "This is the most important question. Sage isn't here to replace your feelings; it's here to validate them. That feeling of confusion you have is real. Sage just gives you the vocabulary and pattern recognition to understand why you feel that way. The goal isn't to trust the AI over yourself, but to use the AI to learn to trust your own gut again."
-              },
-              {
-                q: "What if I don't like what Sage tells me?",
-                a: "Sometimes Sage's read won't match the story you were hoping for, and that's okay. Think of it like holding up a mirror: it's a perspective, not a verdict. You always decide what to do next. Sage's job is to cut down the spirals so you spend less time guessing and more time choosing what you want. Sage isn't here to sugarcoat. She calls out the patterns based on the information you give her. She doesn't have all the context, and she's not a mind reader. So the more details you include, the sharper her receipts will be."
-              },
-              {
-                q: "What do I get with the free plan?",
-                a: "You get one free Sage Receipt every single day. That's a full, deep-dive read: Sage's receipt, archetype, the verdict and the playbook on us, once a day. No credit card required. Have a crisis at 2 AM? We got you. Get another one tomorrow."
-              },
-              {
-                q: "Why does Sage sound so sure when it's just for entertainment?",
-                a: "That's her character - the friend who's SO done watching you spiral that everything sounds like fact. It's not. She's an AI with opinions, not a mind reader. But that confidence? That's what your overthinking brain needs to hear sometimes. Take what resonates, leave what doesn't."
-              },
-              {
-                q: "Does Sage only work on toxic situations?",
-                a: "Hell no. Sage reads EVERYTHING. Bring your healthy relationship and she'll validate why it's working. Bring your ex from 2009 for laughs. Bring your mom's guilt trip texts. Bring that Love Island chat you're obsessed with. Sage has takes on all of it - the good, the bad, and the 'what even is this?' She's not just for crisis mode. She's for anyone who wants another perspective (or just wants to see what happens)."
               }
             ].map((faq, index) => {
               const isOpen = openFaqIndex === index;
@@ -1169,16 +1159,34 @@ const LandingPage = () => {
                 <motion.div
                   key={index}
                   variants={fadeInUp}
-                  className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden"
+                  className={`group border rounded-xl overflow-hidden transition-all duration-300 ${
+                    isOpen 
+                      ? 'border-violet-500/40 bg-violet-500/5' 
+                      : 'border-gray-800/50 hover:border-gray-700/70'
+                  }`}
                 >
                   <button
                     onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                    className="w-full p-8 text-left flex items-center justify-between hover:bg-white/5 transition-colors"
+                    className={`w-full p-6 text-left flex items-center justify-between transition-all duration-200 ${
+                      isOpen 
+                        ? 'bg-violet-500/10' 
+                        : 'hover:bg-gray-900/30'
+                    }`}
                   >
-                    <h3 className={`text-xl font-bold pr-4 transition-colors ${isOpen ? 'text-[#6785fc]' : 'text-white'}`}>{faq.q}</h3>
-                    <ChevronDown 
-                      className={`h-6 w-6 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                    />
+                    <h3 className={`text-lg font-semibold pr-6 transition-colors ${
+                      isOpen 
+                        ? 'text-violet-300' 
+                        : 'text-gray-200 group-hover:text-white'
+                    }`}>{faq.q}</h3>
+                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+                      isOpen 
+                        ? 'bg-violet-500/30 text-violet-300' 
+                        : 'bg-gray-800/50 text-gray-400 group-hover:bg-gray-700/50 group-hover:text-gray-300'
+                    }`}>
+                      <ChevronDown 
+                        className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                      />
+                    </div>
                   </button>
                   <motion.div
                     initial={false}
@@ -1189,8 +1197,10 @@ const LandingPage = () => {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     className="overflow-hidden"
                   >
-                    <div className="px-8 pb-8">
-                      <p className="text-gray-300 leading-relaxed">{faq.a}</p>
+                    <div className="px-6 pb-6 pt-2 bg-violet-500/5">
+                      <div className="border-l-2 border-violet-400/50 pl-4">
+                        <p className="text-gray-200 leading-relaxed whitespace-pre-line text-base">{faq.a}</p>
+                      </div>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -1201,7 +1211,7 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="relative px-6 lg:px-8 py-32">
+      <section id="pricing" className="relative px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -1212,7 +1222,8 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
+              style={{ lineHeight: '2.5' }}
             >
               Simple pricing for Sage's hot takes
             </motion.h2>
@@ -1266,8 +1277,10 @@ const LandingPage = () => {
               className="p-8 bg-gradient-to-br from-violet-500/20 to-blue-500/20 backdrop-blur-sm border border-violet-500/20 rounded-3xl flex flex-col"
             >
               <h3 className="text-2xl font-bold text-white mb-2">Premium Monthly</h3>
-              <div className="text-4xl font-bold text-blue-400 mb-2">$6.99<span className="text-lg text-gray-400">/month</span></div>
-              <p className="text-gray-400 mb-6">For serial overthinkers</p>
+              <div className="text-4xl font-bold text-white mb-2">
+                <span className="text-lg text-gray-400 line-through">$9.99</span> $6.99<span className="text-lg text-gray-400">/month</span>
+              </div>
+              <p className="text-gray-400 mb-6">Save 30% - For serial overthinkers</p>
               <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   'Unlimited receipts',
@@ -1301,8 +1314,10 @@ const LandingPage = () => {
                 </div>
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">OG Founder's Club</h3>
-              <div className="text-4xl font-bold text-violet-400 mb-2">$29.99<span className="text-lg text-gray-400">/year</span></div>
-              <p className="text-gray-400 mb-6">Save 50% - Limited time</p>
+              <div className="text-4xl font-bold text-white mb-2">
+                <span className="text-lg text-gray-400 line-through">$99.99</span> $29.99<span className="text-lg text-gray-400">/year</span>
+              </div>
+              <p className="text-gray-400 mb-6">Save 70% - Limited time</p>
               <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   'Everything in Premium',
@@ -1324,6 +1339,97 @@ const LandingPage = () => {
                 Lock in Founder Price
               </Button>
             </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* How Founder Pricing Works Section */}
+      <section className="relative px-6 lg:px-8 py-3">
+        <div className="mx-auto max-w-4xl">
+          <motion.div 
+            className="max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/10 to-transparent blur-3xl"></div>
+              <div className="relative bg-gradient-to-br from-slate-900/60 via-purple-900/20 to-slate-900/60 backdrop-blur-xl rounded-3xl border border-purple-500/20 p-6 md:p-8 text-center">
+                
+                <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{color: '#C3B1E1'}}>
+                  How Founder Pricing Works
+                </h2>
+                
+                <div className="text-lg text-gray-200 mb-4 max-w-3xl mx-auto leading-relaxed">
+                  <p className="text-white">
+                    As our community grows, Sage's annual price increases:
+                  </p>
+                </div>
+
+                {/* Tiered Pricing List */}
+                <div className="max-w-2xl mx-auto mb-4">
+                  <div className="space-y-2 text-left">
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400 text-2xl">✅</span>
+                      <span className="text-red-400 text-lg">First 200 users: <span className="text-red-400 font-semibold">$19/year</span> <span className="text-red-400">(SOLD OUT)</span></span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-orange-400 text-2xl">🔥</span>
+                      <span className="text-yellow-300 text-lg">Users 201-500: <span className="text-yellow-300 font-semibold">$29.99/year</span> <span className="text-yellow-300">(73 spots left)</span></span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400 text-2xl">📈</span>
+                      <span className="text-gray-500 text-lg">Users 501-1,000: <span className="text-gray-400">$49/year</span></span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400 text-2xl">📈</span>
+                      <span className="text-gray-500 text-lg">Users 1,001-2,000: <span className="text-gray-400">$69/year</span></span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-400 text-2xl">📈</span>
+                      <span className="text-gray-500 text-lg">Users 2,000+: <span className="text-gray-400">$99/year +</span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-300 mb-3 max-w-2xl mx-auto">
+                  The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.
+                </p>
+
+                <p className="text-lg text-yellow-400 mb-4 max-w-2xl mx-auto whitespace-nowrap">
+                  Once you lock in a founder price, it <strong>never changes</strong> - even when <strong>everyone else pays more</strong>.
+                </p>
+
+                {/* Call-to-Action Block - Compact Horizontal Design */}
+                <div className="max-w-2xl mx-auto mb-6">
+                  <div className="relative bg-gradient-to-br from-slate-800/80 via-purple-900/30 to-slate-800/80 backdrop-blur-xl rounded-2xl border border-purple-500/30 p-4 text-center">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-2xl font-bold text-white">$29.99/year</div>
+                      <div className="text-white">73 spots left at this price</div>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="w-full bg-gray-600 rounded-full h-3 mb-3">
+                      <div 
+                        className="bg-gradient-to-r from-purple-400 to-violet-500 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${(100 - spotsLeft)}%` }}
+                      ></div>
+                    </div>
+                    
+                    <div className="text-sm text-white">
+                      Price jumps to $49 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-pink-500/30 transform hover:scale-105"
+                  onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founder')}
+                >
+                  👑 Claim OG Founder Status
+                </Button>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -1397,7 +1503,7 @@ const LandingPage = () => {
               <div className="space-y-2">
                 <Link to="/about" className="block text-gray-400 hover:text-white transition-colors">About</Link>
                 <Link to="/pricing" className="block text-gray-400 hover:text-white transition-colors">Pricing</Link>
-                <Link to="/earn-refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
+                <Link to="/refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
               </div>
             </div>
             <div>
@@ -1414,11 +1520,11 @@ const LandingPage = () => {
               © 2025 Get The Receipts. All rights reserved.
             </p>
             <p className="text-gray-500 text-sm mb-3">
-              For Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.<br />
+              Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.<br />
               16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
             </p>
             <p className="text-gray-600 text-sm">
-              Support: <a href="mailto:sage@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">sage@getthereceipts.com</a>
+              Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>
             </p>
           </div>
         </div>
@@ -1442,6 +1548,29 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-blue-500 rounded-full blur-lg opacity-20" />
         </div>
       </motion.div>
+      
+      {/* CSS Animations for Ticker Counter */}
+      <style jsx="true">{`
+        @keyframes tickerPulse {
+          0% { color: #fbbf24; }
+          50% { color: #f59e0b; }
+          100% { color: #fbbf24; }
+        }
+        
+        @keyframes tickerChange {
+          0% { transform: scale(1); color: #fbbf24; }
+          50% { transform: scale(1.1); color: #ef4444; }
+          100% { transform: scale(1); color: #fbbf24; }
+        }
+        
+        .ticker-counter {
+          animation: tickerPulse 2s ease-in-out infinite;
+        }
+        
+        .ticker-counter.changing {
+          animation: tickerChange 0.5s ease-in-out;
+        }
+      `}</style>
     </div>
   );
 };

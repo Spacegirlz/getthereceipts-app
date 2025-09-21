@@ -457,7 +457,7 @@ const TermsOfServicePage = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold mt-1">→</span>
-                  <span>Contacting sage@getthereceipts.com</span>
+                  <span>Contacting support@getthereceipts.com</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold mt-1">→</span>
@@ -658,46 +658,63 @@ const TermsOfServicePage = () => {
             </h2>
             <p className="text-xl text-gray-300 mb-6">We're here to help clarify any concerns about our Terms of Service.</p>
             <a 
-              href="mailto:sage@getthereceipts.com" 
+              href="mailto:support@getthereceipts.com" 
               className="inline-block text-blue-400 text-xl font-semibold bg-blue-500/10 border border-blue-500 px-8 py-3 rounded-full hover:bg-blue-500/20 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
             >
-              sage@getthereceipts.com
+              support@getthereceipts.com
             </a>
           </div>
         </div>
 
-        {/* Navigation Links */}
-        <div className="mt-16 flex flex-wrap justify-center gap-6 mb-8">
-          <Link to="/about" className="text-gray-400 hover:text-white transition-colors">About</Link>
-          <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
-          <Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
-          <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
-          <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
-        </div>
 
-        {/* Perfect Footer Block */}
-        <div className="mt-8 mb-8 p-6 bg-gradient-to-r from-gray-900/60 to-purple-900/40 rounded-2xl border border-gray-600/30">
-          <div className="text-center">
-            <p className="text-gray-300 text-sm mb-3">
-              © 2025 Get The Receipts. All rights reserved.
-            </p>
-            <p className="text-gray-400 text-sm mb-3">
-              For Entertainment & Insight Purposes Only.<br />
-              Sage reads patterns, not people. Trust your gut first. Then verify with us.
-            </p>
-            <p className="text-gray-500 text-xs mb-3">
-              16+ • Not therapy, legal, or medical advice • Use at your own risk
-            </p>
-            <p className="text-gray-500 text-sm">
-              Support: <a href="mailto:sage@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">sage@getthereceipts.com</a>
-            </p>
+        {/* Footer */}
+        <footer className="relative px-6 lg:px-8 py-16 border-t border-white/10">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+              <div className="col-span-1 md:col-span-2">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
+                    <span className="text-xl">🔮</span>
+                  </div>
+                  <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
+                    Get The Receipts
+                  </span>
+                </div>
+                <p className="text-gray-400 max-w-md">
+                  Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-white mb-4">Product</h4>
+                <div className="space-y-2">
+                  <Link to="/about" className="block text-gray-400 hover:text-white transition-colors">About</Link>
+                  <Link to="/pricing" className="block text-gray-400 hover:text-white transition-colors">Pricing</Link>
+                  <Link to="/refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-semibold text-white mb-4">Legal</h4>
+                <div className="space-y-2">
+                  <Link to="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+                  <Link to="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border-t border-white/10 pt-8 text-center">
+              <p className="text-gray-400 text-sm mb-3">
+                © 2025 Get The Receipts. All rights reserved.
+              </p>
+              <p className="text-gray-500 text-sm mb-3">
+                16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
+              </p>
+              <p className="text-gray-600 text-sm">
+                Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>
+              </p>
+            </div>
           </div>
-        </div>
+        </footer>
 
-        {/* Back to Home */}
-        <div className="text-center mb-16">
-          <Link to="/" className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4">Back to Home</Link>
-        </div>
       </div>
     </>
   );

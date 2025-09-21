@@ -20,7 +20,10 @@ import {
   Sparkles,
   Target,
   CheckCircle,
-  XCircle
+  XCircle,
+  DollarSign,
+  User,
+  Users2
 } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
@@ -57,6 +60,17 @@ const EnhancedReferralPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [realtimeSubscription, setRealtimeSubscription] = useState(null);
+  const [viewMode, setViewMode] = useState('forYou'); // 'forYou' or 'forCreators'
+
+  // Emergency fallback - set loading to false after 3 seconds no matter what
+  useEffect(() => {
+    const emergencyTimeout = setTimeout(() => {
+      console.log('🚨 Emergency timeout - forcing loading to false');
+      setLoading(false);
+    }, 3000);
+    
+    return () => clearTimeout(emergencyTimeout);
+  }, []);
 
   // Check if this is a referral link
   const incomingCode = searchParams.get('code');
@@ -105,31 +119,39 @@ const EnhancedReferralPage = () => {
 
   // Set up real-time updates
   useEffect(() => {
-    if (user) {
+    console.log('🔄 EnhancedReferralPage useEffect triggered, user:', user);
+    
+    // For non-logged-in users, set loading to false immediately
+    if (!user) {
+      console.log('🚀 No user detected, setting loading to false immediately');
+      setLoading(false);
+      return;
+    }
+
+    // Load data for logged-in users
+    loadReferralData();
+    
+    // Subscribe to real-time updates
+    const subscription = subscribeToReferralUpdates(user.id, (payload) => {
+      console.log('📡 Real-time update received:', payload);
+      // Refresh data when changes occur
       loadReferralData();
       
-      // Subscribe to real-time updates
-      const subscription = subscribeToReferralUpdates(user.id, (payload) => {
-        console.log('📡 Real-time update received:', payload);
-        // Refresh data when changes occur
-        loadReferralData();
-        
-        // Show notification for new referrals
-        if (payload.eventType === 'INSERT' && payload.table === 'referrals') {
-          toast({
-            title: "🎉 New Referral!",
-            description: "Someone just used your link! +3 credits earned!",
-            duration: 5000
-          });
-        }
-      });
-      
-      setRealtimeSubscription(subscription);
-      
-      return () => {
-        unsubscribeFromReferralUpdates(subscription);
-      };
-    }
+      // Show notification for new referrals
+      if (payload.eventType === 'INSERT' && payload.table === 'referrals') {
+        toast({
+          title: "🎉 New Referral!",
+          description: "Someone just used your link! +3 credits earned!",
+          duration: 5000
+        });
+      }
+    });
+    
+    setRealtimeSubscription(subscription);
+    
+    return () => {
+      unsubscribeFromReferralUpdates(subscription);
+    };
   }, [user, loadReferralData, toast]);
 
   const handleCopyLink = async () => {
@@ -219,27 +241,179 @@ const EnhancedReferralPage = () => {
       
       <main className="max-w-4xl mx-auto flex flex-col items-center text-center min-h-[80vh] justify-center">
         {!user ? (
-          // Not logged in - show sign up prompt
+          // Not logged in - show toggle and public content
           <motion.div 
             initial={{ opacity: 0, y: -50 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.7 }}
-            className="text-center mb-12"
+            className="text-center mb-12 w-full"
           >
-            <Gift className="h-32 w-32 text-yellow-400 mx-auto mb-6" />
-            <h1 className="text-5xl md:text-7xl font-black text-white mb-4">
-              <span className="gradient-text">Refer & Earn</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Drop your link. Every signup = 3 credits. 🎯
-            </p>
-            <Button 
-              size="lg" 
-              className="viral-button font-bold"
-              onClick={() => openModal('sign_up')}
+            {/* Toggle Buttons */}
+            <div className="flex justify-center mb-8">
+              <div className="bg-gray-800/50 rounded-xl p-1 flex">
+                <button
+                  onClick={() => setViewMode('forYou')}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
+                    viewMode === 'forYou' 
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg' 
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <User className="h-4 w-4" />
+                  For You
+                </button>
+                <button
+                  onClick={() => setViewMode('forCreators')}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
+                    viewMode === 'forCreators' 
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg' 
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <DollarSign className="h-4 w-4" />
+                  For Creators
+                </button>
+              </div>
+            </div>
+
+            {/* Content based on view mode */}
+            <AnimatePresence mode="wait">
+              {viewMode === 'forYou' ? (
+                <motion.div
+                  key="forYou"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Gift className="h-24 w-24 text-yellow-400 mx-auto mb-6" />
+                  <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
+                    <span className="gradient-text">Share & Earn Free Receipts</span>
+                  </h1>
+                  <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Your friends get clarity. You get credits.
+                  </p>
+                  <p className="text-lg font-semibold text-yellow-400 mb-8">
+                    Every friend who signs up = 🎁3 free receipts
+                  </p>
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-6"
+                    onClick={() => openModal('sign_up')}
+                  >
+                    Sign Up to Start Sharing
+                  </Button>
+                  <div className="text-center">
+                    <button
+                      onClick={() => setViewMode('forCreators')}
+                      className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4"
+                    >
+                      Are you a content creator? Make real money with Receipts & Riches →
+                    </button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="forCreators"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <DollarSign className="h-24 w-24 text-green-400 mx-auto mb-6" />
+                  <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
+                    <span className="gradient-text">Receipts & Riches Program</span>
+                  </h1>
+                  <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Turn toxic text reactions into steady income
+                  </p>
+                  <p className="text-lg font-semibold text-yellow-400 mb-8">
+                    30% commission • Monthly payments • 🎁1000+ potential
+                  </p>
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-6"
+                    onClick={() => navigate('/refer/apply')}
+                  >
+                    Apply to Earn Cash
+                  </Button>
+                  <div className="text-center">
+                    <button
+                      onClick={() => setViewMode('forYou')}
+                      className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4"
+                    >
+                      Just want free credits? Join our regular referral program →
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* How It Works Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="mt-16 w-full"
             >
-              Sign Up to Start Earning
-            </Button>
+              <h2 className="text-2xl font-bold text-white mb-8">How It Works</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <motion.div 
+                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold">1</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {viewMode === 'forYou' ? 'Share Your Link' : 'Get Approved'}
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    {viewMode === 'forYou' 
+                      ? 'Get your unique referral link and share it with friends'
+                      : 'Apply to our creator program and get approved for commission rates'
+                    }
+                  </p>
+                </motion.div>
+                <motion.div 
+                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold">2</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {viewMode === 'forYou' ? 'Friends Sign Up' : 'Promote & Earn'}
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    {viewMode === 'forYou' 
+                      ? 'Your friends create accounts and start getting receipts'
+                      : 'Share with your audience and earn commission on every signup'
+                    }
+                  </p>
+                </motion.div>
+                <motion.div 
+                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold">3</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {viewMode === 'forYou' ? 'Earn Credits' : 'Get Paid'}
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    {viewMode === 'forYou' 
+                      ? 'Get 3 free receipts for every friend who joins'
+                      : 'Receive monthly payments for your referrals'
+                    }
+                  </p>
+                </motion.div>
+              </div>
+            </motion.div>
           </motion.div>
         ) : (
           // Logged in - show enhanced referral system
@@ -410,38 +584,55 @@ const EnhancedReferralPage = () => {
         )}
       </main>
       
-      {/* Navigation Links */}
-      <div className="mt-16 flex flex-wrap justify-center gap-6 mb-8">
-        <Link to="/about" className="text-gray-400 hover:text-white transition-colors">About</Link>
-        <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
-        <Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
-        <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
-        <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
-      </div>
 
-      {/* Perfect Footer Block */}
-      <div className="mt-8 mb-8 p-6 bg-gradient-to-r from-gray-900/60 to-purple-900/40 rounded-2xl border border-gray-600/30">
-        <div className="text-center">
-          <p className="text-gray-300 text-sm mb-3">
-            © 2025 Get The Receipts. All rights reserved.
-          </p>
-          <p className="text-gray-400 text-sm mb-3">
-            For Entertainment & Insight Purposes Only.<br />
-            Sage reads patterns, not people. Trust your gut first. Then verify with us.
-          </p>
-          <p className="text-gray-500 text-xs mb-3">
-            16+ • Not therapy, legal, or medical advice • Use at your own risk
-          </p>
-          <p className="text-gray-500 text-sm">
-            Support: <a href="mailto:support@getthereceipts.com" className="text-purple-400 hover:text-purple-300 transition-colors">support@getthereceipts.com</a>
-          </p>
+      {/* Footer */}
+      <footer className="relative px-6 lg:px-8 py-16 border-t border-white/10">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">🔮</span>
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
+                  Get The Receipts
+                </span>
+              </div>
+              <p className="text-gray-400 max-w-md">
+                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Product</h4>
+              <div className="space-y-2">
+                <Link to="/about" className="block text-gray-400 hover:text-white transition-colors">About</Link>
+                <Link to="/pricing" className="block text-gray-400 hover:text-white transition-colors">Pricing</Link>
+                <Link to="/refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <div className="space-y-2">
+                <Link to="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+                <Link to="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-white/10 pt-8 text-center">
+            <p className="text-gray-400 text-sm mb-3">
+              © 2025 Get The Receipts. All rights reserved.
+            </p>
+            <p className="text-gray-500 text-sm mb-3">
+              16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
+            </p>
+            <p className="text-gray-600 text-sm">
+              Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>
+            </p>
+          </div>
         </div>
-      </div>
+      </footer>
 
-      {/* Back to Home */}
-      <div className="text-center mb-16">
-        <Link to="/" className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4">Back to Home</Link>
-      </div>
     </div>
   );
 };
