@@ -449,7 +449,7 @@ const PrivacyPolicyPage = () => {
           <h3 className="text-xl font-semibold text-white mb-4 text-center">Company Information</h3>
           <div className="text-center space-y-2">
             <p className="text-gray-300">
-              <span className="font-semibold text-white">Company:</span> Get The Receipts Pty Ltd
+              <span className="font-semibold text-white">Company:</span> Get The Receipts
             </p>
             <p className="text-gray-300">
               <span className="font-semibold text-white">Address:</span> 36/150 Albert Rd, South Melbourne VIC 3205, Australia
