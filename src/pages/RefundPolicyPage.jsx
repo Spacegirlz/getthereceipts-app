@@ -143,7 +143,7 @@ const RefundPolicyPage = () => {
               <div>
                 <h3 className="text-xl font-semibold text-white mb-2">Review and Feedback</h3>
                 <p className="text-gray-300">
-                  We will review your refund request within <span className="text-yellow-400 font-semibold">3-5 business days</span> and notify you of the review results via email.
+                  We will review your refund request within <span className="text-yellow-400 font-semibold">5-10 business days</span> and notify you of the review results via email.
                 </p>
               </div>
             </div>

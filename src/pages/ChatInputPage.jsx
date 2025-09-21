@@ -1300,8 +1300,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   onChange={(e) => setCheckboxChecked(e.target.checked)}
                 />
                 <label htmlFor="sage-agreement" className="text-sm text-gray-200 leading-relaxed">
-                  This is for <span className="text-yellow-300">entertainment and insight</span>, not professional advice. 
-                  I'm 16+ and ready for some <span className="text-pink-300">clarity, fun and roasting with love</span>.
+                  I'm 16+ and understand this is for entertainment. I agree to the Terms of Service and Privacy Policy.
                 </label>
               </div>
 
