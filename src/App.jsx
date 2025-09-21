@@ -15,6 +15,7 @@ const AffiliateApplicationPage = lazy(() => import('@/pages/AffiliateApplication
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));
 const TermsOfServicePage = lazy(() => import('@/pages/TermsOfServicePage'));
+const RefundPolicyPage = lazy(() => import('@/pages/RefundPolicyPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
 const AuthCallback = lazy(() => import('@/pages/AuthCallback'));
 const TestMetrics = lazy(() => import('@/components/TestMetrics'));
@@ -59,6 +60,7 @@ function App() {
               <Route path="/refer/apply" element={<AffiliateApplicationPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+              <Route path="/refund-policy" element={<RefundPolicyPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/success" element={<Success />} />
               <Route path="/test-metrics" element={<TestMetrics />} />
