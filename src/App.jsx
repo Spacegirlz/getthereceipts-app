@@ -11,6 +11,7 @@ const PricingPage = lazy(() => import('@/pages/PricingPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const ReferralPage = lazy(() => import('@/pages/ReferralPage'));
 const EnhancedReferralPage = lazy(() => import('@/pages/EnhancedReferralPage'));
+const AffiliateApplicationPage = lazy(() => import('@/pages/AffiliateApplicationPage'));
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));
 const TermsOfServicePage = lazy(() => import('@/pages/TermsOfServicePage'));
@@ -55,6 +56,7 @@ function App() {
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/refer" element={<EnhancedReferralPage />} />
+              <Route path="/refer/apply" element={<AffiliateApplicationPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
