@@ -441,6 +441,19 @@ const PrivacyPolicyPage = () => {
           </div>
         </div>
 
+        {/* Company Information */}
+        <div className="mb-12 p-6 bg-gray-800/30 rounded-xl border border-gray-700/50">
+          <h3 className="text-xl font-semibold text-white mb-4 text-center">Company Information</h3>
+          <div className="text-center space-y-2">
+            <p className="text-gray-300">
+              <span className="font-semibold text-white">Address:</span> 36/150 Albert Rd, South Melbourne VIC 3205, Australia
+            </p>
+            <p className="text-gray-300">
+              <span className="font-semibold text-white">Contact:</span> support@getthereceipts.com
+            </p>
+          </div>
+        </div>
+
         {/* Legal Shield Footer Note */}
         <div className="mt-12 mb-8 text-center p-4 bg-gradient-to-r from-gray-900/40 to-gray-800/40 rounded-xl border border-gray-600/30">
           <p className="text-gray-300 text-sm">
