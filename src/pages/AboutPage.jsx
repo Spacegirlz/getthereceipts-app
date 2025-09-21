@@ -255,7 +255,7 @@ const AboutPage = () => {
         
         <Button
           onClick={() => navigate('/chat-input')}
-          className="viral-button text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl"
+          className="bg-transparent border-2 border-violet-400/50 hover:border-violet-400 text-white font-bold text-lg px-8 py-4 rounded-full shadow-2xl transition-all duration-300 hover:shadow-violet-500/25 hover:transform hover:-translate-y-1"
           size="lg"
         >
           <span className="moving-gradient-text">Start Getting Receipts</span> 🧾
