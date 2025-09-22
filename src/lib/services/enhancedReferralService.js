@@ -189,9 +189,19 @@ export const getUserReferralCodeEnhanced = async (userId) => {
   }
 };
 
-// Get referral link for user (unchanged)
+// Get referral link for user
 export const getReferralLink = (referralCode) => {
   const baseUrl = window.location.origin;
+  
+  // Check if Rewardful is available
+  if (window.Rewardful) {
+    // Use Rewardful to generate tracked referral link
+    return window.Rewardful.refer({
+      referral: referralCode
+    });
+  }
+  
+  // Fallback to original link if Rewardful not available
   return `${baseUrl}/?ref=${referralCode}`;
 };
 

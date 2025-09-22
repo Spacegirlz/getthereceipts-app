@@ -158,20 +158,7 @@ const PricingPage = () => {
 
       const { sessionId } = await response.json();
 
-      // Track purchase conversion with Rewardful
-      if (window.Rewardful) {
-        try {
-          window.Rewardful('ready', function() {
-            window.Rewardful('convert', {
-              email: user.email,
-              value: getPriceValue(priceId),
-              currency: 'USD'
-            });
-          });
-        } catch (rewardfulError) {
-          console.warn('Rewardful conversion tracking failed:', rewardfulError);
-        }
-      }
+      // Note: Conversion tracking happens on success page after payment, not before checkout
 
       // Redirect to Stripe Checkout
       const { error } = await stripe.redirectToCheckout({

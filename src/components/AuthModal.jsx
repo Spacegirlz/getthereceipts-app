@@ -170,15 +170,7 @@ const AuthModal = () => {
                         duration: 5000
                     });
                     
-                    // Track conversion with Rewardful for immediate signup
-                    if (window.rewardful && email && referralId) {
-                        try {
-                            window.rewardful('convert', { email: email });
-                            console.log('Rewardful conversion tracked for signup:', email);
-                        } catch (error) {
-                            console.warn('Rewardful conversion tracking failed:', error);
-                        }
-                    }
+                    // Note: Conversion tracking happens on success page after payment, not on signup
                     
                     closeModal();
                 } else {
