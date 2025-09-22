@@ -658,7 +658,7 @@ const LandingPage = () => {
                     onClick={() => scrollTo('demo-interface')}
                     className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-xl py-2 shadow-lg"
                   >
-                    👑 Click HERE to see Sage spill the tea
+                    👑 2. Click HERE to see Sage spill the tea
                   </Button>
                 </div>
 
@@ -666,13 +666,7 @@ const LandingPage = () => {
                 <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-blue-500">
                   <div className="text-2xl font-black mb-1 bg-gradient-to-r from-blue-400 to-violet-500 bg-clip-text text-transparent">3</div>
                   <div className="text-2xl mb-1">🎁</div>
-                  <p className="text-gray-300 text-sm mb-3">Get Started on your FREE Receipt</p>
-                  <Button
-                    onClick={() => scrollTo('demo-cta')}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl py-2"
-                  >
-                    Start Free
-                  </Button>
+                  <p className="text-gray-300 text-sm">Get Started on your FREE Receipt (button below the demo)</p>
                 </div>
               </div>
             </motion.div>
