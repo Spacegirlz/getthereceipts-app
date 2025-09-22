@@ -619,23 +619,25 @@ const LandingPage = () => {
             <motion.div variants={fadeInUp} className="space-y-4 text-lg text-gray-300 max-w-4xl mx-auto">
               <p>Sage gives her take in 60 seconds. No fluff. No false hope. Just her perspective. (For entertainment only, but somehow always hits)</p>
               <p className="text-violet-300">Your texts. Common patterns. Sage's hot takes.</p>
-              <p className="text-xl font-semibold text-white">Pick a scenario and get Sage's Receipt.</p>
             </motion.div>
 
             {/* How it works - concise 1-2-3 instructions */}
             <motion.div variants={fadeInUp} className="mt-6 max-w-5xl mx-auto">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                  <div className="text-2xl font-black text-white mb-1">1</div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-violet-500">
+                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">1</div>
+                  <div className="text-2xl mb-1">🔍</div>
                   <p className="text-gray-300 text-sm">Pick a scenario below</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                  <div className="text-2xl font-black text-white mb-1">2</div>
-                  <p className="text-gray-300 text-sm">Click below to watch Sage spill the tea</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-blue-500">
+                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">2</div>
+                  <div className="text-2xl mb-1">▶️</div>
+                  <p className="text-gray-300 text-sm">Tap play to see Sage spill the tea</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                  <div className="text-2xl font-black text-white mb-1">3</div>
-                  <p className="text-gray-300 text-sm">Try your own Sage receipt for FREE</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-teal-400">
+                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">3</div>
+                  <div className="text-2xl mb-1">🎁</div>
+                  <p className="text-gray-300 text-sm">Get your own Receipt free</p>
                 </div>
               </div>
             </motion.div>
