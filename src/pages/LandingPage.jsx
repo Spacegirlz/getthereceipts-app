@@ -648,9 +648,9 @@ const LandingPage = () => {
                   <p className="text-gray-300 text-sm mb-3">Click HERE to see Sage spill the tea</p>
                   <Button
                     onClick={() => scrollTo('demo-interface')}
-                    className="w-full bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-600 hover:to-fuchsia-700 text-white font-semibold rounded-xl py-2"
+                    className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-xl py-2 shadow-lg"
                   >
-                    Watch Sage's Take
+                    👑 Click HERE to see Sage spill the tea
                   </Button>
                 </div>
 
@@ -669,23 +669,7 @@ const LandingPage = () => {
               </div>
             </motion.div>
             
-            <motion.div variants={fadeInUp} className="mt-8 max-w-2xl mx-auto" id="demo-cta">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  onClick={handleGetStarted}
-                  className="w-full sm:w-auto bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-700 text-white px-6 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300 text-center whitespace-normal leading-snug"
-                >
-                  Get Your Free Receipts NOW
-                </Button>
-                <Button
-                  onClick={handleGetStarted}
-                  variant="outline"
-                  className="w-full sm:w-auto border-teal-400 text-white hover:bg-teal-500/15 px-6 py-4 rounded-2xl text-lg font-semibold transition-all duration-300"
-                >
-                  Get Started on your FREE Receipt
-                </Button>
-              </div>
-            </motion.div>
+            
           </motion.div>
 
           {/* Demo Tabs */}
@@ -773,7 +757,7 @@ const LandingPage = () => {
                   <Button
                     onClick={() => analyzeDemo(selectedDemo)}
                     disabled={isAnalyzing}
-                    className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300 disabled:opacity-50"
+                    className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300 disabled:opacity-50"
                   >
                     {isAnalyzing ? (
                       <>
@@ -866,13 +850,13 @@ const LandingPage = () => {
                         <div className="text-violet-300 text-sm">{demoResult.confidenceText}</div>
                       </div>
                       
-                      {/* Get Started Button */}
-                      <div className="text-center mt-8">
+                      {/* Get Started Button - primary CTA below demo */}
+                      <div className="text-center mt-10" id="demo-cta">
                         <Button
                           onClick={handleGetStarted}
-                          className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300"
+                          className="w-full sm:w-auto bg-gradient-to-r from-violet-500 to-blue-600 hover:from-violet-600 hover:to-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-extrabold shadow-2xl transition-all duration-300"
                         >
-                          Get started now
+                          Get Your Free Receipts NOW
                         </Button>
                       </div>
                     </div>
