@@ -1222,8 +1222,8 @@ const LandingPage = () => {
           >
             <motion.h2 
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
-              style={{ lineHeight: '2.5' }}
+              className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-2 md:mb-6"
+              style={{ lineHeight: '1.2' }}
             >
               Simple pricing for Sage's hot takes
             </motion.h2>
