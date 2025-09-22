@@ -642,13 +642,22 @@ const LandingPage = () => {
               </div>
             </motion.div>
             
-            <motion.div variants={fadeInUp} className="mt-8">
-              <Button
-                onClick={handleGetStarted}
-                className="w-full sm:w-auto max-w-xs sm:max-w-none mx-auto bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300 text-center whitespace-normal leading-snug"
-              >
-                Get started now
-              </Button>
+            <motion.div variants={fadeInUp} className="mt-8 max-w-2xl mx-auto">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  onClick={handleGetStarted}
+                  className="w-full sm:w-auto bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-700 text-white px-6 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300 text-center whitespace-normal leading-snug"
+                >
+                  Get Your Free Receipts NOW
+                </Button>
+                <Button
+                  onClick={handleGetStarted}
+                  variant="outline"
+                  className="w-full sm:w-auto border-teal-400 text-white hover:bg-teal-500/15 px-6 py-4 rounded-2xl text-lg font-semibold transition-all duration-300"
+                >
+                  Get Started on your FREE Receipt
+                </Button>
+              </div>
             </motion.div>
           </motion.div>
 
