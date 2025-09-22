@@ -621,6 +621,24 @@ const LandingPage = () => {
               <p className="text-violet-300">Your texts. Common patterns. Sage's hot takes.</p>
               <p className="text-xl font-semibold text-white">Pick a scenario and get Sage's Receipt.</p>
             </motion.div>
+
+            {/* How it works - concise 1-2-3 instructions */}
+            <motion.div variants={fadeInUp} className="mt-6 max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                  <div className="text-2xl font-black text-white mb-1">1</div>
+                  <p className="text-gray-300 text-sm">Pick a scenario below</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                  <div className="text-2xl font-black text-white mb-1">2</div>
+                  <p className="text-gray-300 text-sm">Click below to watch Sage spill the tea</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                  <div className="text-2xl font-black text-white mb-1">3</div>
+                  <p className="text-gray-300 text-sm">Try your own Sage receipt for FREE</p>
+                </div>
+              </div>
+            </motion.div>
             
             <motion.div variants={fadeInUp} className="mt-8">
               <Button
