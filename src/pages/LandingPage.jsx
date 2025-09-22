@@ -625,6 +625,14 @@ const LandingPage = () => {
               <p className="text-violet-300">Your texts. Common patterns. Sage's hot takes.</p>
             </motion.div>
 
+            {/* Demo heading */}
+            <motion.h3 
+              variants={fadeInUp}
+              className="text-2xl md:text-3xl font-bold mt-6 mb-2 bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent"
+            >
+              Test the Sage Demo
+            </motion.h3>
+
             {/* How it works - concise 1-2-3 instructions */}
             <motion.div variants={fadeInUp} className="mt-6 max-w-5xl mx-auto">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
