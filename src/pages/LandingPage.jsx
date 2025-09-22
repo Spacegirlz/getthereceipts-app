@@ -541,6 +541,15 @@ const LandingPage = () => {
             🎁 3. Get Started on your FREE Receipt
           </Button>
         </div>
+        {/* Inline CTA just under the demo card */}
+        <div className="mt-10 text-center">
+          <Button
+            onClick={handleGetStarted}
+            className="w-full sm:w-auto bg-gradient-to-r from-violet-500 to-blue-600 hover:from-violet-600 hover:to-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-extrabold shadow-2xl transition-all duration-300"
+          >
+            🎁 3. Get Started on your FREE Receipt
+          </Button>
+        </div>
       </section>
 
       {/* Meet Sage Section */}
