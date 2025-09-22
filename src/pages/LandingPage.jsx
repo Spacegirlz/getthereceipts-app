@@ -88,6 +88,10 @@ const LandingPage = () => {
 
   const handleGetStarted = () => navigate('/chat-input');
   const handleGoPremium = () => navigate('/pricing');
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   
   const handleCheckout = async (priceId, tierName) => {
     if (!user) {
@@ -624,25 +628,48 @@ const LandingPage = () => {
             {/* How it works - concise 1-2-3 instructions */}
             <motion.div variants={fadeInUp} className="mt-6 max-w-5xl mx-auto">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-violet-500">
-                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">1</div>
+                {/* Step 1 */}
+                <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-yellow-400">
+                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">1</div>
                   <div className="text-2xl mb-1">🔍</div>
-                  <p className="text-gray-300 text-sm">Pick a scenario below</p>
+                  <p className="text-gray-300 text-sm mb-3">Pick a scenario below</p>
+                  <Button
+                    onClick={() => scrollTo('demo-tabs')}
+                    className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-xl py-2"
+                  >
+                    Browse Scenarios
+                  </Button>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-blue-500">
-                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">2</div>
-                  <div className="text-2xl mb-1">▶️</div>
-                  <p className="text-gray-300 text-sm">Tap play to see Sage spill the tea</p>
+
+                {/* Step 2 */}
+                <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-pink-500">
+                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-pink-400 to-fuchsia-500 bg-clip-text text-transparent">2</div>
+                  <div className="text-2xl mb-1">👑</div>
+                  <p className="text-gray-300 text-sm mb-3">Click HERE to see Sage spill the tea</p>
+                  <Button
+                    onClick={() => scrollTo('demo-interface')}
+                    className="w-full bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-600 hover:to-fuchsia-700 text-white font-semibold rounded-xl py-2"
+                  >
+                    Watch Sage's Take
+                  </Button>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-teal-400">
-                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">3</div>
+
+                {/* Step 3 */}
+                <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-blue-500">
+                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-blue-400 to-violet-500 bg-clip-text text-transparent">3</div>
                   <div className="text-2xl mb-1">🎁</div>
-                  <p className="text-gray-300 text-sm">Get your own Receipt free</p>
+                  <p className="text-gray-300 text-sm mb-3">Get Started on your FREE Receipt</p>
+                  <Button
+                    onClick={() => scrollTo('demo-cta')}
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl py-2"
+                  >
+                    Start Free
+                  </Button>
                 </div>
               </div>
             </motion.div>
             
-            <motion.div variants={fadeInUp} className="mt-8 max-w-2xl mx-auto">
+            <motion.div variants={fadeInUp} className="mt-8 max-w-2xl mx-auto" id="demo-cta">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   onClick={handleGetStarted}
@@ -668,6 +695,7 @@ const LandingPage = () => {
             viewport={{ once: true }}
             variants={staggerChildren}
             className="flex flex-wrap justify-center gap-4 mb-12"
+            id="demo-tabs"
           >
             {Object.entries(demoData).map(([key, demo]) => (
               <motion.button
@@ -676,8 +704,8 @@ const LandingPage = () => {
                 onClick={() => handleDemoTabChange(key)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                   selectedDemo === key
-                    ? 'bg-gradient-to-r from-violet-500 to-blue-500 text-white shadow-lg shadow-violet-500/25'
-                    : 'bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10'
+                    ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg'
+                    : 'bg-white/5 text-gray-300 hover:bg-yellow-500/20 border border-white/10 hover:border-yellow-400/30'
                 }`}
               >
                 {demo.title}
@@ -692,6 +720,7 @@ const LandingPage = () => {
             viewport={{ once: true }}
             variants={fadeInUp}
             className="max-w-4xl mx-auto"
+            id="demo-interface"
           >
             <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
               {/* Chat Header */}
