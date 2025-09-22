@@ -256,7 +256,7 @@ const EnhancedReferralPage = () => {
                   className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
                     viewMode === 'forYou' 
                       ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg' 
-                      : 'text-gray-400 hover:text-white'
+                      : 'text-blue-200 bg-[#0b1b3b] border border-blue-500/30 hover:border-blue-400'
                   }`}
                 >
                   <User className="h-4 w-4" />
@@ -267,7 +267,7 @@ const EnhancedReferralPage = () => {
                   className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
                     viewMode === 'forCreators' 
                       ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg' 
-                      : 'text-gray-400 hover:text-white'
+                      : 'text-blue-200 bg-[#0b1b3b] border border-blue-500/30 hover:border-blue-400'
                   }`}
                 >
                   <DollarSign className="h-4 w-4" />
