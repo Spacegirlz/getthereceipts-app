@@ -591,6 +591,18 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Persistent CTA directly below demo */}
+      <section className="relative px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <Button
+            onClick={handleGetStarted}
+            className="w-full bg-gradient-to-r from-violet-500 to-blue-600 hover:from-violet-600 hover:to-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-extrabold shadow-2xl transition-all duration-300"
+          >
+            Get Your Free Receipts NOW
+          </Button>
+        </div>
+      </section>
+
       {/* Interactive Demo Section */}
       <section id="demo" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
@@ -666,7 +678,7 @@ const LandingPage = () => {
                 <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-blue-500">
                   <div className="text-2xl font-black mb-1 bg-gradient-to-r from-blue-400 to-violet-500 bg-clip-text text-transparent">3</div>
                   <div className="text-2xl mb-1">🎁</div>
-                  <p className="text-gray-300 text-sm">Get Started on your FREE Receipt (button below the demo)</p>
+                  <p className="text-gray-300 text-sm">🎁 3. Get Started on your FREE Receipt</p>
                 </div>
               </div>
             </motion.div>
@@ -852,15 +864,7 @@ const LandingPage = () => {
                         <div className="text-violet-300 text-sm">{demoResult.confidenceText}</div>
                       </div>
                       
-                      {/* Get Started Button - primary CTA below demo */}
-                      <div className="text-center mt-10" id="demo-cta">
-                        <Button
-                          onClick={handleGetStarted}
-                          className="w-full sm:w-auto bg-gradient-to-r from-violet-500 to-blue-600 hover:from-violet-600 hover:to-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-extrabold shadow-2xl transition-all duration-300"
-                        >
-                          Get Your Free Receipts NOW
-                        </Button>
-                      </div>
+                      
                     </div>
                   </motion.div>
                 )}
