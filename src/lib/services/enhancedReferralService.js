@@ -194,7 +194,7 @@ export const getReferralLink = (referralCode) => {
   const baseUrl = window.location.origin;
   
   // Check if Rewardful is available
-  if (window.Rewardful) {
+  if (window.Rewardful && typeof window.Rewardful.refer === 'function') {
     // Use Rewardful to generate tracked referral link
     return window.Rewardful.refer({
       referral: referralCode
