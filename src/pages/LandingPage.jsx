@@ -779,7 +779,7 @@ const LandingPage = () => {
                         👑 Sage is reading them...
                       </>
                     ) : (
-                      '👑 Click HERE to see Sage spill the tea'
+                      '👑 2. Click HERE to see Sage spill the tea'
                     )}
                   </Button>
                 </div>
