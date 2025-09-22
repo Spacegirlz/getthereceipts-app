@@ -665,12 +665,12 @@ const LandingPage = () => {
                 <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-pink-500">
                   <div className="text-2xl font-black mb-1 bg-gradient-to-r from-pink-400 to-fuchsia-500 bg-clip-text text-transparent">2</div>
                   <div className="text-2xl mb-1">👑</div>
-                  <p className="text-gray-300 text-sm mb-3">Click HERE to see Sage spill the tea</p>
+                  <p className="text-gray-300 text-sm mb-3">Click HERE to see Sage spill the Tea</p>
                   <Button
                     onClick={() => scrollTo('demo-interface')}
                     className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-xl py-2 shadow-lg"
                   >
-                    👑 Click HERE to see Sage spill the tea
+                    👑 Click HERE to see Sage spill the Tea
                   </Button>
                 </div>
 
@@ -779,7 +779,7 @@ const LandingPage = () => {
                         👑 Sage is reading them...
                       </>
                     ) : (
-                      '👑 2. Click HERE to see Sage spill the tea'
+                      '👑 2. Click HERE to see Sage spill the Tea'
                     )}
                   </Button>
                 </div>
