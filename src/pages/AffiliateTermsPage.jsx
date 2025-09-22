@@ -22,7 +22,7 @@ export default function AffiliateTermsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/20"
+          className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/10 shadow-xl"
         >
           {/* Title */}
           <div className="text-center mb-12">
