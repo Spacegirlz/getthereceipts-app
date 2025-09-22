@@ -124,6 +124,13 @@ const AffiliateApplicationPage = () => {
               <p className="text-gray-300">Minimum 1K followers across platforms</p>
             </div>
           </div>
+
+          {/* Kicker */}
+          <div className="mt-8 text-center">
+            <p className="text-blue-200 text-sm bg-blue-500/10 border border-blue-500/30 rounded-xl px-4 py-3 inline-block">
+              Creator or connector — both welcome. If you move the group chat, you can move this.
+            </p>
+          </div>
         </motion.div>
       </div>
     </div>
