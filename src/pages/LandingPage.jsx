@@ -658,7 +658,7 @@ const LandingPage = () => {
                     onClick={() => scrollTo('demo-interface')}
                     className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-xl py-2 shadow-lg"
                   >
-                    👑 2. Click HERE to see Sage spill the tea
+                    👑 Click HERE to see Sage spill the tea
                   </Button>
                 </div>
 
