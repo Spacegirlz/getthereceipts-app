@@ -54,24 +54,27 @@ const MainHeader = () => {
         </Link>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex gap-6 items-center">
-            <Link to="/pricing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</Link>
-            <Link to="/refer" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Earn Rewards</Link>
-            <Link to="/about" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">About</Link>
+            <Link to="/chat-input" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">New Receipt</Link>
+            {user ? (
+              <>
+                <Link to="/refer" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Refer and Earn</Link>
+                <Link to="/dashboard" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Dashboard</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/pricing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</Link>
+                <Link to="/about" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">About</Link>
+                <Link to="/refer" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Refer and Earn</Link>
+              </>
+            )}
           </nav>
           {user ? (
-            <>
-              <Link to="/dashboard">
-                <Button variant="ghost" className="text-white hover:bg-white/10">
-                  <LayoutDashboard className="mr-2 h-4 w-4"/> Dashboard
-                </Button>
-              </Link>
-              <Button variant="ghost" className="text-white hover:bg-white/10" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4"/>
-              </Button>
-            </>
+            <Button variant="ghost" className="text-white hover:bg-white/10" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4"/>
+            </Button>
           ) : (
             <Button className="viral-button-popular" onClick={() => openModal('sign_in')}>
-              <LogIn className="mr-2 h-4 w-4" /> Sign In
+              <LogIn className="mr-2 h-4 w-4" /> Login
             </Button>
           )}
         </div>

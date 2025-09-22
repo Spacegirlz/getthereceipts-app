@@ -42,11 +42,14 @@ const AffiliateApplicationPage = () => {
               Receipts & Riches Program
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
-            Turn confusing text messages into steady income
+          <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-2xl mx-auto">
+            Turn confusing texts into steady income
           </p>
           <p className="text-lg font-semibold text-yellow-400 mb-6">
-            30% commission • Monthly payments • 🎁 $1000+ potential
+            30% commission • Monthly payouts • 🎁 $1,000+ upside
+          </p>
+          <p className="text-gray-300 max-w-2xl mx-auto mb-8">
+            If your people trust your take, you can earn. Share Sage’s receipts, help your friends read between the lines, and get paid for the clarity.
           </p>
           <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-8 max-w-2xl mx-auto">
             <p className="text-blue-300 text-sm">
@@ -65,17 +68,17 @@ const AffiliateApplicationPage = () => {
           <div className="bg-gray-800/30 p-6 rounded-xl text-center">
             <Gift className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-white mb-2">30% Commission</h3>
-            <p className="text-gray-300 text-sm">Earn 30% on every subscription you refer. No caps, no limits.</p>
+            <p className="text-gray-300 text-sm">Earn 30% on every subscription you refer. No caps.</p>
           </div>
           <div className="bg-gray-800/30 p-6 rounded-xl text-center">
             <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-white mb-2">Monthly Payments</h3>
-            <p className="text-gray-300 text-sm">Get paid monthly via PayPal or bank transfer. Reliable income.</p>
+            <p className="text-gray-300 text-sm">Paid out every month via PayPal.</p>
           </div>
           <div className="bg-gray-800/30 p-6 rounded-xl text-center">
             <TrendingUp className="h-12 w-12 text-purple-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-white mb-2">High Converting</h3>
-            <p className="text-gray-300 text-sm">Our product sells itself. Your audience will love the insights.</p>
+            <p className="text-gray-300 text-sm">People love the “what they really meant” read. It shares itself.</p>
           </div>
         </motion.div>
 
@@ -88,7 +91,7 @@ const AffiliateApplicationPage = () => {
         >
           <h2 className="text-2xl font-bold text-white mb-4">Ready to Apply?</h2>
           <p className="text-gray-300 mb-6">
-            Click the button below to access our secure application portal and complete your affiliate application.
+            Ready to apply? Tap below to open the secure portal and submit in under 2 minutes.
           </p>
           <Button
             onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform?usp=header', '_blank')}
@@ -109,26 +112,26 @@ const AffiliateApplicationPage = () => {
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
               <CheckCircle className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-              <p className="text-gray-300">Active social media presence with engaged audience</p>
+              <p className="text-gray-300">Active social presence or a strong friend-network that listens</p>
             </div>
             <div className="flex items-start space-x-3">
               <CheckCircle className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-              <p className="text-gray-300">Content that aligns with our brand values</p>
+              <p className="text-gray-300">Content aligns with respect, privacy, and honesty</p>
             </div>
             <div className="flex items-start space-x-3">
               <CheckCircle className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-              <p className="text-gray-300">Commitment to authentic promotion (no spam)</p>
+              <p className="text-gray-300">Real recommendations only (no spam or bait)</p>
             </div>
             <div className="flex items-start space-x-3">
               <CheckCircle className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-              <p className="text-gray-300">Minimum 1K followers across platforms</p>
+              <p className="text-gray-300">Minimum 1K total followers across platforms (or comparable community reach)</p>
             </div>
           </div>
 
           {/* Kicker */}
           <div className="mt-8 text-center">
             <p className="text-blue-200 text-sm bg-blue-500/10 border border-blue-500/30 rounded-xl px-4 py-3 inline-block">
-              Creator or connector — both welcome. If you move the group chat, you can move this.
+              Creator or connector, you are welcome. If your voice moves conversations, you've got this!
             </p>
           </div>
         </motion.div>

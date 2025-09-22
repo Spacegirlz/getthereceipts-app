@@ -356,6 +356,12 @@ const EnhancedReferralPage = () => {
               transition={{ delay: 0.5, duration: 0.7 }}
               className="mt-16 w-full"
             >
+              {/* Credits-only header */}
+              <div className="mb-4 max-w-4xl">
+                <h2 className="text-2xl font-bold text-white">Refer & Earn Credits</h2>
+                <p className="text-purple-200 text-sm">This section is for the credits-only program (no cash payouts).</p>
+                <p className="text-gray-400 text-xs mt-1">Refer & Earn Credits Dashboard</p>
+              </div>
               <h2 className="text-2xl font-bold text-white mb-8">How It Works</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <motion.div 
@@ -428,9 +434,55 @@ const EnhancedReferralPage = () => {
               <h1 className="text-5xl md:text-7xl font-black text-white mb-4">
                 <span className="gradient-text">Refer & Earn</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 Share your unique link and earn credits for every friend who joins! 🚀
               </p>
+
+              {/* Options CTA (logged-in) */}
+              <div className="max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                  {/* Option 1 */}
+                  <div className="rounded-2xl p-6 bg-gray-800/40 border border-white/10">
+                    <h2 className="text-2xl font-bold text-white mb-2">Option 1: Refer & Earn Credits</h2>
+                    <p className="text-gray-300 mb-4">Share your link. Every friend who joins gives you 3 free Sage receipts.</p>
+                    <ul className="list-disc list-inside text-gray-300 text-sm mb-4 space-y-1">
+                      <li>Fast and simple — no application</li>
+                      <li>Perfect for group chats and friends</li>
+                    </ul>
+                    <Button 
+                      variant="outline" 
+                      className="border-purple-400 text-purple-200 hover:bg-purple-500/10"
+                      onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
+                      See how it works
+                    </Button>
+                  </div>
+                  {/* Option 2 */}
+                  <div className="rounded-2xl p-6 bg-blue-500/10 border border-blue-500/30">
+                    <h2 className="text-2xl font-bold text-white mb-2">Option 2: Receipts & Riches</h2>
+                    <p className="text-blue-200 mb-4">Our affiliate program for creators and connectors. Earn real cash.</p>
+                    <ul className="list-disc list-inside text-blue-100 text-sm mb-4 space-y-1">
+                      <li>30% commission on subscriptions</li>
+                      <li>Monthly payouts via PayPal</li>
+                    </ul>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button 
+                        className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-6 py-3 rounded-xl"
+                        onClick={() => navigate('/refer/apply')}
+                      >
+                        Apply to Receipts & Riches
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="border-blue-400 text-blue-200 hover:bg-blue-500/10"
+                        onClick={() => openModal('sign_up')}
+                      >
+                        Sign up first
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
 
             <motion.div
@@ -439,6 +491,12 @@ const EnhancedReferralPage = () => {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="w-full max-w-3xl meme-card p-8 rounded-3xl text-center"
             >
+              {/* Dashboard Header */}
+              <div className="mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Refer & Earn Credits Dashboard</h2>
+                <p className="text-gray-400 text-base md:text-lg">Credits-only program (no cash payouts).</p>
+              </div>
+
               {/* Real-time Stats */}
               <div className="grid grid-cols-2 gap-6 mb-8">
                 <motion.div 
@@ -512,16 +570,16 @@ const EnhancedReferralPage = () => {
                   <Share2 className="h-5 w-5 mr-2" />
                   Your Referral Link
                 </h3>
-                <div className="flex gap-2 mb-4">
+                <div className="flex flex-col sm:flex-row gap-2 mb-4">
                   <Input
                     value={referralLink}
                     readOnly
-                    className="bg-gray-700 text-white border-gray-600"
+                    className="bg-gray-700 text-white border-gray-600 w-full"
                   />
                   <Button
                     onClick={handleCopyLink}
                     variant="outline"
-                    className="border-purple-400 text-white hover:bg-purple-500/20"
+                    className="border-purple-400 text-white hover:bg-purple-500/20 w-full sm:w-auto"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>

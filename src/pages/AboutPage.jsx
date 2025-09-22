@@ -43,7 +43,7 @@ const AboutPage = () => {
           About <span className="gradient-text">Get The Receipts</span>
         </h1>
         
-        <p className="text-xl text-gray-300 mb-8 whitespace-nowrap">
+        <p className="text-xl text-gray-300 mb-8 sm:whitespace-nowrap break-words">
           We're here to decode the chaos of modern communication, one confusing text at a time.
         </p>
       </motion.div>

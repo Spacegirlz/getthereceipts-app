@@ -16,7 +16,7 @@ const RefundPolicyPage = () => {
       </Helmet>
 
       {/* Header */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-center justify-between mb-8">
           <Button
             variant="ghost"
@@ -37,15 +37,15 @@ const RefundPolicyPage = () => {
           className="text-center mb-12"
         >
           <Shield className="h-24 w-24 text-blue-400 mx-auto mb-6" />
-          <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-black text-white mb-4 px-2">
             <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-blue-500 bg-clip-text text-transparent">
               Refund Policy
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-3xl mx-auto px-2">
             Thank you for choosing Get The Receipts! We are committed to providing you with high-quality AI text analysis and an excellent user experience.
           </p>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto px-2">
             If you are not completely satisfied with our services, here are the details of our refund policy.
           </p>
         </motion.div>

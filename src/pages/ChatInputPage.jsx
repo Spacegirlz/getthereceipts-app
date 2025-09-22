@@ -1301,9 +1301,9 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                 />
                 <label htmlFor="sage-agreement" className="text-sm text-gray-200 leading-relaxed">
                   I'm 16+ and understand this is for entertainment. I agree to the{' '}
-                  <Link to="/terms-of-service" className="text-purple-300 hover:text-purple-200 underline underline-offset-2">Terms of Service</Link>{' '}
+                  <Link to="/terms-of-service" className="text-purple-300 hover:underline">Terms of Service</Link>{' '}
                   and{' '}
-                  <Link to="/privacy-policy" className="text-purple-300 hover:text-purple-2 00 underline underline-offset-2">Privacy Policy</Link>.
+                  <Link to="/privacy-policy" className="text-purple-300 hover:underline">Privacy Policy</Link>.
                 </label>
               </div>
 

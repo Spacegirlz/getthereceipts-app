@@ -747,7 +747,7 @@ const PricingPage = () => {
                         ></div>
                       </div>
                       
-                      <div className="text-xs text-purple-300 whitespace-nowrap">
+                      <div className="text-xs text-purple-300 sm:whitespace-nowrap break-words">
                         Price jumps to $49 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
                       </div>
                     </div>
@@ -891,19 +891,19 @@ const PricingPage = () => {
                       ></div>
                     </div>
                     
-                    <div className="text-sm text-purple-300 whitespace-nowrap">
+                    <div className="text-sm text-purple-300 sm:whitespace-nowrap break-words">
                       Price jumps to $49 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
                     </div>
                   </div>
                 </div>
               </div>
 
-              <p className="text-lg text-yellow-400 mb-8 max-w-2xl mx-auto whitespace-nowrap">
+              <p className="text-lg text-yellow-400 mb-8 max-w-2xl mx-auto sm:whitespace-nowrap break-words">
                 Once you lock in a founder price, it never changes - even when everyone else pays more.
               </p>
 
               <Button
-                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-pink-500/30 transform hover:scale-105"
+                className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-pink-500/30 transform hover:scale-105"
                 onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founder')}
               >
                 👑 Claim OG Founder Status

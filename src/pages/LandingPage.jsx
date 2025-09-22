@@ -463,12 +463,12 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 w-full max-w-xl mx-auto px-2"
             >
               <Button
                 onClick={handleGetStarted}
                 size="lg"
-                className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40"
+                className="w-full sm:w-auto bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40"
               >
                 Get Your Free Receipts
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -477,7 +477,7 @@ const LandingPage = () => {
                 onClick={handleGoPremium}
                 variant="outline"
                 size="lg"
-                className="border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-2xl text-lg font-semibold transition-all duration-300"
+                className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-2xl text-lg font-semibold transition-all duration-300"
               >
                 See Pricing
               </Button>
@@ -1396,7 +1396,7 @@ const LandingPage = () => {
                   The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.
                 </p>
 
-                <p className="text-lg text-yellow-400 mb-4 max-w-2xl mx-auto whitespace-nowrap">
+                <p className="text-lg text-yellow-400 mb-4 max-w-2xl mx-auto sm:whitespace-nowrap break-words">
                   Once you lock in a founder price, it <strong>never changes</strong> - even when <strong>everyone else pays more</strong>.
                 </p>
 

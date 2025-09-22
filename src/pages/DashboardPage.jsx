@@ -308,43 +308,68 @@ const DashboardPage = () => {
             <h1 className="text-4xl font-black">Your Dashboard</h1>
             <p className="text-gray-400">Welcome back, {user?.email || 'User'}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full md:w-auto">
             <LinkButton 
               to="/chat-input" 
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-full sm:w-auto text-center bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <PlusCircle className="mr-2 h-4 w-4" /> New Receipt
             </LinkButton>
-            <LinkButton to="/pricing" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20">
-              Pricing
-            </LinkButton>
-            <LinkButton to="/refer" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20">
+            <LinkButton to="/refer" variant="outline" className="w-full sm:w-auto text-center text-white border-purple-400 hover:bg-purple-500/20">
               Earn Rewards
-            </LinkButton>
-            <LinkButton to="/about" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20">
-              About
             </LinkButton>
             {/* Only show coupon button for free users */}
             {userCredits.subscription === 'free' && (
               <Button 
                 variant="outline" 
-                className="text-white border-yellow-400 hover:bg-yellow-500/20"
+                className="w-full sm:w-auto text-white border-yellow-400 hover:bg-yellow-500/20"
                 onClick={() => setIsCouponModalOpen(true)}
               >
                 <Gift className="mr-2 h-4 w-4" /> Have a Coupon?
               </Button>
             )}
             {user ? (
-              <Button variant="outline" className="text-white border-red-400 hover:bg-red-500/20" onClick={handleLogout}>
+              <Button variant="outline" className="w-full sm:w-auto text-white border-red-400 hover:bg-red-500/20" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" /> Sign Out
               </Button>
             ) : (
-              <Button variant="outline" className="text-white border-green-400 hover:bg-green-500/20" onClick={handleLogin}>
+              <Button variant="outline" className="w-full sm:w-auto text-white border-green-400 hover:bg-green-500/20" onClick={handleLogin}>
                 <LogIn className="mr-2 h-4 w-4" /> Sign In
               </Button>
             )}
           </div>
         </motion.header>
+
+        {/* Quick Actions (2x2 on mobile) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <LinkButton 
+            to="/chat-input" 
+            className="w-full text-center bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0"
+          >
+            New Receipt
+          </LinkButton>
+          <LinkButton 
+            to="/refer" 
+            variant="outline" 
+            className="w-full text-center text-white border-purple-400 hover:bg-purple-500/20"
+          >
+            Earn Rewards
+          </LinkButton>
+          <LinkButton 
+            to={userCredits?.subscription === 'free' ? '/pricing' : '/settings'} 
+            variant="outline" 
+            className="w-full text-center text-white border-blue-400 hover:bg-blue-500/20"
+          >
+            {userCredits?.subscription === 'free' ? 'Manage Plan' : 'Billing'}
+          </LinkButton>
+          <LinkButton 
+            to="/settings" 
+            variant="outline" 
+            className="w-full text-center text-white border-slate-400 hover:bg-white/10"
+          >
+            Settings
+          </LinkButton>
+        </div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
