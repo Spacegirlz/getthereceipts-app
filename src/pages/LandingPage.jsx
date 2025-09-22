@@ -625,7 +625,7 @@ const LandingPage = () => {
             <motion.div variants={fadeInUp} className="mt-8">
               <Button
                 onClick={handleGetStarted}
-                className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300"
+                className="w-full sm:w-auto max-w-xs sm:max-w-none mx-auto bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300 text-center whitespace-normal leading-snug"
               >
                 Get started now
               </Button>
