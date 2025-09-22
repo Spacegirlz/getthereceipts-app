@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -1286,7 +1286,7 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
               <div className="text-center mb-6">
                 <div className="text-6xl mb-4">🔮</div>
                 <h2 className="text-2xl font-bold text-white mb-2">Meet Sage</h2>
-                <p className="text-purple-200 text-sm">Your AI truth-teller & pattern reader</p>
+                <p className="text-purple-200 text-sm">Your AI chat decoder & pattern reader</p>
               </div>
               
 
@@ -1300,7 +1300,10 @@ My REAL question is: How do I figure out if she's worth the risk without losing 
                   onChange={(e) => setCheckboxChecked(e.target.checked)}
                 />
                 <label htmlFor="sage-agreement" className="text-sm text-gray-200 leading-relaxed">
-                  I'm 16+ and understand this is for entertainment. I agree to the Terms of Service and Privacy Policy.
+                  I'm 16+ and understand this is for entertainment. I agree to the{' '}
+                  <Link to="/terms-of-service" className="text-purple-300 hover:text-purple-200 underline underline-offset-2">Terms of Service</Link>{' '}
+                  and{' '}
+                  <Link to="/privacy-policy" className="text-purple-300 hover:text-purple-2 00 underline underline-offset-2">Privacy Policy</Link>.
                 </label>
               </div>
 

@@ -4,7 +4,16 @@ import { Link } from 'react-router-dom';
 
 export default function AffiliateTermsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-800 text-white">
+    <div className="min-h-screen relative text-white bg-black">
+      {/* Glossy Purple/Black Background */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Deep vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(126,34,206,0.18),transparent)]" />
+        {/* Bottom glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_100%_50%_at_50%_120%,rgba(88,28,135,0.22),transparent)]" />
+        {/* Subtle diagonal sheen */}
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0)_35%,rgba(255,255,255,0)_65%,rgba(255,255,255,0.05)_100%)] mix-blend-overlay" />
+      </div>
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
