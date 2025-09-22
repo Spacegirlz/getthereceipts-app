@@ -1521,7 +1521,6 @@ const LandingPage = () => {
               © 2025 Get The Receipts. All rights reserved.
             </p>
             <p className="text-gray-500 text-sm mb-3">
-              Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.<br />
               16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
             </p>
             <p className="text-gray-600 text-sm">
