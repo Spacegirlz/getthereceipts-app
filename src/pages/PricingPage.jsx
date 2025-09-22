@@ -11,6 +11,16 @@ import { useStripe } from '@stripe/react-stripe-js';
 import PurchasePopup from '@/components/PurchasePopup';
 import { injectMovingGradientStyles } from '@/utils/gradientUtils';
 
+// Helper function to get price value for Rewardful tracking
+const getPriceValue = (priceId) => {
+  const priceMap = {
+    'price_1QZ8Xj2eZvKYlo2C1234567890': 9.99, // Monthly
+    'price_1QZ8Xj2eZvKYlo2C0987654321': 29.99, // OG Founder
+    'price_1QZ8Xj2eZvKYlo2C1122334455': 99.99, // Yearly
+  };
+  return priceMap[priceId] || 0;
+};
+
 const SocialProofTicker = () => {
   const items = [
     "Jessica just found out he's breadcrumbing",
@@ -135,6 +145,21 @@ const PricingPage = () => {
       }
 
       const { sessionId } = await response.json();
+
+      // Track purchase conversion with Rewardful
+      if (window.Rewardful) {
+        try {
+          window.Rewardful('ready', function() {
+            window.Rewardful('convert', {
+              email: user.email,
+              value: getPriceValue(priceId),
+              currency: 'USD'
+            });
+          });
+        } catch (rewardfulError) {
+          console.warn('Rewardful conversion tracking failed:', rewardfulError);
+        }
+      }
 
       // Redirect to Stripe Checkout
       const { error } = await stripe.redirectToCheckout({

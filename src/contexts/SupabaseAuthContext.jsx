@@ -280,6 +280,20 @@ export const AuthProvider = ({ children }) => {
       options,
     });
 
+    // Track signup conversion with Rewardful
+    if (data?.user && window.Rewardful) {
+      try {
+        window.Rewardful('ready', function() {
+          window.Rewardful('convert', {
+            email: email,
+            referral: referralCode || null
+          });
+        });
+      } catch (rewardfulError) {
+        console.warn('Rewardful conversion tracking failed:', rewardfulError);
+      }
+    }
+
     if (error) {
       console.error('🔐 Signup error:', error);
       
