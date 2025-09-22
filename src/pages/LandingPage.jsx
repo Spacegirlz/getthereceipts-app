@@ -531,6 +531,18 @@ const LandingPage = () => {
         />
       </section>
 
+      {/* CTA directly under the demo */}
+      <section className="relative px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <Button
+            onClick={handleGetStarted}
+            className="w-full sm:w-auto bg-gradient-to-r from-violet-500 to-blue-600 hover:from-violet-600 hover:to-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-extrabold shadow-2xl transition-all duration-300"
+          >
+            🎁 3. Get Started on your FREE Receipt
+          </Button>
+        </div>
+      </section>
+
       {/* Meet Sage Section */}
       <section id="about" className="relative px-6 lg:px-8 py-32">
         <div className="mx-auto max-w-7xl">
