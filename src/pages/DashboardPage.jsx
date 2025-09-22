@@ -308,8 +308,22 @@ const DashboardPage = () => {
             <h1 className="text-4xl font-black">Your Dashboard</h1>
             <p className="text-gray-400">Welcome back, {user?.email || 'User'}</p>
           </div>
-          <div className="flex gap-2">
-            <LinkButton to="/chat-input" className="viral-button"><PlusCircle className="mr-2 h-4 w-4" /> New Receipt</LinkButton>
+          <div className="flex flex-wrap gap-2">
+            <LinkButton 
+              to="/chat-input" 
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <PlusCircle className="mr-2 h-4 w-4" /> New Receipt
+            </LinkButton>
+            <LinkButton to="/pricing" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20">
+              Pricing
+            </LinkButton>
+            <LinkButton to="/refer" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20">
+              Earn Rewards
+            </LinkButton>
+            <LinkButton to="/about" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20">
+              About
+            </LinkButton>
             {/* Only show coupon button for free users */}
             {userCredits.subscription === 'free' && (
               <Button 
@@ -320,7 +334,6 @@ const DashboardPage = () => {
                 <Gift className="mr-2 h-4 w-4" /> Have a Coupon?
               </Button>
             )}
-            <LinkButton to="/refer" variant="outline" className="text-white border-purple-400 hover:bg-purple-500/20"><Gift className="mr-2 h-4 w-4" /> Refer Friends</LinkButton>
             {user ? (
               <Button variant="outline" className="text-white border-red-400 hover:bg-red-500/20" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" /> Sign Out
