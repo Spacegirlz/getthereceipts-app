@@ -28,6 +28,16 @@ export default function Success() {
             if (data) {
               setCredits(data.credits_remaining);
               setSubscriptionStatus(data.subscription_status || 'free');
+              
+              // Track conversion with Rewardful
+              if (window.rewardful && user.email) {
+                try {
+                  window.rewardful('convert', { email: user.email });
+                  console.log('Rewardful conversion tracked for:', user.email);
+                } catch (error) {
+                  console.warn('Rewardful conversion tracking failed:', error);
+                }
+              }
             }
             setLoading(false);
           }, 2000); // Give webhook 2 seconds to process
