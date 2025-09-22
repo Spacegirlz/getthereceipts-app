@@ -5,31 +5,6 @@ import { Link } from 'react-router-dom';
 export default function AffiliateTermsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-800 text-white">
-      {/* Header */}
-      <header className="bg-black/20 backdrop-blur-sm border-b border-purple-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link to="/" className="flex items-center space-x-2">
-              <span className="text-2xl">🔮</span>
-              <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent font-bold text-xl">
-                Get The Receipts
-              </span>
-            </Link>
-            <nav className="hidden md:flex space-x-8">
-              <Link to="/" className="text-gray-300 hover:text-white transition-colors">
-                Home
-              </Link>
-              <Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">
-                Pricing
-              </Link>
-              <Link to="/refer" className="text-gray-300 hover:text-white transition-colors">
-                Earn & Refer
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
