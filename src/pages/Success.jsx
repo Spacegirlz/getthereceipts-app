@@ -32,22 +32,8 @@ export default function Success() {
               // Track conversion with Rewardful (official documentation approach)
               if (window.rewardful && user.email) {
                 try {
-                  // Get purchase amount based on subscription status
-                  let purchaseValue = 0;
-                  if (subscriptionStatus === 'premium') {
-                    purchaseValue = 9.99; // Monthly subscription
-                  } else if (subscriptionStatus === 'yearly') {
-                    purchaseValue = 29.99; // OG Founder yearly
-                  } else if (credits > 1) {
-                    purchaseValue = 9.99; // Emergency pack
-                  }
-                  
-                  window.rewardful('convert', { 
-                    email: user.email,
-                    value: purchaseValue,
-                    currency: 'USD'
-                  });
-                  console.log('Rewardful conversion tracked for:', user.email, 'Amount:', purchaseValue);
+                  window.rewardful('convert', { email: user.email });
+                  console.log('Rewardful conversion tracked for:', user.email);
                 } catch (error) {
                   console.warn('Rewardful conversion tracking failed:', error);
                 }
