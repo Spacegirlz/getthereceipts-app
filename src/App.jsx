@@ -58,6 +58,7 @@ function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/refer" element={<EnhancedReferralPage />} />
               <Route path="/refer/apply" element={<AffiliateApplicationPage />} />
+              <Route path="/affiliate/apply" element={<AffiliateApplicationPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
               <Route path="/refund-policy" element={<RefundPolicyPage />} />

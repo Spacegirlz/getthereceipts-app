@@ -294,7 +294,7 @@ const EnhancedReferralPage = () => {
                     Your friends get clarity. You get credits.
                   </p>
                   <p className="text-lg font-semibold text-yellow-400 mb-8">
-                    Every friend who signs up = 🎁3 free receipts
+                    Every friend who signs up = You get 🎁 3 free Sage receipts = Use or trade in for bonus packages
                   </p>
                   <Button 
                     size="lg" 
@@ -320,15 +320,15 @@ const EnhancedReferralPage = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <DollarSign className="h-24 w-24 text-green-400 mx-auto mb-6" />
+                  <Gift className="h-24 w-24 text-yellow-400 mx-auto mb-6" />
                   <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
                     <span className="gradient-text">Receipts & Riches Program</span>
                   </h1>
                   <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
-                    Turn toxic text reactions into steady income
+                    Turn confusing text messages into steady income
                   </p>
                   <p className="text-lg font-semibold text-yellow-400 mb-8">
-                    30% commission • Monthly payments • 🎁1000+ potential
+                    30% commission • Monthly payments • 🎁 $1000+ potential
                   </p>
                   <Button 
                     size="lg" 

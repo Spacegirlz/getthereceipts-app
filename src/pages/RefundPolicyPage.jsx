@@ -214,7 +214,7 @@ const RefundPolicyPage = () => {
             Contact Us
           </h2>
           <p className="text-gray-300 mb-6 text-lg">
-            If you have any questions or need further assistance, please feel free to contact our customer support team. We are dedicated to helping you and ensuring your experience is pleasant and worry-free.
+            If you have any questions or need further assistance, please feel free to contact our customer support team.
           </p>
           
           <div className="bg-gray-700/30 p-6 rounded-xl max-w-md mx-auto">
@@ -226,7 +226,7 @@ const RefundPolicyPage = () => {
               support@getthereceipts.com
             </a>
             <p className="text-gray-400 text-sm mt-2">
-              We typically respond within 24 hours
+              We typically respond within 48 hours
             </p>
           </div>
         </motion.div>

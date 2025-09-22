@@ -43,7 +43,7 @@ const AboutPage = () => {
           About <span className="gradient-text">Get The Receipts</span>
         </h1>
         
-        <p className="text-xl text-gray-300 mb-8">
+        <p className="text-xl text-gray-300 mb-8 whitespace-nowrap">
           We're here to decode the chaos of modern communication, one confusing text at a time.
         </p>
       </motion.div>
@@ -255,10 +255,10 @@ const AboutPage = () => {
         
         <Button
           onClick={() => navigate('/chat-input')}
-          className="bg-transparent border-2 border-violet-400/50 hover:border-violet-400 text-white font-bold text-lg px-8 py-4 rounded-full shadow-2xl transition-all duration-300 hover:shadow-violet-500/25 hover:transform hover:-translate-y-1"
+          className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
           size="lg"
         >
-          <span className="moving-gradient-text">Start Getting Receipts</span> 🧾
+          Start Getting Receipts 🧾
         </Button>
       </motion.div>
 
