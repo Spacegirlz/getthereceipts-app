@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,26 @@ const AuthModal = () => {
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
     const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+    const [referralId, setReferralId] = useState(null);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.rewardful) {
+            window.rewardful('ready', function() {
+                if (window.Rewardful && window.Rewardful.referral) {
+                    setReferralId(window.Rewardful.referral);
+                    console.log('Rewardful referral detected:', window.Rewardful.referral);
+                }
+            });
+        }
+        
+        // Also check URL parameters for referral
+        const urlParams = new URLSearchParams(window.location.search);
+        const referralParam = urlParams.get('via') || urlParams.get('ref') || urlParams.get('referral');
+        if (referralParam) {
+            setReferralId(referralParam);
+            console.log('Referral detected from URL:', referralParam);
+        }
+    }, []);
 
     // Password strength checker
     const checkPasswordStrength = (password) => {

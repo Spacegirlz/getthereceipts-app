@@ -54,10 +54,21 @@ const PricingPage = () => {
   const [founderCount, setFounderCount] = useState(353); // Dynamic counter - 147 spots remaining
   const [spotsLeft, setSpotsLeft] = useState(73); // Dynamic spots counter
   const [isChanging, setIsChanging] = useState(false); // Track when counter is changing
+  const [referralId, setReferralId] = useState(null);
 
   // Scroll to top on page load to ensure consistent landing position
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  // Detect referral from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const referralParam = urlParams.get('via') || urlParams.get('ref') || urlParams.get('referral');
+    if (referralParam) {
+      setReferralId(referralParam);
+      console.log('Referral detected on pricing page:', referralParam);
+    }
   }, []);
 
   // Inject moving gradient styles
@@ -136,7 +147,8 @@ const PricingPage = () => {
         },
         body: JSON.stringify({
           priceId: priceId,
-          userId: user.email
+          userId: user.email,
+          referralId: referralId
         })
       });
 

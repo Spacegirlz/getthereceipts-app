@@ -22,9 +22,9 @@ module.exports = async function handler(req, res) {
       headers: req.headers['content-type']
     });
 
-    const { priceId, userId } = req.body || {};
+    const { priceId, userId, referralId } = req.body || {};
 
-    console.log('🔍 Extracted data:', { priceId, userId });
+    console.log('🔍 Extracted data:', { priceId, userId, referralId });
 
     if (!priceId) {
       console.error('❌ Missing priceId in request body:', req.body);
@@ -74,8 +74,10 @@ module.exports = async function handler(req, res) {
       mode: mode,
       success_url: `${req.headers.origin || 'https://www.getthereceipts.com'}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin || 'https://www.getthereceipts.com'}/pricing`,
+      client_reference_id: referralId || undefined,
       metadata: {
-        userId: userId || ''
+        userId: userId || '',
+        referral: referralId || undefined
       }
     };
 
