@@ -65,11 +65,30 @@ module.exports = {
 					from: { height: 'var(--radix-accordion-content-height)' },
 					to: { height: 0 },
 				},
+				'float': {
+					'0%, 100%': { transform: 'translate(0, 0)' },
+					'50%': { transform: 'translate(30px, -30px)' },
+				},
+				'float-delayed': {
+					'0%, 100%': { transform: 'translate(0, 0)' },
+					'50%': { transform: 'translate(-20px, 20px)' },
+				},
+				'shimmer': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(100%)' },
+				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 20s ease-in-out infinite',
+				'float-delayed': 'float-delayed 20s ease-in-out infinite',
+				'shimmer': 'shimmer 2s linear infinite',
 			},
+			backdropBlur: {
+				'xs': '2px',
+				'xl': '40px',
+			}
 		},
 	},
 	plugins: [require('tailwindcss-animate')],

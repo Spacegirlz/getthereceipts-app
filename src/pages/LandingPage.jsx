@@ -919,7 +919,7 @@ const LandingPage = () => {
             whileInView="animate"
             viewport={{ once: true }}
             variants={staggerChildren}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
           >
             {[
               { icon: '📱', title: '1. PASTE', desc: 'Drop in the confusing text that\'s keeping you up' },
@@ -930,7 +930,7 @@ const LandingPage = () => {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="text-center p-8 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl hover:border-violet-500/30 transition-all duration-300"
+                className="text-center p-6 lg:p-8 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl hover:border-violet-500/30 transition-all duration-300 min-h-[200px] flex flex-col justify-center"
               >
                 <div className="text-5xl mb-6">{step.icon}</div>
                 <h3 className="text-xl font-bold mb-4 text-violet-400">{step.title}</h3>

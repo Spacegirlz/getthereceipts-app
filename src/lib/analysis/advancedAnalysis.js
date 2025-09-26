@@ -497,7 +497,7 @@ const parseConversationSides = (message, context) => {
   
   // Look for patterns like "Alex (time): text" vs "Mateo (time): text"
   const lines = message.split('\n');
-  const userName = context?.user_name || 'user';
+  const userName = context?.userName || context?.user_name || 'user';
   
   console.log('🔍 Parsing conversation for mode detection:', { userName, totalLines: lines.length });
   
@@ -566,15 +566,15 @@ export const analyzeWithGPT = async (message, context) => {
   let actualContext = 'Dating/Romantic'; // Default
   
   // Primary: Use quiz context if provided
-  if (context?.context) {
-    const quizContext = context.context.toLowerCase();
+  if (context?.context || context?.contextType || context?.relationshipType) {
+    const quizContext = (context?.context || context?.contextType || context?.relationshipType).toLowerCase();
     if (quizContext === 'work') {
       actualContext = 'Work/Professional';
     } else if (quizContext === 'family') {
       actualContext = 'Family/Personal';
     } else if (quizContext === 'friends') {
       actualContext = 'Friendship';
-    } else if (quizContext === 'dating' || quizContext === 'situationship' || quizContext === "don't know yet") {
+    } else if (quizContext === 'dating' || quizContext === 'situationship' || quizContext === 'marriage' || quizContext === "don't know yet") {
       actualContext = 'Dating/Romantic';
     }
   } else {
@@ -593,6 +593,8 @@ export const analyzeWithGPT = async (message, context) => {
   
   console.log('Context analysis:', {
     quizContext: context?.context,
+    contextType: context?.contextType,
+    relationshipType: context?.relationshipType,
     detectedContext: actualContext,
     hasWorkplaceElements,
     messagePreview: message.slice(0, 100)
@@ -602,7 +604,7 @@ export const analyzeWithGPT = async (message, context) => {
   const { provider, model, openAIModel, geminiModel } = selectAiProvider();
   if (provider === 'none') {
     console.log('No AI keys detected; returning minimal fallback analysis');
-    return generateAdvancedResults(message, { ...context, context: actualContext });
+    return generateAdvancedResults(message, { ...context, context: actualContext, contextType: actualContext, relationshipType: actualContext });
   }
 
   try {
@@ -715,7 +717,7 @@ export const analyzeWithGPT = async (message, context) => {
           otherPronouns: context?.otherPartyPronouns || context?.known_pronouns?.other_party || 'they/them',
           
           // Core context
-          relationshipType: context?.contextType || context?.context?.toLowerCase() || 'dating',
+          relationshipType: context?.contextType || context?.relationshipType || context?.context?.toLowerCase() || 'dating',
           background: context?.background || context?.background_context || '',
           userQuestion: context?.userQuestion || '',
           gutFeeling: context?.gutFeel || context?.gut_feeling || '',
@@ -1130,18 +1132,37 @@ export const generateAlignedResults = async (message, context) => {
       
       // Priority 2: Check for color-based identification (for screenshots)
       if (context?.colorMapping) {
+        console.log('🎨 Color mapping detected:', context.colorMapping);
         // Example: "blue = Piet, grey = Nanna"
         const mappings = context.colorMapping.split(',').map(m => {
           const [color, name] = m.split('=').map(s => s.trim());
           return { color, name };
         });
         
+        console.log('🎨 Parsed color mappings:', mappings);
+        
         // Use first mapping for user, second for other
         if (mappings.length >= 2) {
-          return {
-            user: mappings[0].name,
-            other: mappings[1].name
+          // Normalize generic labels like Me/You/Them to actual or fallback names
+          const normalizeLabel = (label, which) => {
+            const lower = String(label || '').toLowerCase();
+            const isUserLabel = lower === 'me' || lower === 'you' || lower === 'user';
+            const isOtherLabel = lower === 'them' || lower === 'other' || lower === 'their' || lower === 'opponent';
+            if (isUserLabel) {
+              return (context?.userName || context?.user_name || 'You');
+            }
+            if (isOtherLabel) {
+              return (context?.otherName || context?.other_name || context?.their_name || 'Them');
+            }
+            return label; // a concrete contact name from the mapping
           };
+
+          const result = {
+            user: normalizeLabel(mappings[0].name, 'user'),
+            other: normalizeLabel(mappings[1].name, 'other')
+          };
+          console.log('🎨 Color mapping result:', result);
+          return result;
         }
       }
       
@@ -1209,7 +1230,7 @@ export const generateAlignedResults = async (message, context) => {
       otherPronouns: context?.otherPartyPronouns || context?.known_pronouns?.other_party || 'they/them',
       
       // Core context
-      relationshipType: context?.contextType || context?.context?.toLowerCase() || 'dating',
+      relationshipType: context?.contextType || context?.relationshipType || context?.context?.toLowerCase() || 'dating',
       background: context?.background || context?.background_context || '',
       userQuestion: context?.userQuestion || '',
       gutFeeling: context?.gutFeel || context?.gut_feeling || '',
@@ -1223,7 +1244,7 @@ export const generateAlignedResults = async (message, context) => {
   
   // API Call 1: Truth Receipt (Main Analysis)
   console.log('📊 API Call 1: Truth Receipt analysis...');
-  const shareShotAnalysis = await analyzeWithGPT(message, context);
+  const shareShotAnalysis = await analyzeWithGPT(message, cleanContext);
   
   console.log('✅ Truth Receipt complete');
 
@@ -1233,6 +1254,21 @@ export const generateAlignedResults = async (message, context) => {
   try {
     const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
     const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark);
+
+    // Attach structured clean context to ensure USER/OTHER stay consistent across analyses
+    const deepDiveContextNote = (
+      `\n\nCONTEXT (authoritative):\n` +
+      JSON.stringify({
+        userName: cleanContext.userName,
+        otherName: cleanContext.otherName,
+        userPronouns: cleanContext.userPronouns,
+        otherPronouns: cleanContext.otherPronouns,
+        relationshipType: cleanContext.relationshipType,
+        colorMapping: context?.colorMapping || '',
+        background: cleanContext.background || context?.background || '',
+        userQuestion: cleanContext.userQuestion || context?.userQuestion || ''
+      }, null, 2)
+    );
 
     const provider = (import.meta.env.VITE_AI_PROVIDER || 'openai').toLowerCase();
     
@@ -1259,7 +1295,7 @@ export const generateAlignedResults = async (message, context) => {
       const body = {
         model: openAIModel,
         messages: [
-          { role: 'system', content: deepDiveSystemPrompt },
+          { role: 'system', content: deepDiveSystemPrompt + deepDiveContextNote },
           { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${message}` }
         ],
         temperature: 1.2,
@@ -1292,7 +1328,7 @@ export const generateAlignedResults = async (message, context) => {
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + deepDiveContextNote + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
       });
       const data = await response.json();
       rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -1484,7 +1520,16 @@ export const generateAlignedResults = async (message, context) => {
       const body = {
         model: openAIModel,
         messages: [
-          { role: 'system', content: immunitySystemPrompt },
+          { role: 'system', content: immunitySystemPrompt + `\n\nCONTEXT (authoritative):\n` + JSON.stringify({
+            userName: cleanContext.userName,
+            otherName: cleanContext.otherName,
+            userPronouns: cleanContext.userPronouns,
+            otherPronouns: cleanContext.otherPronouns,
+            relationshipType: cleanContext.relationshipType,
+            colorMapping: context?.colorMapping || '',
+            background: cleanContext.background || context?.background || '',
+            userQuestion: cleanContext.userQuestion || context?.userQuestion || ''
+          }, null, 2) },
           { role: 'user', content: `TEXTS:\n${message}` }
         ],
         temperature: 0.8,
@@ -1518,7 +1563,16 @@ export const generateAlignedResults = async (message, context) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nTEXTS:\n${message}` }] }], 
+          contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nCONTEXT (authoritative):\n` + JSON.stringify({
+            userName: cleanContext.userName,
+            otherName: cleanContext.otherName,
+            userPronouns: cleanContext.userPronouns,
+            otherPronouns: cleanContext.otherPronouns,
+            relationshipType: cleanContext.relationshipType,
+            colorMapping: context?.colorMapping || '',
+            background: cleanContext.background || context?.background || '',
+            userQuestion: cleanContext.userQuestion || context?.userQuestion || ''
+          }, null, 2) + `\n\nTEXTS:\n${message}` }] }], 
           generationConfig: { temperature: 0.8, maxOutputTokens: 1500 } 
         })
       });

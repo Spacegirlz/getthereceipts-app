@@ -7,11 +7,10 @@ import SmartCharacterCounter from '@/components/SmartCharacterCounter';
 import ColorMappingHelper from '@/components/ColorMappingHelper';
 import PronounSelector from '@/components/PronounSelector';
 import ImageUpload from '@/components/ImageUpload';
-import ErrorBoundary from '@/components/ErrorBoundary';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 
-const ChatInputPage = () => {
+const LuxeChatInputPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -213,14 +212,13 @@ const ChatInputPage = () => {
   const relationshipTypes = ['Dating', 'Situationship', 'Marriage', 'Friend', 'Work', 'Family'];
 
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 text-white flex flex-col">
-        <div className="flex-1 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-2xl"
-          >
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 text-white flex flex-col">
+      <div className="flex-1 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-2xl"
+        >
         {/* Main Card */}
         <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/10">
           {/* Header */}
@@ -462,9 +460,8 @@ const ChatInputPage = () => {
           </div>
         </div>
       </footer>
-      </div>
-    </ErrorBoundary>
+    </div>
   );
 };
 
-export default ChatInputPage;
+export default LuxeChatInputPage;

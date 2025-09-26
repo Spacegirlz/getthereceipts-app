@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { ArrowLeft, Send, Eye } from 'lucide-react';
+import { ArrowLeft, Send, Eye, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { analyzeWithGPT } from '@/lib/analysis/advancedAnalysis';
 
@@ -247,9 +247,10 @@ const TestReceiptPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-gray-800 rounded-2xl p-6"
               >
-                <details className="cursor-pointer">
-                  <summary className="text-lg font-bold text-gray-400 mb-2">
+                <details className="cursor-pointer group">
+                  <summary className="text-lg font-bold text-gray-400 mb-2 flex items-center gap-2">
                     Debug: Raw Analysis Data
+                    <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200" />
                   </summary>
                   <pre className="text-xs bg-gray-900 p-4 rounded overflow-auto text-gray-300">
                     {JSON.stringify(analysisResult, null, 2)}

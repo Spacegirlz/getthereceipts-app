@@ -6,6 +6,7 @@ import { lazy } from 'react';
 // Lazy load heavy components
 const QuizPage = lazy(() => import('@/pages/QuizPage'));
 const ChatInputPage = lazy(() => import('@/pages/ChatInputPage'));
+const LuxeChatInputPage = lazy(() => import('@/pages/LuxeChatInputPage'));
 const ReceiptsCardPage = lazy(() => import('@/pages/ReceiptsCardPage'));
 const PricingPage = lazy(() => import('@/pages/PricingPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
@@ -58,6 +59,13 @@ function App() {
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/refer" element={<EnhancedReferralPage />} />
+              {import.meta.env.DEV && (
+                <>
+                  <Route path="/isabella3010" element={<LandingPage />} />
+                  <Route path="/test-receipt-page" element={<TestReceiptPage />} />
+                  <Route path="/luxe-chat-input" element={<LuxeChatInputPage />} />
+                </>
+              )}
               <Route path="/refer/apply" element={<AffiliateApplicationPage />} />
               <Route path="/affiliate/apply" element={<AffiliateApplicationPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

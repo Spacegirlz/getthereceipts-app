@@ -36,10 +36,16 @@ NEVER use placeholder or example names.
 Use the real names of the people in the conversation throughout your response.
 Be dynamic and contextual - let the conversation content guide your analysis.
 
+IMPORTANT: If names are provided in the context data, use those names instead of extracting from conversation.
+- If userName and otherName are provided in context, use those names directly
+- If pronouns are provided in context, use those pronouns consistently
+- If relationship context is provided, use that context for analysis
+
 CRITICAL: Return ONLY valid JSON. No explanations, no markdown, JUST the JSON object.
 
 DYNAMIC NAMING SYSTEM:
-- Extract names/identifiers from the conversation and use consistently
+- PRIORITY 1: Use names from context data if provided (userName, otherName)
+- PRIORITY 2: Extract names/identifiers from the conversation and use consistently
 - USER = the person asking for advice (your friend)  
 - OTHER = the person they're dealing with
 - Use these variables throughout: USER and OTHER

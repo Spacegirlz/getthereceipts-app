@@ -478,13 +478,13 @@ const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
                     <span className="text-stone-200 text-base">{deepDive.playbook?.next_48h || ''}</span>
                   </div>
                   <div className="leading-relaxed">
-                    <span className="font-semibold text-teal-400">Next week:</span>{' '}
-                    <span className="text-stone-200 text-base">{deepDive.playbook?.next_week || ''}</span>
-                  </div>
-                  <div className="leading-relaxed">
                     <span className="font-semibold text-teal-400">Your Move:</span>
                     <div className="mt-2 space-y-1">
-                      {(deepDive.playbook?.your_move || '').split('. ').filter(action => action.trim()).map((action, index) => (
+                      {(deepDive.playbook?.your_move || '')
+                        .split(/\.\s+/)
+                        .filter(action => action && action.trim())
+                        .slice(0, 3)
+                        .map((action, index) => (
                         <div key={index} className="flex items-start gap-2">
                           <span className="text-teal-400 text-sm mt-1">•</span>
                           <span className="text-stone-200 text-base">{action.trim().replace(/\.$/, '')}</span>
