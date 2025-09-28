@@ -14,10 +14,21 @@ const isLocalStorageAvailable = () => {
       return false;
     }
     
-    // Test localStorage functionality
+    // Test localStorage functionality with multiple attempts
     const testKey = '__localStorage_test__';
-    window.localStorage.setItem(testKey, 'test');
+    const testValue = 'test_' + Date.now();
+    
+    // Try to set, get, and remove
+    window.localStorage.setItem(testKey, testValue);
+    const retrieved = window.localStorage.getItem(testKey);
     window.localStorage.removeItem(testKey);
+    
+    // Verify the value was actually stored and retrieved
+    if (retrieved !== testValue) {
+      console.warn('localStorage test failed: value mismatch');
+      return false;
+    }
+    
     return true;
   } catch (error) {
     console.warn('localStorage not available:', error);
@@ -174,6 +185,8 @@ export const AnonymousUserService = {
   // Atomic operation to check and increment analysis count (prevents race conditions)
   checkAndIncrementAnalysis: () => {
     try {
+      // Double-check localStorage availability before proceeding
+      const storageAvailable = isLocalStorageAvailable();
       const currentData = AnonymousUserService.getAnonymousUser();
       
       // Check if user can perform analysis
@@ -182,7 +195,8 @@ export const AnonymousUserService = {
           success: false,
           reason: 'limit_reached',
           remainingAnalyses: 0,
-          analysisCount: currentData.analysisCount
+          analysisCount: currentData.analysisCount,
+          storageType: storageAvailable ? 'localStorage' : 'fallback'
         };
       }
       
@@ -202,7 +216,8 @@ export const AnonymousUserService = {
         success: false,
         reason: 'error',
         remainingAnalyses: 0,
-        analysisCount: 0
+        analysisCount: 0,
+        storageType: 'fallback'
       };
     }
   },
