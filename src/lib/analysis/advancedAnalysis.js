@@ -571,6 +571,13 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
 
   const authHeader = `Bearer ${currentKey}`;
   console.log(`🔑 API call attempt ${attemptNumber + 1} with key:`, currentKey.substring(0, 10) + '...');
+  console.log(`🔍 DEBUG - Full key length:`, currentKey.length);
+  console.log(`🔍 DEBUG - Key starts with:`, currentKey.substring(0, 20));
+  console.log(`🔍 DEBUG - Key ends with:`, currentKey.substring(currentKey.length - 10));
+  console.log(`🔍 DEBUG - Authorization header:`, authHeader.substring(0, 30) + '...');
+  console.log(`🔍 DEBUG - Key type:`, typeof currentKey);
+  console.log(`🔍 DEBUG - Key has spaces:`, currentKey.includes(' '));
+  console.log(`🔍 DEBUG - Key has quotes:`, currentKey.includes('"') || currentKey.includes("'"));
 
   try {
     const response = await fetch(endpoint, {
@@ -663,6 +670,12 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
     import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
     import.meta.env.VITE_OPENAI_API_KEY_BACKUP2
   ].filter(key => key && key.trim());
+  
+  console.log(`🔍 DEBUG - Environment variables check:`);
+  console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY exists:`, !!import.meta.env.VITE_OPENAI_API_KEY);
+  console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY_BACKUP1 exists:`, !!import.meta.env.VITE_OPENAI_API_KEY_BACKUP1);
+  console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY_BACKUP2 exists:`, !!import.meta.env.VITE_OPENAI_API_KEY_BACKUP2);
+  console.log(`🔍 DEBUG - Total valid keys found:`, apiKeys.length);
 
   // If we've exhausted all keys, return fallback
   if (attemptNumber >= apiKeys.length) {
