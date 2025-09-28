@@ -301,30 +301,45 @@ const LuxeChatInputPage = () => {
               >
                 <p className="text-sm font-medium mb-3 flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  Almost there! Who's who?
+                  Almost there! Who are you in this conversation?
                 </p>
                 
                 {detectedNames.length > 0 ? (
                   <div>
-                    <p className="text-xs text-gray-400 mb-2">
+                    <p className="text-xs text-gray-400 mb-3">
                       I found these names: {detectedNames.join(' and ')}
                     </p>
-                    <label className="flex items-center gap-2">
-                      <input 
-                        type="checkbox" 
-                        defaultChecked 
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setUserName(detectedNames[0] || '');
-                            setOtherName(detectedNames[1] || '');
-                          } else {
-                            setUserName('');
-                            setOtherName('');
-                          }
-                        }}
-                      />
-                      <span className="text-sm">Use these names</span>
-                    </label>
+                    <div className="space-y-2">
+                      <p className="text-xs text-white/80 mb-2">Which person are you?</p>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="radio" 
+                          name="userRole"
+                          value={detectedNames[0]}
+                          checked={userName === detectedNames[0]}
+                          onChange={(e) => {
+                            setUserName(detectedNames[0]);
+                            setOtherName(detectedNames[1]);
+                          }}
+                          className="text-blue-500"
+                        />
+                        <span className="text-sm">I am {detectedNames[0]}</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="radio" 
+                          name="userRole"
+                          value={detectedNames[1]}
+                          checked={userName === detectedNames[1]}
+                          onChange={(e) => {
+                            setUserName(detectedNames[1]);
+                            setOtherName(detectedNames[0]);
+                          }}
+                          className="text-blue-500"
+                        />
+                        <span className="text-sm">I am {detectedNames[1]}</span>
+                      </label>
+                    </div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
