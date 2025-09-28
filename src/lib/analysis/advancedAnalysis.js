@@ -555,7 +555,7 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
   const apiKeys = [
     import.meta.env.VITE_OPENAI_API_KEY,
     import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
-    import.meta.env.VITE_OPENAI_API_KEY_BACKUP2
+    import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2  // Gemini API as third backup
   ].filter(key => key && key.trim());
 
   if (attemptNumber >= apiKeys.length) {
@@ -1310,7 +1310,15 @@ export const generateAlignedResults = async (message, context) => {
     const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
     const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark);
 
-    const provider = (import.meta.env.VITE_AI_PROVIDER || 'openai').toLowerCase();
+    // Use backup system for Deep Dive - start with first available key
+    const apiKeys = [
+      import.meta.env.VITE_OPENAI_API_KEY,
+      import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
+      import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2
+    ].filter(key => key && key.trim());
+    
+    const currentKey = apiKeys[0]?.replace(/\s/g, ''); // Use first available key
+    const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
     
     // 🔍 TELEMETRY - Track what's actually happening
     const cacheKey = `deepDiveV4:${shareShotAnalysis.archetype}:${encodeURIComponent(message.slice(0,100))}`;
@@ -1537,7 +1545,15 @@ export const generateAlignedResults = async (message, context) => {
       .replace('{userName}', cleanContext.userName || 'You')
       .replace('{otherName}', cleanContext.otherName || 'Them');
     
-    const provider = (import.meta.env.VITE_AI_PROVIDER || 'openai').toLowerCase();
+    // Use backup system for Immunity Training - start with first available key
+    const apiKeys = [
+      import.meta.env.VITE_OPENAI_API_KEY,
+      import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
+      import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2
+    ].filter(key => key && key.trim());
+    
+    const currentKey = apiKeys[0]?.replace(/\s/g, ''); // Use first available key
+    const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
     const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
     const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
 
