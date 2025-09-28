@@ -585,6 +585,54 @@ const ChatInputPage = () => {
               step === 2 ? 'Get Your Receipts Now →' : 'Analyze Conversation'
             )}
           </button>
+
+          {/* Enhanced Loading Animation */}
+          {isLoading && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 p-6 bg-gradient-to-br from-violet-500/10 via-pink-500/5 to-blue-500/10 rounded-2xl border border-white/10 backdrop-blur-sm"
+            >
+              <div className="text-center">
+                {/* Animated Progress Bar */}
+                <div className="w-full bg-gray-700/50 rounded-full h-2 mb-4 overflow-hidden">
+                  <motion.div
+                    className="bg-gradient-to-r from-violet-500 to-pink-500 h-2 rounded-full"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "0%" }}
+                    transition={{
+                      duration: 45, // ~45 seconds for full analysis
+                      ease: "linear",
+                      repeat: Infinity,
+                      repeatType: 'loop'
+                    }}
+                  />
+                </div>
+                
+                {/* Dynamic Analysis Steps */}
+                <motion.div
+                  key={isLoading}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-violet-200 font-medium mb-2"
+                >
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="animate-bounce text-2xl">🧾</div>
+                    <span className="text-lg">Sage is brewing the tea...</span>
+                  </div>
+                  <div className="text-sm text-violet-300 space-y-1">
+                    <div className="animate-pulse">📊 Analyzing conversation patterns...</div>
+                    <div className="animate-pulse delay-100">🔍 Deep diving into the subtext...</div>
+                    <div className="animate-pulse delay-200">🛡️ Building your immunity training...</div>
+                  </div>
+                </motion.div>
+                
+                <div className="text-xs text-violet-400 mt-3">
+                  This usually takes 30-60 seconds ⏱️
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
         </motion.div>
       </div>
