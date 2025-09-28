@@ -551,7 +551,13 @@ const parseConversationSides = (message, context) => {
 };
 
 // Advanced OpenAI Integration - CLEANED VERSION
-export const analyzeWithGPT = async (message, context) => {
+export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
+  // Prevent infinite recursion - max 3 attempts (main + 2 backups)
+  if (attemptNumber > 2) {
+    console.error('Max retry attempts reached, using fallback analysis');
+    return generateAdvancedResults(message, { ...context, context: 'Dating/Romantic' });
+  }
+
   // Parse conversation sides for mode detection
   const { userText, otherText } = parseConversationSides(message, context);
   const detectedMode = detectToxicityMode(userText, otherText);
@@ -599,6 +605,22 @@ export const analyzeWithGPT = async (message, context) => {
     hasWorkplaceElements,
     messagePreview: message.slice(0, 100)
   });
+
+  // Get all available API keys from environment
+  const apiKeys = [
+    import.meta.env.VITE_OPENAI_API_KEY,
+    import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
+    import.meta.env.VITE_OPENAI_API_KEY_BACKUP2
+  ].filter(key => key && key.trim());
+
+  // If we've exhausted all keys, return fallback
+  if (attemptNumber >= apiKeys.length) {
+    console.log('All API keys exhausted, using fallback analysis');
+    return generateAdvancedResults(message, { ...context, context: actualContext });
+  }
+
+  const currentKey = apiKeys[attemptNumber];
+  console.log(`Using API key attempt ${attemptNumber + 1} of ${apiKeys.length}`);
 
   // Provider/model selection with auto-pick
   const { provider, model, openAIModel, geminiModel } = selectAiProvider();
@@ -808,7 +830,7 @@ export const analyzeWithGPT = async (message, context) => {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${currentKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(body)
@@ -1016,47 +1038,23 @@ export const analyzeWithGPT = async (message, context) => {
     return finalResult;
     
   } catch (error) {
-    console.error('Primary API error:', error);
+    console.error(`Attempt ${attemptNumber + 1} failed:`, error.message);
     console.error('Error details:', {
       message: error.message,
       stack: error.stack,
       context: actualContext,
-      primaryProvider: provider,
-      hasOpenAIKey: !!import.meta.env.VITE_OPENAI_API_KEY,
-      hasGoogleKey: !!import.meta.env.VITE_GOOGLE_API_KEY
+      attemptNumber: attemptNumber + 1,
+      totalKeys: apiKeys.length
     });
     
-    // Try backup API provider if available
-    const backupProvider = provider === 'openai' ? 'google' : 'openai';
-    const hasBackupKey = backupProvider === 'openai' ? 
-      !!import.meta.env.VITE_OPENAI_API_KEY : 
-      !!import.meta.env.VITE_GOOGLE_API_KEY;
-    
-    if (hasBackupKey) {
-      console.log(`🔄 Attempting backup API: ${backupProvider}`);
-      try {
-        // Retry with backup provider by recursively calling with different provider
-        const originalProvider = import.meta.env.VITE_AI_PROVIDER;
-        // Temporarily override provider selection
-        import.meta.env.VITE_AI_PROVIDER = backupProvider;
-        
-        const backupResult = await generateAlignedResults(message, context);
-        
-        // Restore original provider
-        import.meta.env.VITE_AI_PROVIDER = originalProvider;
-        
-        console.log(`✅ Backup API ${backupProvider} succeeded`);
-        return backupResult;
-        
-      } catch (backupError) {
-        console.error(`❌ Backup API ${backupProvider} also failed:`, backupError);
-        // Restore original provider
-        import.meta.env.VITE_AI_PROVIDER = originalProvider;
-      }
+    // Try next API key
+    if (attemptNumber < apiKeys.length - 1) {
+      console.log(`Trying backup key ${attemptNumber + 2}...`);
+      return analyzeWithGPT(message, context, attemptNumber + 1);
     }
     
-    // Final fallback to local analysis if all APIs fail
-    console.log('🔄 Falling back to local analysis');
+    // All keys failed, use fallback
+    console.log('All API keys failed, using fallback');
     return generateAdvancedResults(message, { ...context, context: actualContext });
   }
 };
@@ -1143,23 +1141,9 @@ export const generateAlignedResults = async (message, context) => {
         
         // Use first mapping for user, second for other
         if (mappings.length >= 2) {
-          // Normalize generic labels like Me/You/Them to actual or fallback names
-          const normalizeLabel = (label, which) => {
-            const lower = String(label || '').toLowerCase();
-            const isUserLabel = lower === 'me' || lower === 'you' || lower === 'user';
-            const isOtherLabel = lower === 'them' || lower === 'other' || lower === 'their' || lower === 'opponent';
-            if (isUserLabel) {
-              return (context?.userName || context?.user_name || 'You');
-            }
-            if (isOtherLabel) {
-              return (context?.otherName || context?.other_name || context?.their_name || 'Them');
-            }
-            return label; // a concrete contact name from the mapping
-          };
-
           const result = {
-            user: normalizeLabel(mappings[0].name, 'user'),
-            other: normalizeLabel(mappings[1].name, 'other')
+            user: mappings[0].name,
+            other: mappings[1].name
           };
           console.log('🎨 Color mapping result:', result);
           return result;
@@ -1244,7 +1228,7 @@ export const generateAlignedResults = async (message, context) => {
   
   // API Call 1: Truth Receipt (Main Analysis)
   console.log('📊 API Call 1: Truth Receipt analysis...');
-  const shareShotAnalysis = await analyzeWithGPT(message, cleanContext);
+  const shareShotAnalysis = await analyzeWithGPT(message, cleanContext, 0);
   
   console.log('✅ Truth Receipt complete');
 
@@ -1254,21 +1238,6 @@ export const generateAlignedResults = async (message, context) => {
   try {
     const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
     const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark);
-
-    // Attach structured clean context to ensure USER/OTHER stay consistent across analyses
-    const deepDiveContextNote = (
-      `\n\nCONTEXT (authoritative):\n` +
-      JSON.stringify({
-        userName: cleanContext.userName,
-        otherName: cleanContext.otherName,
-        userPronouns: cleanContext.userPronouns,
-        otherPronouns: cleanContext.otherPronouns,
-        relationshipType: cleanContext.relationshipType,
-        colorMapping: context?.colorMapping || '',
-        background: cleanContext.background || context?.background || '',
-        userQuestion: cleanContext.userQuestion || context?.userQuestion || ''
-      }, null, 2)
-    );
 
     const provider = (import.meta.env.VITE_AI_PROVIDER || 'openai').toLowerCase();
     
@@ -1295,7 +1264,7 @@ export const generateAlignedResults = async (message, context) => {
       const body = {
         model: openAIModel,
         messages: [
-          { role: 'system', content: deepDiveSystemPrompt + deepDiveContextNote },
+          { role: 'system', content: deepDiveSystemPrompt },
           { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${message}` }
         ],
         temperature: 1.2,
@@ -1328,7 +1297,7 @@ export const generateAlignedResults = async (message, context) => {
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + deepDiveContextNote + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
       });
       const data = await response.json();
       rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -1520,16 +1489,7 @@ export const generateAlignedResults = async (message, context) => {
       const body = {
         model: openAIModel,
         messages: [
-          { role: 'system', content: immunitySystemPrompt + `\n\nCONTEXT (authoritative):\n` + JSON.stringify({
-            userName: cleanContext.userName,
-            otherName: cleanContext.otherName,
-            userPronouns: cleanContext.userPronouns,
-            otherPronouns: cleanContext.otherPronouns,
-            relationshipType: cleanContext.relationshipType,
-            colorMapping: context?.colorMapping || '',
-            background: cleanContext.background || context?.background || '',
-            userQuestion: cleanContext.userQuestion || context?.userQuestion || ''
-          }, null, 2) },
+          { role: 'system', content: immunitySystemPrompt },
           { role: 'user', content: `TEXTS:\n${message}` }
         ],
         temperature: 0.8,
@@ -1563,16 +1523,7 @@ export const generateAlignedResults = async (message, context) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nCONTEXT (authoritative):\n` + JSON.stringify({
-            userName: cleanContext.userName,
-            otherName: cleanContext.otherName,
-            userPronouns: cleanContext.userPronouns,
-            otherPronouns: cleanContext.otherPronouns,
-            relationshipType: cleanContext.relationshipType,
-            colorMapping: context?.colorMapping || '',
-            background: cleanContext.background || context?.background || '',
-            userQuestion: cleanContext.userQuestion || context?.userQuestion || ''
-          }, null, 2) + `\n\nTEXTS:\n${message}` }] }], 
+          contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nTEXTS:\n${message}` }] }], 
           generationConfig: { temperature: 0.8, maxOutputTokens: 1500 } 
         })
       });
