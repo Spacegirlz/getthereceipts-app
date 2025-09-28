@@ -34,6 +34,7 @@ const LuxeChatInputPage = () => {
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [anonymousStatus, setAnonymousStatus] = useState(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   // Track anonymous user status
   useEffect(() => {
@@ -188,21 +189,18 @@ const LuxeChatInputPage = () => {
       
       if (!canProceed) {
         setIsLoading(false);
-        toast({
-          variant: 'destructive',
-          title: 'Analysis Limit Reached',
-          description: creditMessage,
-          action: user ? undefined : {
-            label: 'Sign Up',
-            onClick: () => {
-              // Open auth modal for signup
-              const authModal = document.querySelector('[data-auth-modal]');
-              if (authModal) {
-                authModal.click();
-              }
-            }
-          }
-        });
+        
+        // For anonymous users, show a modal instead of toast
+        if (!user && creditCheckResult.reason === 'limit_reached') {
+          setShowLimitModal(true);
+        } else {
+          // For logged-in users, show simple toast
+          toast({
+            variant: 'destructive',
+            title: 'Analysis Limit Reached',
+            description: creditMessage
+          });
+        }
         return;
       }
       
@@ -667,6 +665,100 @@ const LuxeChatInputPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Anonymous User Limit Modal */}
+      <AnimatePresence>
+        {showLimitModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowLimitModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-gradient-to-br from-violet-900/90 to-blue-900/90 backdrop-blur-xl border border-white/20 rounded-3xl p-8 max-w-md w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                {/* Icon */}
+                <div className="mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Crown className="w-10 h-10 text-white" />
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  🎉 You've Used Your Free Analysis!
+                </h2>
+
+                {/* Description */}
+                <p className="text-violet-200 mb-6 leading-relaxed">
+                  Great job! You've completed your free analysis. Ready for unlimited insights? 
+                  Choose your path to continue getting the tea! ☕️
+                </p>
+
+                {/* Buttons */}
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      setShowLimitModal(false);
+                      openModal('signup');
+                    }}
+                    className="w-full bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    🆓 Sign Up for Free Credits
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setShowLimitModal(false);
+                      navigate('/pricing');
+                    }}
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    👑 Go Premium - Unlimited
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowLimitModal(false)}
+                    className="w-full text-violet-300 hover:text-white transition-colors duration-300 py-2"
+                  >
+                    Maybe Later
+                  </button>
+                </div>
+
+                {/* Benefits */}
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <p className="text-xs text-violet-400 mb-3">What you get with an account:</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-violet-300">
+                    <div className="flex items-center gap-1">
+                      <span>✅</span>
+                      <span>Daily free credits</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>✅</span>
+                      <span>Save receipts</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>✅</span>
+                      <span>Referral bonuses</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>✅</span>
+                      <span>Premium features</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
