@@ -64,6 +64,7 @@ function App() {
                   <Route path="/isabella3010" element={<LandingPage />} />
                   <Route path="/test-receipt-page" element={<TestReceiptPage />} />
                   <Route path="/luxe-chat-input" element={<LuxeChatInputPage />} />
+                  <Route path="/test-receipt" element={<TestReceipt />} />
                 </>
               )}
               <Route path="/refer/apply" element={<AffiliateApplicationPage />} />
@@ -76,7 +77,6 @@ function App() {
               <Route path="/success" element={<Success />} />
               <Route path="/test-metrics" element={<TestMetrics />} />
               <Route path="/test-analysis" element={<TestAnalysis />} />
-              <Route path="/test-receipt" element={<TestReceipt />} />
               <Route path="/test-receipt-flow" element={<TestReceiptPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/settings" element={
