@@ -416,12 +416,12 @@ const LuxeChatInputPage = () => {
             <p className="text-sm text-white/60 mb-4 text-center">
               What type of relationship?
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {relationshipTypes.map(type => (
                 <button
                   key={type}
                   onClick={() => setContextType(type.toLowerCase())}
-                  className={`p-3 rounded-lg transition-all duration-300 font-medium ${
+                  className={`p-2 sm:p-3 rounded-lg transition-all duration-300 text-xs sm:text-sm font-medium ${
                     contextType === type.toLowerCase()
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
                       : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
