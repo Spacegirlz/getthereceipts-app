@@ -1524,7 +1524,9 @@ export const generateAlignedResults = async (message, context) => {
       .replace('{archetype}', shareShotAnalysis.archetype)
       .replace('{message}', message)
       .replace('{redFlags}', shareShotAnalysis.redFlags)
-      .replace('{confidenceRemark}', shareShotAnalysis.confidenceRemark);
+      .replace('{confidenceRemark}', shareShotAnalysis.confidenceRemark)
+      .replace('{userName}', cleanContext.userName || 'You')
+      .replace('{otherName}', cleanContext.otherName || 'Them');
     
     const provider = (import.meta.env.VITE_AI_PROVIDER || 'openai').toLowerCase();
     const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
@@ -1614,6 +1616,11 @@ export const generateAlignedResults = async (message, context) => {
     userQuestion: context?.userQuestion || context?.user_question || null,
     deepDive: alignedDeepDive,
     immunityTraining: immunityTraining,
+    // Include user names for components to use
+    userName: cleanContext.userName,
+    otherName: cleanContext.otherName,
+    userPronouns: cleanContext.userPronouns,
+    otherPronouns: cleanContext.otherPronouns,
     isAligned: true,
     analysisComplete: true
   };

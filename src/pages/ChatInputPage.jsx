@@ -101,7 +101,15 @@ const ChatInputPage = () => {
     if (step === 1) {
       setStep(2);
     } else {
-      // We're on step 2 - submit the analysis
+      // We're on step 2 - check if user has selected their name
+      if (!userName || !otherName) {
+        toast({
+          title: 'Name Selection Required',
+          description: 'Please select which person you are in the conversation before continuing.'
+        });
+        return;
+      }
+      // User has selected names - submit the analysis
       submitAnalysis();
     }
   };

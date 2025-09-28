@@ -202,10 +202,7 @@ const TestReceiptPage = () => {
                   </div>
                 </div>
                 <ReceiptCardViral
-                  analysisData={analysisResult}
-                  userMessage={testMessage}
-                  names={{ them: "Them", you: "You" }}
-                  situation="situationship"
+                  results={analysisResult}
                 />
               </motion.div>
             )}
@@ -219,8 +216,10 @@ const TestReceiptPage = () => {
               >
                 <h3 className="text-xl font-bold text-teal-400 mb-4">Deep Dive Analysis</h3>
                 <DeepDive
+                  deepDive={analysisResult?.deepDive}
                   analysisData={analysisResult}
-                  userMessage={testMessage}
+                  originalMessage={testMessage}
+                  context={{}}
                 />
               </motion.div>
             )}
@@ -234,8 +233,10 @@ const TestReceiptPage = () => {
               >
                 <h3 className="text-xl font-bold text-purple-400 mb-4">Immunity Training</h3>
                 <ImmunityTraining
-                  analysisData={analysisResult}
-                  userMessage={testMessage}
+                  immunityData={analysisResult?.immunityTraining}
+                  archetypeName={analysisResult?.archetype}
+                  originalMessage={testMessage}
+                  context={{}}
                 />
               </motion.div>
             )}

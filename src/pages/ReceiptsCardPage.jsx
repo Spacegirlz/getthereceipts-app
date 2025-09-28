@@ -546,6 +546,8 @@ const ReceiptsCardPage = () => {
               <ErrorBoundary>
                 <TabbedReceiptInterface 
                   analysis={analysis}
+                  originalMessage={originalMessage}
+                  context={receiptData?.context}
                   archetypeNameForImmunity={archetypeNameForImmunity}
                   onSaveReceipt={handleSaveReceipt}
                   onScreenshot={handleScreenshot}

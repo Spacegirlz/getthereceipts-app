@@ -5,14 +5,24 @@ import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
 
-const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false, isPremium = false }) => {
+const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false, isPremium = false, originalMessage, context, analysisData }) => {
   const { toast } = useToast();
+  
+  // Extract user names from analysis data
+  const userName = analysisData?.userName || context?.userName || 'You';
+  const otherName = analysisData?.otherName || context?.otherName || 'Them';
+  
   // Memoize debug logging to prevent excessive output
   useMemo(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log('🛡️ ImmunityTraining received:', immunityData);
       console.log('🛡️ Type:', typeof immunityData, 'Keys:', immunityData ? Object.keys(immunityData) : 'none');
       console.log('🆘 Crisis situation:', isCrisisSituation);
+      console.log('🛡️ Original message:', originalMessage);
+      console.log('🛡️ Context:', context);
+      console.log('🛡️ Analysis data:', analysisData);
+      console.log('🛡️ User names:', { userName: analysisData?.userName, otherName: analysisData?.otherName });
+      console.log('🛡️ Extracted names:', { userName, otherName });
       console.log('🛡️ Available fields for characteristics:', {
         keyCharacteristics: immunityData?.keyCharacteristics,
         characteristics: immunityData?.characteristics,
@@ -651,7 +661,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </h2>
             </div>
             <h3 className="text-sm sm:text-base md:text-lg font-medium tracking-wide sm:tracking-wider text-amber-300 opacity-75 mb-2 mt-2 sm:mt-4 text-center leading-relaxed">
-              Sage's Guide to Your {archetypeName?.replace(/^The /, '') || 'Pattern'}
+              Sage's Guide to {userName}'s {archetypeName?.replace(/^The /, '') || 'Pattern'}
             </h3>
             <div className="text-xs sm:text-sm text-white/60 mt-1 text-center whitespace-nowrap">
               Premium personalized protection strategies 🏆
@@ -797,7 +807,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 {/* Your Vulnerability */}
                 <div>
                   <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-2">
-                    Your Vulnerability:
+                    {userName}'s Vulnerability:
                   </div>
                   <p className="text-gray-200 text-sm leading-relaxed">
                     {immunityData?.userVulnerability || immunityData?.whyItHooks || displayData.whyItHooks || 
@@ -1010,7 +1020,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 <Crown className="w-12 h-12 text-amber-400 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-amber-300 mb-3">Get The Full Immunity Training</h3>
                 <p className="text-amber-200/90 text-lg leading-relaxed max-w-md mx-auto">
-                  Unlock Sage's Real Talk, personalized protection strategies, and your custom blessing.
+                  Unlock Sage's Real Talk, personalized protection strategies for {userName}, and your custom blessing.
                 </p>
               </div>
               

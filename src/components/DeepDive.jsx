@@ -6,11 +6,11 @@ import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 // import { voiceService } from '@/lib/voiceService';
 
-const DeepDive = memo(({ deepDive, analysisData, isPremium = true }) => {
+const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPremium = true }) => {
   // Memoize debug logging to prevent excessive output
   useMemo(() => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('🔥 DEEP DIVE V4 - SHORT, SAVAGE, SUBSTANTIAL:', { deepDive, analysisData, isPremium });
+      console.log('🔥 DEEP DIVE V4 - SHORT, SAVAGE, SUBSTANTIAL:', { deepDive, analysisData, originalMessage, context, isPremium });
     }
   }, [deepDive, analysisData, isPremium]);
   

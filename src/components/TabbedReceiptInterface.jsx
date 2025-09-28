@@ -9,6 +9,8 @@ import ImmunityTraining from '@/components/ImmunityTraining';
 
 const TabbedReceiptInterface = ({ 
   analysis, 
+  originalMessage,
+  context,
   archetypeName, 
   archetypeNameForImmunity,
   onSaveReceipt,
@@ -62,6 +64,8 @@ const TabbedReceiptInterface = ({
         <DeepDive 
           deepDive={analysis?.deepDive}
           analysisData={analysis}
+          originalMessage={originalMessage}
+          context={context}
           onSaveReceipt={onSaveReceipt}
           onScreenshot={onScreenshot}
           isSharing={isSharing}
@@ -80,6 +84,9 @@ const TabbedReceiptInterface = ({
           riskLevel={analysis?.immunityTraining?.riskLevel || 'medium'}
           isCrisisSituation={isCrisisSituation}
           isPremium={isPremium}
+          originalMessage={originalMessage}
+          context={context}
+          analysisData={analysis}
           onSaveReceipt={onSaveReceipt}
           onScreenshot={onScreenshot}
           isSharing={isSharing}
