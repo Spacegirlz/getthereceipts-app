@@ -5,6 +5,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { ArrowLeft, Send, Eye, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { analyzeWithGPT } from '@/lib/analysis/advancedAnalysis';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 
 // Import receipt components
 import ReceiptCardViral from '@/components/ReceiptCardViral';
@@ -14,6 +15,7 @@ import ImmunityTraining from '@/components/ImmunityTraining';
 const TestReceiptPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const [testMessage, setTestMessage] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -55,10 +57,78 @@ const TestReceiptPage = () => {
     setShowComponents({ receipt: false, deepDive: false, immunity: false });
 
     try {
+      // 🔐 CREDIT CHECK: Verify user can perform analysis (same as other pages)
+      const { AnonymousUserService } = await import('@/lib/services/anonymousUserService');
+      const { getUserCredits, deductCredits } = await import('@/lib/services/creditsSystem');
+      
+      let canProceed = false;
+      let creditMessage = '';
+      
+      if (user) {
+        // Logged-in user: Check their credits
+        const userCredits = await getUserCredits(user.id);
+        console.log('🔐 TestReceiptPage - User credits check:', userCredits);
+        
+        if (userCredits.subscription === 'premium' || 
+            userCredits.subscription === 'yearly' || 
+            userCredits.subscription === 'founder') {
+          canProceed = true;
+          creditMessage = 'Premium user - unlimited analysis';
+        } else if (userCredits.credits > 0) {
+          canProceed = true;
+          creditMessage = `Free user - ${userCredits.credits} credits remaining`;
+        } else {
+          canProceed = false;
+          creditMessage = 'No credits remaining. Please upgrade or wait for daily reset.';
+        }
+      } else {
+        // Anonymous user: Use atomic operation to prevent race conditions
+        const creditCheckResult = AnonymousUserService.checkAndIncrementAnalysis();
+        console.log('🔐 TestReceiptPage - Anonymous user atomic check:', creditCheckResult);
+        
+        if (creditCheckResult.success) {
+          canProceed = true;
+          creditMessage = `Anonymous user - ${creditCheckResult.remainingAnalyses} free analysis remaining`;
+        } else {
+          canProceed = false;
+          if (creditCheckResult.reason === 'limit_reached') {
+            creditMessage = 'Free analysis limit reached. Please sign up for more credits.';
+          } else {
+            creditMessage = 'Unable to verify analysis limit. Please try again.';
+          }
+        }
+      }
+      
+      if (!canProceed) {
+        setIsGenerating(false);
+        toast({
+          variant: 'destructive',
+          title: 'Analysis Limit Reached',
+          description: creditMessage
+        });
+        return;
+      }
+      
+      console.log('✅ TestReceiptPage - Credit check passed:', creditMessage);
+      
       const result = await analyzeWithGPT(testMessage, '', '', 'situationship');
       
       if (result.success) {
         setAnalysisResult(result.data);
+        
+        // 🔐 DEDUCT CREDITS: After successful analysis
+        if (user) {
+          // Logged-in user: Deduct credit
+          const deductResult = await deductCredits(user.id, 1);
+          if (deductResult.success) {
+            console.log('✅ TestReceiptPage - Credit deducted for logged-in user');
+          } else {
+            console.warn('⚠️ TestReceiptPage - Failed to deduct credit for logged-in user:', deductResult.error);
+          }
+        } else {
+          // Anonymous user: Credit already deducted in atomic operation
+          console.log('✅ TestReceiptPage - Anonymous analysis count already updated in atomic operation');
+        }
         
         // Show receipt first
         setTimeout(() => setShowComponents(prev => ({ ...prev, receipt: true })), 500);
