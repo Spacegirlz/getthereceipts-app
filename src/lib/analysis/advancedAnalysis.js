@@ -562,10 +562,10 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
     throw new Error('All API keys exhausted');
   }
 
-  const currentKey = apiKeys[attemptNumber];
+  const currentKey = apiKeys[attemptNumber].trim(); // CRITICAL FIX: Trim spaces!
   
   // Validate API key
-  if (!currentKey || typeof currentKey !== 'string' || currentKey.trim().length === 0) {
+  if (!currentKey || typeof currentKey !== 'string' || currentKey.length === 0) {
     throw new Error(`Invalid API key at attempt ${attemptNumber + 1}`);
   }
 
@@ -578,6 +578,7 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
   console.log(`🔍 DEBUG - Key type:`, typeof currentKey);
   console.log(`🔍 DEBUG - Key has spaces:`, currentKey.includes(' '));
   console.log(`🔍 DEBUG - Key has quotes:`, currentKey.includes('"') || currentKey.includes("'"));
+  console.log(`🔍 DEBUG - Key trimmed successfully:`, currentKey.length > 0);
 
   try {
     const response = await fetch(endpoint, {
@@ -683,11 +684,11 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
     return generateAdvancedResults(message, { ...context, context: actualContext });
   }
 
-  const currentKey = apiKeys[attemptNumber];
+  const currentKey = apiKeys[attemptNumber].trim(); // CRITICAL FIX: Trim spaces!
   console.log(`Using API key attempt ${attemptNumber + 1} of ${apiKeys.length}`);
   
   // Validate API key format
-  if (!currentKey || typeof currentKey !== 'string' || currentKey.trim().length === 0) {
+  if (!currentKey || typeof currentKey !== 'string' || currentKey.length === 0) {
     console.error(`❌ Invalid API key at attempt ${attemptNumber + 1}:`, currentKey);
     throw new Error(`Invalid API key format at attempt ${attemptNumber + 1}`);
   }
