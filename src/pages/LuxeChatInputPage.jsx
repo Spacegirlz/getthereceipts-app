@@ -164,16 +164,25 @@ const LuxeChatInputPage = () => {
           creditMessage = 'No credits remaining. Please upgrade or wait for daily reset.';
         }
       } else {
-        // Anonymous user: Check their analysis count
-        const anonymousStatus = AnonymousUserService.getAnonymousUserStatus();
-        console.log('🔐 Anonymous user status:', anonymousStatus);
+        // Anonymous user: Use atomic operation to prevent race conditions
+        const creditCheckResult = AnonymousUserService.checkAndIncrementAnalysis();
+        console.log('🔐 Anonymous user atomic check:', creditCheckResult);
         
-        if (anonymousStatus.canPerformAnalysis) {
+        if (creditCheckResult.success) {
           canProceed = true;
-          creditMessage = `Anonymous user - ${anonymousStatus.remainingAnalyses} free analysis remaining`;
+          creditMessage = `Anonymous user - ${creditCheckResult.remainingAnalyses} free analysis remaining`;
+          
+          // Show warning if using fallback storage
+          if (creditCheckResult.storageType === 'fallback') {
+            console.warn('⚠️ Using fallback storage - localStorage unavailable');
+          }
         } else {
           canProceed = false;
-          creditMessage = 'Free analysis limit reached. Please sign up for more credits.';
+          if (creditCheckResult.reason === 'limit_reached') {
+            creditMessage = 'Free analysis limit reached. Please sign up for more credits.';
+          } else {
+            creditMessage = 'Unable to verify analysis limit. Please try again.';
+          }
         }
       }
       
@@ -279,9 +288,8 @@ const LuxeChatInputPage = () => {
           console.warn('⚠️ Failed to deduct credit for logged-in user:', deductResult.error);
         }
       } else {
-        // Anonymous user: Increment analysis count
-        const newAnonymousData = AnonymousUserService.incrementAnalysisCount();
-        console.log('✅ Anonymous analysis count updated:', newAnonymousData);
+        // Anonymous user: Credit already deducted in atomic operation
+        console.log('✅ Anonymous analysis count already updated in atomic operation');
       }
       
       // Navigate to results with real analysis data
