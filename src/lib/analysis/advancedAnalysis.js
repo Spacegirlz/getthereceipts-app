@@ -550,6 +550,57 @@ const parseConversationSides = (message, context) => {
   return result;
 };
 
+// Helper function to make API calls with backup support
+const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
+  const apiKeys = [
+    import.meta.env.VITE_OPENAI_API_KEY,
+    import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
+    import.meta.env.VITE_OPENAI_API_KEY_BACKUP2
+  ].filter(key => key && key.trim());
+
+  if (attemptNumber >= apiKeys.length) {
+    throw new Error('All API keys exhausted');
+  }
+
+  const currentKey = apiKeys[attemptNumber];
+  
+  // Validate API key
+  if (!currentKey || typeof currentKey !== 'string' || currentKey.trim().length === 0) {
+    throw new Error(`Invalid API key at attempt ${attemptNumber + 1}`);
+  }
+
+  const authHeader = `Bearer ${currentKey}`;
+  console.log(`🔑 API call attempt ${attemptNumber + 1} with key:`, currentKey.substring(0, 10) + '...');
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API error ${response.status}: ${errorText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Attempt ${attemptNumber + 1} failed:`, error.message);
+    
+    // Try next API key
+    if (attemptNumber < apiKeys.length - 1) {
+      console.log(`Trying backup key ${attemptNumber + 2}...`);
+      return makeApiCallWithBackup(endpoint, body, attemptNumber + 1);
+    }
+    
+    throw error;
+  }
+};
+
 // Advanced OpenAI Integration - CLEANED VERSION
 export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
   // Prevent infinite recursion - max 3 attempts (main + 2 backups)
@@ -621,6 +672,17 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
 
   const currentKey = apiKeys[attemptNumber];
   console.log(`Using API key attempt ${attemptNumber + 1} of ${apiKeys.length}`);
+  
+  // Validate API key format
+  if (!currentKey || typeof currentKey !== 'string' || currentKey.trim().length === 0) {
+    console.error(`❌ Invalid API key at attempt ${attemptNumber + 1}:`, currentKey);
+    throw new Error(`Invalid API key format at attempt ${attemptNumber + 1}`);
+  }
+  
+  // Check if key starts with expected prefix
+  if (!currentKey.startsWith('sk-') && !currentKey.startsWith('AIza')) {
+    console.warn(`⚠️ API key doesn't start with expected prefix:`, currentKey.substring(0, 10) + '...');
+  }
 
   // Provider/model selection with auto-pick
   const { provider, model, openAIModel, geminiModel } = selectAiProvider();
@@ -827,22 +889,7 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
         response_format: { type: 'json_object' }
       };
       
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${currentKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body)
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`OpenAI API error ${response.status}:`, errorText);
-        throw new Error(`OpenAI API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
+      const data = await makeApiCallWithBackup(endpoint, body);
       console.log('OpenAI response meta:', { endpoint, hasChoices: !!data?.choices, usage: data?.usage });
       rawContent = data.choices?.[0]?.message?.content || '';
     } else {
@@ -1272,22 +1319,7 @@ export const generateAlignedResults = async (message, context) => {
         response_format: { type: 'json_object' }
       };
       console.log('🔧 OpenAI Deep Dive request:', { endpoint, model: openAIModel });
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body)
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('🚨 OpenAI Deep Dive API Error:', response.status, errorText);
-        throw new Error(`OpenAI API Error: ${response.status} - ${errorText}`);
-      }
-      
-      const data = await response.json();
+      const data = await makeApiCallWithBackup(endpoint, body);
       
       // Standard chat completions format
       rawContent = data.choices?.[0]?.message?.content || '';
@@ -1497,22 +1529,7 @@ export const generateAlignedResults = async (message, context) => {
         response_format: { type: 'json_object' }
       };
       
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body)
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('🚨 Immunity Training API Error:', response.status, errorText);
-        throw new Error(`OpenAI API Error: ${response.status} - ${errorText}`);
-      }
-      
-      const data = await response.json();
+      const data = await makeApiCallWithBackup(endpoint, body);
       
       // Standard chat completions format
       rawContent = data.choices?.[0]?.message?.content || '';
