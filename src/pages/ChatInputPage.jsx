@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Type, Camera, ChevronDown } from 'lucide-react';
+import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle } from 'lucide-react';
 import InputTabs from '@/components/InputTabs';
 import SmartCharacterCounter from '@/components/SmartCharacterCounter';
 import ColorMappingHelper from '@/components/ColorMappingHelper';
@@ -10,11 +10,13 @@ import ImageUpload from '@/components/ImageUpload';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuthModal } from '@/contexts/AuthModalContext';
 
 const ChatInputPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { openModal } = useAuthModal();
   
   // State Management
   const [step, setStep] = useState(1);
@@ -32,6 +34,20 @@ const ChatInputPage = () => {
   const [context, setContext] = useState('');
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [anonymousStatus, setAnonymousStatus] = useState(null);
+
+  // Track anonymous user status
+  useEffect(() => {
+    if (!user) {
+      // Load anonymous user status
+      import('@/lib/services/anonymousUserService').then(({ AnonymousUserService }) => {
+        const status = AnonymousUserService.getAnonymousUserStatus();
+        setAnonymousStatus(status);
+      });
+    } else {
+      setAnonymousStatus(null);
+    }
+  }, [user]);
 
   // Auto-detect names from conversation
   const detectNames = (text) => {
@@ -115,9 +131,84 @@ const ChatInputPage = () => {
   };
 
   const submitAnalysis = async () => {
+    // 🚨 RACE CONDITION PROTECTION: Prevent multiple simultaneous submissions
+    if (isLoading) {
+      console.warn('Analysis already in progress, ignoring duplicate request');
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
+      // 🔐 CREDIT CHECK: Verify user can perform analysis
+      const { AnonymousUserService } = await import('@/lib/services/anonymousUserService');
+      const { getUserCredits, deductCredits } = await import('@/lib/services/creditsSystem');
+      
+      let canProceed = false;
+      let creditMessage = '';
+      let creditCheckResult = null;
+      
+      if (user) {
+        // Logged-in user: Check their credits
+        const userCredits = await getUserCredits(user.id);
+        console.log('🔐 User credits check:', userCredits);
+        
+        if (userCredits.subscription === 'premium' || 
+            userCredits.subscription === 'yearly' || 
+            userCredits.subscription === 'founder') {
+          canProceed = true;
+          creditMessage = 'Premium user - unlimited analysis';
+        } else if (userCredits.credits > 0) {
+          canProceed = true;
+          creditMessage = `Free user - ${userCredits.credits} credits remaining`;
+        } else {
+          canProceed = false;
+          creditMessage = 'No credits remaining. Please upgrade or wait for daily reset.';
+        }
+      } else {
+        // Anonymous user: Use atomic operation to prevent race conditions
+        creditCheckResult = AnonymousUserService.checkAndIncrementAnalysis();
+        console.log('🔐 Anonymous user atomic check:', creditCheckResult);
+        
+        if (creditCheckResult.success) {
+          canProceed = true;
+          creditMessage = `Anonymous user - ${creditCheckResult.remainingAnalyses} free analysis remaining`;
+          
+          // Show warning if using fallback storage
+          if (creditCheckResult.storageType === 'fallback') {
+            console.warn('⚠️ Using fallback storage - localStorage unavailable');
+          }
+        } else {
+          canProceed = false;
+          if (creditCheckResult.reason === 'limit_reached') {
+            creditMessage = 'Free analysis limit reached. Please sign up for more credits.';
+          } else {
+            creditMessage = 'Unable to verify analysis limit. Please try again.';
+          }
+        }
+      }
+      
+      if (!canProceed) {
+        setIsLoading(false);
+        toast({
+          variant: 'destructive',
+          title: 'Analysis Limit Reached',
+          description: creditMessage,
+          action: user ? undefined : {
+            label: 'Sign Up',
+            onClick: () => {
+              // Open auth modal for signup
+              const authModal = document.querySelector('[data-auth-modal]');
+              if (authModal) {
+                authModal.click();
+              }
+            }
+          }
+        });
+        return;
+      }
+      
+      console.log('✅ Credit check passed:', creditMessage);
       // Combine all text inputs
       const message = texts.trim() + '\n' + extractedTexts.join('\n');
       
@@ -189,6 +280,20 @@ const ChatInputPage = () => {
       
       console.log('✅ Analysis complete:', analysisResult);
       
+      // 🔐 DEDUCT CREDITS: After successful analysis
+      if (user) {
+        // Logged-in user: Deduct credit
+        const deductResult = await deductCredits(user.id, 1);
+        if (deductResult.success) {
+          console.log('✅ Credit deducted for logged-in user');
+        } else {
+          console.warn('⚠️ Failed to deduct credit for logged-in user:', deductResult.error);
+        }
+      } else {
+        // Anonymous user: Credit already deducted in atomic operation
+        console.log('✅ Anonymous analysis count already updated in atomic operation');
+      }
+      
       // Navigate to results with real analysis data
       navigate('/receipts', { 
         state: { 
@@ -237,6 +342,38 @@ const ChatInputPage = () => {
               Paste your texts. Get clarity in seconds.
             </p>
           </div>
+
+          {/* Anonymous User Status */}
+          {!user && anonymousStatus && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-blue-400" />
+                  <div>
+                    <p className="text-sm font-medium text-blue-300">
+                      {anonymousStatus.remainingAnalyses > 0 
+                        ? `Free Analysis: ${anonymousStatus.remainingAnalyses} remaining`
+                        : 'Free analysis used up'
+                      }
+                    </p>
+                    <p className="text-xs text-blue-400/80">
+                      {anonymousStatus.remainingAnalyses > 0 
+                        ? 'Sign up for unlimited analysis + daily credits'
+                        : 'Sign up now for unlimited analysis'
+                      }
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => openModal()}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center gap-2"
+                >
+                  <Crown className="w-4 h-4" />
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Input Tabs */}
           <InputTabs activeTab={activeTab} setActiveTab={setActiveTab} />
