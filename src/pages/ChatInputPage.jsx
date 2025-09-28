@@ -71,13 +71,11 @@ const ChatInputPage = () => {
     const newText = e.target.value.slice(0, 5000);
     setTexts(newText);
     
-    // Auto-detect names
+    // Auto-detect names but don't auto-populate - let user review in step 2
     const names = detectNames(newText);
     if (names.length > 0) {
       setDetectedNames(names);
-      // Auto-populate names if they're not already set
-      if (!userName && names[0]) setUserName(names[0]);
-      if (!otherName && names[1]) setOtherName(names[1]);
+      // Don't auto-populate - let user review and choose in the "Who's who?" section
     }
   };
 
@@ -99,12 +97,11 @@ const ChatInputPage = () => {
       return;
     }
     
-    // Check if we need to collect names
-    if (step === 1 && (!userName || !otherName)) {
-      // Need to collect names - go to step 2
+    // Always go to step 2 first (name collection) - same as screenshot option
+    if (step === 1) {
       setStep(2);
     } else {
-      // We have names or we're already on step 2 - submit the analysis
+      // We're on step 2 - submit the analysis
       submitAnalysis();
     }
   };
@@ -320,8 +317,11 @@ const ChatInputPage = () => {
                         defaultChecked 
                         onChange={(e) => {
                           if (e.target.checked) {
-                            setUserName(detectedNames[0]);
-                            setOtherName(detectedNames[1]);
+                            setUserName(detectedNames[0] || '');
+                            setOtherName(detectedNames[1] || '');
+                          } else {
+                            setUserName('');
+                            setOtherName('');
                           }
                         }}
                       />
