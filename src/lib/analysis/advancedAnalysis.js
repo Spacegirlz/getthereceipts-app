@@ -670,13 +670,13 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
   const apiKeys = [
     import.meta.env.VITE_OPENAI_API_KEY,
     import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
-    import.meta.env.VITE_OPENAI_API_KEY_BACKUP2
+    import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2  // Gemini API as third backup
   ].filter(key => key && key.trim());
   
   console.log(`🔍 DEBUG - Environment variables check:`);
   console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY exists:`, !!import.meta.env.VITE_OPENAI_API_KEY);
   console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY_BACKUP1 exists:`, !!import.meta.env.VITE_OPENAI_API_KEY_BACKUP1);
-  console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY_BACKUP2 exists:`, !!import.meta.env.VITE_OPENAI_API_KEY_BACKUP2);
+  console.log(`🔍 DEBUG - VITE_GOOGLE_API_KEY_BACKUP2 exists:`, !!import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2);
   console.log(`🔍 DEBUG - Total valid keys found:`, apiKeys.length);
 
   // If we've exhausted all keys, return fallback
@@ -699,12 +699,21 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
     console.warn(`⚠️ API key doesn't start with expected prefix:`, currentKey.substring(0, 10) + '...');
   }
 
-  // Provider/model selection with auto-pick
-  const { provider, model, openAIModel, geminiModel } = selectAiProvider();
-  if (provider === 'none') {
-    console.log('No AI keys detected; returning minimal fallback analysis');
-    return generateAdvancedResults(message, { ...context, context: actualContext, contextType: actualContext, relationshipType: actualContext });
-  }
+  // Determine provider based on current key
+  const isGeminiKey = currentKey.startsWith('AIza');
+  const provider = isGeminiKey ? 'google' : 'openai';
+  
+  // Get models
+  const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
+  const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
+  const model = provider === 'openai' ? openAIModel : geminiModel;
+  
+  console.log('Provider determined from key:', { 
+    provider, 
+    model, 
+    keyPrefix: currentKey.substring(0, 10) + '...',
+    isGeminiKey 
+  });
 
   try {
           console.log('Calling AI with context:', actualContext);
@@ -909,7 +918,7 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
       rawContent = data.choices?.[0]?.message?.content || '';
     } else {
       // Google Gemini with structured output
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${import.meta.env.VITE_GOOGLE_API_KEY}`;
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
       
       const promptText = voiceOverride ? `${brutalPrompt}\n\n${voiceOverride}\n\n${userContent}` : `${brutalPrompt}\n\n${userContent}`;
       
@@ -1340,7 +1349,7 @@ export const generateAlignedResults = async (message, context) => {
       rawContent = data.choices?.[0]?.message?.content || '';
       console.log('🔧 OpenAI Deep Dive response length:', rawContent.length);
     } else {
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${import.meta.env.VITE_GOOGLE_API_KEY}`;
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1552,7 +1561,7 @@ export const generateAlignedResults = async (message, context) => {
       rawContent = data.choices?.[0]?.message?.content || '';
       console.log('🛡️ Immunity Training response length:', rawContent.length);
     } else {
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${import.meta.env.VITE_GOOGLE_API_KEY}`;
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
