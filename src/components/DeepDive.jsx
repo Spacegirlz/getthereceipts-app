@@ -387,6 +387,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     };
   };
 
+  // Get archetype color based on red flag level - same logic as Sage's Receipt
+  const getArchetypeColor = () => {
+    const flagCount = analysisData?.redFlags || 0;
+    if (flagCount <= 3) return "text-green-400";   // Green for 0-3 flags (good)
+    if (flagCount <= 6) return "text-orange-400";  // Orange for 4-6 flags (mixed)
+    return "text-red-400";                         // Red for 7-10 flags (toxic)
+  };
+
 
   // Copy functionality
   const copyToClipboard = async (text) => {
@@ -496,7 +504,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const risk = getRiskStyling(valence);
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* CSS for hiding scrollbar */}
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
@@ -511,7 +519,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       {/* Main Container - Exact Copy from Sage's Receipt */}
       <motion.div
         data-deepdive-component
-        className="w-full max-w-4xl mx-auto"
+        className="w-full max-w-2xl mx-auto"
         style={{
           background: 'transparent'
         }}
@@ -519,18 +527,16 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
       >
-        {/* Outer wrapper - exact copy from Sage's Receipt */}
-        <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-          <div 
-            className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
-            style={{
-              background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-              backdropFilter: 'blur(20px) saturate(200%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-              border: '2px solid rgba(20, 184, 166, 0.4)',
-              boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
-            }}>
-            <div className="relative z-10">
+        <div 
+          className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
+          style={{
+            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            backdropFilter: 'blur(20px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+            border: '2px solid rgba(20, 184, 166, 0.4)',
+            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+          }}>
+          <div className="relative z-10">
 
             {/* Sage's Deep Dive Header - Horizontal Banner Style */}
             <div className="mb-12">
@@ -596,7 +602,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="flex items-center justify-between mb-6" data-share-hide="true">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h2 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SUMMARY</h2>
+                    <h2 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SUMMARY</h2>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">HOT TAKE ANALYSIS</div>
                 </div>
@@ -606,8 +612,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/10 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0">
                       <span className="text-[#D4AF37] text-xl">🎯</span>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: '#D4AF37' }}>
+                    <div className="flex-1 text-center">
+                      <h3 className={`text-xl sm:text-2xl font-black mb-1 ${getArchetypeColor()} leading-tight`}
+                        style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 184, 166, 0.2)' }}>
                         {safeDeepDive.verdict?.act || analysisData?.verdict}
                       </h3>
                       {/* Removed teal underline per request */}
@@ -618,42 +625,51 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   </div>
                 </div>
 
-                {/* Key Metrics Dashboard - 1 x 3 across, small type on mobile */}
-                <div className="grid grid-cols-3 gap-3 sm:gap-6 max-[380px]:gap-2 mb-8" data-share-hide="true">
+                {/* Key Metrics Dashboard - Match Sage's Receipt exactly */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
                   {/* Risk Assessment */}
-                  <div className="bg-gradient-to-br from-red-500/10 to-red-400/5 rounded-2xl p-3 sm:p-6 max-[380px]:p-2 border border-red-500/20">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 max-[380px]:w-5 max-[380px]:h-5 rounded-lg bg-red-500/20 flex items-center justify-center">
-                        <span className="text-red-400 text-base sm:text-lg max-[380px]:text-sm">⚠️</span>
-                      </div>
-                      <div className="text-red-400 text-xs sm:text-sm font-semibold uppercase tracking-wide">Risk Level</div>
+                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                    <div className="text-sm sm:text-xs uppercase tracking-wider text-white/70 mb-2">
+                      RISK LEVEL
                     </div>
-                    <div className="text-base sm:text-2xl max-[380px]:text-sm font-bold text-stone-100 mb-1">HIGH</div>
-                    <div className="text-stone-300/80 text-xs sm:text-sm">Requires immediate attention</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-red-400 mb-3 sm:mb-2">
+                      HIGH
+                    </div>
+                    <div className="px-1 sm:px-2">
+                      <div className="w-full bg-white/20 rounded-full h-3 sm:h-2">
+                        <div className="bg-red-400 h-3 sm:h-2 rounded-full" style={{ width: '85%' }}></div>
+                      </div>
+                    </div>
                   </div>
                   
                   {/* Compatibility Score */}
-                  <div className="bg-gradient-to-br from-amber-500/10 to-amber-400/5 rounded-2xl p-3 sm:p-6 max-[380px]:p-2 border border-amber-500/20">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 max-[380px]:w-5 max-[380px]:h-5 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                        <span className="text-amber-400 text-base sm:text-lg max-[380px]:text-sm">📊</span>
-                      </div>
-                      <div className="text-amber-400 text-xs sm:text-sm font-semibold uppercase tracking-wide">Compatibility</div>
+                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                    <div className="text-sm sm:text-xs uppercase tracking-wider text-white/70 mb-2">
+                      COMPATIBILITY
                     </div>
-                    <div className="text-base sm:text-2xl max-[380px]:text-sm font-bold text-stone-100 mb-1">42%</div>
-                    <div className="text-stone-300/80 text-xs sm:text-sm">Below optimal threshold</div>
-              </div>
+                    <div className="text-2xl sm:text-3xl font-bold text-amber-400 mb-3 sm:mb-2">
+                      42%
+                    </div>
+                    <div className="px-1 sm:px-2">
+                      <div className="w-full bg-white/20 rounded-full h-3 sm:h-2">
+                        <div className="bg-amber-400 h-3 sm:h-2 rounded-full" style={{ width: '42%' }}></div>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Communication Health */}
-                  <div className="bg-gradient-to-br from-blue-500/10 to-blue-400/5 rounded-2xl p-3 sm:p-6 max-[380px]:p-2 border border-blue-500/20">
-                    <div className="flex items-center gap-3 mb-3">
-                        <div className="w-6 h-6 sm:w-8 sm:h-8 max-[380px]:w-5 max-[380px]:h-5 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                        <span className="text-blue-400 text-base sm:text-lg max-[380px]:text-sm">💬</span>
+                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                    <div className="text-sm sm:text-xs uppercase tracking-wider text-white/70 mb-2">
+                      COMMUNICATION
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-bold text-blue-400 mb-3 sm:mb-2">
+                      POOR
+                    </div>
+                    <div className="px-1 sm:px-2">
+                      <div className="w-full bg-white/20 rounded-full h-3 sm:h-2">
+                        <div className="bg-blue-400 h-3 sm:h-2 rounded-full" style={{ width: '25%' }}></div>
                       </div>
-                      <div className="text-blue-400 text-xs sm:text-sm font-semibold uppercase tracking-wide">Communication</div>
-                </div>
-                    <div className="text-base sm:text-2xl max-[380px]:text-sm font-bold text-stone-100 mb-1">POOR</div>
-                    <div className="text-stone-300/80 text-xs sm:text-sm">Significant barriers detected</div>
+                    </div>
                   </div>
                 </div>
                 
@@ -673,7 +689,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S RECEIPT AUTOPSY</h3>
+                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S RECEIPT AUTOPSY</h3>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
@@ -794,7 +810,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="flex items-center justify-between mb-6" data-share-hide="true">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                      <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S DYNAMICS</h3>
+                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S DYNAMICS</h3>
               </div>
                     <div className="text-xs text-stone-400/70 font-mono">RELATIONSHIP PHYSICS</div>
                   </div>
@@ -863,7 +879,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                      <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S PLAYBOOK</h3>
+                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S PLAYBOOK</h3>
                     </div>
                     <div className="text-xs text-stone-400/70 font-mono">STRATEGIC MOVES</div>
                   </div>
@@ -934,7 +950,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                  <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SEAL</h3>
+                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SEAL</h3>
                 </div>
                 <div className="text-xs text-stone-400/70 font-mono">FINAL WISDOM</div>
           </div>
@@ -1039,7 +1055,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <p className="text-xs text-stone-200/90/40 tracking-widest">
                 www.getthereceipts.com
               </p>
-            </div>
             </div>
           </div>
         </div>
