@@ -381,7 +381,7 @@ const ReceiptsCardPage = () => {
             <div className="relative z-10">
               <Loader2 className="h-16 w-16 animate-spin text-purple-400 mb-6 mx-auto" />
               <p className="text-lg font-medium text-gray-200 mb-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                Deep Dive loading... 🎯
+                Serving the tea... it's hot! ☕️
               </p>
               <p className="text-sm text-gray-400">Preparing your truth receipt</p>
             </div>
@@ -579,8 +579,8 @@ const ReceiptsCardPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </button>
               <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
-                <span className="text-xs">🎯</span>
-                <span className="text-xs font-medium">Deep Dive</span>
+                <span className="text-xs">☕</span>
+                <span className="text-xs font-medium">Tea</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </button>
               <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
