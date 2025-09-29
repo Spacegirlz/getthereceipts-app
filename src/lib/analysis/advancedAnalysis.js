@@ -610,8 +610,171 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
   }
 };
 
+// CRITICAL SAFETY DETECTION SYSTEM
+const detectSafetyIssues = (message) => {
+  const text = message.toLowerCase();
+  
+  // SUICIDE IDEATION PATTERNS
+  const suicidePatterns = [
+    /thinking about ending it/i,
+    /want to die/i,
+    /kill myself/i,
+    /end my life/i,
+    /not worth living/i,
+    /better off dead/i,
+    /suicide/i,
+    /meds in front of me/i,
+    /pills in front of me/i,
+    /overdose/i,
+    /can't keep going/i,
+    /point of being alive/i,
+    /nothing ever gets better/i
+  ];
+  
+  // SELF-HARM PATTERNS
+  const selfHarmPatterns = [
+    /cut myself/i,
+    /hurt myself/i,
+    /self harm/i,
+    /cutting/i,
+    /burning myself/i,
+    /scratching myself/i
+  ];
+  
+  // NON-CONSENSUAL SEX PATTERNS
+  const assaultPatterns = [
+    /drunk.*sex/i,
+    /wasted.*sex/i,
+    /passed out.*sex/i,
+    /unconscious.*sex/i,
+    /didn't say no.*sex/i,
+    /forced.*sex/i,
+    /rape/i,
+    /assault/i,
+    /couldn't consent/i,
+    /too drunk to consent/i,
+    /didn't want it/i,
+    /said no but/i
+  ];
+  
+  // EXTREME VIOLENCE PATTERNS
+  const violencePatterns = [
+    /beat.*up/i,
+    /punch.*face/i,
+    /hit.*hard/i,
+    /choke/i,
+    /strangle/i,
+    /stab/i,
+    /knife/i,
+    /gun/i,
+    /threaten.*kill/i,
+    /kill.*you/i,
+    /hurt.*bad/i,
+    /beat.*to death/i
+  ];
+  
+  // MINOR/GROOMING PATTERNS
+  const minorPatterns = [
+    // Direct age references
+    /\b(13|14|15|16|17)\s*(years?\s*old|yo|y\.o\.|dude|years)/i,
+    /\b(13|14|15|16|17)\b(?!\s*(18|19|20|21|22|23|24|25|26|27|28|29|30))/i,
+    // Minor status indicators
+    /\b(teen|teenager|minor|underage|kid|child|young)\b/i,
+    /\b(high school|middle school|grade school)\b/i,
+    /\b(grade\s*(9|10|11|12|13))\b/i,
+    /\bstill a student\b/i,
+    /\bstill in school\b/i,
+    // Age gap + minor context patterns
+    /\b(teen|teenager|minor|underage|kid|child).*sex/i,
+    /\b(13|14|15|16|17).*dating/i,
+    /high school.*sex/i,
+    /grooming/i,
+    /underage.*relationship/i,
+    /high school.*\b(21|22|23|24|25|26|27|28|29|30)\b/i,
+    /\b(21|22|23|24|25|26|27|28|29|30)\b.*high school/i,
+    // Extended age gap patterns (18-19 still in school)
+    /\b(18|19)\b.*\b(high school|still.*student)\b/i,
+    /\b(high school|still.*student)\b.*\b(18|19)\b/i,
+    // Classic grooming phrases
+    /mature for your age/i,
+    /just between us/i,
+    /our secret/i,
+    /don't tell them/i,
+    /keep this between us/i,
+    /it's our little secret/i,
+    /you're special/i,
+    /trust me.*nothing bad/i
+  ];
+  
+  // Check for crisis patterns
+  const detectedPatterns = [];
+  
+  if (suicidePatterns.some(pattern => pattern.test(text))) {
+    detectedPatterns.push('suicide_ideation');
+  }
+  
+  if (selfHarmPatterns.some(pattern => pattern.test(text))) {
+    detectedPatterns.push('self_harm');
+  }
+  
+  if (assaultPatterns.some(pattern => pattern.test(text))) {
+    detectedPatterns.push('sexual_assault');
+  }
+  
+  if (violencePatterns.some(pattern => pattern.test(text))) {
+    detectedPatterns.push('extreme_violence');
+  }
+  
+  if (minorPatterns.some(pattern => pattern.test(text))) {
+    detectedPatterns.push('minor_involvement');
+  }
+  
+  if (detectedPatterns.length > 0) {
+    console.log('🚨 CRISIS DETECTED:', detectedPatterns);
+    return {
+      triggered: true,
+      severity: 'genuine_crisis',
+      categories: detectedPatterns,
+      message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
+      resources: [
+        '🆘 988 Suicide & Crisis Lifeline: 988',
+        '🆘 Crisis Text Line: Text HOME to 741741',
+        '🆘 RAINN (Sexual Assault): 1-800-656-4673',
+        '🆘 National DV Hotline: 1-800-799-7233'
+      ]
+    };
+  }
+  
+  return { triggered: false };
+};
+
 // Advanced OpenAI Integration - CLEANED VERSION
 export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
+  // CRITICAL: Check for safety issues FIRST
+  const safetyCheck = detectSafetyIssues(message);
+  
+  if (safetyCheck.triggered) {
+    console.log('🚨 Safety override triggered - returning crisis resources');
+    return {
+      mode: 'safety_override',
+      safetyOverride: safetyCheck,
+      archetype: 'Emergency Support 🛡️',
+      verdict: safetyCheck.message,
+      realTea: 'This goes beyond relationship analysis. Your safety is the priority.',
+      wastingTime: 0,
+      actuallyIntoYou: 0,
+      redFlags: 10,
+      confidenceScore: 100,
+      confidenceRemark: 'SAFETY PRIORITY',
+      yourMove: ['Reach out for professional help', 'Your safety matters most'],
+      prophecy: 'Next: prioritize your wellbeing',
+      redFlagTags: ['crisis situation'],
+      deepDive: { valence: 'red' },
+      immunityTraining: { riskLevel: 'high', safetyNote: safetyCheck.message },
+      resources: safetyCheck.resources
+    };
+  }
+  
   // Prevent infinite recursion - max 3 attempts (main + 2 backups)
   if (attemptNumber > 2) {
     console.error('Max retry attempts reached, using fallback analysis');

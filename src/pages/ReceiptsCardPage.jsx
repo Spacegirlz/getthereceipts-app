@@ -381,7 +381,7 @@ const ReceiptsCardPage = () => {
             <div className="relative z-10">
               <Loader2 className="h-16 w-16 animate-spin text-purple-400 mb-6 mx-auto" />
               <p className="text-lg font-medium text-gray-200 mb-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                Serving the tea... it's hot! ☕️
+                Deep Dive loading... 🎯
               </p>
               <p className="text-sm text-gray-400">Preparing your truth receipt</p>
             </div>
@@ -513,17 +513,30 @@ const ReceiptsCardPage = () => {
 
         {/* Credits Remaining Indicator */}
         {!isPremium && (
-          <div className="text-center mb-4 p-3 bg-purple-900/20 rounded-lg border border-purple-500/30">
-            <p className="text-purple-300 text-sm">
-              {userCredits.credits || 0} Truth Receipts left today
-            </p>
+          <div className="flex justify-center mb-4">
+            <div className="inline-flex items-center px-4 py-2 bg-purple-900/20 rounded-full border border-purple-500/30">
+              <p className="text-purple-300 text-sm">
+                {userCredits.credits || 0} Truth Receipts left today
+              </p>
+            </div>
           </div>
         )}
 
         {/* Page Title */}
-        <div className="text-center mb-6 md:mb-8 py-2 md:py-4 px-2">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 md:mb-8 heading-font moving-gradient-text px-2 md:px-4 py-1 md:py-2 leading-tight">
-            Sage's Truth Receipts
+        <div className="text-center mb-6 md:mb-8 py-6 md:py-8 px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 md:mb-8 px-2 md:px-4 py-2 md:py-4 leading-relaxed">
+            <span style={{
+              background: 'linear-gradient(90deg, #a58bfa 0%, #0a92aa 50%, #59a5fb 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              color: 'transparent',
+              display: 'inline-block',
+              paddingBottom: '0.5em',
+              lineHeight: '1.4'
+            }}>
+              Sage's Truth Receipts
+            </span>
           </h1>
           <p className="text-gray-400 text-base md:text-lg mb-4 md:mb-6 px-2">
             The receipts are in. Here's what really happened.
@@ -566,8 +579,8 @@ const ReceiptsCardPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </button>
               <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
-                <span className="text-xs">☕</span>
-                <span className="text-xs font-medium">Tea</span>
+                <span className="text-xs">🎯</span>
+                <span className="text-xs font-medium">Deep Dive</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </button>
               <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">

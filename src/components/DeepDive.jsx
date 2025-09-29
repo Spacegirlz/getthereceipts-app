@@ -1,6 +1,7 @@
 import React, { useState, useRef, memo, useMemo } from 'react';
+import DeepDiveReceiptCarousel from '@/components/DeepDiveReceiptCarousel';
 import { motion } from 'framer-motion';
-import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause } from 'lucide-react';
+import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
@@ -139,17 +140,62 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const valence = calculateValence();
   // Debug logging removed for production
 
-  // Smart color system - Consistent teal with valence icon
-  const getValenceStyle = (valence) => {
-    // Keep teal accent consistent for branding
-    // Show valence through icon only
+  // Add defensive programming for missing properties
+  const safeDeepDive = {
+    verdict: deepDive.verdict || {},
+    receipts: deepDive.receipts || [],
+    physics: deepDive.physics || {},
+    playbook: deepDive.playbook || {},
+    sages_seal: deepDive.sages_seal || '',
+    tea_wisdom: deepDive.tea_wisdom || '',
+    valence: deepDive.valence || 'yellow'
+  };
+
+  // PREMIUM COLOR SYSTEM - "Midnight Gold" Theme
+  const theme = {
+    // Sophisticated dark backgrounds
+    bgPrimary: 'bg-gradient-to-br from-[#0F0F1E] to-[#1A1A2E]',
+    bgCard: 'bg-white/[0.02]',
+    bgCardHover: 'hover:bg-white/[0.04]',
+    
+    // Premium borders
+    borderSubtle: 'border-white/[0.08]',
+    borderAccent: 'border-[#D4AF37]/20',
+    
+    // Text hierarchy
+    textPrimary: 'text-white/95',
+    textSecondary: 'text-white/70',
+    textMuted: 'text-white/50',
+    textAccent: 'text-[#D4AF37]',
+    
+    // Premium shadows
+    shadowCard: 'shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
+    shadowGold: 'shadow-[0_0_40px_rgba(212,175,55,0.1)]'
+  };
+
+  // Risk level styling - minimal color variation
+  const getRiskStyling = (valence) => {
+    if (valence === 'red') {
+      return {
+        badge: 'bg-red-500/10 text-red-400 border-red-500/20',
+        icon: '⚠️',
+        label: 'HIGH RISK PATTERN'
+      };
+    }
+    if (valence === 'green') {
+      return {
+        badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+        icon: '✓',
+        label: 'HEALTHY PATTERN'
+      };
+    }
     return {
-      accent: 'text-teal-400', // Always teal for consistency
-      icon: valence === 'red' ? '🚨' : valence === 'green' ? '✨' : '⚡'
+      badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+      icon: '→',
+      label: 'MIXED SIGNALS'
     };
   };
 
-  const style = getValenceStyle(valence);
 
   // Copy functionality
   const copyToClipboard = async (text) => {
@@ -249,379 +295,511 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     }
   };
 
+  // Mobile-specific styles
+  const mobileStyles = {
+    cardShadow: '0 10px 40px rgba(0,0,0,0.4)',
+    tapHighlight: 'active:scale-[0.98] transition-transform',
+    swipeHint: 'overflow-x-auto scrollbar-hide snap-x snap-mandatory'
+  };
+
+  const risk = getRiskStyling(valence);
+
   return (
-    <div className="relative w-full max-w-md sm:max-w-2xl md:max-w-4xl mx-auto px-4 sm:px-0 pb-8 sm:pb-12 md:pb-16">
-      {/* The Tea V4 Main Container - 9:16 Format */}
+    <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* CSS for hiding scrollbar */}
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+      
+      {/* Main Container - Premium Glass Effect */}
       <motion.div 
         data-deepdive-component
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.3 }}
-        className="p-4 sm:p-6 md:p-8 lg:p-10 mb-4 sm:mb-6 md:mb-8 relative hover:scale-[1.01] transition-all duration-300"
-        style={{
-          background: 'linear-gradient(180deg, #1a1a3e 0%, #14142e 100%)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '20px',
-          border: '2px solid rgba(20, 184, 166, 0.4)',
-          boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
-        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative"
       >
-
-        {/* The Tea Header - Premium Gold Signature */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-center mb-10"
+        {/* Premium Background Layer - Exact Match to Receipt 1 */}
+        <div 
+          className="absolute inset-0 rounded-[24px]" 
+          style={{
+            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)'
+          }}
+        />
+        
+        {/* Clean Container - Exact Border from First Receipt */}
+        <div 
+          className="relative rounded-[24px] overflow-hidden"
+          style={{
+            border: '2px solid rgba(20, 184, 166, 0.4)',
+            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+          }}
         >
-          <div className="p-6 py-8 rounded-xl border border-white/8 relative overflow-hidden" 
-            style={{ 
-              background: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.08)',
-              boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
-            }}>
-            
-            <div className="inline-flex items-center gap-2 mb-2">
-              <span className="text-2xl opacity-80">🫖</span>
-              <h2 className="gradient-text text-3xl md:text-4xl font-bold"
-                style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}>
-                SAGE'S TEA
-              </h2>
-            </div>
-            <div className="text-xs font-bold tracking-wider text-amber-300 opacity-90 mb-4">
-              HOT • TAKES • SERVED
-            </div>
-            
-          </div>
-        </motion.div>
-
-        {/* 1. THE VERDICT - Separate Section */}
-        <motion.section 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-6"
-        >
-          <div className="flex items-center gap-2 mb-6">
-            <Eye className={`w-4 h-4 ${style.accent}`} />
-            <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>SAGE'S READ</h3>
-          </div>
           
-          <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
-            <div className="text-center">
-              <div className={`text-lg font-bold ${style.accent} mb-1`}>
-                {deepDive.verdict?.act || analysisData?.verdict || 'Analysis Complete'}
-              </div>
-              <div className="text-stone-200 text-base italic mb-4 leading-relaxed">
-                "{deepDive.verdict?.subtext || 'Sage has analyzed the situation'}"
-              </div>
-            </div>
-          </div>
-        </motion.section>
+          {/* Content */}
+          <div className="relative z-10 p-6 sm:p-8 lg:p-12">
 
-        {/* 2. RECEIPT AUTOPSY - 2x2 Grid */}
-        <motion.section 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-6"
-        >
-          <div className="flex items-center gap-2 mb-6">
-            <Zap className={`w-4 h-4 ${style.accent}`} />
-            <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>RECEIPT AUTOPSY</h3>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-0 rounded-xl border border-white/8 overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
-            {/* Get 4 receipts for the grid */}
-            {(deepDive.receipts?.slice(0, 4) || []).map((receipt, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 + index * 0.05 }}
-                className={`p-4 relative ${
-                  index === 0 ? 'border-r border-b' : 
-                  index === 1 ? 'border-b' : 
-                  index === 2 ? 'border-r' : ''
-                }`}
-                style={{ 
-                  borderColor: 'rgba(49, 224, 194, 0.2)' // Translucent blue/teal borders
-                }}
+            {/* Sage's Deep Dive Header - Horizontal Banner Style */}
+            <div className="mb-12">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
               >
-                {/* Lock icon for premium receipts (index 2 and 3) */}
-                {showPaywall && index >= 2 && (
-                  <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/40 backdrop-blur-sm">
-                    <Lock className="w-5 h-5 text-white/60" />
-                  </div>
-                )}
-                
-                <div className={`${showPaywall && index >= 2 ? 'opacity-30' : ''}`}>
-                  <div className="text-stone-200 text-sm mb-2 font-normal italic leading-relaxed">
-                    "{receipt.quote}"
-                  </div>
-                  <div className="text-xs mb-1">
-                    <span className={`text-teal-400 font-bold`}>
-                      {receipt.pattern}
+                {/* SAGE HEADER - Exact Match to Truth Receipts */}
+                <div className="text-center mb-1 relative z-50">
+                  <div className="inline-flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full border border-white/10 mb-2 relative z-50">
+                    <img 
+                      src="/src/assets/sage-dark-circle.png"
+                      alt="Sage's Deep Dive" 
+                      className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
+                      style={{
+                        filter: 'brightness(1.2) contrast(1.1)',
+                        boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
+                      }}
+                    />
+                    <span className="text-sm sm:text-lg font-bold tracking-widest relative z-50"
+                      style={{
+                        color: '#14B8A6',
+                        textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                      }}>
+                      SAGE'S DEEP DIVE
                     </span>
                   </div>
-                  <div className="text-stone-200/80 text-sm leading-relaxed">
-                    Cost: {receipt.cost}
+                </div>
+                
+                {/* Hot Takes Badge - Humor Protection */}
+                <div className="mt-6 text-center">
+                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-full">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                      <span className="text-red-400 text-sm font-bold tracking-wider uppercase">HOT</span>
+                    </div>
+                    <div className="w-1 h-1 bg-white/40 rounded-full"></div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+                      <span className="text-orange-400 text-sm font-bold tracking-wider uppercase">TAKES</span>
+                    </div>
+                    <div className="w-1 h-1 bg-white/40 rounded-full"></div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></div>
+                      <span className="text-yellow-400 text-sm font-bold tracking-wider uppercase">SERVED</span>
+                    </div>
                   </div>
                 </div>
+                
               </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Premium Sections - Blurred if not premium */}
-        {showPaywall && (
-          <div className="relative mb-4">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 rounded-xl flex items-center justify-center">
-              <div className="text-center p-6">
-                <Lock className="w-8 h-8 text-purple-400 mx-auto mb-3" />
-                <h4 className="text-stone-200 font-bold text-lg mb-2">Unlock Full Tea</h4>
-                <p className="text-stone-200 text-base mb-4 leading-relaxed">Get The Physics, The Playbook, and complete pattern analysis</p>
-                <button className="viral-button text-stone-200 font-normal py-2 px-6 rounded-full transition-all duration-300">
-                  Unlock Premium
-                </button>
-              </div>
             </div>
-            
-            {/* Blurred Premium Content Preview */}
-            <div className="filter blur-lg opacity-50">
-              {/* 3. THE PHYSICS */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-6">
-                  <Play className={`w-4 h-4 ${style.accent}`} />
-                  <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE DYNAMICS</h3>
-                </div>
-                <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
-                  <div className="space-y-2 text-sm">
-                    <div><span className="font-semibold text-teal-400">What you bring:</span> <span className="text-stone-200 text-base">Pattern recognition</span></div>
-                    <div><span className="font-semibold text-teal-400">What they exploit:</span> <span className="text-stone-200 text-base">Your willingness to understand</span></div>
-                    <div><span className="font-semibold text-teal-400">The result:</span> <span className="text-stone-200 text-base">Endless confusion cycles</span></div>
-                  </div>
-                </div>
-              </div>
 
-              {/* 4. THE PLAYBOOK */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-6">
-                  <Clock className={`w-4 h-4 ${style.accent}`} />
-                  <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>SAGE'S PLAYBOOK</h3>
-                </div>
-                <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
-                  <div className="text-center">
-                    <Lock className="w-6 h-6 text-teal-400 mx-auto mb-2" />
-                    <p className="text-stone-200/60 text-sm">Premium content - Upgrade to see the full playbook</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Premium Sections - Full visibility for premium users */}
-        {!showPaywall && (
-          <>
-            {/* 3. THE PHYSICS */}
-            <motion.section 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-              className="mb-6"
+            {/* Executive Summary Dashboard */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-10"
             >
-              <div className="flex items-center gap-2 mb-6">
-                <Play className={`w-4 h-4 ${style.accent}`} />
-                <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>THE DYNAMICS</h3>
-              </div>
-              
-              <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
-                <div className="space-y-2 text-sm">
-                  <div className="leading-relaxed">
-                    <span className="font-semibold text-teal-400">What you bring:</span>{' '}
-                    <span className="text-stone-200 text-base">{deepDive.physics?.you_bring || ''}</span>
+              <div className="rounded-3xl p-8 border border-white/[0.12] shadow-2xl bg-black/80 backdrop-blur-sm">
+                {/* Sage's Summary Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                    <h2 className="text-lg font-bold text-white uppercase tracking-wider">SAGE'S SUMMARY</h2>
                   </div>
-                  <div className="leading-relaxed">
-                    <span className="font-semibold text-teal-400">What they exploit:</span>{' '}
-                    <span className="text-stone-200 text-base">{deepDive.physics?.they_exploit || ''}</span>
+                  <div className="text-xs text-white/50 font-mono">HOT TAKE ANALYSIS</div>
+                </div>
+                
+                {/* Key Metrics Dashboard */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  {/* Risk Assessment */}
+                  <div className="bg-gradient-to-br from-red-500/10 to-red-400/5 rounded-2xl p-6 border border-red-500/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                        <span className="text-red-400 text-lg">⚠️</span>
+                      </div>
+                      <div className="text-red-400 text-sm font-semibold uppercase tracking-wide">Risk Level</div>
+                    </div>
+                    <div className="text-2xl font-bold text-white mb-1">HIGH</div>
+                    <div className="text-white/60 text-sm">Requires immediate attention</div>
                   </div>
-                  <div className="leading-relaxed">
-                    <span className="font-semibold text-teal-400">The result:</span>{' '}
-                    <span className="text-stone-200 text-base">{deepDive.physics?.result || ''}</span>
+                  
+                  {/* Compatibility Score */}
+                  <div className="bg-gradient-to-br from-amber-500/10 to-amber-400/5 rounded-2xl p-6 border border-amber-500/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                        <span className="text-amber-400 text-lg">📊</span>
+                      </div>
+                      <div className="text-amber-400 text-sm font-semibold uppercase tracking-wide">Compatibility</div>
+                    </div>
+                    <div className="text-2xl font-bold text-white mb-1">42%</div>
+                    <div className="text-white/60 text-sm">Below optimal threshold</div>
+                  </div>
+                  
+                  {/* Communication Health */}
+                  <div className="bg-gradient-to-br from-blue-500/10 to-blue-400/5 rounded-2xl p-6 border border-blue-500/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                        <span className="text-blue-400 text-lg">💬</span>
+                      </div>
+                      <div className="text-blue-400 text-sm font-semibold uppercase tracking-wide">Communication</div>
+                    </div>
+                    <div className="text-2xl font-bold text-white mb-1">POOR</div>
+                    <div className="text-white/60 text-sm">Significant barriers detected</div>
                   </div>
                 </div>
-              </div>
-            </motion.section>
-
-            {/* 4. THE PLAYBOOK */}
-            <motion.section 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 }}
-              className="mb-6"
-            >
-              <div className="flex items-center gap-2 mb-6">
-                <Clock className={`w-4 h-4 ${style.accent}`} />
-                <h3 className={`${style.accent} font-bold text-sm tracking-wide`}>SAGE'S PLAYBOOK</h3>
-              </div>
-              
-              <div className="rounded-xl p-6 border border-white/8" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
-                <div className="space-y-2 text-sm">
-                  <div className="leading-relaxed">
-                    <span className="font-semibold text-teal-400">Next 48hrs:</span>{' '}
-                    <span className="text-stone-200 text-base">{deepDive.playbook?.next_48h || ''}</span>
-                  </div>
-                  <div className="leading-relaxed">
-                    <span className="font-semibold text-teal-400">Your Move:</span>
-                    <div className="mt-2 space-y-1">
-                      {(deepDive.playbook?.your_move || '')
-                        .split(/\.\s+/)
-                        .filter(action => action && action.trim())
-                        .slice(0, 3)
-                        .map((action, index) => (
-                        <div key={index} className="flex items-start gap-2">
-                          <span className="text-teal-400 text-sm mt-1">•</span>
-                          <span className="text-stone-200 text-base">{action.trim().replace(/\.$/, '')}</span>
-                        </div>
-                      ))}
+                
+                {/* Strategic Assessment */}
+                <div className="bg-black/80 backdrop-blur-sm rounded-2xl p-6 border border-white/[0.08]">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/10 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[#D4AF37] text-xl">🎯</span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        {safeDeepDive.verdict?.act || analysisData?.verdict}
+                      </h3>
+                      <p className="text-white/80 text-base leading-relaxed">
+                        {safeDeepDive.verdict?.subtext}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </motion.section>
+
+
+            {/* Data Intelligence Report */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mb-10"
+            >
+              <div className="bg-black/80 backdrop-blur-sm rounded-3xl p-8 border border-white/[0.12] shadow-2xl">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                    <h3 className="text-lg font-bold text-white uppercase tracking-wider">SAGE'S RECEIPT AUTOPSY</h3>
+                  </div>
+                  <div className="text-xs text-white/50 font-mono">EVIDENCE COLLECTED</div>
+                </div>
+
+                <div className="text-white/60 text-xs mb-4">{`Sage decoded ${safeDeepDive.receipts?.length || 0} messages`}</div>
+              
+              {/* Mobile - Featured Carousel (Swipeable) */}
+              <div className="sm:hidden">
+                <DeepDiveReceiptCarousel receipts={safeDeepDive.receipts || []} onCopy={copyToClipboard} />
+                {showPaywall && (
+                  <div className="mt-4 bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-6 border border-white/[0.08] flex items-center justify-center">
+                    <Lock className="w-5 h-5 text-white/40 mr-3" />
+                    <span className="text-white/50 text-sm font-medium">Unlock more receipts</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Desktop - Enhanced Grid */}
+              <div className="hidden sm:grid sm:grid-cols-2 gap-6">
+                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 4) || []).map((receipt, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    className="relative rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+                    onClick={() => copyToClipboard(receipt.quote)}
+                  >
+                    {/* Hover Glow Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/8 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Copy Icon */}
+                    <Copy className="absolute top-4 right-4 w-4 h-4 text-white/20 group-hover:text-[#D4AF37] transition-colors duration-300" />
+                    
+                    {/* Quote - BIGGER and more prominent */}
+                    <div className="text-white/95 text-base mb-4 font-medium italic leading-relaxed pr-8">
+                      "{receipt.quote}"
+                    </div>
+                    
+                    {/* Pattern Badge - More colorful and prominent */}
+                    <div className="inline-block px-3 py-1.5 bg-gradient-to-r from-[#D4AF37]/20 to-[#F5E6D3]/20 text-[#D4AF37] rounded-full text-sm font-semibold mb-3 border border-[#D4AF37]/30">
+                      {receipt.pattern}
+                    </div>
+                    
+                    {/* Cost - Better contrast */}
+                    <div className="text-white/70 text-sm font-medium">
+                      {receipt.cost}
+                    </div>
+                  </motion.div>
+                ))}
+                {showPaywall && [1,2].map(i => (
+                  <div key={`locked-${i}`} className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-6 border border-white/[0.08] flex items-center justify-center">
+                    <Lock className="w-5 h-5 text-white/40" />
+                  </div>
+                ))}
+              </div>
+              </div>
+            </motion.section>
+
+            {/* Premium Content or Paywall */}
+            {showPaywall ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mb-8 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-2xl p-8 border border-[#D4AF37]/20 text-center"
+              >
+                <Lock className="w-8 h-8 text-[#D4AF37] mx-auto mb-4" />
+                <h4 className="text-xl font-light text-white/90 mb-2">Unlock Complete Analysis</h4>
+                <p className="text-white/60 mb-6">Get the full dynamics, playbook, and Sage's wisdom</p>
+                <button
+                  onClick={() => window.location.href = '/pricing'}
+                  className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all"
+                >
+                  Go Premium
+                </button>
+              </motion.div>
+            ) : null}
+
+        {/* Premium Sections - Full visibility for premium users */}
+        {!showPaywall && (
+          <>
+                {/* Strategic Analysis Framework */}
+                <motion.section
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="mb-10"
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                      <h3 className="text-lg font-bold text-white uppercase tracking-wider">SAGE'S DYNAMICS</h3>
+                    </div>
+                    <div className="text-xs text-white/50 font-mono">RELATIONSHIP PHYSICS</div>
+                  </div>
+                  <div className="rounded-2xl p-8 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 bg-black/80 backdrop-blur-sm">
+                    <div className="space-y-6">
+                      {[
+                        { 
+                          label: 'What you bring', 
+                          value: safeDeepDive.physics?.you_bring,
+                          icon: '💝',
+                          color: 'from-emerald-500/20 to-emerald-400/10',
+                          borderColor: 'border-emerald-500/30'
+                        },
+                        { 
+                          label: 'What they exploit', 
+                          value: safeDeepDive.physics?.they_exploit,
+                          icon: '🎯',
+                          color: 'from-red-500/20 to-red-400/10',
+                          borderColor: 'border-red-500/30'
+                        },
+                        { 
+                          label: 'The result', 
+                          value: safeDeepDive.physics?.result,
+                          icon: '⚡',
+                          color: 'from-amber-500/20 to-amber-400/10',
+                          borderColor: 'border-amber-500/30'
+                        }
+                      ].map((item, i) => (
+                        <motion.div 
+                          key={i} 
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.4 + (i * 0.1) }}
+                          className="group"
+                        >
+                          <div className="flex gap-6 items-start">
+                            {/* Enhanced Icon with Background */}
+                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} border ${item.borderColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                              <span className="text-2xl">{item.icon}</span>
+                            </div>
+                            
+                            {/* Content */}
+                            <div className="flex-1">
+                              <div className="text-[#D4AF37] text-sm font-semibold mb-2 uppercase tracking-wide">
+                                {item.label}
+                              </div>
+                              <div className="text-white/90 text-base leading-relaxed font-medium">
+                                {item.value}
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.section>
+
+                {/* Implementation Roadmap */}
+                <motion.section
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="mb-10"
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                      <h3 className="text-lg font-bold text-white uppercase tracking-wider">SAGE'S PLAYBOOK</h3>
+                    </div>
+                    <div className="text-xs text-white/50 font-mono">STRATEGIC MOVES</div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    {/* Next 48 Hours - Enhanced */}
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/80 backdrop-blur-sm"
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-400/10 border border-blue-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-xl">⏰</span>
+                        </div>
+                        <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">NEXT 48 HOURS</div>
+                      </div>
+                      <p className="text-white/90 text-base leading-relaxed font-medium">
+                        {safeDeepDive.playbook?.next_48h}
+                      </p>
+                    </motion.div>
+
+                    {/* Your Moves - Enhanced */}
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/80 backdrop-blur-sm"
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-400/10 border border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-xl">🎯</span>
+                        </div>
+                        <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">YOUR MOVES</div>
+                      </div>
+                      <ul className="space-y-3">
+                        {(safeDeepDive.playbook?.your_move?.split('. ') || [])
+                          .filter(move => move.trim())
+                          .slice(0, 3)
+                          .map((move, i) => (
+                            <motion.li 
+                              key={i} 
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.7 + (i * 0.1) }}
+                              className="flex items-start gap-3 group/item"
+                            >
+                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/20 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                <ChevronRight className="w-3 h-3 text-[#D4AF37]" />
+                              </div>
+                              <span className="text-white/90 text-sm font-medium leading-relaxed">{move}</span>
+                            </motion.li>
+                          ))}
+                      </ul>
+                    </motion.div>
+                  </div>
+                </motion.section>
           </>
         )}
 
-        {/* 5. SAGE'S SEAL - Always Visible with Lock Watermark */}
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="relative mt-12"
-        >
-          
-          <div className="p-8 border relative overflow-hidden z-10"
-          style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '16px',
-            borderColor: 'rgba(212, 175, 55, 0.5)',
-            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.25)'
-          }}
-        >
-          <div className="text-center mb-4">
-            <span className="text-2xl mb-2 block">🔮</span>
-            <h4 className="gradient-text font-bold text-lg tracking-wide"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-              SAGE'S SEAL
-            </h4>
-          </div>
-          
-          <div className="text-center mb-3">
-            <p className="gradient-text text-xl font-medium mb-2"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-              "{deepDive.sages_seal || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || getFallbackSeal()}"
+            {/* Strategic Recommendation */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mb-10"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                  <h3 className="text-lg font-bold text-white uppercase tracking-wider">SAGE'S SEAL</h3>
+                </div>
+                <div className="text-xs text-white/50 font-mono">FINAL WISDOM</div>
+              </div>
+              
+              <div className="relative group">
+                {/* Enhanced Gold glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/15 to-transparent rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3]/10 to-transparent rounded-3xl blur-xl group-hover:blur-lg transition-all duration-500" />
+                
+                <div className="relative bg-black/80 backdrop-blur-sm rounded-3xl p-10 border border-[#D4AF37]/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
+                  {/* Enhanced Crown with Animation */}
+                  <motion.div 
+                    initial={{ scale: 0.8, rotate: -10 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+                    className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300"
+                  >
+                    👑
+                  </motion.div>
+                  
+                  {/* Enhanced Header */}
+                  <motion.h4 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                    className="text-sm font-semibold tracking-[0.3em] text-[#D4AF37] uppercase mb-6"
+                  >
+                    Sage's Seal
+                  </motion.h4>
+                  
+                  {/* Enhanced Quote */}
+                  <motion.p 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                    className="text-2xl font-medium leading-relaxed px-4 group-hover:scale-105 transition-transform duration-300"
+                    style={{
+                      background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 50%, #D4AF37 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text'
+                    }}>
+                    "{safeDeepDive.sages_seal || analysisData?.sages_seal}"
+                  </motion.p>
+                  
+                  {/* Subtle Sparkle Effect */}
+                  <div className="absolute top-4 right-4 text-[#D4AF37]/30 group-hover:text-[#D4AF37]/60 transition-colors duration-300">
+                    ✨
+                  </div>
+                  <div className="absolute bottom-4 left-4 text-[#F5E6D3]/30 group-hover:text-[#F5E6D3]/60 transition-colors duration-300">
+                    ✨
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* Actions - Premium Buttons */}
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={handleSaveTea}
+                className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-white/80 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Save
+              </button>
+              <button
+                onClick={() => {
+                  // Haptic feedback for mobile
+                  if (window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                  }
+                  handleShareTea();
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+              >
+                <Share2 className="w-4 h-4" />
+                Share Tea
+              </button>
+            </div>
+
+            {/* Disclaimer */}
+            <p className="text-center text-white/30 text-xs mt-8">
+              Sage's humorous take on relationship dynamics
             </p>
-            {(deepDive.share_text || getFallbackSeal()) && (
-              <p className="text-stone-200 text-lg italic leading-relaxed">
-                {deepDive.share_text || analysisData?.deepDive?.share_text || analysisData?.share_text || ""}
-              </p>
-            )}
           </div>
-
-          
-          <p className="text-center text-white/60 text-xs mt-4">Sealed with Sage's Wisdom 🔮</p>
-          </div>
-        </motion.section>
-
-        {/* DISCLAIMER */}
-        <div className="text-center mt-4 mb-4">
-          <p className="text-xs text-stone-400/70 italic">
-            For entertainment purposes - Sage calls it like she sees it
-          </p>
         </div>
-        
-        {/* WATERMARK - Final element in Sage's Tea */}
-        <div className="text-center mt-2 mb-6">
-          <p className="text-xs text-stone-200/90/40 tracking-widest">
-            www.getthereceipts.com
-          </p>
-        </div>
-
       </motion.div>
-
-      {/* SEPARATE SAVE/SHARE BOX - Completely outside the tea card */}
-      <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
-        <div 
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
-          style={{
-            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-            border: '2px solid rgba(20, 184, 166, 0.4)',
-            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
-          }}
-        >
-          <button 
-            onClick={handleSaveTea}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-            style={{
-              border: '1px solid rgba(212, 175, 55, 0.6)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-            }}
-          >
-            <Download className="h-4 w-4" />
-            Save Tea
-          </button>
-          
-          <motion.button 
-            animate={{ 
-              scale: [1, 1.02, 1],
-              boxShadow: [
-                '0 0 20px rgba(212, 175, 55, 0.3)',
-                '0 0 30px rgba(212, 175, 55, 0.5)', 
-                '0 0 20px rgba(212, 175, 55, 0.3)'
-              ]
-            }}
-            onClick={handleShareTea}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-            style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              border: '1px solid rgba(212, 175, 55, 0.9)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-            }}
-          >
-            <Share2 className="h-4 w-4" />
-            Share The Tea
-          </motion.button>
-        </div>
-        
-        {/* Sage's Disclaimer */}
-        <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
-          <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 16+.
-          </p>
-        </div>
-      </div>
     </div>
   );
 });

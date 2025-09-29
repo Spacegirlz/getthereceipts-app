@@ -1038,21 +1038,27 @@ const PricingPage = () => {
                 One click. No judgment. Just perspective.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-3xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-center max-w-4xl mx-auto">
                 <Button
                   onClick={() => navigate('/chat-input')}
-                  className="flex-1 bg-white/10 border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-bold py-3 px-8 rounded-xl transition-all duration-300 backdrop-blur-sm shadow-lg"
+                  className="bg-white/10 border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-bold py-3 px-6 rounded-xl transition-all duration-300 backdrop-blur-sm shadow-lg"
                 >
                   Start Free
                 </Button>
                 <Button
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-blue-500/30 transform hover:scale-105"
+                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-xl shadow-orange-500/30 transform hover:scale-105"
+                  onClick={() => handleCheckout('price_1S0Po4G71EqeOEZeSqdB1Qfa', 'Emergency Pack')}
+                >
+                  🚨 Emergency Pack
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-xl shadow-blue-500/30 transform hover:scale-105"
                   onClick={() => handleCheckout('price_1RzgEZG71EqeOEZejcCAFxQs', 'Premium')}
                 >
                   Go Unlimited Monthly
                 </Button>
                 <Button
-                  className="flex-1 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-purple-500/30 transform hover:scale-105"
+                  className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-xl shadow-purple-500/30 transform hover:scale-105"
                   onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founder')}
                 >
                   Claim OG Founder Status

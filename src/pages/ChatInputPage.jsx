@@ -60,21 +60,80 @@ const ChatInputPage = () => {
       
       // Limit text length to prevent performance issues
       const limitedText = text.length > 10000 ? text.substring(0, 10000) : text;
-      
-      const lines = limitedText.split('\n');
       const speakers = new Set();
       
-      lines.forEach(line => {
-        // More robust name detection pattern
-        const match = line.match(/^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/);
-        if (match) {
-          const name = match[1].trim();
-          // Filter out common false positives
-          if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
-            speakers.add(name);
+      // Handle both line-break separated and single-line conversations
+      const hasLineBreaks = limitedText.includes('\n');
+      
+      if (hasLineBreaks) {
+        // Original logic for line-break separated messages
+        const lines = limitedText.split('\n');
+        console.log('🔍 Using line-break logic, found', lines.length, 'lines');
+        
+        // Process all lines, but also check the entire text for names in case of splitting issues
+        lines.forEach((line, index) => {
+          // More robust name detection pattern - handles various formats
+          const patterns = [
+            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/,  // "Jess:", "Tom:"
+            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*\([^)]+\):/,  // "Jess (10:30 PM):"
+            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*:/  // "Jess :" (with spaces)
+          ];
+          
+          for (const pattern of patterns) {
+            const match = line.match(pattern);
+            if (match) {
+              const name = match[1].trim();
+              // Filter out common false positives
+              if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
+                speakers.add(name);
+              }
+              break; // Stop after first match
+            }
+          }
+        });
+        
+        // FALLBACK: If we didn't find enough names from lines, search the entire text
+        if (speakers.size < 2) {
+          console.log('🔍 Fallback: Searching entire text for names');
+          const globalPatterns = [
+            /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/g,  // Global match for all "Name:" patterns
+            /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*\([^)]+\):/g,  // "Name (time):" patterns
+          ];
+          
+          for (const pattern of globalPatterns) {
+            let match;
+            while ((match = pattern.exec(limitedText)) !== null) {
+              const name = match[1].trim();
+              if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
+                speakers.add(name);
+                console.log('✅ Added name from fallback:', name);
+              }
+            }
           }
         }
-      });
+      } else {
+        // NEW: Handle single-line conversations like "Jess: text Tom: text Jess: text"
+        console.log('🔍 Single-line detection - input text:', limitedText.substring(0, 300));
+        const patterns = [
+          /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/g,  // Global match for all "Name:" patterns
+          /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*\([^)]+\):/g,  // "Name (time):" patterns
+        ];
+        
+        for (const pattern of patterns) {
+          let match;
+          while ((match = pattern.exec(limitedText)) !== null) {
+            const name = match[1].trim();
+            console.log('🔍 Found potential name:', name);
+            // Filter out common false positives
+            if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
+              speakers.add(name);
+              console.log('✅ Added name to speakers:', name);
+            } else {
+              console.log('❌ Filtered out name:', name);
+            }
+          }
+        }
+      }
       
       return Array.from(speakers).slice(0, 2);
     } catch (error) {
@@ -90,6 +149,12 @@ const ChatInputPage = () => {
     
     // Auto-detect names but don't auto-populate - let user review in step 2
     const names = detectNames(newText);
+    console.log('🔍 Name detection debug:', {
+      inputText: newText.substring(0, 200),
+      detectedNames: names,
+      hasLineBreaks: newText.includes('\n'),
+      textLength: newText.length
+    });
     if (names.length > 0) {
       setDetectedNames(names);
       // Don't auto-populate - let user review and choose in the "Who's who?" section

@@ -58,8 +58,8 @@ const TabbedReceiptInterface = ({
     },
     {
       id: 'deepdive',
-      label: "Tea",
-      icon: '☕',
+      label: "Deep Dive",
+      icon: '🎯',
       component: (
         <DeepDive 
           deepDive={analysis?.deepDive}

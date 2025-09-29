@@ -59,21 +59,53 @@ const LuxeChatInputPage = () => {
       
       // Limit text length to prevent performance issues
       const limitedText = text.length > 10000 ? text.substring(0, 10000) : text;
-      
-      const lines = limitedText.split('\n');
       const speakers = new Set();
       
-      lines.forEach(line => {
-        // More robust name detection pattern
-        const match = line.match(/^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/);
-        if (match) {
-          const name = match[1].trim();
-          // Filter out common false positives
-          if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
-            speakers.add(name);
+      // Handle both line-break separated and single-line conversations
+      const hasLineBreaks = limitedText.includes('\n');
+      
+      if (hasLineBreaks) {
+        // Original logic for line-break separated messages
+        const lines = limitedText.split('\n');
+        
+        lines.forEach(line => {
+          // More robust name detection pattern - handles various formats
+          const patterns = [
+            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/,  // "Jess:", "Tom:"
+            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*\([^)]+\):/,  // "Jess (10:30 PM):"
+            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*:/  // "Jess :" (with spaces)
+          ];
+          
+          for (const pattern of patterns) {
+            const match = line.match(pattern);
+            if (match) {
+              const name = match[1].trim();
+              // Filter out common false positives
+              if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
+                speakers.add(name);
+              }
+              break; // Stop after first match
+            }
+          }
+        });
+      } else {
+        // NEW: Handle single-line conversations like "Jess: text Tom: text Jess: text"
+        const patterns = [
+          /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/g,  // Global match for all "Name:" patterns
+          /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*\([^)]+\):/g,  // "Name (time):" patterns
+        ];
+        
+        for (const pattern of patterns) {
+          let match;
+          while ((match = pattern.exec(limitedText)) !== null) {
+            const name = match[1].trim();
+            // Filter out common false positives
+            if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
+              speakers.add(name);
+            }
           }
         }
-      });
+      }
       
       return Array.from(speakers).slice(0, 2);
     } catch (error) {
