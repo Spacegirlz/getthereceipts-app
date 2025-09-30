@@ -498,7 +498,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const getSpeakerName = (quote) => {
     if (!quote) return 'UNKNOWN';
     
-    // Look for patterns like "Name:", "Name said:", "Name:", etc.
+    // Look for patterns like "Name:", "Name said:", etc.
     const patterns = [
       /^([^:]+):/,           // "Name:"
       /^([^:]+)\s+said:/i,   // "Name said:"
@@ -509,13 +509,46 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     for (const pattern of patterns) {
       const match = quote.match(pattern);
       if (match && match[1]) {
-        return match[1].trim();
+        const name = match[1].trim();
+        
+        // Filter out common non-name words that might appear before colons
+        const nonNames = [
+          'you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 
+          'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 
+          'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom'
+        ];
+        
+        // If it's a common word, try to extract a better name
+        if (nonNames.includes(name.toLowerCase())) {
+          // Look for actual names in the quote content
+          const namePatterns = [
+            /(?:from|by|to)\s+([A-Z][a-z]+)/,  // "from Jess", "by Tom"
+            /([A-Z][a-z]+)\s+(?:said|texts|writes)/,  // "Jess said", "Tom texts"
+            /([A-Z][a-z]+):/,  // "Jess:", "Tom:"
+          ];
+          
+          for (const namePattern of namePatterns) {
+            const nameMatch = quote.match(namePattern);
+            if (nameMatch && nameMatch[1]) {
+              return nameMatch[1].trim();
+            }
+          }
+          
+          // If no proper name found, return a generic label
+          return 'SPEAKER';
+        }
+        
+        return name;
       }
     }
     
-    // Fallback: use first word if no pattern matches
-    const firstWord = quote.split(' ')[0];
-    return firstWord.length > 20 ? 'UNKNOWN' : firstWord;
+    // Fallback: look for any capitalized word that might be a name
+    const nameMatch = quote.match(/([A-Z][a-z]+)/);
+    if (nameMatch) {
+      return nameMatch[1];
+    }
+    
+    return 'SPEAKER';
   };
 
   // Receipt Priority System - Visual Hierarchy
