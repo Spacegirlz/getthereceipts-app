@@ -292,7 +292,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           <ul style="list-style:none;padding:0;margin:0 0 28px 0">${movesHtml || '<li style=\"color:rgba(255,255,255,.6)\">No moves available</li>'}</ul>
           <div style="text-align:center;margin-top:12px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)">
             <div style="font-weight:700;letter-spacing:.3em;color:#D4AF37;margin-bottom:12px">SAGE'S SEAL</div>
-            <div style="font-size:40px;line-height:1.4;background:linear-gradient(135deg,#D4AF37,#F5E6D3,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">“${seal || 'Trust your intuition.'}”</div>
+            <div style="font-size:40px;line-height:1.4;padding:24px;border-radius:12px;background:linear-gradient(135deg,#D4AF37,#F5E6D3,#D4AF37);color:#000;font-weight:600;">"${seal || 'Trust your intuition.'}"</div>
           </div>
         `;
         container.appendChild(block);
@@ -1238,20 +1238,20 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     Sage's Seal
                   </motion.h4>
                   
-                  {/* Enhanced Quote */}
-                  <motion.p 
+                  {/* Enhanced Quote with Gradient Background */}
+                  <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
-                    className="text-2xl font-medium leading-relaxed px-4 group-hover:scale-105 transition-transform duration-300"
-              style={{
+                    className="relative px-4 py-6 rounded-xl group-hover:scale-105 transition-transform duration-300"
+                    style={{
                       background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 50%, #D4AF37 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                    "{safeDeepDive.sages_seal || analysisData?.sages_seal}"
-                  </motion.p>
+                    }}
+                  >
+                    <p className="text-2xl font-medium leading-relaxed text-black relative z-10">
+                      "{safeDeepDive.sages_seal || analysisData?.sages_seal}"
+                    </p>
+                  </motion.div>
                   
                   {/* Subtle Sparkle Effect */}
                   <div className="absolute top-4 right-4 text-[#14B8A6]/30 group-hover:text-[#14B8A6]/60 transition-colors duration-300">
