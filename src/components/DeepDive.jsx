@@ -540,6 +540,131 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     swipeHint: 'overflow-x-auto scrollbar-hide snap-x snap-mandatory'
   };
 
+  // Speaker name extraction for autopsy cards
+  const getSpeakerName = (quote) => {
+    if (!quote) return 'SPEAKER';
+
+    const context = safeDeepDive;
+    const conversationLines = originalMessage?.split('\n') || [];
+
+    // Try to find the speaker from the original conversation lines
+    for (const line of conversationLines) {
+      const trimmedLine = line.trim();
+      // Match "Name (time): quote" or "Name: quote"
+      const match = trimmedLine.match(/^([^:]+?)(?:\s*\(.*?\))?:\s*(.*)/i);
+      if (match && match[2] && quote.includes(match[2].trim())) {
+        const speakerName = match[1].trim();
+        // Prioritize actual names over generic pronouns if context names are available
+        if (context?.userName && speakerName.toLowerCase() === context.userName.toLowerCase()) {
+          return context.userName.toUpperCase();
+        }
+        if (context?.otherName && speakerName.toLowerCase() === context.otherName.toLowerCase()) {
+          return context.otherName.toUpperCase();
+        }
+        // If no context match, but it's a valid name, use it
+        const nonNames = ['you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom', 'just', 'like', 'really', 'actually', 'basically', 'literally'];
+        if (!nonNames.includes(speakerName.toLowerCase()) && speakerName.length > 1) {
+          return speakerName.toUpperCase();
+        }
+      }
+    }
+
+    // Fallback to context names based on first/second-person indicators
+    if (context?.userName && context?.otherName) {
+      const firstPersonPatterns = /\b(I|me|my|mine)\b/i;
+      if (firstPersonPatterns.test(quote)) {
+        return context.userName.toUpperCase();
+      }
+      const secondPersonPatterns = /\b(you|your|yours)\b/i;
+      if (secondPersonPatterns.test(quote)) {
+        return context.otherName.toUpperCase();
+      }
+    }
+
+    // Final fallback if no name can be determined
+    return 'SPEAKER';
+  };
+
+  // Receipt Priority System - Visual Hierarchy
+  const getReceiptPriority = (receipt, index) => {
+    const quote = receipt.quote?.toLowerCase() || '';
+    const pattern = receipt.pattern?.toLowerCase() || '';
+    const cost = receipt.cost?.toLowerCase() || '';
+    const currentValence = valence; // Use the overall valence for Red/Green Flag
+
+    // Smoking Gun indicators (most damning)
+    const smokingGunKeywords = [
+      'never', 'always', 'promise', 'guarantee', 'definitely', 'absolutely',
+      'lying', 'fake', 'pretend', 'acting', 'manipulating', 'gaslighting',
+      'cheating', 'secret', 'hidden', 'behind your back', 'other person',
+      'break up', 'leave', 'done', 'over', 'finished', 'end'
+    ];
+
+    const hasSmokingGun = smokingGunKeywords.some(keyword =>
+      quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
+    );
+
+    // Enforce specific layout: 1st = Smoking Gun, 2nd = Red/Green Flag, 3rd = Pattern
+    if (index === 0) { // First card is always Smoking Gun
+      return {
+        level: 'smoking-gun',
+        badge: '🔥',
+        label: 'SMOKING GUN',
+        size: 'large', // Always horizontal
+        borderColor: 'border-[#14B8A6]',
+        borderWidth: '2px',
+        bgGradient: 'from-[#14B8A6]/5 to-transparent',
+        glowColor: 'shadow-[#14B8A6]/20',
+        badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
+        severityColor: '#14B8A6',
+        severityOpacity: '1.0'
+      };
+    } else if (index === 1) { // Second card is always Red/Green Flag
+      const isGreen = currentValence === 'green';
+      return {
+        level: isGreen ? 'green-flag' : 'red-flag',
+        badge: isGreen ? '✅' : '⚠️',
+        label: isGreen ? 'GREEN FLAG' : 'RED FLAG',
+        size: 'large', // Horizontal
+        borderColor: isGreen ? 'border-emerald-500/60' : 'border-red-500/60',
+        borderWidth: '1px',
+        bgGradient: isGreen ? 'from-emerald-500/3 to-transparent' : 'from-red-500/3 to-transparent',
+        glowColor: isGreen ? 'shadow-emerald-500/10' : 'shadow-red-500/10',
+        badgeGradient: isGreen ? 'from-emerald-500/80 to-emerald-400/60' : 'from-red-500/80 to-red-400/60',
+        severityColor: isGreen ? '#10B981' : '#EF4444',
+        severityOpacity: '0.7'
+      };
+    } else if (index === 2) { // Third card is always Pattern
+      return {
+        level: 'pattern',
+        badge: '📍',
+        label: 'PATTERN',
+        size: 'large', // Always horizontal
+        borderColor: 'border-[#14B8A6]/40',
+        borderWidth: '1px',
+        bgGradient: 'from-[#14B8A6]/2 to-transparent',
+        glowColor: 'shadow-[#14B8A6]/5',
+        badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
+        severityColor: '#14B8A6',
+        severityOpacity: '0.4'
+      };
+    }
+    // Fallback for any additional receipts (shouldn't happen with slice(0,3))
+    return {
+      level: 'pattern',
+      badge: '📍',
+      label: 'PATTERN',
+      size: 'small',
+      borderColor: 'border-[#14B8A6]/40',
+      borderWidth: '1px',
+      bgGradient: 'from-[#14B8A6]/2 to-transparent',
+      glowColor: 'shadow-[#14B8A6]/5',
+      badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
+      severityColor: '#14B8A6',
+      severityOpacity: '0.4'
+    };
+  };
+
   const risk = getRiskStyling(valence);
 
   return (
@@ -735,50 +860,84 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               {/* Mobile - Horizontal Scroll Autopsy */}
               <div className="sm:hidden overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6" data-autopsy-horizontal>
                 <div className="flex gap-4 pb-4">
-                  {(safeDeepDive.receipts?.slice(0, 4) || []).map((receipt, i) => (
-                    <motion.div
-                      key={i}
-                      whileTap={{ scale: 0.98 }}
-                      whileHover={{ scale: 1.01 }}
-                      className="flex-shrink-0 w-[85vw] max-w-[340px] snap-center receipt-card relative rounded-2xl p-5 border border-teal-400/40 shadow-lg bg-black/40 backdrop-blur-sm cursor-pointer"
-                      data-autopsy-item
-                      data-index={i}
-                      onClick={() => copyToClipboard(receipt.quote)}
-                    >
-                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50" />
+                  {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
+                    const priority = getReceiptPriority(receipt, i);
+                    return (
+                      <motion.div
+                        key={i}
+                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: 1.01 }}
+                        className={`flex-shrink-0 w-[85vw] max-w-[340px] snap-center receipt-card relative rounded-2xl p-5 border ${priority.borderColor} shadow-lg bg-black/40 backdrop-blur-sm cursor-pointer ${priority.glowColor}`}
+                        data-autopsy-item
+                        data-index={i}
+                        onClick={() => copyToClipboard(receipt.quote)}
+                      >
+                        {/* Priority Badge */}
+                        <div 
+                          className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                          style={{
+                            background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
+                            boxShadow: `0 4px 12px ${priority.severityColor}40`
+                          }}
+                        >
+                          {priority.badge} {priority.label}
+                        </div>
 
-                      <div className="text-stone-200/95 text-base mb-4 pb-4 font-medium italic leading-relaxed pr-6 border-b border-teal-400/20">
-                        "{receipt.quote}"
-                      </div>
+                        <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50" />
 
-                      <div className="mb-3">
-                        <div className="text-teal-400 text-[11px] uppercase tracking-wider mb-1.5 font-bold">The Tactic</div>
-                        <div className="text-white text-sm leading-snug">{receipt.bestie_look}</div>
-                      </div>
+                        {/* Person Badge */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-6 h-6 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">💬</span>
+                          </div>
+                          <span className="text-stone-300/80 text-xs font-semibold uppercase tracking-wide">
+                            {getSpeakerName(receipt.quote)}
+                          </span>
+                        </div>
 
-                      <div className="mb-3">
-                        <div className="text-teal-400 text-[11px] uppercase tracking-wider mb-1.5 font-bold">Calling It</div>
-                        <div className="text-white/90 text-xs leading-snug">{receipt.calling_it}</div>
-                      </div>
+                        {/* Quote */}
+                        <div className="text-stone-100 text-sm mb-4 font-medium italic leading-relaxed pr-6">
+                          "{receipt.quote}"
+                        </div>
 
-                      <div>
-                        <div className="text-teal-400 text-[11px] uppercase tracking-wider mb-1.5 font-bold">Vibe Check</div>
-                        <div className="text-white/70 text-xs leading-snug italic">{receipt.vibe_check}</div>
-                      </div>
+                        {/* Visual Divider */}
+                        <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-3"></div>
 
-                      <div className="flex justify-center gap-1.5 mt-4 pt-3 border-t border-white/5">
-                        {[0,1,2,3].map(idx => (
-                          <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === i ? 'w-6 bg-teal-400' : 'w-1.5 bg-white/20'}`} />
-                        ))}
-                      </div>
-                    </motion.div>
-                  ))}
+                        {/* DECODED Section */}
+                        <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-3 border border-[#14B8A6]/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-4 h-4 flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">🎯</span>
+                            </div>
+                            <span className="text-[#A78BFA] text-xs font-bold uppercase tracking-wide">
+                              DECODED
+                            </span>
+                          </div>
+                          <div className="text-white/90 text-sm font-medium leading-relaxed mb-2">
+                            {receipt.bestie_look}
+                          </div>
+                          <div className="text-white/80 text-sm font-medium mb-2">
+                            {receipt.calling_it}
+                          </div>
+                          <div className="text-white/70 text-sm font-medium italic">
+                            {receipt.vibe_check}
+                          </div>
+                        </div>
+
+                        <div className="flex justify-center gap-1.5 mt-4 pt-3 border-t border-white/5">
+                          {[0,1,2].map(idx => (
+                            <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === i ? 'w-6 bg-teal-400' : 'w-1.5 bg-white/20'}`} />
+                          ))}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
                 <div className="text-center text-teal-400/60 text-xs mt-2 animate-pulse">← Swipe for more →</div>
                 {showPaywall && (
                   <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center mt-3">
                     <Lock className="w-5 h-5 text-stone-400/60 mr-3" />
-                    <span className="text-stone-400/70 text-xs sm:text-sm font-medium">Unlock 2 more receipts</span>
+                    <span className="text-stone-400/70 text-xs sm:text-sm font-medium">Unlock more receipts</span>
                   </div>
                 )}
               </div>
