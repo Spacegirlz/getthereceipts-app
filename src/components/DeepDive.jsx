@@ -1094,59 +1094,130 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     </div>
                     <div className="text-xs text-stone-400/70 font-mono">STRATEGIC MOVES</div>
                   </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {/* Next 48 Hours - Enhanced */}
+                  <div className="space-y-6">
+                    {/* Next 48 Hours - Actionable Card */}
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
-                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-400/10 border border-blue-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <span className="text-xl">⏰</span>
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-400/10 border border-blue-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-2xl">⏰</span>
                         </div>
-                        <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">NEXT 48 HOURS</div>
+                        <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">NEXT 48 HOURS</div>
                       </div>
-                      <p className="text-stone-200/90 text-base leading-relaxed font-medium">
-                        {safeDeepDive.playbook?.next_48h}
-                      </p>
+                      
+                      {/* Expected Message Section */}
+                      <div className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">📱</span>
+                          </div>
+                          <span className="text-green-400 text-sm font-bold uppercase tracking-wide">EXPECT:</span>
+                        </div>
+                        <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-4 border border-green-500/20">
+                          <p className="text-green-300 text-base font-medium italic">
+                            "{safeDeepDive.playbook?.expected_message || 'Just checking in! 💕'}"
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Your Moves Section */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-sm font-bold">🎯</span>
+                          </div>
+                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">YOUR MOVE:</span>
+                        </div>
+                        <ul className="space-y-3">
+                          {(safeDeepDive.playbook?.your_move?.split('. ') || [
+                            'Wait 4+ hours before responding',
+                            'Keep your reply short and casual',
+                            'Don\'t ask about future plans'
+                          ])
+                            .filter(move => move.trim())
+                            .slice(0, 3)
+                            .map((move, i) => (
+                              <motion.li 
+                                key={i} 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.7 + (i * 0.1) }}
+                                className="flex items-start gap-3 group/item"
+                              >
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/20 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                  <ChevronRight className="w-3 h-3 text-[#D4AF37]" />
+                                </div>
+                                <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{move}</span>
+                              </motion.li>
+                            ))}
+                        </ul>
+                      </div>
                     </motion.div>
 
-                    {/* Your Moves - Enhanced */}
+                    {/* Long-term Strategy - Actionable Card */}
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
-                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-400/10 border border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <span className="text-xl">🎯</span>
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-400/10 border border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-2xl">🗺️</span>
                         </div>
-                        <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">YOUR MOVES</div>
+                        <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">LONG-TERM STRATEGY</div>
                       </div>
-                      <ul className="space-y-3">
-                        {(safeDeepDive.playbook?.your_move?.split('. ') || [])
-                          .filter(move => move.trim())
-                          .slice(0, 3)
-                          .map((move, i) => (
+                      
+                      {/* Strategy Overview */}
+                      <div className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">💡</span>
+                          </div>
+                          <span className="text-purple-400 text-sm font-bold uppercase tracking-wide">STRATEGY:</span>
+                        </div>
+                        <div className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-xl p-4 border border-purple-500/20">
+                          <p className="text-purple-300 text-base font-medium leading-relaxed">
+                            {safeDeepDive.playbook?.strategy || safeDeepDive.playbook?.next_48h || 'Focus on maintaining your boundaries while staying open to genuine connection.'}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Key Principles */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="w-6 h-6 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">⚡</span>
+                          </div>
+                          <span className="text-amber-400 text-sm font-bold uppercase tracking-wide">KEY PRINCIPLES:</span>
+                        </div>
+                        <ul className="space-y-3">
+                          {[
+                            'Trust your instincts above all else',
+                            'Don\'t chase someone who isn\'t showing effort',
+                            'Your peace is non-negotiable'
+                          ].map((principle, i) => (
                             <motion.li 
                               key={i} 
                               initial={{ opacity: 0, x: -10 }}
                               animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.7 + (i * 0.1) }}
+                              transition={{ delay: 0.8 + (i * 0.1) }}
                               className="flex items-start gap-3 group/item"
                             >
-                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/20 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
-                                <ChevronRight className="w-3 h-3 text-[#D4AF37]" />
-                </div>
-                              <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{move}</span>
+                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                <span className="text-amber-400 text-xs font-bold">•</span>
+                              </div>
+                              <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{principle}</span>
                             </motion.li>
                           ))}
-                      </ul>
+                        </ul>
+                      </div>
                     </motion.div>
-              </div>
+                  </div>
             </motion.section>
           </>
         )}
