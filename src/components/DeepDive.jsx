@@ -584,7 +584,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
     );
     
-    // Priority assignment with Get The Receipts Color System
+    // Priority assignment with Get The Receipts Color System (3 cards)
     if (hasSmokingGun || index === 0) {
       return {
         level: 'smoking-gun',
@@ -597,7 +597,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badgeGradient: 'from-[#FF3B30] to-[#FF6B60]',
         severityColor: '#FF3B30'
       };
-    } else if (hasRedFlag || index === 1 || index === 2) {
+    } else if (hasRedFlag || index === 1) {
       return {
         level: 'red-flag',
         badge: '⚠️',
@@ -827,9 +827,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
               
-              {/* Mobile - Grid Autopsy with Visual Hierarchy (5 receipts) */}
+              {/* Mobile - Grid Autopsy with Visual Hierarchy (3 receipts) */}
               <div className="sm:hidden grid grid-cols-2 gap-3">
-                {(safeDeepDive.receipts?.slice(0, 5) || []).map((receipt, i) => {
+                {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
                   const priority = getReceiptPriority(receipt, i);
                   const sizeClasses = {
                     large: 'col-span-2 p-5',
@@ -917,9 +917,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 )}
               </div>
               
-              {/* Desktop - Enhanced Grid with Visual Hierarchy (5 receipts) */}
+              {/* Desktop - Enhanced Grid with Visual Hierarchy (3 receipts) */}
               <div className="hidden sm:grid sm:grid-cols-2 gap-6">
-                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 5) || []).map((receipt, i) => {
+                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 3) || []).map((receipt, i) => {
                   const priority = getReceiptPriority(receipt, i);
                   const sizeClasses = {
                     large: 'col-span-2 p-8',
@@ -998,7 +998,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     </motion.div>
                   );
                 })}
-                {showPaywall && [1,2,3].map(i => (
+                {showPaywall && [1].map(i => (
                   <div key={`locked-${i}`} className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-6 border border-white/[0.08] flex items-center justify-center">
                     <Lock className="w-5 h-5 text-stone-400/60" />
                   </div>
