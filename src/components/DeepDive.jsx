@@ -494,6 +494,73 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     }
   };
 
+  // Receipt Priority System - Visual Hierarchy
+  const getReceiptPriority = (receipt, index) => {
+    // Determine priority based on content analysis and position
+    const quote = receipt.quote?.toLowerCase() || '';
+    const pattern = receipt.pattern?.toLowerCase() || '';
+    const cost = receipt.cost?.toLowerCase() || '';
+    
+    // Smoking Gun indicators (most damning)
+    const smokingGunKeywords = [
+      'never', 'always', 'promise', 'guarantee', 'definitely', 'absolutely',
+      'lying', 'fake', 'pretend', 'acting', 'manipulating', 'gaslighting',
+      'cheating', 'secret', 'hidden', 'behind your back', 'other person',
+      'break up', 'leave', 'done', 'over', 'finished', 'end'
+    ];
+    
+    // Red Flag indicators (concerning)
+    const redFlagKeywords = [
+      'maybe', 'probably', 'might', 'could', 'possibly', 'perhaps',
+      'busy', 'tired', 'stressed', 'complicated', 'difficult',
+      'need space', 'time to think', 'not sure', 'confused',
+      'mixed signals', 'mixed feelings', 'complicated'
+    ];
+    
+    // Check for smoking gun content
+    const hasSmokingGun = smokingGunKeywords.some(keyword => 
+      quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
+    );
+    
+    // Check for red flag content
+    const hasRedFlag = redFlagKeywords.some(keyword => 
+      quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
+    );
+    
+    // Priority assignment
+    if (hasSmokingGun || index === 0) {
+      return {
+        level: 'smoking-gun',
+        badge: '🔥',
+        label: 'SMOKING GUN',
+        size: 'large',
+        borderColor: 'border-red-500/40',
+        bgGradient: 'from-red-500/10 to-red-400/5',
+        glowColor: 'shadow-red-500/20'
+      };
+    } else if (hasRedFlag || index === 1) {
+      return {
+        level: 'red-flag',
+        badge: '⚠️',
+        label: 'RED FLAG',
+        size: 'medium',
+        borderColor: 'border-orange-500/40',
+        bgGradient: 'from-orange-500/10 to-orange-400/5',
+        glowColor: 'shadow-orange-500/20'
+      };
+    } else {
+      return {
+        level: 'pattern',
+        badge: '📍',
+        label: 'PATTERN',
+        size: 'small',
+        borderColor: 'border-amber-500/40',
+        bgGradient: 'from-amber-500/10 to-amber-400/5',
+        glowColor: 'shadow-amber-500/20'
+      };
+    }
+  };
+
   // Mobile-specific styles
   const mobileStyles = {
     cardShadow: '0 10px 40px rgba(0,0,0,0.4)',
@@ -697,40 +764,54 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
               
-              {/* Mobile - 2x2 Grid Autopsy */}
+              {/* Mobile - 2x2 Grid Autopsy with Visual Hierarchy */}
               <div className="sm:hidden grid grid-cols-2 gap-3">
-                {(safeDeepDive.receipts?.slice(0, 4) || []).map((receipt, i) => (
-                  <motion.div
-                    key={i}
-                    whileTap={{ scale: 0.98 }}
-                    whileHover={{ scale: 1.02 }}
-                    className="relative rounded-2xl p-4 sm:p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group bg-black/40 backdrop-blur-sm"
-                    data-autopsy-item
-                    data-index={i}
-                    onClick={() => copyToClipboard(receipt.quote)}
-                  >
-                    {/* Hover Glow Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* Copy Icon */}
-                    <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50 group-hover:text-[#D4AF37] transition-colors duration-300" />
-                    
-                    {/* Quote - adjusted for mobile readability */}
-                    <div className="text-stone-200/95 text-sm sm:text-lg mb-3 sm:mb-4 font-medium italic leading-relaxed pr-6 sm:pr-8">
-                      "{receipt.quote}"
-                    </div>
-                    
-                    {/* Pattern Badge - More colorful and prominent */}
-                    <div className="inline-block px-2.5 py-1 bg-gradient-to-r from-[#D4AF37]/20 to-[#F5E6D3]/20 text-[#D4AF37] rounded-full text-[11px] sm:text-sm font-semibold mb-2 sm:mb-3 border border-[#D4AF37]/30">
-                      {receipt.pattern}
-                    </div>
-                    
-                    {/* Cost - Better contrast */}
-                    <div className="text-stone-300/80 text-xs sm:text-sm font-medium">
-                      {receipt.cost}
-                    </div>
-                  </motion.div>
-                ))}
+                {(safeDeepDive.receipts?.slice(0, 4) || []).map((receipt, i) => {
+                  const priority = getReceiptPriority(receipt, i);
+                  const sizeClasses = {
+                    large: 'col-span-2 p-5',
+                    medium: 'p-4',
+                    small: 'p-3'
+                  };
+                  
+                  return (
+                    <motion.div
+                      key={i}
+                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ scale: 1.02 }}
+                      className={`relative rounded-2xl ${sizeClasses[priority.size]} border ${priority.borderColor} shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group bg-black/40 backdrop-blur-sm ${priority.glowColor}`}
+                      data-autopsy-item
+                      data-index={i}
+                      onClick={() => copyToClipboard(receipt.quote)}
+                    >
+                      {/* Priority Badge */}
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                        {priority.badge} {priority.label}
+                      </div>
+                      
+                      {/* Hover Glow Effect */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${priority.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                      
+                      {/* Copy Icon */}
+                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50 group-hover:text-[#D4AF37] transition-colors duration-300" />
+                      
+                      {/* Quote - adjusted for mobile readability */}
+                      <div className="text-stone-200/95 text-sm sm:text-lg mb-3 sm:mb-4 font-medium italic leading-relaxed pr-6 sm:pr-8">
+                        "{receipt.quote}"
+                      </div>
+                      
+                      {/* Pattern Badge - More colorful and prominent */}
+                      <div className="inline-block px-2.5 py-1 bg-gradient-to-r from-[#D4AF37]/20 to-[#F5E6D3]/20 text-[#D4AF37] rounded-full text-[11px] sm:text-sm font-semibold mb-2 sm:mb-3 border border-[#D4AF37]/30">
+                        {receipt.pattern}
+                      </div>
+                      
+                      {/* Cost - Better contrast */}
+                      <div className="text-stone-300/80 text-xs sm:text-sm font-medium">
+                        {receipt.cost}
+                      </div>
+                    </motion.div>
+                  );
+                })}
                 {showPaywall && (
                   <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center col-span-2">
                     <Lock className="w-5 h-5 text-stone-400/60 mr-3" />
@@ -739,39 +820,53 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 )}
               </div>
               
-              {/* Desktop - Enhanced Grid */}
+              {/* Desktop - Enhanced Grid with Visual Hierarchy */}
               <div className="hidden sm:grid sm:grid-cols-2 gap-6">
-                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 4) || []).map((receipt, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    className="relative rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group"
-                    data-autopsy-item
-                    data-index={i}
-                    onClick={() => copyToClipboard(receipt.quote)}
-                  >
-                    {/* Hover Glow Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/8 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* Copy Icon */}
-                    <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/40 group-hover:text-[#D4AF37] transition-colors duration-300" />
-                    
-                    {/* Quote - BIGGER and more prominent */}
-                    <div className="text-stone-200/95 text-base mb-4 font-medium italic leading-relaxed pr-8">
-                      "{receipt.quote}"
-                    </div>
-                    
-                    {/* Pattern Badge - More colorful and prominent */}
-                    <div className="inline-block px-3 py-1.5 bg-gradient-to-r from-[#D4AF37]/20 to-[#F5E6D3]/20 text-[#D4AF37] rounded-full text-sm font-semibold mb-3 border border-[#D4AF37]/30">
-                      {receipt.pattern}
-                    </div>
-                    
-                    {/* Cost - Better contrast */}
-                    <div className="text-stone-300/80 text-sm font-medium">
-                      {receipt.cost}
-                  </div>
-                  </motion.div>
-                ))}
+                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 4) || []).map((receipt, i) => {
+                  const priority = getReceiptPriority(receipt, i);
+                  const sizeClasses = {
+                    large: 'col-span-2 p-8',
+                    medium: 'p-6',
+                    small: 'p-5'
+                  };
+                  
+                  return (
+                    <motion.div
+                      key={i}
+                      whileHover={{ y: -4, scale: 1.02 }}
+                      className={`relative rounded-2xl ${sizeClasses[priority.size]} border ${priority.borderColor} shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group bg-black/40 backdrop-blur-sm ${priority.glowColor}`}
+                      data-autopsy-item
+                      data-index={i}
+                      onClick={() => copyToClipboard(receipt.quote)}
+                    >
+                      {/* Priority Badge */}
+                      <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-lg">
+                        {priority.badge} {priority.label}
+                      </div>
+                      
+                      {/* Hover Glow Effect */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${priority.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                      
+                      {/* Copy Icon */}
+                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/40 group-hover:text-[#D4AF37] transition-colors duration-300" />
+                      
+                      {/* Quote - BIGGER and more prominent */}
+                      <div className="text-stone-200/95 text-base mb-4 font-medium italic leading-relaxed pr-8">
+                        "{receipt.quote}"
+                      </div>
+                      
+                      {/* Pattern Badge - More colorful and prominent */}
+                      <div className="inline-block px-3 py-1.5 bg-gradient-to-r from-[#D4AF37]/20 to-[#F5E6D3]/20 text-[#D4AF37] rounded-full text-sm font-semibold mb-3 border border-[#D4AF37]/30">
+                        {receipt.pattern}
+                      </div>
+                      
+                      {/* Cost - Better contrast */}
+                      <div className="text-stone-300/80 text-sm font-medium">
+                        {receipt.cost}
+                      </div>
+                    </motion.div>
+                  );
+                })}
                 {showPaywall && [1,2].map(i => (
                   <div key={`locked-${i}`} className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-6 border border-white/[0.08] flex items-center justify-center">
                     <Lock className="w-5 h-5 text-stone-400/60" />
