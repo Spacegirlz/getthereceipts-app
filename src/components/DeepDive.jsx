@@ -584,16 +584,18 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
     );
     
-    // Priority assignment - with 5 receipts, we can have more nuanced hierarchy
+    // Priority assignment with Get The Receipts Color System
     if (hasSmokingGun || index === 0) {
       return {
         level: 'smoking-gun',
         badge: '🔥',
         label: 'SMOKING GUN',
         size: 'large',
-        borderColor: 'border-red-500/40',
-        bgGradient: 'from-red-500/10 to-red-400/5',
-        glowColor: 'shadow-red-500/20'
+        borderColor: 'border-[#FF3B30]/40',
+        bgGradient: 'from-[#FF3B30]/10 to-[#FF6B60]/5',
+        glowColor: 'shadow-[#FF3B30]/20',
+        badgeGradient: 'from-[#FF3B30] to-[#FF6B60]',
+        severityColor: '#FF3B30'
       };
     } else if (hasRedFlag || index === 1 || index === 2) {
       return {
@@ -601,9 +603,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badge: '⚠️',
         label: 'RED FLAG',
         size: 'medium',
-        borderColor: 'border-orange-500/40',
-        bgGradient: 'from-orange-500/10 to-orange-400/5',
-        glowColor: 'shadow-orange-500/20'
+        borderColor: 'border-[#FF9500]/40',
+        bgGradient: 'from-[#FF9500]/10 to-[#FFB340]/5',
+        glowColor: 'shadow-[#FF9500]/20',
+        badgeGradient: 'from-[#FF9500] to-[#FFB340]',
+        severityColor: '#FF9500'
       };
     } else {
       return {
@@ -611,9 +615,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badge: '📍',
         label: 'PATTERN',
         size: 'small',
-        borderColor: 'border-amber-500/40',
-        bgGradient: 'from-amber-500/10 to-amber-400/5',
-        glowColor: 'shadow-amber-500/20'
+        borderColor: 'border-[#FFCC00]/40',
+        bgGradient: 'from-[#FFCC00]/10 to-[#FFD700]/5',
+        glowColor: 'shadow-[#FFCC00]/20',
+        badgeGradient: 'from-[#FFCC00] to-[#FFD700]',
+        severityColor: '#FFCC00'
       };
     }
   };
@@ -841,8 +847,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       data-index={i}
                       onClick={() => copyToClipboard(receipt.quote)}
                     >
-                      {/* Priority Badge */}
-                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                      {/* Priority Badge with New Color System */}
+                      <div 
+                        className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                        style={{
+                          background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
+                          boxShadow: `0 4px 12px ${priority.severityColor}40`
+                        }}
+                      >
                         {priority.badge} {priority.label}
                       </div>
                       
@@ -882,15 +894,15 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                         </div>
                       </div>
                       
-                      {/* COST Section */}
+                      {/* COST Section with Emotional Consequence Colors */}
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                        <div className="w-4 h-4 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
                           <span className="text-white text-xs font-bold">💸</span>
                         </div>
-                        <span className="text-red-400 text-xs font-bold uppercase tracking-wide">
+                        <span className="text-[#EF4444] text-xs font-bold uppercase tracking-wide">
                           COST:
                         </span>
-                        <span className="text-red-300 text-xs sm:text-sm font-medium">
+                        <span className="text-[#EF4444]/90 text-xs sm:text-sm font-medium">
                           {receipt.cost}
                         </span>
                       </div>
@@ -924,8 +936,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       data-index={i}
                       onClick={() => copyToClipboard(receipt.quote)}
                     >
-                      {/* Priority Badge */}
-                      <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-lg">
+                      {/* Priority Badge with New Color System */}
+                      <div 
+                        className="absolute -top-3 -right-3 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-lg"
+                        style={{
+                          background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
+                          boxShadow: `0 4px 12px ${priority.severityColor}40`
+                        }}
+                      >
                         {priority.badge} {priority.label}
                       </div>
                       
@@ -965,15 +983,15 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                         </div>
                       </div>
                       
-                      {/* COST Section */}
+                      {/* COST Section with Emotional Consequence Colors */}
                       <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                        <div className="w-5 h-5 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
                           <span className="text-white text-sm font-bold">💸</span>
                         </div>
-                        <span className="text-red-400 text-sm font-bold uppercase tracking-wide">
+                        <span className="text-[#EF4444] text-sm font-bold uppercase tracking-wide">
                           COST:
                         </span>
-                        <span className="text-red-300 text-sm font-medium">
+                        <span className="text-[#EF4444]/90 text-sm font-medium">
                           {receipt.cost}
                         </span>
                       </div>
@@ -1103,7 +1121,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-400/10 border border-blue-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10B981]/20 to-[#059669]/10 border border-[#10B981]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-2xl">⏰</span>
                         </div>
                         <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">NEXT 48 HOURS</div>
@@ -1166,7 +1184,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-400/10 border border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8B5CF6]/20 to-[#7C3AED]/10 border border-[#8B5CF6]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-2xl">🗺️</span>
                         </div>
                         <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">LONG-TERM STRATEGY</div>
