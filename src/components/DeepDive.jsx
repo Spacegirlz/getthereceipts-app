@@ -4,6 +4,7 @@ import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, 
 import { useToast } from '@/components/ui/use-toast';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
+import sageDarkCircle from '@/assets/sage-dark-circle.png';
 // import { voiceService } from '@/lib/voiceService';
 
 const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPremium = true }) => {
@@ -281,7 +282,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       header.style.alignItems = 'center';
       header.style.gap = '16px';
       header.style.marginBottom = '32px';
-      header.innerHTML = `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid rgba(20,184,166,.4);box-shadow:0 0 20px rgba(20,184,166,.3);"><img src="/src/assets/sage-dark-circle.png" alt="Sage" style="width:100%;height:100%;object-fit:cover"/></div>
+      header.innerHTML = `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid rgba(20,184,166,.4);box-shadow:0 0 20px rgba(20,184,166,.3);"><img src="${sageDarkCircle}" alt="Sage" style="width:100%;height:100%;object-fit:cover"/></div>
         <div style="font-weight:800;letter-spacing:.18em;color:#14B8A6">SAGE'S DEEP DIVE</div>`;
       container.appendChild(header);
 
@@ -585,91 +586,196 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     return 'SPEAKER';
   };
 
-  // Receipt Priority System - Visual Hierarchy
+  // Receipt Priority System - Dynamic Content-Based Analysis
   const getReceiptPriority = (receipt, index) => {
     const quote = receipt.quote?.toLowerCase() || '';
-    const pattern = receipt.pattern?.toLowerCase() || '';
-    const cost = receipt.cost?.toLowerCase() || '';
-    const currentValence = valence; // Use the overall valence for Red/Green Flag
+    const bestieLook = receipt.bestie_look?.toLowerCase() || '';
+    const callingIt = receipt.calling_it?.toLowerCase() || '';
+    const vibeCheck = receipt.vibe_check?.toLowerCase() || '';
+    const currentValence = valence;
 
-    // Smoking Gun indicators (most damning)
+    // Combine all text for analysis
+    const allText = `${quote} ${bestieLook} ${callingIt} ${vibeCheck}`;
+
+    // Smoking Gun indicators (most damning evidence)
     const smokingGunKeywords = [
       'never', 'always', 'promise', 'guarantee', 'definitely', 'absolutely',
       'lying', 'fake', 'pretend', 'acting', 'manipulating', 'gaslighting',
       'cheating', 'secret', 'hidden', 'behind your back', 'other person',
-      'break up', 'leave', 'done', 'over', 'finished', 'end'
+      'break up', 'leave', 'done', 'over', 'finished', 'end', 'blocked',
+      'ghosted', 'ignored', 'lied', 'deceived', 'betrayed', 'caught',
+      'evidence', 'proof', 'admitted', 'confessed', 'exposed'
     ];
 
-    const hasSmokingGun = smokingGunKeywords.some(keyword =>
-      quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
-    );
+    // Red Flag indicators (concerning behavior)
+    const redFlagKeywords = [
+      'maybe', 'probably', 'might', 'could', 'possibly', 'perhaps',
+      'busy', 'tired', 'stressed', 'complicated', 'difficult',
+      'need space', 'time to think', 'not sure', 'confused',
+      'mixed signals', 'mixed feelings', 'complicated', 'drama',
+      'toxic', 'manipulative', 'controlling', 'jealous', 'possessive',
+      'guilt trip', 'emotional blackmail', 'silent treatment'
+    ];
 
-    // Enforce specific layout: 1st = Smoking Gun, 2nd = Red/Green Flag, 3rd = Pattern
-    if (index === 0) { // First card is always Smoking Gun
-      return {
-        level: 'smoking-gun',
-        badge: '🔥',
-        label: 'SMOKING GUN',
-        size: 'large', // Always horizontal
-        borderColor: 'border-[#14B8A6]',
-        borderWidth: '2px',
-        bgGradient: 'from-[#14B8A6]/5 to-transparent',
-        glowColor: 'shadow-[#14B8A6]/20',
-        badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
-        severityColor: '#14B8A6',
-        severityOpacity: '1.0'
-      };
-    } else if (index === 1) { // Second card is always Red/Green Flag
-      const isGreen = currentValence === 'green';
-      return {
-        level: isGreen ? 'green-flag' : 'red-flag',
-        badge: isGreen ? '✅' : '⚠️',
-        label: isGreen ? 'GREEN FLAG' : 'RED FLAG',
-        size: 'large', // Horizontal
-        borderColor: isGreen ? 'border-emerald-500/60' : 'border-red-500/60',
-        borderWidth: '1px',
-        bgGradient: isGreen ? 'from-emerald-500/3 to-transparent' : 'from-red-500/3 to-transparent',
-        glowColor: isGreen ? 'shadow-emerald-500/10' : 'shadow-red-500/10',
-        badgeGradient: isGreen ? 'from-emerald-500/80 to-emerald-400/60' : 'from-red-500/80 to-red-400/60',
-        severityColor: isGreen ? '#10B981' : '#EF4444',
-        severityOpacity: '0.7'
-      };
-    } else if (index === 2) { // Third card is always Pattern
-      return {
-        level: 'pattern',
-        badge: '📍',
-        label: 'PATTERN',
-        size: 'large', // Always horizontal
-        borderColor: 'border-[#14B8A6]/40',
-        borderWidth: '1px',
-        bgGradient: 'from-[#14B8A6]/2 to-transparent',
-        glowColor: 'shadow-[#14B8A6]/5',
-        badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
-        severityColor: '#14B8A6',
-        severityOpacity: '0.4'
-      };
-    }
-    // Fallback for any additional receipts (shouldn't happen with slice(0,3))
-    return {
-      level: 'pattern',
-      badge: '📍',
-      label: 'PATTERN',
-      size: 'small',
-      borderColor: 'border-[#14B8A6]/40',
-      borderWidth: '1px',
-      bgGradient: 'from-[#14B8A6]/2 to-transparent',
-      glowColor: 'shadow-[#14B8A6]/5',
-      badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
-      severityColor: '#14B8A6',
-      severityOpacity: '0.4'
+    // Green Flag indicators (positive behavior)
+    const greenFlagKeywords = [
+      'love', 'care', 'miss', 'appreciate', 'respect', 'support',
+      'honest', 'open', 'clear', 'direct', 'consistent', 'reliable',
+      'sorry', 'apologize', 'understand', 'listen', 'compromise',
+      'healthy', 'mature', 'kind', 'thoughtful', 'considerate',
+      'future', 'together', 'commitment', 'exclusive', 'serious'
+    ];
+
+    // Pattern indicators (recurring behavior)
+    const patternKeywords = [
+      'pattern', 'always does', 'keeps doing', 'repeatedly', 'consistently',
+      'every time', 'typical', 'usual', 'habit', 'routine', 'cycle',
+      'history', 'track record', 'tendency', 'inclination', 'behavior',
+      'way of', 'manner', 'style', 'approach', 'method'
+    ];
+
+    // Calculate scores for each category
+    const smokingGunScore = smokingGunKeywords.reduce((score, keyword) => 
+      score + (allText.includes(keyword) ? 1 : 0), 0);
+    
+    const redFlagScore = redFlagKeywords.reduce((score, keyword) => 
+      score + (allText.includes(keyword) ? 1 : 0), 0);
+    
+    const greenFlagScore = greenFlagKeywords.reduce((score, keyword) => 
+      score + (allText.includes(keyword) ? 1 : 0), 0);
+    
+    const patternScore = patternKeywords.reduce((score, keyword) => 
+      score + (allText.includes(keyword) ? 1 : 0), 0);
+
+    // Determine the highest scoring category
+    const scores = {
+      'smoking-gun': smokingGunScore,
+      'red-flag': redFlagScore,
+      'green-flag': greenFlagScore,
+      'pattern': patternScore
     };
+
+    const maxScore = Math.max(...Object.values(scores));
+    const dominantCategory = Object.keys(scores).find(key => scores[key] === maxScore);
+
+    // If no clear winner, use fallback logic based on valence and position
+    if (maxScore === 0) {
+      if (index === 0) {
+        return {
+          level: 'smoking-gun',
+          badge: '🔥',
+          label: 'SMOKING GUN',
+          size: 'large',
+          borderColor: 'border-[#14B8A6]',
+          borderWidth: '2px',
+          bgGradient: 'from-[#14B8A6]/5 to-transparent',
+          glowColor: 'shadow-[#14B8A6]/20',
+          badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
+          severityColor: '#14B8A6',
+          severityOpacity: '1.0'
+        };
+      } else if (index === 1) {
+        const isGreen = currentValence === 'green';
+        return {
+          level: isGreen ? 'green-flag' : 'red-flag',
+          badge: isGreen ? '✅' : '⚠️',
+          label: isGreen ? 'GREEN FLAG' : 'RED FLAG',
+          size: 'large',
+          borderColor: isGreen ? 'border-emerald-500/60' : 'border-red-500/60',
+          borderWidth: '1px',
+          bgGradient: isGreen ? 'from-emerald-500/3 to-transparent' : 'from-red-500/3 to-transparent',
+          glowColor: isGreen ? 'shadow-emerald-500/10' : 'shadow-red-500/10',
+          badgeGradient: isGreen ? 'from-emerald-500/80 to-emerald-400/60' : 'from-red-500/80 to-red-400/60',
+          severityColor: isGreen ? '#10B981' : '#EF4444',
+          severityOpacity: '0.7'
+        };
+      } else {
+        return {
+          level: 'pattern',
+          badge: '📍',
+          label: 'PATTERN',
+          size: 'large',
+          borderColor: 'border-[#14B8A6]/40',
+          borderWidth: '1px',
+          bgGradient: 'from-[#14B8A6]/2 to-transparent',
+          glowColor: 'shadow-[#14B8A6]/5',
+          badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
+          severityColor: '#14B8A6',
+          severityOpacity: '0.4'
+        };
+      }
+    }
+
+    // Return based on dominant category
+    switch (dominantCategory) {
+      case 'smoking-gun':
+        return {
+          level: 'smoking-gun',
+          badge: '🔥',
+          label: 'SMOKING GUN',
+          size: 'large',
+          borderColor: 'border-[#14B8A6]',
+          borderWidth: '2px',
+          bgGradient: 'from-[#14B8A6]/5 to-transparent',
+          glowColor: 'shadow-[#14B8A6]/20',
+          badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
+          severityColor: '#14B8A6',
+          severityOpacity: '1.0'
+        };
+      
+      case 'red-flag':
+        return {
+          level: 'red-flag',
+          badge: '⚠️',
+          label: 'RED FLAG',
+          size: 'large',
+          borderColor: 'border-red-500/60',
+          borderWidth: '1px',
+          bgGradient: 'from-red-500/3 to-transparent',
+          glowColor: 'shadow-red-500/10',
+          badgeGradient: 'from-red-500/80 to-red-400/60',
+          severityColor: '#EF4444',
+          severityOpacity: '0.7'
+        };
+      
+      case 'green-flag':
+        return {
+          level: 'green-flag',
+          badge: '✅',
+          label: 'GREEN FLAG',
+          size: 'large',
+          borderColor: 'border-emerald-500/60',
+          borderWidth: '1px',
+          bgGradient: 'from-emerald-500/3 to-transparent',
+          glowColor: 'shadow-emerald-500/10',
+          badgeGradient: 'from-emerald-500/80 to-emerald-400/60',
+          severityColor: '#10B981',
+          severityOpacity: '0.7'
+        };
+      
+      case 'pattern':
+      default:
+        return {
+          level: 'pattern',
+          badge: '📍',
+          label: 'PATTERN',
+          size: 'large',
+          borderColor: 'border-[#14B8A6]/40',
+          borderWidth: '1px',
+          bgGradient: 'from-[#14B8A6]/2 to-transparent',
+          glowColor: 'shadow-[#14B8A6]/5',
+          badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
+          severityColor: '#14B8A6',
+          severityOpacity: '0.4'
+        };
+    }
   };
 
   const risk = getRiskStyling(valence);
 
   return (
     <>
-      {/* CSS for hiding scrollbar */}
+      {/* CSS for hiding scrollbar and preventing scroll interference */}
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -677,6 +783,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;
+        }
+        .autopsy-carousel {
+          touch-action: pan-x;
+          overscroll-behavior-x: contain;
+        }
+        .autopsy-carousel * {
+          touch-action: pan-x;
         }
       `}</style>
       
@@ -713,7 +826,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         <div className="text-center mb-1 relative z-50">
           <div className="inline-flex items-center gap-2 bg-black/40 px-3 py-1 rounded-full border border-stone-400/20 mb-2 relative z-50">
             <img
-              src="/src/assets/sage-dark-circle.png"
+              src={sageDarkCircle}
               alt="Sage's Deep Dive"
               className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
               style={{
@@ -895,7 +1008,29 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   </button>
                 </div>
 
-                <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6">
+                <div 
+                  className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6 autopsy-carousel"
+                  onTouchStart={(e) => {
+                    // Prevent parent scroll when touching the carousel
+                    e.stopPropagation();
+                  }}
+                  onTouchMove={(e) => {
+                    // Only allow horizontal scrolling within the carousel
+                    const container = e.currentTarget;
+                    const scrollLeft = container.scrollLeft;
+                    const scrollWidth = container.scrollWidth;
+                    const clientWidth = container.clientWidth;
+                    
+                    // If we're at the beginning or end, prevent vertical scroll
+                    if ((scrollLeft <= 0 && e.touches[0].clientX > e.touches[0].clientY) ||
+                        (scrollLeft >= scrollWidth - clientWidth && e.touches[0].clientX < e.touches[0].clientY)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <div className="flex gap-4 pb-4">
                     {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
                       const priority = getReceiptPriority(receipt, i);
@@ -940,24 +1075,21 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                           {/* Visual Divider */}
                           <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-3"></div>
 
-                          {/* DECODED Section */}
-                          <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-3 border border-[#14B8A6]/20">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-4 h-4 flex items-center justify-center">
-                                <span className="text-white text-xs font-bold">🎯</span>
-                              </div>
-                              <span className="text-[#A78BFA] text-xs font-bold uppercase tracking-wide">
-                                DECODED
-                              </span>
+                          {/* Content sections with better spacing */}
+                          <div className="space-y-4">
+                            <div>
+                              <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
+                              <div className="text-white text-sm leading-relaxed">{receipt.bestie_look}</div>
                             </div>
-                            <div className="text-white/90 text-sm font-medium leading-relaxed mb-2">
-                              {receipt.bestie_look}
+
+                            <div>
+                              <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
+                              <div className="text-white/90 text-sm leading-relaxed">{receipt.calling_it}</div>
                             </div>
-                            <div className="text-white/80 text-sm font-medium mb-2">
-                              {receipt.calling_it}
-                            </div>
-                            <div className="text-white/70 text-sm font-medium italic">
-                              {receipt.vibe_check}
+
+                            <div>
+                              <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
+                              <div className="text-white/70 text-sm leading-relaxed italic">{receipt.vibe_check}</div>
                             </div>
                           </div>
 
