@@ -283,6 +283,7 @@ const ChatInputPage = () => {
         // Names (from user input or auto-detected) - PROPERLY TAGGED
         userName: userName || 'Me',
         otherName: otherName || 'Them',
+        selectedMainUser: userName || 'Me',
         user_name: userName || 'Me', // Legacy API field
         other_name: otherName || 'Them', // Legacy API field
         their_name: otherName || 'Them', // Alternative API field
@@ -405,6 +406,18 @@ const ChatInputPage = () => {
               Paste your texts. Get clarity in seconds.
             </p>
           </div>
+          {userName && otherName && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 p-3 bg-green-900/20 rounded-lg border border-green-500/30"
+            >
+              <p className="text-sm text-green-300 flex items-center gap-2">
+                <span className="text-green-400">✓</span>
+                Got it! Analyzing as <strong>{userName}</strong> about <strong>{otherName}</strong>
+              </p>
+            </motion.div>
+          )}
 
           {/* Anonymous User Status */}
           {!user && anonymousStatus && (

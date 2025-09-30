@@ -248,6 +248,7 @@ const LuxeChatInputPage = () => {
         // Names (from user input or auto-detected) - PROPERLY TAGGED
         userName: userName || 'Me',
         otherName: otherName || 'Them',
+        selectedMainUser: userName || 'Me',
         user_name: userName || 'Me', // Legacy API field
         other_name: otherName || 'Them', // Legacy API field
         their_name: otherName || 'Them', // Alternative API field

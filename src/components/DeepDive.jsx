@@ -81,10 +81,22 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
   const handleSaveTea = async () => {
     const element = document.querySelector('[data-deepdive-component]');
+    const scroller = document.querySelector('[data-autopsy-horizontal]');
     if (!element) {
       toast({ title: "Error", description: "Could not find tea component to save.", variant: "destructive" });
       return;
     }
+
+    // Temporarily neutralize mobile scroller negative margins that can shift capture
+    const prevScrollerMargins = scroller ? { ml: scroller.style.marginLeft, mr: scroller.style.marginRight } : null;
+    const prevElementMargins = { ml: element.style.marginLeft, mr: element.style.marginRight, m: element.style.margin };
+    if (scroller) {
+      scroller.style.marginLeft = '0';
+      scroller.style.marginRight = '0';
+    }
+    // Left align the main container during capture
+    element.style.marginLeft = '0';
+    element.style.marginRight = '0';
 
     try {
       const blob = await domtoimage.toBlob(element, {
@@ -115,12 +127,22 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     } catch (error) {
       console.error('Error saving tea:', error);
       toast({ title: "Error", description: "Could not save tea. Please try again.", variant: "destructive" });
+    } finally {
+      if (scroller && prevScrollerMargins) {
+        scroller.style.marginLeft = prevScrollerMargins.ml;
+        scroller.style.marginRight = prevScrollerMargins.mr;
+      }
+      // Restore element margins
+      element.style.marginLeft = prevElementMargins.ml;
+      element.style.marginRight = prevElementMargins.mr;
+      if (prevElementMargins.m) element.style.margin = prevElementMargins.m;
     }
   };
 
   // Save current DeepDive view but hide certain sections (metrics, HOT TAKES badge, Dynamics)
   const handleSaveClean = async () => {
     const element = document.querySelector('[data-deepdive-component]');
+    const scroller = document.querySelector('[data-autopsy-horizontal]');
     if (!element) {
       toast({ title: "Error", description: "Could not find component to save.", variant: "destructive" });
       return;
@@ -174,6 +196,16 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         style.borderLeft = 'none';
       }
     });
+    // Temporarily neutralize mobile scroller negative margins that can shift capture
+    const prevScrollerMargins = scroller ? { ml: scroller.style.marginLeft, mr: scroller.style.marginRight } : null;
+    const prevElementMargins = { ml: element.style.marginLeft, mr: element.style.marginRight, m: element.style.margin };
+    if (scroller) {
+      scroller.style.marginLeft = '0';
+      scroller.style.marginRight = '0';
+    }
+    element.style.marginLeft = '0';
+    element.style.marginRight = '0';
+
     try {
       allToHide.forEach(n => { n.style.display = 'none'; });
       const blob = await domtoimage.toBlob(element, {
@@ -192,6 +224,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     } finally {
       // Restore displays
       allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
+      if (scroller && prevScrollerMargins) {
+        scroller.style.marginLeft = prevScrollerMargins.ml;
+        scroller.style.marginRight = prevScrollerMargins.mr;
+      }
+      element.style.marginLeft = prevElementMargins.ml;
+      element.style.marginRight = prevElementMargins.mr;
+      if (prevElementMargins.m) element.style.margin = prevElementMargins.m;
       // Restore styles (backgrounds were never changed to preserve original design)
       styledNodes.forEach(({ node, prev }) => {
         const style = node.style || {};
@@ -254,7 +293,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.style.padding = '48px';
         block.style.marginTop = '24px';
         block.innerHTML = `
-          <div style="font-size:56px;font-weight:800;color:#14B8A6;line-height:1.1;margin-bottom:16px">${title}</div>
+          <div style="font-size:56px;font-weight:800;color:#D4AF37;line-height:1.1;margin-bottom:16px">${title}</div>
           <div style="height:4px;width:120px;background:linear-gradient(90deg,#399d96,rgba(57,157,150,0));border-radius:2px;margin-bottom:16px"></div>
           <div style="font-size:28px;color:rgba(255,255,255,.8);line-height:1.5">${sub}</div>
         `;
@@ -268,11 +307,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.style.marginTop = '24px';
         block.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-            <div style="width:10px;height:10px;border-radius:9999px;background:#14B8A6"></div>
-            <div style="font-weight:800;letter-spacing:.18em;color:#14B8A6">SAGE'S RECEIPT AUTOPSY</div>
+            <div style="width:10px;height:10px;border-radius:9999px;background:#D4AF37"></div>
+            <div style="font-weight:800;letter-spacing:.18em;color:#399d96">SAGE'S RECEIPT AUTOPSY</div>
           </div>
           <div style="font-size:40px;color:#fff;font-weight:700;line-height:1.2;margin-bottom:16px">“${bestReceipt.quote || 'No quote available'}”</div>
-          <div style="display:inline-block;padding:8px 14px;border-radius:9999px;border:1px solid rgba(20,184,166,.3);background:linear-gradient(90deg,rgba(20,184,166,.2),rgba(45,212,191,.2));color:#14B8A6;font-weight:700;margin-bottom:12px">${bestReceipt.pattern || 'Pattern'}</div>
+          <div style="display:inline-block;padding:8px 14px;border-radius:9999px;border:1px solid rgba(212,175,55,.3);background:linear-gradient(90deg,rgba(212,175,55,.2),rgba(245,230,211,.2));color:#D4AF37;font-weight:700;margin-bottom:12px">${bestReceipt.pattern || 'Pattern'}</div>
           <div style="font-size:26px;color:rgba(255,255,255,.75)">${bestReceipt.cost || ''}</div>
         `;
         container.appendChild(block);
@@ -283,16 +322,16 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.style.borderRadius = '28px';
         block.style.padding = '48px';
         block.style.marginTop = '24px';
-        const movesHtml = moves.map(m => `<li style="margin-bottom:16px;display:flex;gap:10px;align-items:flex-start"><div style=\"width:18px;height:18px;border-radius:9999px;border:1px solid rgba(20,184,166,.3);background:linear-gradient(135deg,rgba(20,184,166,.2),rgba(45,212,191,.2));display:flex;align-items:center;justify-content:center\"><span style=\"color:#14B8A6;font-size:12px\">›</span></div><span style=\"font-size:28px;line-height:1.5;color:#fff\">${m}</span></li>`).join('');
+        const movesHtml = moves.map(m => `<li style="margin-bottom:16px;display:flex;gap:10px;align-items:flex-start"><div style=\"width:18px;height:18px;border-radius:9999px;border:1px solid rgba(212,175,55,.3);background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(245,230,211,.2));display:flex;align-items:center;justify-content:center\"><span style=\"color:#D4AF37;font-size:12px\">›</span></div><span style=\"font-size:28px;line-height:1.5;color:#fff\">${m}</span></li>`).join('');
         block.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-            <div style="width:10px;height:10px;border-radius:9999px;background:#14B8A6"></div>
-            <div style="font-weight:800;letter-spacing:.18em;color:#14B8A6">SAGE'S PLAYBOOK</div>
+            <div style="width:10px;height:10px;border-radius:9999px;background:#D4AF37"></div>
+            <div style="font-weight:800;letter-spacing:.18em;color:#399d96">SAGE'S PLAYBOOK</div>
           </div>
           <ul style="list-style:none;padding:0;margin:0 0 28px 0">${movesHtml || '<li style=\"color:rgba(255,255,255,.6)\">No moves available</li>'}</ul>
           <div style="text-align:center;margin-top:12px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)">
             <div style="font-weight:700;letter-spacing:.3em;color:#D4AF37;margin-bottom:12px">SAGE'S SEAL</div>
-            <div style="font-size:40px;line-height:1.4;padding:24px;border-radius:12px;background:linear-gradient(135deg,#D4AF37,#F5E6D3,#D4AF37);color:#000;font-weight:600;">"${seal || 'Trust your intuition.'}"</div>
+            <div style="font-size:40px;line-height:1.4;background:linear-gradient(135deg,#D4AF37,#F5E6D3,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">“${seal || 'Trust your intuition.'}”</div>
           </div>
         `;
         container.appendChild(block);
@@ -351,17 +390,17 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     
     // Premium borders
     borderSubtle: 'border-white/[0.08]',
-    borderAccent: 'border-[#14B8A6]/20',
+    borderAccent: 'border-[#D4AF37]/20',
     
     // Text hierarchy
     textPrimary: 'text-stone-200/95',
     textSecondary: 'text-stone-300/80',
     textMuted: 'text-stone-400/70',
-    textAccent: 'text-[#14B8A6]',
+    textAccent: 'text-[#D4AF37]',
     
     // Premium shadows
     shadowCard: 'shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
-    shadowGold: 'shadow-[0_0_40px_rgba(20,184,166,0.1)]'
+    shadowGold: 'shadow-[0_0_40px_rgba(212,175,55,0.1)]'
   };
 
   // Risk level styling - minimal color variation
@@ -494,133 +533,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     }
   };
 
-  // Extract speaker name from quote for person badge
-  const getSpeakerName = (quote) => {
-    if (!quote) return 'SPEAKER';
-
-    // First, try to use context from the analysis
-    const context = safeDeepDive;
-    if (context?.userName && context?.otherName) {
-      // Check if quote contains user's name
-      if (quote.toLowerCase().includes(context.userName.toLowerCase())) {
-        return context.userName.toUpperCase();
-      }
-      // Check if quote contains other person's name
-      if (quote.toLowerCase().includes(context.otherName.toLowerCase())) {
-        return context.otherName.toUpperCase();
-      }
-    }
-
-    // Fallback to pattern matching
-    const patterns = [
-      /^([A-Z][a-z]+):/,           // "Name:"
-      /^([A-Z][a-z]+)\s+said:/i,   // "Name said:"
-      /^([A-Z][a-z]+)\s+texts:/i,  // "Name texts:"
-      /^([A-Z][a-z]+)\s+writes:/i, // "Name writes:"
-    ];
-    
-    for (const pattern of patterns) {
-      const match = quote.match(pattern);
-      if (match && match[1]) {
-        const name = match[1].trim();
-        
-        // Filter out common non-name words
-        const nonNames = [
-          'you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 
-          'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 
-          'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom',
-          'just', 'like', 'really', 'actually', 'basically', 'literally'
-        ];
-        
-        if (!nonNames.includes(name.toLowerCase()) && name.length > 1) {
-          return name.toUpperCase();
-        }
-      }
-    }
-    
-    // If no clear name found, return generic speaker
-    return 'SPEAKER';
-  };
-
-  // Receipt Priority System - Visual Hierarchy
-  const getReceiptPriority = (receipt, index) => {
-    // Determine priority based on content analysis and position
-    const quote = receipt.quote?.toLowerCase() || '';
-    const pattern = receipt.pattern?.toLowerCase() || '';
-    const cost = receipt.cost?.toLowerCase() || '';
-    
-    // Smoking Gun indicators (most damning)
-    const smokingGunKeywords = [
-      'never', 'always', 'promise', 'guarantee', 'definitely', 'absolutely',
-      'lying', 'fake', 'pretend', 'acting', 'manipulating', 'gaslighting',
-      'cheating', 'secret', 'hidden', 'behind your back', 'other person',
-      'break up', 'leave', 'done', 'over', 'finished', 'end'
-    ];
-    
-    // Red Flag indicators (concerning)
-    const redFlagKeywords = [
-      'maybe', 'probably', 'might', 'could', 'possibly', 'perhaps',
-      'busy', 'tired', 'stressed', 'complicated', 'difficult',
-      'need space', 'time to think', 'not sure', 'confused',
-      'mixed signals', 'mixed feelings', 'complicated'
-    ];
-    
-    // Check for smoking gun content
-    const hasSmokingGun = smokingGunKeywords.some(keyword => 
-      quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
-    );
-    
-    // Check for red flag content
-    const hasRedFlag = redFlagKeywords.some(keyword => 
-      quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
-    );
-    
-    // Priority assignment with Receipt's 2-Color Restraint System
-    if (hasSmokingGun || index === 0) {
-      return {
-        level: 'smoking-gun',
-        badge: '🔥',
-        label: 'SMOKING GUN',
-        size: 'large',
-        borderColor: 'border-[#14B8A6]',
-        borderWidth: '2px',
-        bgGradient: 'from-[#14B8A6]/5 to-transparent',
-        glowColor: 'shadow-[#14B8A6]/20',
-        badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
-        severityColor: '#14B8A6',
-        severityOpacity: '1.0'
-      };
-    } else if (hasRedFlag || index === 1) {
-      return {
-        level: 'red-flag',
-        badge: '⚠️',
-        label: 'RED FLAG',
-        size: 'medium',
-        borderColor: 'border-[#14B8A6]/60',
-        borderWidth: '1px',
-        bgGradient: 'from-[#14B8A6]/3 to-transparent',
-        glowColor: 'shadow-[#14B8A6]/10',
-        badgeGradient: 'from-[#14B8A6]/80 to-[#2DD4BF]/60',
-        severityColor: '#14B8A6',
-        severityOpacity: '0.7'
-      };
-    } else {
-      return {
-        level: 'pattern',
-        badge: '📍',
-        label: 'PATTERN',
-        size: 'small',
-        borderColor: 'border-[#14B8A6]/40',
-        borderWidth: '1px',
-        bgGradient: 'from-[#14B8A6]/2 to-transparent',
-        glowColor: 'shadow-[#14B8A6]/5',
-        badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
-        severityColor: '#14B8A6',
-        severityOpacity: '0.4'
-      };
-    }
-  };
-
   // Mobile-specific styles
   const mobileStyles = {
     cardShadow: '0 10px 40px rgba(0,0,0,0.4)',
@@ -724,21 +636,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               transition={{ delay: 0.2 }}
               className="mb-10"
             >
-              <div className="rounded-3xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm">
-                {/* Sage's Summary Header */}
-                <div className="flex items-center justify-between mb-6" data-share-hide="true">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
-                    <h2 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S SUMMARY</h2>
-                  </div>
-                  <div className="text-xs text-stone-400/70 font-mono">HOT TAKE ANALYSIS</div>
-                </div>
+              <div className="rounded-3xl">
                 {/* Strategic Assessment (Headline) */}
                 <div className="rounded-2xl p-4 mb-4">
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/10 border border-[#14B8A6]/30 flex items-center justify-center">
-                        <span className="text-[#14B8A6] text-xl">🎯</span>
+                      <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center">
+                        <span className="text-teal-300 text-xl">🎯</span>
                       </div>
                       <h3 className={`text-xl sm:text-2xl font-black ${getArchetypeColor()} leading-tight`}
                         style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 184, 166, 0.2)' }}>
@@ -751,7 +655,61 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     </p>
                   </div>
                 </div>
+            </div>
 
+            {/* Metrics moved into a separate card below the summary */}
+            <div className="rounded-3xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4">
+
+                {/* Key Metrics Dashboard - 1x3 horizontal layout */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
+                  {/* Risk Assessment */}
+                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
+                      RISK LEVEL
+                    </div>
+                    <div className="text-sm font-bold text-red-400 mb-2">
+                      HIGH
+                    </div>
+                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                      <div className="bg-red-400 h-2 rounded-full" style={{ width: '85%' }}></div>
+                    </div>
+                    <div className="text-xs text-stone-300/80">
+                      Requires immediate attention
+                    </div>
+                  </div>
+                  
+                  {/* Compatibility Score */}
+                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
+                      COMPATIBILITY
+                    </div>
+                    <div className="text-sm font-bold text-amber-400 mb-2">
+                      42%
+                    </div>
+                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                      <div className="bg-amber-400 h-2 rounded-full" style={{ width: '42%' }}></div>
+                    </div>
+                    <div className="text-xs text-stone-300/80">
+                      Below optimal threshold
+                    </div>
+                  </div>
+
+                  {/* Communication Health */}
+                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
+                      COMMUNICATION
+                    </div>
+                    <div className="text-sm font-bold text-blue-400 mb-2">
+                      POOR
+                    </div>
+                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                      <div className="bg-blue-400 h-2 rounded-full" style={{ width: '25%' }}></div>
+                    </div>
+                    <div className="text-xs text-stone-300/80">
+                      Significant barriers detected
+                    </div>
+                  </div>
+                </div>
                 
                 {/* Strategic Assessment moved above as headline */}
               </div>
@@ -768,196 +726,110 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <div className="bg-black/45 backdrop-blur-sm rounded-3xl p-6 border border-white/[0.12] shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
-                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S RECEIPT AUTOPSY</h3>
+                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S RECEIPT AUTOPSY</h3>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
               
-              {/* Mobile - Grid Autopsy with Visual Hierarchy (3 receipts) */}
-              <div className="sm:hidden grid grid-cols-2 gap-3">
-                {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
-                  const priority = getReceiptPriority(receipt, i);
-                  const sizeClasses = {
-                    large: 'col-span-2 p-5',
-                    medium: 'p-4',
-                    small: 'p-3'
-                  };
-                  
-                  return (
+              {/* Mobile - Horizontal Scroll Autopsy */}
+              <div className="sm:hidden overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6" data-autopsy-horizontal>
+                <div className="flex gap-4 pb-4">
+                  {(safeDeepDive.receipts?.slice(0, 4) || []).map((receipt, i) => (
                     <motion.div
                       key={i}
                       whileTap={{ scale: 0.98 }}
-                      whileHover={{ scale: 1.02 }}
-                      className={`relative rounded-2xl ${sizeClasses[priority.size]} border ${priority.borderColor} shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group bg-black/40 backdrop-blur-sm ${priority.glowColor}`}
+                      whileHover={{ scale: 1.01 }}
+                      className="flex-shrink-0 w-[85vw] max-w-[340px] snap-center receipt-card relative rounded-2xl p-5 border border-teal-400/40 shadow-lg bg-black/40 backdrop-blur-sm cursor-pointer"
                       data-autopsy-item
                       data-index={i}
                       onClick={() => copyToClipboard(receipt.quote)}
                     >
-                      {/* Priority Badge with Gold Restraint System */}
-                      <div 
-                        className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
-                        style={{
-                          background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
-                          boxShadow: `0 4px 12px ${priority.severityColor}40`
-                        }}
-                      >
-                        {priority.badge} {priority.label}
-                      </div>
-                      
-                      {/* Hover Glow Effect */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${priority.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                      
-                      {/* Copy Icon */}
-                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50 group-hover:text-[#14B8A6] transition-colors duration-300" />
-                      
-                      {/* Person Badge */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">💬</span>
-                        </div>
-                        <span className="text-stone-300/80 text-xs font-semibold uppercase tracking-wide">
-                          {getSpeakerName(receipt.quote)} SAID:
-                        </span>
-                      </div>
-                      
-                      {/* Quote - BIGGER and more prominent */}
-                      <div className="text-stone-100 text-sm sm:text-lg mb-6 font-medium italic leading-relaxed pr-6 sm:pr-8">
+                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50" />
+
+                      <div className="text-stone-200/95 text-base mb-4 pb-4 font-medium italic leading-relaxed pr-6 border-b border-teal-400/20">
                         "{receipt.quote}"
                       </div>
 
-                      {/* Visual Divider */}
-                      <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4"></div>
-
-                      {/* DECODED Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 mb-4 border border-[#14B8A6]/20">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-5 h-5 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-xs font-bold">🎯</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-xs font-bold uppercase tracking-wide">
-                            DECODED
-                          </span>
-                        </div>
-                        <div className="text-white/90 text-sm font-medium leading-relaxed">
-                          {receipt.pattern}
-                        </div>
+                      <div className="mb-3">
+                        <div className="text-teal-400 text-[11px] uppercase tracking-wider mb-1.5 font-bold">The Tactic</div>
+                        <div className="text-white text-sm leading-snug">{receipt.bestie_look}</div>
                       </div>
 
-                      {/* COST Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 border border-[#14B8A6]/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-5 h-5 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-xs font-bold">💸</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-xs font-bold uppercase tracking-wide">
-                            COST
-                          </span>
-                        </div>
-                        <div className="text-white/80 text-sm font-medium">
-                          {receipt.cost}
-                        </div>
+                      <div className="mb-3">
+                        <div className="text-teal-400 text-[11px] uppercase tracking-wider mb-1.5 font-bold">Calling It</div>
+                        <div className="text-white/90 text-xs leading-snug">{receipt.calling_it}</div>
+                      </div>
+
+                      <div>
+                        <div className="text-teal-400 text-[11px] uppercase tracking-wider mb-1.5 font-bold">Vibe Check</div>
+                        <div className="text-white/70 text-xs leading-snug italic">{receipt.vibe_check}</div>
+                      </div>
+
+                      <div className="flex justify-center gap-1.5 mt-4 pt-3 border-t border-white/5">
+                        {[0,1,2,3].map(idx => (
+                          <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === i ? 'w-6 bg-teal-400' : 'w-1.5 bg-white/20'}`} />
+                        ))}
                       </div>
                     </motion.div>
-                  );
-                })}
+                  ))}
+                </div>
+                <div className="text-center text-teal-400/60 text-xs mt-2 animate-pulse">← Swipe for more →</div>
                 {showPaywall && (
-                  <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center col-span-2">
+                  <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center mt-3">
                     <Lock className="w-5 h-5 text-stone-400/60 mr-3" />
-                    <span className="text-stone-400/70 text-xs sm:text-sm font-medium">Unlock more receipts</span>
+                    <span className="text-stone-400/70 text-xs sm:text-sm font-medium">Unlock 2 more receipts</span>
                   </div>
                 )}
               </div>
               
-              {/* Desktop - 2-Column Grid with Visual Hierarchy (3 receipts) */}
-              <div className="hidden sm:grid sm:grid-cols-2 gap-6">
-                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 3) || []).map((receipt, i) => {
-                  const priority = getReceiptPriority(receipt, i);
-                  const sizeClasses = {
-                    large: 'col-span-2 p-8',  // Smoking gun takes full width
-                    medium: 'p-6',            // Red flag and pattern share columns
-                    small: 'p-6'              // Red flag and pattern share columns
-                  };
-                  
-                  return (
-                    <motion.div
-                      key={i}
-                      whileHover={{ y: -4, scale: 1.02 }}
-                      className={`relative rounded-2xl ${sizeClasses[priority.size]} border ${priority.borderColor} shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group bg-black/40 backdrop-blur-sm ${priority.glowColor}`}
-                      data-autopsy-item
-                      data-index={i}
-                      onClick={() => copyToClipboard(receipt.quote)}
-                    >
-                      {/* Priority Badge with New Color System */}
-                      <div 
-                        className="absolute -top-3 -right-3 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-lg"
-                        style={{
-                          background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
-                          boxShadow: `0 4px 12px ${priority.severityColor}40`
-                        }}
-                      >
-                        {priority.badge} {priority.label}
-                      </div>
-                      
-                      {/* Hover Glow Effect */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${priority.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                      
-                      {/* Copy Icon */}
-                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/40 group-hover:text-[#14B8A6] transition-colors duration-300" />
-                      
-                      {/* Person Badge */}
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm font-bold">💬</span>
-                        </div>
-                        <span className="text-stone-300/80 text-sm font-semibold uppercase tracking-wide">
-                          {getSpeakerName(receipt.quote)} SAID:
-                        </span>
-                      </div>
-                      
-                      {/* Quote - BIGGER and more prominent */}
-                      <div className="text-stone-100 text-base mb-6 font-medium italic leading-relaxed pr-8">
-                        "{receipt.quote}"
+              {/* Desktop - Enhanced 2x2 Grid */}
+              <div className="hidden sm:grid sm:grid-cols-2 gap-6 max-w-5xl mx-auto">
+                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 4) || []).map((receipt, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    className={`receipt-card relative rounded-2xl p-6 bg-black/40 backdrop-blur-sm cursor-pointer group ${i === 0 ? 'border-2 border-teal-400/60 shadow-[0_0_40px_rgba(20,184,166,0.2)]' : 'border border-teal-400/30 shadow-lg hover:border-teal-400/50'} transition-all duration-300`}
+                    data-autopsy-item
+                    data-index={i}
+                    onClick={() => copyToClipboard(receipt.quote)}
+                  >
+                    {/* Hover glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Copy Icon */}
+                    <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
+                    
+                    {/* Quote */}
+                    <div className="relative text-white/95 text-lg mb-5 pb-5 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20">
+                      "{receipt.quote}"
+                    </div>
+                    
+                    {/* Content sections with better spacing */}
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
+                        <div className="text-white text-base leading-relaxed">{receipt.bestie_look}</div>
                       </div>
 
-                      {/* Visual Divider */}
-                      <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4"></div>
-
-                      {/* DECODED Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-5 mb-5 border border-[#14B8A6]/20">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-sm font-bold">🎯</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">
-                            DECODED
-                          </span>
-                        </div>
-                        <div className="text-white/90 text-sm font-medium leading-relaxed">
-                          {receipt.pattern}
-                        </div>
+                      <div>
+                        <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
+                        <div className="text-white/90 text-sm leading-relaxed">{receipt.calling_it}</div>
                       </div>
 
-                      {/* COST Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-5 border border-[#14B8A6]/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-sm font-bold">💸</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">
-                            COST
-                          </span>
-                        </div>
-                        <div className="text-white/80 text-sm font-medium">
-                          {receipt.cost}
-                        </div>
+                      <div>
+                        <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
+                        <div className="text-white/70 text-sm leading-relaxed italic">{receipt.vibe_check}</div>
                       </div>
-                    </motion.div>
-                  );
-                })}
-                {showPaywall && [1].map(i => (
-                  <div key={`locked-${i}`} className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-6 border border-white/[0.08] flex items-center justify-center">
-                    <Lock className="w-5 h-5 text-stone-400/60" />
+                    </div>
+                  </motion.div>
+                ))}
+                {showPaywall && [1,2].map(i => (
+                  <div key={`locked-${i}`} className="bg-black/20 rounded-2xl p-6 border border-white/5 flex items-center justify-center min-h-[300px]">
+                    <div className="text-center">
+                      <Lock className="w-8 h-8 text-white/20 mx-auto mb-3" />
+                      <p className="text-white/40 text-sm">Premium Content</p>
+                    </div>
                   </div>
                 ))}
                 </div>
@@ -969,14 +841,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mb-8 bg-gradient-to-br from-[#14B8A6]/10 to-transparent rounded-2xl p-8 border border-[#14B8A6]/20 text-center"
+                className="mb-8 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-2xl p-8 border border-[#D4AF37]/20 text-center"
               >
-                <Lock className="w-8 h-8 text-[#14B8A6] mx-auto mb-4" />
+                <Lock className="w-8 h-8 text-[#D4AF37] mx-auto mb-4" />
                 <h4 className="text-xl font-light text-stone-200/90 mb-2">Unlock Complete Analysis</h4>
                 <p className="text-stone-300/80 mb-6">Get the full dynamics, playbook, and Sage's wisdom</p>
                 <button
                   onClick={() => window.location.href = '/pricing'}
-                  className="px-6 py-3 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] text-black font-medium rounded-xl hover:shadow-lg transition-all"
+                  className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all"
                 >
                   Go Premium
                 </button>
@@ -987,73 +859,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         {!showPaywall && (
           <>
                 {/* Strategic Analysis Framework */}
-            <motion.section 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-              className="mb-6"
-            >
-                  <div className="flex items-center justify-between mb-6" data-share-hide="true">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
-                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S DYNAMICS</h3>
-              </div>
-                    <div className="text-xs text-stone-400/70 font-mono">RELATIONSHIP PHYSICS</div>
-                  </div>
-                  {/* Dynamics content (visible in normal view, hidden in Save Clean) */}
-                  <div className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 bg-black/50 backdrop-blur-sm" data-share-hide="true">
-                    <div className="space-y-6">
-                      {[
-                        { 
-                          label: 'What you bring', 
-                          value: safeDeepDive.physics?.you_bring,
-                          icon: '💝',
-                          color: 'from-emerald-500/20 to-emerald-400/10',
-                          borderColor: 'border-emerald-500/30'
-                        },
-                        { 
-                          label: 'What they exploit', 
-                          value: safeDeepDive.physics?.they_exploit,
-                          icon: '🎯',
-                          color: 'from-red-500/20 to-red-400/10',
-                          borderColor: 'border-red-500/30'
-                        },
-                        { 
-                          label: 'The result', 
-                          value: safeDeepDive.physics?.result,
-                          icon: '⚡',
-                          color: 'from-amber-500/20 to-amber-400/10',
-                          borderColor: 'border-amber-500/30'
-                        }
-                      ].map((item, i) => (
-                        <motion.div 
-                          key={i} 
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.4 + (i * 0.1) }}
-                          className="group"
-                        >
-                          <div className="flex gap-6 items-start">
-                            {/* Enhanced Icon with Background */}
-                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} border ${item.borderColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
-                              <span className="text-2xl">{item.icon}</span>
-                            </div>
-                            
-                            {/* Content */}
-                            <div className="flex-1">
-                              <div className="text-[#14B8A6] text-sm font-semibold mb-2 uppercase tracking-wide">
-                                {item.label}
-                              </div>
-                              <div className="text-stone-200/90 text-base leading-relaxed font-medium">
-                                {item.value}
-                              </div>
-                            </div>
-                        </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.section>
+            {/* SAGE'S DYNAMICS removed per request */}
 
                 {/* Implementation Roadmap */}
                 <motion.section
@@ -1064,135 +870,64 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 >
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
-                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S PLAYBOOK</h3>
+                      <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S PLAYBOOK</h3>
                     </div>
                     <div className="text-xs text-stone-400/70 font-mono">STRATEGIC MOVES</div>
                   </div>
-                  <div className="space-y-6">
-                    {/* Next 48 Hours - Actionable Card */}
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {/* Next 48 Hours - Enhanced */}
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
-                      className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/10 border border-[#14B8A6]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl">⏰</span>
-                </div>
-                        <div className="text-[#14B8A6] text-lg font-bold uppercase tracking-wide">NEXT 48 HOURS</div>
-                      </div>
-                      
-                      {/* Expected Message Section */}
-                      <div className="mb-6">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-sm font-bold">📱</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">EXPECT:</span>
+                      <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-xl">⏰</span>
                         </div>
-                        <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 border border-[#14B8A6]/20">
-                          <p className="text-white/90 text-base font-medium italic">
-                            "{safeDeepDive.playbook?.expected_message || 'Just checking in! 💕'}"
-                          </p>
-                        </div>
+                        <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">NEXT 48 HOURS</div>
                       </div>
-                      
-                      {/* Your Moves Section */}
-                      <div>
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-sm font-bold">🎯</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">YOUR MOVE:</span>
-                        </div>
-                        <ul className="space-y-3">
-                          {(safeDeepDive.playbook?.your_move?.split('. ') || [
-                            'Wait 4+ hours before responding',
-                            'Keep your reply short and casual',
-                            'Don\'t ask about future plans'
-                          ])
-                            .filter(move => move.trim())
-                            .slice(0, 3)
-                            .map((move, i) => (
-                              <motion.li 
-                                key={i} 
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.7 + (i * 0.1) }}
-                                className="flex items-start gap-3 group/item"
-                              >
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/20 border border-[#14B8A6]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
-                                  <ChevronRight className="w-3 h-3 text-[#14B8A6]" />
-                                </div>
-                                <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{move}</span>
-                              </motion.li>
-                            ))}
-                        </ul>
-                      </div>
+                      <p className="text-stone-200/90 text-base leading-relaxed font-medium">
+                        {safeDeepDive.playbook?.next_48h}
+                      </p>
                     </motion.div>
 
-                    {/* Long-term Strategy - Actionable Card */}
+                    {/* Your Moves - Enhanced */}
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
-                      className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/10 border border-[#14B8A6]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl">🗺️</span>
-                </div>
-                        <div className="text-[#14B8A6] text-lg font-bold uppercase tracking-wide">LONG-TERM STRATEGY</div>
+                      <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-xl">🎯</span>
+                        </div>
+                        <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">YOUR MOVES</div>
                       </div>
-                      
-                      {/* Strategy Overview */}
-                      <div className="mb-6">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-sm font-bold">💡</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">STRATEGY:</span>
-                        </div>
-                        <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 border border-[#14B8A6]/20">
-                          <p className="text-white/90 text-base font-medium leading-relaxed">
-                            {safeDeepDive.playbook?.strategy || safeDeepDive.playbook?.next_48h || 'Focus on maintaining your boundaries while staying open to genuine connection.'}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* Key Principles */}
-                      <div>
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
-                            <span className="text-black text-sm font-bold">⚡</span>
-                          </div>
-                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">KEY PRINCIPLES:</span>
-                        </div>
-                        <ul className="space-y-3">
-                          {[
-                            'Trust your instincts above all else',
-                            'Don\'t chase someone who isn\'t showing effort',
-                            'Your peace is non-negotiable'
-                          ].map((principle, i) => (
+                      <ul className="space-y-3">
+                        {(safeDeepDive.playbook?.your_move?.split('. ') || [])
+                          .filter(move => move.trim())
+                          .slice(0, 3)
+                          .map((move, i) => (
                             <motion.li 
                               key={i} 
                               initial={{ opacity: 0, x: -10 }}
                               animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.8 + (i * 0.1) }}
+                              transition={{ delay: 0.7 + (i * 0.1) }}
                               className="flex items-start gap-3 group/item"
                             >
-                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
-                                <span className="text-amber-400 text-xs font-bold">•</span>
-                              </div>
-                              <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{principle}</span>
+                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/20 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                <ChevronRight className="w-3 h-3 text-[#D4AF37]" />
+                </div>
+                              <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{move}</span>
                             </motion.li>
                           ))}
-                        </ul>
-                      </div>
+                      </ul>
                     </motion.div>
-                  </div>
+              </div>
             </motion.section>
           </>
         )}
@@ -1206,18 +941,18 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
-                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S SEAL</h3>
+                  <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SEAL</h3>
                 </div>
                 <div className="text-xs text-stone-400/70 font-mono">FINAL WISDOM</div>
           </div>
           
               <div className="relative group">
                 {/* Enhanced Gold glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/15 to-transparent rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-3xl blur-xl group-hover:blur-lg transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/8 to-transparent rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3]/6 to-transparent rounded-3xl blur-xl group-hover:blur-lg transition-all duration-500" />
                 
-                <div className="relative bg-black/45 backdrop-blur-sm rounded-3xl p-8 border border-[#D4AF37]/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
+                <div className="relative bg-[#0b1220]/60 backdrop-blur-sm rounded-3xl p-8 border border-[#D4AF37]/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
                   {/* Enhanced Crown with Animation */}
                   <motion.div 
                     initial={{ scale: 0.8, rotate: -10 }}
@@ -1238,26 +973,26 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     Sage's Seal
                   </motion.h4>
                   
-                  {/* Enhanced Quote with Gradient Background */}
-                  <motion.div 
+                  {/* Enhanced Quote */}
+                  <motion.p 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
-                    className="relative px-4 py-6 rounded-xl group-hover:scale-105 transition-transform duration-300"
-                    style={{
+                    className="text-2xl font-medium leading-relaxed px-4 group-hover:scale-105 transition-transform duration-300"
+              style={{
                       background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 50%, #D4AF37 100%)',
-                    }}
-                  >
-                    <p className="text-2xl font-medium leading-relaxed text-black relative z-10">
-                      "{safeDeepDive.sages_seal || analysisData?.sages_seal}"
-                    </p>
-                  </motion.div>
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
+                    "{safeDeepDive.sages_seal || analysisData?.sages_seal}"
+                  </motion.p>
                   
                   {/* Subtle Sparkle Effect */}
-                  <div className="absolute top-4 right-4 text-[#14B8A6]/30 group-hover:text-[#14B8A6]/60 transition-colors duration-300">
+                  <div className="absolute top-4 right-4 text-[#D4AF37]/30 group-hover:text-[#D4AF37]/60 transition-colors duration-300">
                     ✨
                   </div>
-                  <div className="absolute bottom-4 left-4 text-[#D4AF37]/30 group-hover:text-[#D4AF37]/60 transition-colors duration-300">
+                  <div className="absolute bottom-4 left-4 text-[#F5E6D3]/30 group-hover:text-[#F5E6D3]/60 transition-colors duration-300">
                     ✨
                   </div>
           </div>
@@ -1295,7 +1030,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   }
                   handleShareTea();
                 }}
-                className="px-6 py-3 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
               >
                 <Share2 className="w-4 h-4" />
                 Share Tea

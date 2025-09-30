@@ -610,170 +610,180 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
   }
 };
 
-// CRITICAL SAFETY DETECTION SYSTEM
-const detectSafetyIssues = (message) => {
-  const text = message.toLowerCase();
-  
-  // SUICIDE IDEATION PATTERNS
-  const suicidePatterns = [
+// Helper: Detect healthy boundary setting in ANY context
+const isHealthyBoundarySetting = (message, context) => {
+  const lowerMessage = String(message || '').toLowerCase();
+
+  // ACTIVE REFUSAL patterns (someone saying NO to control/surveillance)
+  const refusalPhrases = [
+    /\bi don't do (that|proof|location|surveillance|check-ins|tracking|monitoring)/i,
+    /\bnot doing (that|proof|location|surveillance|tracking)/i,
+    /\bno (proof|location|surveillance|check-ins|pop-ins|surprise|tracking|monitoring)/i,
+    /\bdon't (track|monitor|audit|check on) me\b/i,
+    /\bsame rule either way\b/i,
+    /\bnot proof[,\s]/i
+  ];
+
+  // BOUNDARY-SETTING patterns (asserting limits)
+  const boundaryPhrases = [
+    /\bI (can't|won't|don't want to|choose not to)\b/i,
+    /\b(not available|have plans|keeping my plan|not attending|my decision)\b/i,
+    /\b(house rules|my rules|our rules|my boundary|boundaries)\b/i,
+    /\b(please don't|stop comparing|don't explain me)\b/i,
+    /\b(one reschedule|no surprise|calendar first|clarity first)\b/i
+  ];
+
+  const refusalCount = refusalPhrases.filter(p => p.test(lowerMessage)).length;
+  const boundaryCount = boundaryPhrases.filter(p => p.test(lowerMessage)).length;
+
+  // UNIVERSAL TRIGGER: If someone is actively refusing OR setting boundaries
+  if (refusalCount >= 2 || (refusalCount >= 1 && boundaryCount >= 1) || boundaryCount >= 3) {
+    console.log('✅ Healthy boundary setting/refusal detected (universal)', {
+      refusalCount,
+      boundaryCount,
+      context: context?.context_type || 'unspecified'
+    });
+    return true;
+  }
+
+  return false;
+};
+
+// CRITICAL SAFETY DETECTION SYSTEM (universal, context-agnostic for boundaries)
+const detectSafetyIssues = (message, context = {}) => {
+  console.log('🔍 SAFETY CHECK START:', { 
+    contextType: context?.context_type || 'unspecified',
+    messagePreview: String(message || '').slice(0, 100) 
+  });
+
+  // FIRST: Filter out healthy boundary setting (works for ALL contexts)
+  if (isHealthyBoundarySetting(message, context)) {
+    console.log('✅ EARLY EXIT: Healthy boundary setting/refusal detected');
+    return { triggered: false };
+  }
+
+  const text = String(message || '').toLowerCase();
+  const contextType = (context?.context_type || context?.relationshipType || '').toLowerCase();
+
+  // ALWAYS TRIGGER (suicide/self-harm - no context exceptions)
+  const alwaysTrigger = [
     /thinking about ending it/i,
     /want to die/i,
     /kill myself/i,
     /end my life/i,
     /not worth living/i,
     /better off dead/i,
-    /suicide/i,
+    /\bsuicide\b/i,
     /meds in front of me/i,
     /pills in front of me/i,
     /overdose/i,
-    /can't keep going/i,
+    /\bcan't keep going\b.*\b(anymore|much longer)\b/i,
     /point of being alive/i,
-    /nothing ever gets better/i
-  ];
-  
-  // SELF-HARM PATTERNS
-  const selfHarmPatterns = [
     /cut myself/i,
     /hurt myself/i,
-    /self harm/i,
-    /cutting/i,
-    /burning myself/i,
-    /scratching myself/i
+    /self[- ]harm/i,
+    /\bcutting\b/i,
+    /burning myself/i
   ];
-  
-  // NON-CONSENSUAL SEX PATTERNS
-  const assaultPatterns = [
-    /drunk.*sex/i,
-    /wasted.*sex/i,
-    /passed out.*sex/i,
-    /unconscious.*sex/i,
-    /didn't say no.*sex/i,
-    /forced.*sex/i,
-    /rape/i,
-    /assault/i,
-    /couldn't consent/i,
-    /too drunk to consent/i,
-    /didn't want it/i,
-    /said no but/i
-  ];
-  
-  // EXTREME VIOLENCE PATTERNS
-  const violencePatterns = [
-    /beat.*up/i,
-    /punch.*face/i,
-    /hit.*hard/i,
-    /choke/i,
-    /strangle/i,
-    /stab/i,
-    /knife/i,
-    /gun/i,
-    /threaten.*kill/i,
-    /kill.*you/i,
-    /hurt.*bad/i,
-    /beat.*to death/i
-  ];
-  
-  // MINOR/GROOMING PATTERNS
-  const minorPatterns = [
-    // Direct age references
-    /\b(13|14|15|16|17)\s*(years?\s*old|yo|y\.o\.|dude|years)/i,
-    /\b(13|14|15|16|17)\b(?!\s*(18|19|20|21|22|23|24|25|26|27|28|29|30))/i,
-    // Minor status indicators
-    /\b(teen|teenager|minor|underage|kid|child|young)\b/i,
-    /\b(high school|middle school|grade school)\b/i,
-    /\b(grade\s*(9|10|11|12|13))\b/i,
-    /\bstill a student\b/i,
-    /\bstill in school\b/i,
-    // Age gap + minor context patterns
-    /\b(teen|teenager|minor|underage|kid|child).*sex/i,
-    /\b(13|14|15|16|17).*dating/i,
-    /high school.*sex/i,
-    /grooming/i,
-    /underage.*relationship/i,
-    /high school.*\b(21|22|23|24|25|26|27|28|29|30)\b/i,
-    /\b(21|22|23|24|25|26|27|28|29|30)\b.*high school/i,
-    // Extended age gap patterns (18-19 still in school)
-    /\b(18|19)\b.*\b(high school|still.*student)\b/i,
-    /\b(high school|still.*student)\b.*\b(18|19)\b/i,
-    // Classic grooming phrases
-    /mature for your age/i,
-    /just between us/i,
-    /our secret/i,
-    /don't tell them/i,
-    /keep this between us/i,
-    /it's our little secret/i,
-    /you're special/i,
-    /trust me.*nothing bad/i
-  ];
-  
-  // Check for crisis patterns
-  const detectedPatterns = [];
-  
-  if (suicidePatterns.some(pattern => pattern.test(text))) {
-    detectedPatterns.push('suicide_ideation');
-  }
-  
-  if (selfHarmPatterns.some(pattern => pattern.test(text))) {
-    detectedPatterns.push('self_harm');
-  }
-  
-  if (assaultPatterns.some(pattern => pattern.test(text))) {
-    detectedPatterns.push('sexual_assault');
-  }
-  
-  if (violencePatterns.some(pattern => pattern.test(text))) {
-    detectedPatterns.push('extreme_violence');
-  }
-  
-  if (minorPatterns.some(pattern => pattern.test(text))) {
-    detectedPatterns.push('minor_involvement');
-  }
-  
-  if (detectedPatterns.length > 0) {
-    console.log('🚨 CRISIS DETECTED:', detectedPatterns);
+
+  if (alwaysTrigger.some(p => p.test(text))) {
+    console.log('🚨 CRISIS: Suicide/self-harm detected');
     return {
       triggered: true,
       severity: 'genuine_crisis',
-      categories: detectedPatterns,
+      categories: ['suicide_or_self_harm'],
       message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
       resources: [
         '🆘 988 Suicide & Crisis Lifeline: 988',
-        '🆘 Crisis Text Line: Text HOME to 741741',
+        '🆘 Crisis Text Line: Text HOME to 741741'
+      ]
+    };
+  }
+
+  // CONTEXT-AWARE violence/assault detection
+  const contextSensitive = [
+    /\brape\b/i,
+    /\bassault\b/i,
+    /forced.*sex/i,
+    /didn't consent/i,
+    /beat\s+(me|you|them|.*up)\b/i,
+    /punch.*face/i,
+    /\bchoke[ds]?\b/i,
+    /\bstrangl/i,
+    /threaten.*kill/i
+  ];
+
+  const matches = contextSensitive.filter(p => p.test(text)).length;
+
+  // UNIVERSAL THRESHOLD: Higher bar for non-romantic contexts
+  const isRomanticContext = /dating|situationship|marriage|romantic|partner|boyfriend|girlfriend|ex/i.test(contextType);
+  const threshold = isRomanticContext ? 1 : 2;
+
+  if (matches >= threshold) {
+    console.log('🚨 CRISIS: Violence/assault detected', { matches, threshold, contextType });
+    return {
+      triggered: true,
+      severity: 'genuine_crisis',
+      categories: ['violence_or_assault'],
+      message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
+      resources: [
         '🆘 RAINN (Sexual Assault): 1-800-656-4673',
         '🆘 National DV Hotline: 1-800-799-7233'
       ]
     };
   }
-  
+
+  // AGE GAP CHECK (universal - works for all contexts)
+  const minorAgeMatch = text.match(/\b(13|14|15|16|17)\b/);
+  const adultAgeMatch = text.match(/\b(1[89]|2[0-9]|3[0-9])\b/);
+
+  if (minorAgeMatch && adultAgeMatch) {
+    const minorAge = parseInt(minorAgeMatch[1]);
+    const adultAge = parseInt(adultAgeMatch[1]);
+
+    if (adultAge - minorAge >= 3 || adultAge >= 20) {
+      console.log('🚨 CRISIS: Age gap detected', { minorAge, adultAge });
+      return {
+        triggered: true,
+        severity: 'genuine_crisis',
+        categories: ['minor_involvement'],
+        message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
+        resources: [
+          '🆘 RAINN (Sexual Assault): 1-800-656-4673',
+          '🆘 Crisis Text Line: Text HOME to 741741'
+        ]
+      };
+    }
+  }
+
+  // Grooming patterns (universal)
+  const groomingPatterns = [
+    /mature for your age/i,
+    /our (little )?secret/i,
+    /don't tell (them|anyone|your parents)/i,
+    /keep this between us/i
+  ];
+
+  if (groomingPatterns.some(p => p.test(text))) {
+    console.log('🚨 CRISIS: Grooming patterns detected');
+    return {
+      triggered: true,
+      severity: 'genuine_crisis',
+      categories: ['grooming'],
+      message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
+      resources: [
+        '🆘 RAINN: 1-800-656-4673',
+        '🆘 Crisis Text Line: Text HOME to 741741'
+      ]
+    };
+  }
+
+  console.log('✅ No crisis detected - proceeding with regular analysis');
   return { triggered: false };
 };
 
 // Advanced OpenAI Integration - CLEANED VERSION
 export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
-  // CRITICAL: Check for safety issues FIRST
-  const safetyCheck = detectSafetyIssues(message);
-  
-  if (safetyCheck.triggered) {
-    console.log('🚨 Safety override triggered - returning crisis resources');
-    return {
-      mode: 'safety_override',
-      safetyOverride: safetyCheck,
-      archetype: 'Emergency Support 🛡️',
-      verdict: safetyCheck.message,
-      realTea: 'This goes beyond relationship analysis. Your safety is the priority.',
-      wastingTime: 0,
-      actuallyIntoYou: 0,
-      redFlags: 10,
-      confidenceScore: 100,
-      confidenceRemark: 'SAFETY PRIORITY',
-      yourMove: ['Reach out for professional help', 'Your safety matters most'],
-      prophecy: 'Next: prioritize your wellbeing',
-      redFlagTags: ['crisis situation'],
-      deepDive: { valence: 'red' },
-      immunityTraining: { riskLevel: 'high', safetyNote: safetyCheck.message },
-      resources: safetyCheck.resources
-    };
-  }
   
   // Prevent infinite recursion - max 3 attempts (main + 2 backups)
   if (attemptNumber > 2) {
@@ -883,101 +893,42 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
     // Import the working prompt - now fully dynamic
     const { brutalPrompt } = await import('../prompts/brutalPrompt');
 
-      // EXTRACT ACTUAL NAMES FROM CONVERSATION - FIXED VERSION
+      // EXTRACT ACTUAL NAMES - SIMPLE AND FOOLPROOF
       const extractNamesFromConversation = (text, context) => {
-        // Priority 1: Use form-provided names if available
-        if (context?.userName && context?.otherName) {
-          return {
-            user: context.userName.trim(),
-            other: context.otherName.trim()
-          };
-        }
-        
-        // Priority 2: Try to extract from conversation patterns
-        const lines = text.split('\n').filter(line => line.trim());
-        const speakers = new Map();
-        
-        for (const line of lines) {
-          // Look for patterns like "Her:", "Him:", "Me:", "Alex:", etc.
-          const match = line.match(/^([^:]+):/);
-          if (match) {
-            const speaker = match[1].trim();
-            speakers.set(speaker.toLowerCase(), speaker);
-          }
-        }
-        
-        // Identify user (Me, I) vs other person
-        let userName = context?.userName || context?.user_name || 'You';
-        let otherName = context?.otherName || context?.other_name || 'Them';
-        
-        // Common patterns to identify speakers
-        const userIndicators = ['me', 'i', 'myself'];
-        const otherIndicators = ['her', 'him', 'them', 'they'];
-        
-        // If we have form context with partial names, use those
-        if (context?.userName) {
-          userName = context.userName;
-        }
-        if (context?.otherName) {
-          otherName = context.otherName;
-        }
-        
-        // Extract all actual names from conversation (not pronouns)
-        const actualNames = [];
-        for (const [key, value] of speakers) {
-          if (!userIndicators.includes(key) && !otherIndicators.includes(key) && key.length > 1) {
-            actualNames.push(value);
-          }
-        }
-        
-        // If we have names from conversation, use them appropriately
-        if (actualNames.length >= 1) {
-          // If no form context at all, assign from conversation
-          if (!context?.userName && !context?.otherName) {
-            // First actual name found becomes the "other" person (usually who initiated)
-            otherName = actualNames[0];
-            // If there's a second name, that's likely the user
-            if (actualNames.length >= 2) {
-              userName = actualNames[1];
-            } else {
-              userName = 'You';
-            }
-          } 
-          // If only user provided via form, extract other from conversation
-          else if (context?.userName && !context?.otherName) {
-            // Look for name that's NOT the user name
-            const foundOther = actualNames.find(name => name !== context.userName);
-            if (foundOther) {
-              otherName = foundOther;
+        const explicitUser = context?.user_name || context?.user_side || context?.userName;
+        if (explicitUser) {
+          console.log('✅ EXPLICIT USER PROVIDED:', explicitUser);
+          const lines = String(text || '').split('\n').filter(line => line.trim());
+          const allNames = new Set();
+          for (const line of lines) {
+            const match = line.match(/^([A-Za-z]+)\s*[\(:]/);
+            if (match) {
+              const name = match[1].trim();
+              if (name && name.length > 1 && name.length < 20) {
+                allNames.add(name);
+              }
             }
           }
-          // If only other provided via form, extract user from conversation
-          else if (!context?.userName && context?.otherName) {
-            // Look for name that's NOT the other name
-            const foundUser = actualNames.find(name => name !== context.otherName);
-            if (foundUser) {
-              userName = foundUser;
-            }
-          }
+          const otherName = Array.from(allNames).find(name => name.toLowerCase() !== String(explicitUser).toLowerCase()) || 'Them';
+          console.log('✅ FINAL NAME ASSIGNMENT:', { user: explicitUser, other: otherName, allNamesFound: Array.from(allNames) });
+          return { user: explicitUser, other: otherName };
         }
-        
-        // Handle cases where user indicators are present
-        for (const [key, value] of speakers) {
-          if (userIndicators.includes(key)) {
-            userName = 'You';
-          }
-        }
-        
-        return {
-          user: userName,
-          other: otherName
-        };
+        return { user: 'You', other: 'Them' };
       };
       
       // BUILD CLEAN CONTEXT - SINGLE SOURCE OF TRUTH
       const buildCleanContext = (message, context) => {
+        // Simple and clear - no complex logic
         const names = extractNamesFromConversation(message, context);
-        
+        // VALIDATE against explicit user selection
+        if (context?.user_name || context?.user_side) {
+          const expectedUser = context?.user_name || context?.user_side;
+          if (names.user !== expectedUser) {
+            console.error('❌ NAME EXTRACTION MISMATCH! Forcing expected user');
+            names.user = expectedUser;
+          }
+        }
+
         return {
           // Single source of truth for names
           userName: names.user,
@@ -988,7 +939,7 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
           otherPronouns: context?.otherPartyPronouns || context?.known_pronouns?.other_party || 'they/them',
           
           // Core context
-          relationshipType: context?.contextType || context?.relationshipType || context?.context?.toLowerCase() || 'dating',
+          relationshipType: context?.context_type || context?.contextType || context?.relationshipType || context?.context?.toLowerCase() || 'dating',
           background: context?.background || context?.background_context || '',
           userQuestion: context?.userQuestion || '',
           gutFeeling: context?.gutFeel || context?.gut_feeling || '',
@@ -1001,6 +952,48 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
       const cleanContext = buildCleanContext(message, context);
       const actualUserName = cleanContext.userName;
       const actualOtherName = cleanContext.otherName;
+
+      // Validate names before sending to AI (guard against field-name leakage)
+      if (['chat_excerpt', 'message', 'transcript', 'conversation'].includes(String(cleanContext.otherName).toLowerCase())) {
+        console.error('❌ CRITICAL ERROR: Field name used as person name!');
+        const conversationNames = message.match(/^([A-Za-z]+)\s*[\(:]/gm)
+          ?.map(m => m.match(/^([A-Za-z]+)/)[1])
+          ?.filter(n => n !== cleanContext.userName);
+        if (conversationNames && conversationNames.length > 0) {
+          cleanContext.otherName = conversationNames[0];
+          console.log('🔧 Emergency fix applied, using:', cleanContext.otherName);
+        }
+      }
+
+      // CRITICAL: Check for safety issues AFTER context is defined
+      const safetyCheck = detectSafetyIssues(message, {
+        context_type: actualContext,
+        relationshipType: cleanContext.relationshipType
+      });
+      
+      if (safetyCheck.triggered) {
+        console.log('🚨 Safety override triggered - returning crisis resources');
+        return {
+          mode: 'safety_override',
+          safetyOverride: safetyCheck,
+          archetype: 'Emergency Support 🛡️',
+          verdict: safetyCheck.message,
+          realTea: 'This goes beyond relationship analysis. Your safety is the priority.',
+          wastingTime: 0,
+          actuallyIntoYou: 0,
+          redFlags: 10,
+          confidenceScore: 100,
+          confidenceRemark: 'SAFETY PRIORITY',
+          yourMove: ['Reach out for professional help', 'Your safety matters most'],
+          prophecy: 'Next: prioritize your wellbeing',
+          redFlagTags: ['crisis situation'],
+          deepDive: { valence: 'red' },
+          immunityTraining: { riskLevel: 'high', safetyNote: safetyCheck.message },
+          resources: safetyCheck.resources,
+          userName: actualUserName,
+          otherName: actualOtherName
+        };
+      }
 
       // SAGE VOICE ENFORCEMENT - purely dynamic
       let voiceOverride = '';
@@ -1022,33 +1015,44 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
 • Every response should feel personalized, never template-based`;
       }
       
+      // Create a clean conversation string and narrative payload to avoid field-name extraction
+      const cleanConversation = message
+        .replace(/chat[_\s]excerpt/gi, 'CONVERSATION')
+        .replace(/^\s*{\s*\"/, '')
+        .replace(/\"\s*}\s*$/, '');
+
       const userPayload = {
-        transcript: message,
-        detectedMode: detectedMode,
-        
-        // Clean context data
-        conversation: cleanContext.conversation,
-        userName: cleanContext.userName,
-        otherName: cleanContext.otherName,
-        userPronouns: cleanContext.userPronouns,
-        otherPronouns: cleanContext.otherPronouns,
-        relationshipType: cleanContext.relationshipType,
-        background: cleanContext.background || context?.background || '',
-        userQuestion: cleanContext.userQuestion || context?.userQuestion || '',
-        
-        // Legacy support for existing prompts
-        user_name: actualUserName,
-        other_name: actualOtherName,
-        context: cleanContext.relationshipType,
-        subjectGender: 'unknown',
-        locale: 'en-US',
-        preferences: {
-          spice: 'medium',
-          maxWordsVerdict: 95,
-          maxWordsRealTea: 240
+        ACTUAL_MESSAGES: cleanConversation,
+        PEOPLE_IN_CONVERSATION: {
+          YOUR_BESTIE_WHO_NEEDS_ADVICE: cleanContext.userName,
+          PERSON_BEING_ANALYZED: cleanContext.otherName,
+          NEVER_USE_THESE_WORDS: ["chat_excerpt", "message", "transcript"]
+        },
+        CONTEXT: {
+          names: `${cleanContext.userName} is asking about ${cleanContext.otherName}`,
+          relationship: cleanContext.relationshipType,
+          background: cleanContext.background || context?.background || ''
         }
       };
-      const userContent = JSON.stringify(userPayload);
+      console.log('🎯 FINAL NAME ASSIGNMENT CHECK:', {
+        userSelectedAs: cleanContext.userName,
+        otherIdentifiedAs: cleanContext.otherName,
+        promptWillReceive: {
+          bestieAskingForAdvice: cleanContext.userName,
+          personBeingAnalyzed: cleanContext.otherName
+        },
+        criticalContext: `USER: ${cleanContext.userName} | OTHER: ${cleanContext.otherName}`
+      });
+      const userContent = `
+CONVERSATION BETWEEN ${cleanContext.userName} AND ${cleanContext.otherName}:
+${cleanConversation}
+
+IMPORTANT: 
+- ${cleanContext.userName} is your bestie asking for advice
+- ${cleanContext.otherName} is the person to analyze
+- NEVER use the words "chat excerpt" or any field names
+- The actual names are ${cleanContext.userName} and ${cleanContext.otherName}
+`;
 
       console.log('API Request selection:', { provider, openAIModel, geminiModel });
 
@@ -1349,6 +1353,23 @@ export const generateAlignedResults = async (message, context) => {
   // Build clean context for all API calls
   const buildCleanContext = (message, context) => {
     const extractNamesFromConversation = (text, context) => {
+      // Priority 0: Respect explicit main user selection
+      const explicitMain = context?.selectedMainUser || context?.mainUser || context?.main_user;
+      if (explicitMain) {
+        const lines = text.split('\n').filter(line => line.trim());
+        const speakers = new Set();
+        for (const line of lines) {
+          const matchA = line.match(/^([^:]+):/);
+          const matchB = line.match(/^([^(]+)\s*\([^)]+\):/);
+          const speaker = (matchA?.[1] || matchB?.[1] || '').trim();
+          if (speaker) speakers.add(speaker);
+        }
+        const speakerList = Array.from(speakers);
+        const other = speakerList.find(n => n.toLowerCase() !== String(explicitMain).toLowerCase())
+                      || context?.otherName || context?.other_name || 'Them';
+        return { user: String(explicitMain), other };
+      }
+
       // Priority 1: Check ALL possible field name formats (CRITICAL FIX)
       const userName = context?.userName || context?.user_name || context?.user_side;
       const otherName = context?.otherName || context?.other_name || context?.their_name;
@@ -1701,12 +1722,12 @@ export const generateAlignedResults = async (message, context) => {
   try {
     const { immunityPrompt } = await import('../prompts/immunityPrompt');
     const immunitySystemPrompt = immunityPrompt
-      .replace('{archetype}', shareShotAnalysis.archetype)
-      .replace('{message}', message)
-      .replace('{redFlags}', shareShotAnalysis.redFlags)
-      .replace('{confidenceRemark}', shareShotAnalysis.confidenceRemark)
-      .replace('{userName}', cleanContext.userName || 'You')
-      .replace('{otherName}', cleanContext.otherName || 'Them');
+      .replace(/\{archetype\}/g, shareShotAnalysis.archetype)
+      .replace(/\{message\}/g, message)
+      .replace(/\{redFlags\}/g, String(shareShotAnalysis.redFlags))
+      .replace(/\{confidenceRemark\}/g, shareShotAnalysis.confidenceRemark)
+      .replace(/\{userName\}/g, cleanContext.userName || 'You')
+      .replace(/\{otherName\}/g, cleanContext.otherName || 'Them');
     
     // Use backup system for Immunity Training - start with first available key
     const apiKeys = [
@@ -1799,8 +1820,9 @@ export const generateAlignedResults = async (message, context) => {
   
   // Combine all results into final response
   console.log('🔄 Combining all 3 API results...');
-  const finalResult = {
+  let finalResult = {
     ...shareShotAnalysis,
+    conversation: cleanContext.conversation,
     userQuestion: context?.userQuestion || context?.user_question || null,
     deepDive: alignedDeepDive,
     immunityTraining: immunityTraining,
@@ -1825,6 +1847,38 @@ export const generateAlignedResults = async (message, context) => {
     hasImmunity: !!immunityTraining
   });
   
+  // After parsing the AI response, add comprehensive field name sanitization
+  const sanitizeFieldNames = (result, cleanContext) => {
+    const fieldNames = ['chat_excerpt', 'message', 'transcript', 'conversation', 'chat excerpt'];
+    const { otherName } = cleanContext;
+
+    const sanitizeString = (str) => {
+      if (!str || typeof str !== 'string') return str;
+      fieldNames.forEach(fieldName => {
+        const patterns = [
+          new RegExp(`['"\`]${fieldName}['"\`]`, 'gi'),
+          new RegExp(`\\b${fieldName}\\b`, 'gi'),
+          new RegExp(`${fieldName.replace('_', ' ')}`, 'gi')
+        ];
+        patterns.forEach(pattern => {
+          str = str.replace(pattern, otherName);
+        });
+      });
+      return str;
+    };
+
+    if (result.verdict) result.verdict = sanitizeString(result.verdict);
+    if (result.realTea) result.realTea = sanitizeString(result.realTea);
+    if (result.prophecy) result.prophecy = sanitizeString(result.prophecy);
+    if (result.teaAndMovePlay && Array.isArray(result.teaAndMovePlay)) {
+      result.teaAndMovePlay = result.teaAndMovePlay.map(sanitizeString);
+    }
+    console.log('✅ Post-processing sanitization complete');
+    return result;
+  };
+
+  finalResult = sanitizeFieldNames(finalResult, cleanContext);
+
   return finalResult;
 };
 
