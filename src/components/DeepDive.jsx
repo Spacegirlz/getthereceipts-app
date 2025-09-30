@@ -254,7 +254,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.style.padding = '48px';
         block.style.marginTop = '24px';
         block.innerHTML = `
-          <div style="font-size:56px;font-weight:800;color:#D4AF37;line-height:1.1;margin-bottom:16px">${title}</div>
+          <div style="font-size:56px;font-weight:800;color:#14B8A6;line-height:1.1;margin-bottom:16px">${title}</div>
           <div style="height:4px;width:120px;background:linear-gradient(90deg,#399d96,rgba(57,157,150,0));border-radius:2px;margin-bottom:16px"></div>
           <div style="font-size:28px;color:rgba(255,255,255,.8);line-height:1.5">${sub}</div>
         `;
@@ -268,11 +268,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.style.marginTop = '24px';
         block.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-            <div style="width:10px;height:10px;border-radius:9999px;background:#D4AF37"></div>
-            <div style="font-weight:800;letter-spacing:.18em;color:#D4AF37">SAGE'S RECEIPT AUTOPSY</div>
+            <div style="width:10px;height:10px;border-radius:9999px;background:#14B8A6"></div>
+            <div style="font-weight:800;letter-spacing:.18em;color:#14B8A6">SAGE'S RECEIPT AUTOPSY</div>
           </div>
           <div style="font-size:40px;color:#fff;font-weight:700;line-height:1.2;margin-bottom:16px">“${bestReceipt.quote || 'No quote available'}”</div>
-          <div style="display:inline-block;padding:8px 14px;border-radius:9999px;border:1px solid rgba(212,175,55,.3);background:linear-gradient(90deg,rgba(212,175,55,.2),rgba(245,230,211,.2));color:#D4AF37;font-weight:700;margin-bottom:12px">${bestReceipt.pattern || 'Pattern'}</div>
+          <div style="display:inline-block;padding:8px 14px;border-radius:9999px;border:1px solid rgba(20,184,166,.3);background:linear-gradient(90deg,rgba(20,184,166,.2),rgba(45,212,191,.2));color:#14B8A6;font-weight:700;margin-bottom:12px">${bestReceipt.pattern || 'Pattern'}</div>
           <div style="font-size:26px;color:rgba(255,255,255,.75)">${bestReceipt.cost || ''}</div>
         `;
         container.appendChild(block);
@@ -283,11 +283,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.style.borderRadius = '28px';
         block.style.padding = '48px';
         block.style.marginTop = '24px';
-        const movesHtml = moves.map(m => `<li style="margin-bottom:16px;display:flex;gap:10px;align-items:flex-start"><div style=\"width:18px;height:18px;border-radius:9999px;border:1px solid rgba(212,175,55,.3);background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(245,230,211,.2));display:flex;align-items:center;justify-content:center\"><span style=\"color:#D4AF37;font-size:12px\">›</span></div><span style=\"font-size:28px;line-height:1.5;color:#fff\">${m}</span></li>`).join('');
+        const movesHtml = moves.map(m => `<li style="margin-bottom:16px;display:flex;gap:10px;align-items:flex-start"><div style=\"width:18px;height:18px;border-radius:9999px;border:1px solid rgba(20,184,166,.3);background:linear-gradient(135deg,rgba(20,184,166,.2),rgba(45,212,191,.2));display:flex;align-items:center;justify-content:center\"><span style=\"color:#14B8A6;font-size:12px\">›</span></div><span style=\"font-size:28px;line-height:1.5;color:#fff\">${m}</span></li>`).join('');
         block.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-            <div style="width:10px;height:10px;border-radius:9999px;background:#D4AF37"></div>
-            <div style="font-weight:800;letter-spacing:.18em;color:#D4AF37">SAGE'S PLAYBOOK</div>
+            <div style="width:10px;height:10px;border-radius:9999px;background:#14B8A6"></div>
+            <div style="font-weight:800;letter-spacing:.18em;color:#14B8A6">SAGE'S PLAYBOOK</div>
           </div>
           <ul style="list-style:none;padding:0;margin:0 0 28px 0">${movesHtml || '<li style=\"color:rgba(255,255,255,.6)\">No moves available</li>'}</ul>
           <div style="text-align:center;margin-top:12px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)">
@@ -351,17 +351,17 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     
     // Premium borders
     borderSubtle: 'border-white/[0.08]',
-    borderAccent: 'border-[#D4AF37]/20',
+    borderAccent: 'border-[#14B8A6]/20',
     
     // Text hierarchy
     textPrimary: 'text-stone-200/95',
     textSecondary: 'text-stone-300/80',
     textMuted: 'text-stone-400/70',
-    textAccent: 'text-[#D4AF37]',
+    textAccent: 'text-[#14B8A6]',
     
     // Premium shadows
     shadowCard: 'shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
-    shadowGold: 'shadow-[0_0_40px_rgba(212,175,55,0.1)]'
+    shadowGold: 'shadow-[0_0_40px_rgba(20,184,166,0.1)]'
   };
 
   // Risk level styling - minimal color variation
@@ -582,12 +582,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badge: '🔥',
         label: 'SMOKING GUN',
         size: 'large',
-        borderColor: 'border-[#D4AF37]',
+        borderColor: 'border-[#14B8A6]',
         borderWidth: '2px',
-        bgGradient: 'from-[#D4AF37]/5 to-transparent',
-        glowColor: 'shadow-[#D4AF37]/20',
-        badgeGradient: 'from-[#D4AF37] to-[#F5E6D3]',
-        severityColor: '#D4AF37',
+        bgGradient: 'from-[#14B8A6]/5 to-transparent',
+        glowColor: 'shadow-[#14B8A6]/20',
+        badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
+        severityColor: '#14B8A6',
         severityOpacity: '1.0'
       };
     } else if (hasRedFlag || index === 1) {
@@ -596,12 +596,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badge: '⚠️',
         label: 'RED FLAG',
         size: 'medium',
-        borderColor: 'border-[#D4AF37]/60',
+        borderColor: 'border-[#14B8A6]/60',
         borderWidth: '1px',
-        bgGradient: 'from-[#D4AF37]/3 to-transparent',
-        glowColor: 'shadow-[#D4AF37]/10',
-        badgeGradient: 'from-[#D4AF37]/80 to-[#F5E6D3]/60',
-        severityColor: '#D4AF37',
+        bgGradient: 'from-[#14B8A6]/3 to-transparent',
+        glowColor: 'shadow-[#14B8A6]/10',
+        badgeGradient: 'from-[#14B8A6]/80 to-[#2DD4BF]/60',
+        severityColor: '#14B8A6',
         severityOpacity: '0.7'
       };
     } else {
@@ -610,12 +610,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badge: '📍',
         label: 'PATTERN',
         size: 'small',
-        borderColor: 'border-[#D4AF37]/40',
+        borderColor: 'border-[#14B8A6]/40',
         borderWidth: '1px',
-        bgGradient: 'from-[#D4AF37]/2 to-transparent',
-        glowColor: 'shadow-[#D4AF37]/5',
-        badgeGradient: 'from-[#D4AF37]/60 to-[#F5E6D3]/40',
-        severityColor: '#D4AF37',
+        bgGradient: 'from-[#14B8A6]/2 to-transparent',
+        glowColor: 'shadow-[#14B8A6]/5',
+        badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
+        severityColor: '#14B8A6',
         severityOpacity: '0.4'
       };
     }
@@ -728,8 +728,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 {/* Sage's Summary Header */}
                 <div className="flex items-center justify-between mb-6" data-share-hide="true">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h2 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S SUMMARY</h2>
+                    <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
+                    <h2 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S SUMMARY</h2>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">HOT TAKE ANALYSIS</div>
                 </div>
@@ -737,8 +737,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="rounded-2xl p-4 mb-4">
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/10 border border-[#D4AF37]/30 flex items-center justify-center">
-                        <span className="text-[#D4AF37] text-xl">🎯</span>
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/10 border border-[#14B8A6]/30 flex items-center justify-center">
+                        <span className="text-[#14B8A6] text-xl">🎯</span>
                       </div>
                       <h3 className={`text-xl sm:text-2xl font-black ${getArchetypeColor()} leading-tight`}
                         style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 184, 166, 0.2)' }}>
@@ -768,8 +768,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <div className="bg-black/45 backdrop-blur-sm rounded-3xl p-6 border border-white/[0.12] shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S RECEIPT AUTOPSY</h3>
+                    <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
+                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S RECEIPT AUTOPSY</h3>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
@@ -809,7 +809,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       <div className={`absolute inset-0 bg-gradient-to-br ${priority.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                       
                       {/* Copy Icon */}
-                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50 group-hover:text-[#D4AF37] transition-colors duration-300" />
+                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50 group-hover:text-[#14B8A6] transition-colors duration-300" />
                       
                       {/* Person Badge */}
                       <div className="flex items-center gap-2 mb-3">
@@ -830,12 +830,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4"></div>
 
                       {/* DECODED Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 mb-4 border border-[#D4AF37]/20">
+                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 mb-4 border border-[#14B8A6]/20">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-5 h-5 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-5 h-5 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-xs font-bold">🎯</span>
                           </div>
-                          <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-wide">
+                          <span className="text-[#14B8A6] text-xs font-bold uppercase tracking-wide">
                             DECODED
                           </span>
                         </div>
@@ -845,12 +845,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       </div>
 
                       {/* COST Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 border border-[#D4AF37]/20">
+                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 border border-[#14B8A6]/20">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-5 h-5 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-5 h-5 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-xs font-bold">💸</span>
                           </div>
-                          <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-wide">
+                          <span className="text-[#14B8A6] text-xs font-bold uppercase tracking-wide">
                             COST
                           </span>
                         </div>
@@ -903,7 +903,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       <div className={`absolute inset-0 bg-gradient-to-br ${priority.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                       
                       {/* Copy Icon */}
-                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/40 group-hover:text-[#D4AF37] transition-colors duration-300" />
+                      <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/40 group-hover:text-[#14B8A6] transition-colors duration-300" />
                       
                       {/* Person Badge */}
                       <div className="flex items-center gap-2 mb-4">
@@ -924,12 +924,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4"></div>
 
                       {/* DECODED Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-5 mb-5 border border-[#D4AF37]/20">
+                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-5 mb-5 border border-[#14B8A6]/20">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-sm font-bold">🎯</span>
                           </div>
-                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">
+                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">
                             DECODED
                           </span>
                         </div>
@@ -939,12 +939,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       </div>
 
                       {/* COST Section - Gold tinted background */}
-                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-5 border border-[#D4AF37]/20">
+                      <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-5 border border-[#14B8A6]/20">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-sm font-bold">💸</span>
                           </div>
-                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">
+                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">
                             COST
                           </span>
                         </div>
@@ -969,14 +969,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mb-8 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-2xl p-8 border border-[#D4AF37]/20 text-center"
+                className="mb-8 bg-gradient-to-br from-[#14B8A6]/10 to-transparent rounded-2xl p-8 border border-[#14B8A6]/20 text-center"
               >
-                <Lock className="w-8 h-8 text-[#D4AF37] mx-auto mb-4" />
+                <Lock className="w-8 h-8 text-[#14B8A6] mx-auto mb-4" />
                 <h4 className="text-xl font-light text-stone-200/90 mb-2">Unlock Complete Analysis</h4>
                 <p className="text-stone-300/80 mb-6">Get the full dynamics, playbook, and Sage's wisdom</p>
                 <button
                   onClick={() => window.location.href = '/pricing'}
-                  className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all"
+                  className="px-6 py-3 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] text-black font-medium rounded-xl hover:shadow-lg transition-all"
                 >
                   Go Premium
                 </button>
@@ -995,8 +995,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             >
                   <div className="flex items-center justify-between mb-6" data-share-hide="true">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S DYNAMICS</h3>
+                      <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
+                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S DYNAMICS</h3>
               </div>
                     <div className="text-xs text-stone-400/70 font-mono">RELATIONSHIP PHYSICS</div>
                   </div>
@@ -1041,7 +1041,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                             
                             {/* Content */}
                             <div className="flex-1">
-                              <div className="text-[#D4AF37] text-sm font-semibold mb-2 uppercase tracking-wide">
+                              <div className="text-[#14B8A6] text-sm font-semibold mb-2 uppercase tracking-wide">
                                 {item.label}
                               </div>
                               <div className="text-stone-200/90 text-base leading-relaxed font-medium">
@@ -1064,8 +1064,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 >
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S PLAYBOOK</h3>
+                      <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
+                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S PLAYBOOK</h3>
                     </div>
                     <div className="text-xs text-stone-400/70 font-mono">STRATEGIC MOVES</div>
                   </div>
@@ -1078,21 +1078,21 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/10 border border-[#D4AF37]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/10 border border-[#14B8A6]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <span className="text-2xl">⏰</span>
                 </div>
-                        <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">NEXT 48 HOURS</div>
+                        <div className="text-[#14B8A6] text-lg font-bold uppercase tracking-wide">NEXT 48 HOURS</div>
                       </div>
                       
                       {/* Expected Message Section */}
                       <div className="mb-6">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-sm font-bold">📱</span>
                           </div>
-                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">EXPECT:</span>
+                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">EXPECT:</span>
                         </div>
-                        <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 border border-[#D4AF37]/20">
+                        <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 border border-[#14B8A6]/20">
                           <p className="text-white/90 text-base font-medium italic">
                             "{safeDeepDive.playbook?.expected_message || 'Just checking in! 💕'}"
                           </p>
@@ -1102,10 +1102,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       {/* Your Moves Section */}
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-sm font-bold">🎯</span>
                           </div>
-                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">YOUR MOVE:</span>
+                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">YOUR MOVE:</span>
                         </div>
                         <ul className="space-y-3">
                           {(safeDeepDive.playbook?.your_move?.split('. ') || [
@@ -1123,8 +1123,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                                 transition={{ delay: 0.7 + (i * 0.1) }}
                                 className="flex items-start gap-3 group/item"
                               >
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/20 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
-                                  <ChevronRight className="w-3 h-3 text-[#D4AF37]" />
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/20 border border-[#14B8A6]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                  <ChevronRight className="w-3 h-3 text-[#14B8A6]" />
                                 </div>
                                 <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{move}</span>
                               </motion.li>
@@ -1141,21 +1141,21 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/10 border border-[#D4AF37]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/10 border border-[#14B8A6]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <span className="text-2xl">🗺️</span>
                 </div>
-                        <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">LONG-TERM STRATEGY</div>
+                        <div className="text-[#14B8A6] text-lg font-bold uppercase tracking-wide">LONG-TERM STRATEGY</div>
                       </div>
                       
                       {/* Strategy Overview */}
                       <div className="mb-6">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-sm font-bold">💡</span>
                           </div>
-                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">STRATEGY:</span>
+                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">STRATEGY:</span>
                         </div>
-                        <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 border border-[#D4AF37]/20">
+                        <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-4 border border-[#14B8A6]/20">
                           <p className="text-white/90 text-base font-medium leading-relaxed">
                             {safeDeepDive.playbook?.strategy || safeDeepDive.playbook?.next_48h || 'Focus on maintaining your boundaries while staying open to genuine connection.'}
                           </p>
@@ -1165,10 +1165,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       {/* Key Principles */}
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] rounded-full flex items-center justify-center">
                             <span className="text-black text-sm font-bold">⚡</span>
                           </div>
-                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">KEY PRINCIPLES:</span>
+                          <span className="text-[#14B8A6] text-sm font-bold uppercase tracking-wide">KEY PRINCIPLES:</span>
                         </div>
                         <ul className="space-y-3">
                           {[
@@ -1206,8 +1206,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S SEAL</h3>
+                  <div className="w-3 h-3 bg-[#14B8A6] rounded-full"></div>
+                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S SEAL</h3>
                 </div>
                 <div className="text-xs text-stone-400/70 font-mono">FINAL WISDOM</div>
           </div>
@@ -1215,7 +1215,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <div className="relative group">
                 {/* Enhanced Gold glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/15 to-transparent rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3]/10 to-transparent rounded-3xl blur-xl group-hover:blur-lg transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-3xl blur-xl group-hover:blur-lg transition-all duration-500" />
                 
                 <div className="relative bg-black/45 backdrop-blur-sm rounded-3xl p-8 border border-[#D4AF37]/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
                   {/* Enhanced Crown with Animation */}
@@ -1254,10 +1254,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   </motion.p>
                   
                   {/* Subtle Sparkle Effect */}
-                  <div className="absolute top-4 right-4 text-[#D4AF37]/30 group-hover:text-[#D4AF37]/60 transition-colors duration-300">
+                  <div className="absolute top-4 right-4 text-[#14B8A6]/30 group-hover:text-[#14B8A6]/60 transition-colors duration-300">
                     ✨
                   </div>
-                  <div className="absolute bottom-4 left-4 text-[#F5E6D3]/30 group-hover:text-[#F5E6D3]/60 transition-colors duration-300">
+                  <div className="absolute bottom-4 left-4 text-[#D4AF37]/30 group-hover:text-[#D4AF37]/60 transition-colors duration-300">
                     ✨
                   </div>
           </div>
@@ -1295,7 +1295,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   }
                   handleShareTea();
                 }}
-                className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-[#14B8A6] to-[#2DD4BF] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
               >
                 <Share2 className="w-4 h-4" />
                 Share Tea
