@@ -575,18 +575,20 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
     );
     
-    // Priority assignment with Get The Receipts Color System (3 cards)
+    // Priority assignment with Receipt's 2-Color Restraint System
     if (hasSmokingGun || index === 0) {
       return {
         level: 'smoking-gun',
         badge: '🔥',
         label: 'SMOKING GUN',
         size: 'large',
-        borderColor: 'border-[#FF3B30]/40',
-        bgGradient: 'from-[#FF3B30]/10 to-[#FF6B60]/5',
-        glowColor: 'shadow-[#FF3B30]/20',
-        badgeGradient: 'from-[#FF3B30] to-[#FF6B60]',
-        severityColor: '#FF3B30'
+        borderColor: 'border-[#D4AF37]',
+        borderWidth: '2px',
+        bgGradient: 'from-[#D4AF37]/5 to-transparent',
+        glowColor: 'shadow-[#D4AF37]/20',
+        badgeGradient: 'from-[#D4AF37] to-[#F5E6D3]',
+        severityColor: '#D4AF37',
+        severityOpacity: '1.0'
       };
     } else if (hasRedFlag || index === 1) {
       return {
@@ -594,11 +596,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badge: '⚠️',
         label: 'RED FLAG',
         size: 'medium',
-        borderColor: 'border-[#FF9500]/40',
-        bgGradient: 'from-[#FF9500]/10 to-[#FFB340]/5',
-        glowColor: 'shadow-[#FF9500]/20',
-        badgeGradient: 'from-[#FF9500] to-[#FFB340]',
-        severityColor: '#FF9500'
+        borderColor: 'border-[#D4AF37]/60',
+        borderWidth: '1px',
+        bgGradient: 'from-[#D4AF37]/3 to-transparent',
+        glowColor: 'shadow-[#D4AF37]/10',
+        badgeGradient: 'from-[#D4AF37]/80 to-[#F5E6D3]/60',
+        severityColor: '#D4AF37',
+        severityOpacity: '0.7'
       };
     } else {
       return {
@@ -606,11 +610,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         badge: '📍',
         label: 'PATTERN',
         size: 'small',
-        borderColor: 'border-[#FFCC00]/40',
-        bgGradient: 'from-[#FFCC00]/10 to-[#FFD700]/5',
-        glowColor: 'shadow-[#FFCC00]/20',
-        badgeGradient: 'from-[#FFCC00] to-[#FFD700]',
-        severityColor: '#FFCC00'
+        borderColor: 'border-[#D4AF37]/40',
+        borderWidth: '1px',
+        bgGradient: 'from-[#D4AF37]/2 to-transparent',
+        glowColor: 'shadow-[#D4AF37]/5',
+        badgeGradient: 'from-[#D4AF37]/60 to-[#F5E6D3]/40',
+        severityColor: '#D4AF37',
+        severityOpacity: '0.4'
       };
     }
   };
@@ -788,7 +794,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       data-index={i}
                       onClick={() => copyToClipboard(receipt.quote)}
                     >
-                      {/* Priority Badge with New Color System */}
+                      {/* Priority Badge with Gold Restraint System */}
                       <div 
                         className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
                         style={{
@@ -838,13 +844,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                         </div>
                       </div>
 
-                      {/* COST Section - Red tinted background */}
-                      <div className="bg-gradient-to-r from-[#EF4444]/10 to-[#DC2626]/5 rounded-xl p-4 border border-[#EF4444]/20">
+                      {/* COST Section - Gold tinted background */}
+                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 border border-[#D4AF37]/20">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-5 h-5 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">💸</span>
+                          <div className="w-5 h-5 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-xs font-bold">💸</span>
                           </div>
-                          <span className="text-[#EF4444] text-xs font-bold uppercase tracking-wide">
+                          <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-wide">
                             COST
                           </span>
                         </div>
@@ -932,13 +938,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                         </div>
                       </div>
 
-                      {/* COST Section - Red tinted background */}
-                      <div className="bg-gradient-to-r from-[#EF4444]/10 to-[#DC2626]/5 rounded-xl p-5 border border-[#EF4444]/20">
+                      {/* COST Section - Gold tinted background */}
+                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-5 border border-[#D4AF37]/20">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">💸</span>
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-sm font-bold">💸</span>
                           </div>
-                          <span className="text-[#EF4444] text-sm font-bold uppercase tracking-wide">
+                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">
                             COST
                           </span>
                         </div>
@@ -1072,22 +1078,22 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10B981]/20 to-[#059669]/10 border border-[#10B981]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <span className="text-2xl">⏰</span>
-                        </div>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/10 border border-[#D4AF37]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl">⏰</span>
+                </div>
                         <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">NEXT 48 HOURS</div>
                       </div>
                       
                       {/* Expected Message Section */}
                       <div className="mb-6">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">📱</span>
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-sm font-bold">📱</span>
                           </div>
-                          <span className="text-green-400 text-sm font-bold uppercase tracking-wide">EXPECT:</span>
+                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">EXPECT:</span>
                         </div>
-                        <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-4 border border-green-500/20">
-                          <p className="text-green-300 text-base font-medium italic">
+                        <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 border border-[#D4AF37]/20">
+                          <p className="text-white/90 text-base font-medium italic">
                             "{safeDeepDive.playbook?.expected_message || 'Just checking in! 💕'}"
                           </p>
                         </div>
@@ -1135,22 +1141,22 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8B5CF6]/20 to-[#7C3AED]/10 border border-[#8B5CF6]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <span className="text-2xl">🗺️</span>
-                        </div>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/10 border border-[#D4AF37]/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl">🗺️</span>
+                </div>
                         <div className="text-[#D4AF37] text-lg font-bold uppercase tracking-wide">LONG-TERM STRATEGY</div>
                       </div>
                       
                       {/* Strategy Overview */}
                       <div className="mb-6">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">💡</span>
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-sm font-bold">💡</span>
                           </div>
-                          <span className="text-purple-400 text-sm font-bold uppercase tracking-wide">STRATEGY:</span>
+                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">STRATEGY:</span>
                         </div>
-                        <div className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-xl p-4 border border-purple-500/20">
-                          <p className="text-purple-300 text-base font-medium leading-relaxed">
+                        <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 border border-[#D4AF37]/20">
+                          <p className="text-white/90 text-base font-medium leading-relaxed">
                             {safeDeepDive.playbook?.strategy || safeDeepDive.playbook?.next_48h || 'Focus on maintaining your boundaries while staying open to genuine connection.'}
                           </p>
                         </div>
@@ -1159,10 +1165,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       {/* Key Principles */}
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">⚡</span>
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-sm font-bold">⚡</span>
                           </div>
-                          <span className="text-amber-400 text-sm font-bold uppercase tracking-wide">KEY PRINCIPLES:</span>
+                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">KEY PRINCIPLES:</span>
                         </div>
                         <ul className="space-y-3">
                           {[
