@@ -857,83 +857,121 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
               
-              {/* Mobile - Horizontal Scroll Autopsy */}
-              <div className="sm:hidden overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6" data-autopsy-horizontal>
-                <div className="flex gap-4 pb-4">
-                  {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
-                    const priority = getReceiptPriority(receipt, i);
-                    return (
-                      <motion.div
-                        key={i}
-                        whileTap={{ scale: 0.98 }}
-                        whileHover={{ scale: 1.01 }}
-                        className={`flex-shrink-0 w-[85vw] max-w-[340px] snap-center receipt-card relative rounded-2xl p-5 border ${priority.borderColor} shadow-lg bg-black/40 backdrop-blur-sm cursor-pointer ${priority.glowColor}`}
-                        data-autopsy-item
-                        data-index={i}
-                        onClick={() => copyToClipboard(receipt.quote)}
-                      >
-                        {/* Priority Badge */}
-                        <div 
-                          className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
-                          style={{
-                            background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
-                            boxShadow: `0 4px 12px ${priority.severityColor}40`
-                          }}
+              {/* Mobile - Horizontal Scroll Autopsy with Navigation */}
+              <div className="sm:hidden relative" data-autopsy-horizontal>
+                {/* Navigation Arrows */}
+                <div className="flex items-center justify-between mb-4">
+                  <button
+                    onClick={() => {
+                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
+                      if (container) {
+                        container.scrollBy({ left: -340, behavior: 'smooth' });
+                      }
+                    }}
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-teal-400/30 text-teal-400 hover:bg-teal-400/10 hover:border-teal-400/50 transition-all duration-200"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  
+                  <div className="text-center">
+                    <div className="text-teal-400/60 text-xs font-medium">AUTOPSY RECEIPTS</div>
+                    <div className="text-white/40 text-xs">Tap arrows or swipe</div>
+                  </div>
+                  
+                  <button
+                    onClick={() => {
+                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
+                      if (container) {
+                        container.scrollBy({ left: 340, behavior: 'smooth' });
+                      }
+                    }}
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-teal-400/30 text-teal-400 hover:bg-teal-400/10 hover:border-teal-400/50 transition-all duration-200"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6">
+                  <div className="flex gap-4 pb-4">
+                    {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
+                      const priority = getReceiptPriority(receipt, i);
+                      return (
+                        <motion.div
+                          key={i}
+                          whileTap={{ scale: 0.98 }}
+                          whileHover={{ scale: 1.01 }}
+                          className={`flex-shrink-0 w-[85vw] max-w-[340px] snap-center receipt-card relative rounded-2xl p-5 border ${priority.borderColor} shadow-lg bg-black/40 backdrop-blur-sm cursor-pointer ${priority.glowColor}`}
+                          data-autopsy-item
+                          data-index={i}
+                          onClick={() => copyToClipboard(receipt.quote)}
                         >
-                          {priority.badge} {priority.label}
-                        </div>
-
-                        <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50" />
-
-                        {/* Person Badge */}
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-6 h-6 flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">💬</span>
+                          {/* Priority Badge */}
+                          <div 
+                            className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                            style={{
+                              background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
+                              boxShadow: `0 4px 12px ${priority.severityColor}40`
+                            }}
+                          >
+                            {priority.badge} {priority.label}
                           </div>
-                          <span className="text-stone-300/80 text-xs font-semibold uppercase tracking-wide">
-                            {getSpeakerName(receipt.quote)}
-                          </span>
-                        </div>
 
-                        {/* Quote */}
-                        <div className="text-stone-100 text-sm mb-4 font-medium italic leading-relaxed pr-6">
-                          "{receipt.quote}"
-                        </div>
+                          <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50" />
 
-                        {/* Visual Divider */}
-                        <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-3"></div>
-
-                        {/* DECODED Section */}
-                        <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-3 border border-[#14B8A6]/20">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="w-4 h-4 flex items-center justify-center">
-                              <span className="text-white text-xs font-bold">🎯</span>
+                          {/* Person Badge */}
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-6 h-6 flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">💬</span>
                             </div>
-                            <span className="text-[#A78BFA] text-xs font-bold uppercase tracking-wide">
-                              DECODED
+                            <span className="text-stone-300/80 text-xs font-semibold uppercase tracking-wide">
+                              {getSpeakerName(receipt.quote)}
                             </span>
                           </div>
-                          <div className="text-white/90 text-sm font-medium leading-relaxed mb-2">
-                            {receipt.bestie_look}
-                          </div>
-                          <div className="text-white/80 text-sm font-medium mb-2">
-                            {receipt.calling_it}
-                          </div>
-                          <div className="text-white/70 text-sm font-medium italic">
-                            {receipt.vibe_check}
-                          </div>
-                        </div>
 
-                        <div className="flex justify-center gap-1.5 mt-4 pt-3 border-t border-white/5">
-                          {[0,1,2].map(idx => (
-                            <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === i ? 'w-6 bg-teal-400' : 'w-1.5 bg-white/20'}`} />
-                          ))}
-                        </div>
-                      </motion.div>
-                    );
-                  })}
+                          {/* Quote */}
+                          <div className="text-stone-100 text-sm mb-4 font-medium italic leading-relaxed pr-6">
+                            "{receipt.quote}"
+                          </div>
+
+                          {/* Visual Divider */}
+                          <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-3"></div>
+
+                          {/* DECODED Section */}
+                          <div className="bg-gradient-to-r from-[#14B8A6]/10 to-[#2DD4BF]/5 rounded-xl p-3 border border-[#14B8A6]/20">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-4 h-4 flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">🎯</span>
+                              </div>
+                              <span className="text-[#A78BFA] text-xs font-bold uppercase tracking-wide">
+                                DECODED
+                              </span>
+                            </div>
+                            <div className="text-white/90 text-sm font-medium leading-relaxed mb-2">
+                              {receipt.bestie_look}
+                            </div>
+                            <div className="text-white/80 text-sm font-medium mb-2">
+                              {receipt.calling_it}
+                            </div>
+                            <div className="text-white/70 text-sm font-medium italic">
+                              {receipt.vibe_check}
+                            </div>
+                          </div>
+
+                          <div className="flex justify-center gap-1.5 mt-4 pt-3 border-t border-white/5">
+                            {[0,1,2].map(idx => (
+                              <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === i ? 'w-6 bg-teal-400' : 'w-1.5 bg-white/20'}`} />
+                            ))}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="text-center text-teal-400/60 text-xs mt-2 animate-pulse">← Swipe for more →</div>
+                
                 {showPaywall && (
                   <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center mt-3">
                     <Lock className="w-5 h-5 text-stone-400/60 mr-3" />
