@@ -494,6 +494,30 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     }
   };
 
+  // Extract speaker name from quote for person badge
+  const getSpeakerName = (quote) => {
+    if (!quote) return 'UNKNOWN';
+    
+    // Look for patterns like "Name:", "Name said:", "Name:", etc.
+    const patterns = [
+      /^([^:]+):/,           // "Name:"
+      /^([^:]+)\s+said:/i,   // "Name said:"
+      /^([^:]+)\s+texts:/i,  // "Name texts:"
+      /^([^:]+)\s+writes:/i, // "Name writes:"
+    ];
+    
+    for (const pattern of patterns) {
+      const match = quote.match(pattern);
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+    }
+    
+    // Fallback: use first word if no pattern matches
+    const firstWord = quote.split(' ')[0];
+    return firstWord.length > 20 ? 'UNKNOWN' : firstWord;
+  };
+
   // Receipt Priority System - Visual Hierarchy
   const getReceiptPriority = (receipt, index) => {
     // Determine priority based on content analysis and position
@@ -795,19 +819,47 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       {/* Copy Icon */}
                       <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50 group-hover:text-[#D4AF37] transition-colors duration-300" />
                       
-                      {/* Quote - adjusted for mobile readability */}
-                      <div className="text-stone-200/95 text-sm sm:text-lg mb-3 sm:mb-4 font-medium italic leading-relaxed pr-6 sm:pr-8">
+                      {/* Person Badge */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">💬</span>
+                        </div>
+                        <span className="text-stone-300/80 text-xs font-semibold uppercase tracking-wide">
+                          {getSpeakerName(receipt.quote)} SAID:
+                        </span>
+                      </div>
+                      
+                      {/* Quote - BIGGER and more prominent */}
+                      <div className="text-stone-100 text-sm sm:text-lg mb-4 font-medium italic leading-relaxed pr-6 sm:pr-8">
                         "{receipt.quote}"
                       </div>
                       
-                      {/* Pattern Badge - More colorful and prominent */}
-                      <div className="inline-block px-2.5 py-1 bg-gradient-to-r from-[#D4AF37]/20 to-[#F5E6D3]/20 text-[#D4AF37] rounded-full text-[11px] sm:text-sm font-semibold mb-2 sm:mb-3 border border-[#D4AF37]/30">
-                        {receipt.pattern}
+                      {/* DECODED Section */}
+                      <div className="mb-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-4 h-4 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-xs font-bold">🎯</span>
+                          </div>
+                          <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-wide">
+                            DECODED:
+                          </span>
+                        </div>
+                        <div className="text-[#D4AF37] text-xs sm:text-sm font-medium leading-relaxed pl-6">
+                          {receipt.pattern}
+                        </div>
                       </div>
                       
-                      {/* Cost - Better contrast */}
-                      <div className="text-stone-300/80 text-xs sm:text-sm font-medium">
-                        {receipt.cost}
+                      {/* COST Section */}
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">💸</span>
+                        </div>
+                        <span className="text-red-400 text-xs font-bold uppercase tracking-wide">
+                          COST:
+                        </span>
+                        <span className="text-red-300 text-xs sm:text-sm font-medium">
+                          {receipt.cost}
+                        </span>
                       </div>
                     </motion.div>
                   );
@@ -850,19 +902,47 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       {/* Copy Icon */}
                       <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/40 group-hover:text-[#D4AF37] transition-colors duration-300" />
                       
+                      {/* Person Badge */}
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">💬</span>
+                        </div>
+                        <span className="text-stone-300/80 text-sm font-semibold uppercase tracking-wide">
+                          {getSpeakerName(receipt.quote)} SAID:
+                        </span>
+                      </div>
+                      
                       {/* Quote - BIGGER and more prominent */}
-                      <div className="text-stone-200/95 text-base mb-4 font-medium italic leading-relaxed pr-8">
+                      <div className="text-stone-100 text-base mb-5 font-medium italic leading-relaxed pr-8">
                         "{receipt.quote}"
                       </div>
                       
-                      {/* Pattern Badge - More colorful and prominent */}
-                      <div className="inline-block px-3 py-1.5 bg-gradient-to-r from-[#D4AF37]/20 to-[#F5E6D3]/20 text-[#D4AF37] rounded-full text-sm font-semibold mb-3 border border-[#D4AF37]/30">
-                        {receipt.pattern}
+                      {/* DECODED Section */}
+                      <div className="mb-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-5 h-5 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                            <span className="text-black text-sm font-bold">🎯</span>
+                          </div>
+                          <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">
+                            DECODED:
+                          </span>
+                        </div>
+                        <div className="text-[#D4AF37] text-sm font-medium leading-relaxed pl-7">
+                          {receipt.pattern}
+                        </div>
                       </div>
                       
-                      {/* Cost - Better contrast */}
-                      <div className="text-stone-300/80 text-sm font-medium">
-                        {receipt.cost}
+                      {/* COST Section */}
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">💸</span>
+                        </div>
+                        <span className="text-red-400 text-sm font-bold uppercase tracking-wide">
+                          COST:
+                        </span>
+                        <span className="text-red-300 text-sm font-medium">
+                          {receipt.cost}
+                        </span>
                       </div>
                     </motion.div>
                   );
