@@ -269,7 +269,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
             <div style="width:10px;height:10px;border-radius:9999px;background:#D4AF37"></div>
-            <div style="font-weight:800;letter-spacing:.18em;color:#399d96">SAGE'S RECEIPT AUTOPSY</div>
+            <div style="font-weight:800;letter-spacing:.18em;color:#D4AF37">SAGE'S RECEIPT AUTOPSY</div>
           </div>
           <div style="font-size:40px;color:#fff;font-weight:700;line-height:1.2;margin-bottom:16px">“${bestReceipt.quote || 'No quote available'}”</div>
           <div style="display:inline-block;padding:8px 14px;border-radius:9999px;border:1px solid rgba(212,175,55,.3);background:linear-gradient(90deg,rgba(212,175,55,.2),rgba(245,230,211,.2));color:#D4AF37;font-weight:700;margin-bottom:12px">${bestReceipt.pattern || 'Pattern'}</div>
@@ -287,7 +287,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         block.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
             <div style="width:10px;height:10px;border-radius:9999px;background:#D4AF37"></div>
-            <div style="font-weight:800;letter-spacing:.18em;color:#399d96">SAGE'S PLAYBOOK</div>
+            <div style="font-weight:800;letter-spacing:.18em;color:#D4AF37">SAGE'S PLAYBOOK</div>
           </div>
           <ul style="list-style:none;padding:0;margin:0 0 28px 0">${movesHtml || '<li style=\"color:rgba(255,255,255,.6)\">No moves available</li>'}</ul>
           <div style="text-align:center;margin-top:12px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)">
@@ -496,14 +496,27 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
   // Extract speaker name from quote for person badge
   const getSpeakerName = (quote) => {
-    if (!quote) return 'UNKNOWN';
-    
-    // Look for patterns like "Name:", "Name said:", etc.
+    if (!quote) return 'SPEAKER';
+
+    // First, try to use context from the analysis
+    const context = safeDeepDive;
+    if (context?.userName && context?.otherName) {
+      // Check if quote contains user's name
+      if (quote.toLowerCase().includes(context.userName.toLowerCase())) {
+        return context.userName.toUpperCase();
+      }
+      // Check if quote contains other person's name
+      if (quote.toLowerCase().includes(context.otherName.toLowerCase())) {
+        return context.otherName.toUpperCase();
+      }
+    }
+
+    // Fallback to pattern matching
     const patterns = [
-      /^([^:]+):/,           // "Name:"
-      /^([^:]+)\s+said:/i,   // "Name said:"
-      /^([^:]+)\s+texts:/i,  // "Name texts:"
-      /^([^:]+)\s+writes:/i, // "Name writes:"
+      /^([A-Z][a-z]+):/,           // "Name:"
+      /^([A-Z][a-z]+)\s+said:/i,   // "Name said:"
+      /^([A-Z][a-z]+)\s+texts:/i,  // "Name texts:"
+      /^([A-Z][a-z]+)\s+writes:/i, // "Name writes:"
     ];
     
     for (const pattern of patterns) {
@@ -511,43 +524,21 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       if (match && match[1]) {
         const name = match[1].trim();
         
-        // Filter out common non-name words that might appear before colons
+        // Filter out common non-name words
         const nonNames = [
           'you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 
           'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 
-          'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom'
+          'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom',
+          'just', 'like', 'really', 'actually', 'basically', 'literally'
         ];
         
-        // If it's a common word, try to extract a better name
-        if (nonNames.includes(name.toLowerCase())) {
-          // Look for actual names in the quote content
-          const namePatterns = [
-            /(?:from|by|to)\s+([A-Z][a-z]+)/,  // "from Jess", "by Tom"
-            /([A-Z][a-z]+)\s+(?:said|texts|writes)/,  // "Jess said", "Tom texts"
-            /([A-Z][a-z]+):/,  // "Jess:", "Tom:"
-          ];
-          
-          for (const namePattern of namePatterns) {
-            const nameMatch = quote.match(namePattern);
-            if (nameMatch && nameMatch[1]) {
-              return nameMatch[1].trim();
-            }
-          }
-          
-          // If no proper name found, return a generic label
-          return 'SPEAKER';
+        if (!nonNames.includes(name.toLowerCase()) && name.length > 1) {
+          return name.toUpperCase();
         }
-        
-        return name;
       }
     }
     
-    // Fallback: look for any capitalized word that might be a name
-    const nameMatch = quote.match(/([A-Z][a-z]+)/);
-    if (nameMatch) {
-      return nameMatch[1];
-    }
-    
+    // If no clear name found, return generic speaker
     return 'SPEAKER';
   };
 
@@ -732,7 +723,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="flex items-center justify-between mb-6" data-share-hide="true">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h2 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SUMMARY</h2>
+                    <h2 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S SUMMARY</h2>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">HOT TAKE ANALYSIS</div>
                 </div>
@@ -755,56 +746,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   </div>
                 </div>
 
-                {/* Key Metrics Dashboard - 1x3 horizontal layout */}
-                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
-                  {/* Risk Assessment */}
-                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                      RISK LEVEL
-                    </div>
-                    <div className="text-sm font-bold text-red-400 mb-2">
-                      HIGH
-                    </div>
-                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
-                      <div className="bg-red-400 h-2 rounded-full" style={{ width: '85%' }}></div>
-                    </div>
-                    <div className="text-xs text-stone-300/80">
-                      Requires immediate attention
-                    </div>
-                  </div>
-                  
-                  {/* Compatibility Score */}
-                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                      COMPATIBILITY
-                    </div>
-                    <div className="text-sm font-bold text-amber-400 mb-2">
-                      42%
-                    </div>
-                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
-                      <div className="bg-amber-400 h-2 rounded-full" style={{ width: '42%' }}></div>
-                    </div>
-                    <div className="text-xs text-stone-300/80">
-                      Below optimal threshold
-                    </div>
-                  </div>
-
-                  {/* Communication Health */}
-                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                      COMMUNICATION
-                    </div>
-                    <div className="text-sm font-bold text-blue-400 mb-2">
-                      POOR
-                    </div>
-                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
-                      <div className="bg-blue-400 h-2 rounded-full" style={{ width: '25%' }}></div>
-                    </div>
-                    <div className="text-xs text-stone-300/80">
-                      Significant barriers detected
-                    </div>
-                  </div>
-                </div>
                 
                 {/* Strategic Assessment moved above as headline */}
               </div>
@@ -822,7 +763,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S RECEIPT AUTOPSY</h3>
+                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S RECEIPT AUTOPSY</h3>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
@@ -875,36 +816,41 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       </div>
                       
                       {/* Quote - BIGGER and more prominent */}
-                      <div className="text-stone-100 text-sm sm:text-lg mb-4 font-medium italic leading-relaxed pr-6 sm:pr-8">
+                      <div className="text-stone-100 text-sm sm:text-lg mb-6 font-medium italic leading-relaxed pr-6 sm:pr-8">
                         "{receipt.quote}"
                       </div>
-                      
-                      {/* DECODED Section */}
-                      <div className="mb-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-4 h-4 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+
+                      {/* Visual Divider */}
+                      <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4"></div>
+
+                      {/* DECODED Section - Gold tinted background */}
+                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-4 mb-4 border border-[#D4AF37]/20">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-5 h-5 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
                             <span className="text-black text-xs font-bold">🎯</span>
                           </div>
                           <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-wide">
-                            DECODED:
+                            DECODED
                           </span>
                         </div>
-                        <div className="text-[#D4AF37] text-xs sm:text-sm font-medium leading-relaxed pl-6">
+                        <div className="text-white/90 text-sm font-medium leading-relaxed">
                           {receipt.pattern}
                         </div>
                       </div>
-                      
-                      {/* COST Section with Emotional Consequence Colors */}
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">💸</span>
+
+                      {/* COST Section - Red tinted background */}
+                      <div className="bg-gradient-to-r from-[#EF4444]/10 to-[#DC2626]/5 rounded-xl p-4 border border-[#EF4444]/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-5 h-5 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">💸</span>
+                          </div>
+                          <span className="text-[#EF4444] text-xs font-bold uppercase tracking-wide">
+                            COST
+                          </span>
                         </div>
-                        <span className="text-[#EF4444] text-xs font-bold uppercase tracking-wide">
-                          COST:
-                        </span>
-                        <span className="text-[#EF4444]/90 text-xs sm:text-sm font-medium">
+                        <div className="text-white/80 text-sm font-medium">
                           {receipt.cost}
-                        </span>
+                        </div>
                       </div>
                     </motion.div>
                   );
@@ -917,14 +863,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 )}
               </div>
               
-              {/* Desktop - Enhanced Grid with Visual Hierarchy (3 receipts) */}
+              {/* Desktop - 2-Column Grid with Visual Hierarchy (3 receipts) */}
               <div className="hidden sm:grid sm:grid-cols-2 gap-6">
                 {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 3) || []).map((receipt, i) => {
                   const priority = getReceiptPriority(receipt, i);
                   const sizeClasses = {
-                    large: 'col-span-2 p-8',
-                    medium: 'p-6',
-                    small: 'p-5'
+                    large: 'col-span-2 p-8',  // Smoking gun takes full width
+                    medium: 'p-6',            // Red flag and pattern share columns
+                    small: 'p-6'              // Red flag and pattern share columns
                   };
                   
                   return (
@@ -964,36 +910,41 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       </div>
                       
                       {/* Quote - BIGGER and more prominent */}
-                      <div className="text-stone-100 text-base mb-5 font-medium italic leading-relaxed pr-8">
+                      <div className="text-stone-100 text-base mb-6 font-medium italic leading-relaxed pr-8">
                         "{receipt.quote}"
                       </div>
-                      
-                      {/* DECODED Section */}
-                      <div className="mb-4">
+
+                      {/* Visual Divider */}
+                      <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4"></div>
+
+                      {/* DECODED Section - Gold tinted background */}
+                      <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#F5E6D3]/5 rounded-xl p-5 mb-5 border border-[#D4AF37]/20">
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-5 h-5 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] rounded-full flex items-center justify-center">
                             <span className="text-black text-sm font-bold">🎯</span>
                           </div>
                           <span className="text-[#D4AF37] text-sm font-bold uppercase tracking-wide">
-                            DECODED:
+                            DECODED
                           </span>
                         </div>
-                        <div className="text-[#D4AF37] text-sm font-medium leading-relaxed pl-7">
+                        <div className="text-white/90 text-sm font-medium leading-relaxed">
                           {receipt.pattern}
                         </div>
                       </div>
-                      
-                      {/* COST Section with Emotional Consequence Colors */}
-                      <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm font-bold">💸</span>
+
+                      {/* COST Section - Red tinted background */}
+                      <div className="bg-gradient-to-r from-[#EF4444]/10 to-[#DC2626]/5 rounded-xl p-5 border border-[#EF4444]/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-gradient-to-r from-[#EF4444] to-[#DC2626] rounded-full flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">💸</span>
+                          </div>
+                          <span className="text-[#EF4444] text-sm font-bold uppercase tracking-wide">
+                            COST
+                          </span>
                         </div>
-                        <span className="text-[#EF4444] text-sm font-bold uppercase tracking-wide">
-                          COST:
-                        </span>
-                        <span className="text-[#EF4444]/90 text-sm font-medium">
+                        <div className="text-white/80 text-sm font-medium">
                           {receipt.cost}
-                        </span>
+                        </div>
                       </div>
                     </motion.div>
                   );
@@ -1039,7 +990,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="flex items-center justify-between mb-6" data-share-hide="true">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S DYNAMICS</h3>
+                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S DYNAMICS</h3>
               </div>
                     <div className="text-xs text-stone-400/70 font-mono">RELATIONSHIP PHYSICS</div>
                   </div>
@@ -1108,7 +1059,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S PLAYBOOK</h3>
+                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S PLAYBOOK</h3>
                     </div>
                     <div className="text-xs text-stone-400/70 font-mono">STRATEGIC MOVES</div>
                   </div>
@@ -1250,7 +1201,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SEAL</h3>
+                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>SAGE'S SEAL</h3>
                 </div>
                 <div className="text-xs text-stone-400/70 font-mono">FINAL WISDOM</div>
           </div>
