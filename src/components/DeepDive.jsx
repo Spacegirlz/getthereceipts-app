@@ -584,7 +584,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       quote.includes(keyword) || pattern.includes(keyword) || cost.includes(keyword)
     );
     
-    // Priority assignment
+    // Priority assignment - with 5 receipts, we can have more nuanced hierarchy
     if (hasSmokingGun || index === 0) {
       return {
         level: 'smoking-gun',
@@ -595,7 +595,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         bgGradient: 'from-red-500/10 to-red-400/5',
         glowColor: 'shadow-red-500/20'
       };
-    } else if (hasRedFlag || index === 1) {
+    } else if (hasRedFlag || index === 1 || index === 2) {
       return {
         level: 'red-flag',
         badge: '⚠️',
@@ -821,9 +821,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
               </div>
               
-              {/* Mobile - 2x2 Grid Autopsy with Visual Hierarchy */}
+              {/* Mobile - Grid Autopsy with Visual Hierarchy (5 receipts) */}
               <div className="sm:hidden grid grid-cols-2 gap-3">
-                {(safeDeepDive.receipts?.slice(0, 4) || []).map((receipt, i) => {
+                {(safeDeepDive.receipts?.slice(0, 5) || []).map((receipt, i) => {
                   const priority = getReceiptPriority(receipt, i);
                   const sizeClasses = {
                     large: 'col-span-2 p-5',
@@ -900,14 +900,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 {showPaywall && (
                   <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center col-span-2">
                     <Lock className="w-5 h-5 text-stone-400/60 mr-3" />
-                    <span className="text-stone-400/70 text-xs sm:text-sm font-medium">Unlock 2 more receipts</span>
+                    <span className="text-stone-400/70 text-xs sm:text-sm font-medium">Unlock more receipts</span>
                   </div>
                 )}
               </div>
               
-              {/* Desktop - Enhanced Grid with Visual Hierarchy */}
+              {/* Desktop - Enhanced Grid with Visual Hierarchy (5 receipts) */}
               <div className="hidden sm:grid sm:grid-cols-2 gap-6">
-                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 4) || []).map((receipt, i) => {
+                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 5) || []).map((receipt, i) => {
                   const priority = getReceiptPriority(receipt, i);
                   const sizeClasses = {
                     large: 'col-span-2 p-8',
@@ -980,7 +980,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     </motion.div>
                   );
                 })}
-                {showPaywall && [1,2].map(i => (
+                {showPaywall && [1,2,3].map(i => (
                   <div key={`locked-${i}`} className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-6 border border-white/[0.08] flex items-center justify-center">
                     <Lock className="w-5 h-5 text-stone-400/60" />
                   </div>
