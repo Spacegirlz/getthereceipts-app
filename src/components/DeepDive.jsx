@@ -1,6 +1,6 @@
 import React, { useState, useRef, memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight } from 'lucide-react';
+import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight, Info } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
@@ -44,7 +44,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       : { level: 'HIGH', color: 'red', text: 'Requires immediate attention', width: '85%' };
     
     // Compatibility
-    const compatScore = Math.max(0, actuallyIntoYou - (redFlags * 5));
+    const compatScore = Math.max(15, actuallyIntoYou - (redFlags * 2));
     const compat = compatScore >= 70
       ? { score: compatScore, status: 'STRONG', text: 'Above optimal threshold', color: 'green', width: `${compatScore}%` }
       : compatScore >= 40
@@ -270,11 +270,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         quality: 1
       });
       const timestamp = Date.now();
-      saveAs(blob, `Sage-DeepDive-Clean-${timestamp}.png`);
-      toast({ title: "Saved!", description: "Clean share image downloaded." });
+      saveAs(blob, `Sage-Playbook-${timestamp}.png`);
+      toast({ title: "Saved!", description: "Playbook image downloaded." });
     } catch (err) {
       console.error('Clean save error', err);
-      toast({ title: "Error", description: "Could not save clean share.", variant: "destructive" });
+      toast({ title: "Error", description: "Could not save playbook.", variant: "destructive" });
     } finally {
       // Restore displays
       allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
@@ -323,7 +323,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       container.style.top = '-99999px';
       container.style.left = '-99999px';
 
-      const title = safeDeepDive?.verdict?.act || analysisData?.verdict || "Sage's Deep Dive";
+      const title = safeDeepDive?.verdict?.act || analysisData?.verdict || "Sage's Playbook";
       const sub = safeDeepDive?.verdict?.subtext || '';
       const receiptsArr = Array.isArray(safeDeepDive?.receipts) ? safeDeepDive.receipts : [];
       const bestReceipt = receiptsArr[0] || { quote: '', pattern: '', cost: '' };
@@ -336,7 +336,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       header.style.gap = '16px';
       header.style.marginBottom = '32px';
       header.innerHTML = `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid rgba(20,184,166,.4);box-shadow:0 0 20px rgba(20,184,166,.3);"><img src="${sageDarkCircle}" alt="Sage" style="width:100%;height:100%;object-fit:cover"/></div>
-        <div style="font-weight:800;letter-spacing:.18em;color:#14B8A6">SAGE'S DEEP DIVE</div>`;
+        <div style="font-weight:800;letter-spacing:.18em;color:#14B8A6">SAGE'S PLAYBOOK</div>`;
       container.appendChild(header);
 
       if (mode === 'hero') {
@@ -868,7 +868,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           }}>
           <div className="relative z-10">
 
-            {/* Sage's Deep Dive Header - Horizontal Banner Style */}
+            {/* Sage's Playbook Header - Horizontal Banner Style */}
             <div className="mb-12">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -880,7 +880,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           <div className="inline-flex items-center gap-2 bg-black/40 px-3 py-1 rounded-full border border-stone-400/20 mb-2 relative z-50">
             <img
               src={sageDarkCircle}
-              alt="Sage's Deep Dive"
+              alt="Sage's Playbook"
               className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
               style={{
                 filter: 'brightness(1.2) contrast(1.1)',
@@ -892,13 +892,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 color: '#14B8A6',
                 textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
               }}>
-              SAGE'S DEEP DIVE
+              SAGE'S PLAYBOOK
             </span>
           </div>
         </div>
                 
                 {/* Hot Takes Badge - Humor Protection */}
-                <div className="mt-4 text-center">
+                <div className="mt-2 text-center">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-full">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
@@ -925,11 +925,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mb-10"
+              className="mb-4"
             >
               <div className="rounded-3xl">
                 {/* Strategic Assessment (Headline) */}
-                <div className="rounded-2xl p-4 mb-4">
+                <div className="rounded-2xl p-3 mb-2">
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-3 mb-2">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center">
@@ -949,9 +949,24 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             </div>
 
             {/* Metrics moved into a separate card below the summary */}
-            <div className="rounded-3xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4">
+            <div className="rounded-3xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4" data-share-hide="true">
 
                 {/* Key Metrics Dashboard - 1x3 horizontal layout */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-sm font-semibold text-white/90">Key Metrics</div>
+                  <div className="relative group">
+                    <Info className="w-4 h-4 text-white/50 hover:text-teal-400 cursor-help transition-colors" />
+                    <div className="absolute right-0 top-6 w-64 p-3 bg-black/90 border border-teal-400/30 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                      <div className="text-xs text-white/90 leading-relaxed">
+                        <div className="font-semibold text-teal-400 mb-1">How Sage Calculates These</div>
+                        <div className="text-white/80">
+                          Sage analyzes conversation dynamics, red flags, and emotional signals to create these personalized metrics. 
+                          Each score reflects the unique patterns in your specific situation, not generic formulas.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
                   {(() => {
                     // Ensure we have analysisData, fallback to empty object if not
@@ -1039,10 +1054,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="mb-6"
+              className="mb-3"
             >
-              <div className="bg-black/45 backdrop-blur-sm rounded-3xl p-6 border border-white/[0.12] shadow-2xl">
-                <div className="flex items-center justify-between mb-6">
+              <div className="bg-black/45 backdrop-blur-sm rounded-3xl p-3 border border-white/[0.12] shadow-2xl">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
                     <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S RECEIPT AUTOPSY</h3>
@@ -1204,24 +1219,24 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                       whileHover={{ y: -4, scale: 1.01 }}
-                      className={`receipt-card relative rounded-2xl p-8 bg-black/40 backdrop-blur-sm cursor-pointer group border-2 ${priority.borderColor} shadow-[0_0_40px_rgba(20,184,166,0.2)] transition-all duration-300`}
+                      className={`receipt-card relative rounded-2xl p-4 bg-black/40 backdrop-blur-sm cursor-pointer group border-2 ${priority.borderColor} shadow-[0_0_40px_rgba(20,184,166,0.2)] hover:shadow-[0_0_40px_rgba(59,130,246,0.3)] hover:border-blue-400/60 transition-all duration-300`}
                       data-autopsy-item
                       data-index={0}
                       onClick={() => copyToClipboard(receipt.quote)}
                     >
                       {/* Hover glow */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     {/* Copy Icon */}
                     <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
                     
                     {/* Quote */}
-                    <div className="relative text-white/95 text-lg mb-5 pb-5 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20 text-center">
+                    <div className="relative text-white/95 text-lg mb-3 pb-3 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20 text-center">
                       💬 "{receipt.quote}"
                     </div>
                     
                     {/* Content sections with better spacing */}
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                       <div>
                         <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
                         <div className="text-white text-base leading-relaxed">{receipt.bestie_look}</div>
@@ -1248,6 +1263,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.6 }}
                     className="mt-6"
+                    data-share-hide="true"
                   >
                     <button
                       onClick={() => setShowAllAutopsy(!showAllAutopsy)}
@@ -1277,7 +1293,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="overflow-hidden"
                     >
                       <div className="grid grid-cols-2 gap-6 mt-6">
-                        {safeDeepDive.receipts.slice(1, showPaywall ? 3 : 5).map((receipt, i) => {
+                        {safeDeepDive.receipts.slice(1, showPaywall ? 3 : 3).map((receipt, i) => {
                           const actualIndex = i + 1;
                           const priority = getReceiptPriority(receipt, actualIndex);
                           return (
@@ -1287,13 +1303,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: 0.7 + (i * 0.1) }}
                               whileHover={{ y: -4, scale: 1.02 }}
-                              className={`receipt-card relative rounded-2xl p-6 bg-black/40 backdrop-blur-sm cursor-pointer group border ${priority.borderColor} shadow-lg hover:border-teal-400/50 transition-all duration-300`}
+                              className={`receipt-card relative rounded-2xl p-6 bg-black/40 backdrop-blur-sm cursor-pointer group border ${priority.borderColor} shadow-lg hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)] transition-all duration-300`}
                               data-autopsy-item
                               data-index={actualIndex}
                               onClick={() => copyToClipboard(receipt.quote)}
                             >
                               {/* Hover glow */}
-                              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               
                               {/* Copy Icon */}
                               <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
@@ -1361,9 +1377,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="mb-6"
+                  className="mb-3"
                 >
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
                       <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S PLAYBOOK</h3>
@@ -1376,9 +1392,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
-                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-2xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center gap-3 mb-2">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-xl">⏰</span>
                         </div>
@@ -1394,9 +1410,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
-                      className=" rounded-2xl p-6 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-2xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center gap-3 mb-2">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-xl">🎯</span>
                         </div>
@@ -1433,6 +1449,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
               className="mb-6"
+              data-share-hide="true"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
@@ -1496,27 +1513,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
             {/* Actions - Premium Buttons */}
             <div className="flex flex-wrap items-center justify-between gap-4 max-w-2xl mx-auto" data-share-hide="true">
-          <button 
-            onClick={handleSaveTea}
-                className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Save
-              </button>
               <button
                 onClick={handleSaveClean}
                 className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
-                Save Clean
+                Save Playbook
               </button>
-              <button
-                onClick={handleSaveNineBySixteen}
-                className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Save 9:16
-          </button>
               <button
                 onClick={() => {
                   // Haptic feedback for mobile
@@ -1533,7 +1536,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         </div>
         
             {/* Footer - match Sage Receipt */}
-            <div className="text-center mt-4 mb-2">
+            <div className="text-center mt-8 mb-2">
               <p className="text-xs text-stone-400/70 italic">
                 For entertainment purposes - Sage calls it like she sees it
               </p>
