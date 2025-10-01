@@ -1248,8 +1248,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                               transition={{ delay: 0.7 + (i * 0.1) }}
                               className="flex items-start gap-3 group/item"
                             >
-                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#F5E6D3]/20 border border-[#D4AF37]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
-                                <ChevronRight className="w-3 h-3 text-[#D4AF37]" />
+                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/20 border border-[#14B8A6]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                <ChevronRight className="w-3 h-3 text-[#14B8A6]" />
                 </div>
                               <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{move}</span>
                             </motion.li>
