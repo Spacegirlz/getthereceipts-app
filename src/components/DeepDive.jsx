@@ -929,7 +929,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             >
               <div className="rounded-3xl">
                 {/* Strategic Assessment (Headline) */}
-                <div className="rounded-2xl p-3 mb-2">
+                <div className="rounded-xl p-3 mb-2">
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-3 mb-2">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center">
@@ -949,7 +949,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             </div>
 
             {/* Metrics moved into a separate card below the summary */}
-            <div className="rounded-3xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4" data-share-hide="true">
+            <div className="rounded-xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4" data-share-hide="true">
 
                 {/* Key Metrics Dashboard - 1x3 horizontal layout */}
                 <div className="flex items-center justify-between mb-3">
@@ -1056,7 +1056,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               transition={{ delay: 0.3 }}
               className="mb-3"
             >
-              <div className="bg-black/45 backdrop-blur-sm rounded-3xl p-3 border border-white/[0.12] shadow-2xl">
+              <div className="bg-black/45 backdrop-blur-sm rounded-xl p-3 border border-white/[0.12] shadow-2xl">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
@@ -1134,7 +1134,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                           key={i}
                           whileTap={{ scale: 0.98 }}
                           whileHover={{ scale: 1.01 }}
-                          className={`flex-shrink-0 w-[85vw] max-w-[340px] snap-center receipt-card relative rounded-2xl p-5 border ${priority.borderColor} shadow-lg bg-black/40 backdrop-blur-sm cursor-pointer ${priority.glowColor}`}
+                          className={`flex-shrink-0 w-[85vw] max-w-[340px] snap-center receipt-card relative rounded-xl p-5 border ${priority.borderColor} shadow-lg bg-black/40 backdrop-blur-sm cursor-pointer ${priority.glowColor}`}
                           data-autopsy-item
                           data-index={i}
                           onClick={() => copyToClipboard(receipt.quote)}
@@ -1200,7 +1200,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 </div>
                 
                 {showPaywall && (
-                  <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-2xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center mt-3">
+                  <div className="bg-gradient-to-br from-black/30 to-black/20 rounded-xl p-4 sm:p-6 border border-white/[0.08] flex items-center justify-center mt-3">
                     <Lock className="w-5 h-5 text-stone-400/60 mr-3" />
                     <span className="text-stone-400/70 text-xs sm:text-sm font-medium">Unlock more receipts</span>
                   </div>
@@ -1219,13 +1219,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                       whileHover={{ y: -4, scale: 1.01 }}
-                      className={`receipt-card relative rounded-2xl p-4 bg-black/40 backdrop-blur-sm cursor-pointer group border-2 ${priority.borderColor} shadow-[0_0_40px_rgba(20,184,166,0.2)] hover:shadow-[0_0_40px_rgba(59,130,246,0.3)] hover:border-blue-400/60 transition-all duration-300`}
+                      className={`receipt-card relative rounded-xl p-4 bg-black/40 backdrop-blur-sm cursor-pointer group border-2 ${priority.borderColor} shadow-[0_0_40px_rgba(20,184,166,0.2)] hover:shadow-[0_0_40px_rgba(59,130,246,0.3)] hover:border-blue-400/60 transition-all duration-300`}
                       data-autopsy-item
                       data-index={0}
                       onClick={() => copyToClipboard(receipt.quote)}
                     >
                       {/* Hover glow */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     {/* Copy Icon */}
                     <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
@@ -1303,13 +1303,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: 0.7 + (i * 0.1) }}
                               whileHover={{ y: -4, scale: 1.02 }}
-                              className={`receipt-card relative rounded-2xl p-6 bg-black/40 backdrop-blur-sm cursor-pointer group border ${priority.borderColor} shadow-lg hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)] transition-all duration-300`}
+                              className={`receipt-card relative rounded-xl p-6 bg-black/40 backdrop-blur-sm cursor-pointer group border ${priority.borderColor} shadow-lg hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)] transition-all duration-300`}
                               data-autopsy-item
                               data-index={actualIndex}
                               onClick={() => copyToClipboard(receipt.quote)}
                             >
                               {/* Hover glow */}
-                              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               
                               {/* Copy Icon */}
                               <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
@@ -1392,7 +1392,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
-                      className=" rounded-2xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-2">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -1410,7 +1410,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
-                      className=" rounded-2xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-3 mb-2">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -1448,10 +1448,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="mb-6"
-              data-share-hide="true"
+              className="mb-3"
             >
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
                   <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SEAL</h3>
@@ -1461,16 +1460,16 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           
               <div className="relative group">
                 {/* Enhanced Gold glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/8 to-transparent rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3]/6 to-transparent rounded-3xl blur-xl group-hover:blur-lg transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/8 to-transparent rounded-xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3]/6 to-transparent rounded-xl blur-xl group-hover:blur-lg transition-all duration-500" />
                 
-                <div className="relative bg-[#0b1220]/60 backdrop-blur-sm rounded-3xl p-8 border border-[#D4AF37]/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
+                <div className="relative bg-[#0b1220]/60 backdrop-blur-sm rounded-xl p-4 border border-[#D4AF37]/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
                   {/* Enhanced Crown with Animation */}
                   <motion.div 
                     initial={{ scale: 0.8, rotate: -10 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
-                    className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300"
+                    className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300"
                   >
                     👑
                   </motion.div>
@@ -1480,7 +1479,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
-                    className="text-sm font-semibold tracking-[0.3em] text-[#D4AF37] uppercase mb-6"
+                    className="text-xs font-semibold tracking-[0.2em] text-[#D4AF37] uppercase mb-2"
                   >
                     Sage's Seal
                   </motion.h4>
@@ -1490,7 +1489,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
-                    className="text-2xl font-medium leading-relaxed px-4 group-hover:scale-105 transition-transform duration-300"
+                    className="text-lg font-medium leading-relaxed px-2 group-hover:scale-105 transition-transform duration-300"
               style={{
                       background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 50%, #D4AF37 100%)',
                 WebkitBackgroundClip: 'text',
