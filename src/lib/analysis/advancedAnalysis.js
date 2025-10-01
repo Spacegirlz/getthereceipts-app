@@ -1492,7 +1492,9 @@ export const generateAlignedResults = async (message, context) => {
   let alignedDeepDive = null;
   try {
     const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
-    const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark);
+    const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark)
+      .replace(/\{userName\}/g, cleanContext.userName || 'You')
+      .replace(/\{otherName\}/g, cleanContext.otherName || 'Them');
 
     // Use backup system for Deep Dive - start with first available key
     const apiKeys = [
