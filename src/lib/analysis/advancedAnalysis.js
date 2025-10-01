@@ -1494,7 +1494,7 @@ export const generateAlignedResults = async (message, context) => {
     const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
     const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark)
       .replace(/\{userName\}/g, cleanContext.userName || 'You')
-      .replace(/\{otherName\}/g, cleanContext.otherName || 'Them');
+      .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
 
     // Use backup system for Deep Dive - start with first available key
     const apiKeys = [
@@ -1729,7 +1729,7 @@ export const generateAlignedResults = async (message, context) => {
       .replace(/\{redFlags\}/g, String(shareShotAnalysis.redFlags))
       .replace(/\{confidenceRemark\}/g, shareShotAnalysis.confidenceRemark)
       .replace(/\{userName\}/g, cleanContext.userName || 'You')
-      .replace(/\{otherName\}/g, cleanContext.otherName || 'Them');
+      .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
     
     // Use backup system for Immunity Training - start with first available key
     const apiKeys = [

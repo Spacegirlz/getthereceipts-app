@@ -18,7 +18,60 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const { toast } = useToast();
   const [copiedText, setCopiedText] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showAllAutopsy, setShowAllAutopsy] = useState(false);
   const speechRef = useRef(null);
+
+  // Dynamic Metrics Calculator
+  const calculateMetrics = (analysis) => {
+    const { redFlags = 0, wastingTime = 0, actuallyIntoYou = 0, redFlagChips = [] } = analysis;
+    
+    // Debug logging to verify data
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 DYNAMIC METRICS CALCULATOR:', {
+        redFlags,
+        wastingTime,
+        actuallyIntoYou,
+        redFlagChips,
+        fullAnalysis: analysis
+      });
+    }
+    
+    // Risk Level
+    const risk = redFlags <= 2 
+      ? { level: 'LOW', color: 'green', text: 'Manageable situation', width: '25%' }
+      : redFlags <= 6
+      ? { level: 'MEDIUM', color: 'orange', text: 'Proceed with awareness', width: '60%' }
+      : { level: 'HIGH', color: 'red', text: 'Requires immediate attention', width: '85%' };
+    
+    // Compatibility
+    const compatScore = Math.max(0, actuallyIntoYou - (redFlags * 5));
+    const compat = compatScore >= 70
+      ? { score: compatScore, status: 'STRONG', text: 'Above optimal threshold', color: 'green', width: `${compatScore}%` }
+      : compatScore >= 40
+      ? { score: compatScore, status: 'MODERATE', text: 'Mixed signals present', color: 'yellow', width: `${compatScore}%` }
+      : { score: compatScore, status: 'POOR', text: 'Below optimal threshold', color: 'red', width: `${compatScore}%` };
+    
+    // Communication
+    const commFlags = ['vague', 'mixed signals', 'excuse', 'plan dodge', 'maybe'];
+    const hasCommIssues = redFlagChips.some(chip => 
+      commFlags.some(flag => chip.toLowerCase().includes(flag))
+    );
+    const commScore = Math.max(0, 100 - wastingTime - (hasCommIssues ? 20 : 0));
+    const comm = commScore >= 70
+      ? { score: commScore, quality: 'STRONG', text: 'Clear and consistent', color: 'green', width: `${commScore}%` }
+      : commScore >= 40
+      ? { score: commScore, quality: 'MIXED', text: 'Some clarity issues', color: 'yellow', width: `${commScore}%` }
+      : { score: commScore, quality: 'POOR', text: 'Significant barriers detected', color: 'red', width: `${commScore}%` };
+    
+    const result = { risk, compat, comm };
+    
+    // Debug logging to verify calculations
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 CALCULATED METRICS:', result);
+    }
+    
+    return result;
+  };
 
   const handleShareTea = async () => {
     try {
@@ -900,53 +953,80 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
                 {/* Key Metrics Dashboard - 1x3 horizontal layout */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
-                  {/* Risk Assessment */}
-                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                      RISK LEVEL
-                    </div>
-                    <div className="text-sm font-bold text-red-400 mb-2">
-                      HIGH
-                    </div>
-                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
-                      <div className="bg-red-400 h-2 rounded-full" style={{ width: '85%' }}></div>
-                    </div>
-                    <div className="text-xs text-stone-300/80">
-                      Requires immediate attention
-                    </div>
-                  </div>
-                  
-                  {/* Compatibility Score */}
-                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                      COMPATIBILITY
-                    </div>
-                    <div className="text-sm font-bold text-amber-400 mb-2">
-                      42%
-                    </div>
-                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
-                      <div className="bg-amber-400 h-2 rounded-full" style={{ width: '42%' }}></div>
-                    </div>
-                    <div className="text-xs text-stone-300/80">
-                      Below optimal threshold
-                    </div>
-                  </div>
+                  {(() => {
+                    // Ensure we have analysisData, fallback to empty object if not
+                    const data = analysisData || {};
+                    const metrics = calculateMetrics(data);
+                    return (
+                      <>
+                        {/* Risk Assessment */}
+                        <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                          <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
+                            RISK LEVEL
+                          </div>
+                          <div className={`text-sm font-bold mb-2 ${
+                            metrics.risk.color === 'green' ? 'text-green-400' :
+                            metrics.risk.color === 'orange' ? 'text-orange-400' : 'text-red-400'
+                          }`}>
+                            {metrics.risk.level}
+                          </div>
+                          <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                            <div className={`h-2 rounded-full ${
+                              metrics.risk.color === 'green' ? 'bg-green-400' :
+                              metrics.risk.color === 'orange' ? 'bg-orange-400' : 'bg-red-400'
+                            }`} style={{ width: metrics.risk.width }}></div>
+                          </div>
+                          <div className="text-xs text-stone-300/80">
+                            {metrics.risk.text}
+                          </div>
+                        </div>
+                        
+                        {/* Compatibility Score */}
+                        <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                          <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
+                            COMPATIBILITY
+                          </div>
+                          <div className={`text-sm font-bold mb-2 ${
+                            metrics.compat.color === 'green' ? 'text-green-400' :
+                            metrics.compat.color === 'yellow' ? 'text-yellow-400' : 'text-red-400'
+                          }`}>
+                            {metrics.compat.score}%
+                          </div>
+                          <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                            <div className={`h-2 rounded-full ${
+                              metrics.compat.color === 'green' ? 'bg-green-400' :
+                              metrics.compat.color === 'yellow' ? 'bg-yellow-400' : 'bg-red-400'
+                            }`} style={{ width: metrics.compat.width }}></div>
+                          </div>
+                          <div className="text-xs text-stone-300/80">
+                            {metrics.compat.text}
+                          </div>
+                        </div>
 
-                  {/* Communication Health */}
-                  <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                    <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                      COMMUNICATION
-                    </div>
-                    <div className="text-sm font-bold text-blue-400 mb-2">
-                      POOR
-                    </div>
-                    <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
-                      <div className="bg-blue-400 h-2 rounded-full" style={{ width: '25%' }}></div>
-                    </div>
-                    <div className="text-xs text-stone-300/80">
-                      Significant barriers detected
-                    </div>
-                  </div>
+                        {/* Communication Health */}
+                        <div className="bg-black/40 rounded-xl p-3 sm:p-4">
+                          <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
+                            COMMUNICATION
+                          </div>
+                          <div className={`text-sm font-bold mb-2 ${
+                            metrics.comm.color === 'green' ? 'text-green-400' :
+                            metrics.comm.color === 'yellow' ? 'text-yellow-400' : 'text-red-400'
+                          }`}>
+                            {metrics.comm.quality}
+                          </div>
+                          <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                            <div className={`h-2 rounded-full ${
+                              metrics.comm.color === 'green' ? 'bg-green-400' :
+                              metrics.comm.color === 'yellow' ? 'bg-yellow-400' : 'bg-red-400'
+                            }`} style={{ width: metrics.comm.width }}></div>
+                          </div>
+                          <div className="text-xs text-stone-300/80">
+                            {metrics.comm.text}
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
                 
                 {/* Strategic Assessment moved above as headline */}
@@ -968,7 +1048,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S RECEIPT AUTOPSY</h3>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
-              </div>
+                </div>
               
               {/* Mobile - Horizontal Scroll Autopsy with Navigation */}
               <div className="sm:hidden relative" data-autopsy-horizontal>
@@ -1068,8 +1148,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                           </div>
 
                           {/* Quote */}
-                          <div className="text-stone-100 text-sm mb-4 font-medium italic leading-relaxed pr-6">
-                            "{receipt.quote}"
+                          <div className="text-stone-100 text-sm mb-4 font-medium italic leading-relaxed pr-6 text-center">
+                            💬 "{receipt.quote}"
                           </div>
 
                           {/* Visual Divider */}
@@ -1112,26 +1192,32 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 )}
               </div>
               
-              {/* Desktop - Enhanced 2x2 Grid */}
-              <div className="hidden sm:grid sm:grid-cols-2 gap-6 max-w-5xl mx-auto">
-                {(safeDeepDive.receipts?.slice(0, showPaywall ? 2 : 4) || []).map((receipt, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    className={`receipt-card relative rounded-2xl p-6 bg-black/40 backdrop-blur-sm cursor-pointer group ${i === 0 ? 'border-2 border-teal-400/60 shadow-[0_0_40px_rgba(20,184,166,0.2)]' : 'border border-teal-400/30 shadow-lg hover:border-teal-400/50'} transition-all duration-300`}
-                    data-autopsy-item
-                    data-index={i}
-                    onClick={() => copyToClipboard(receipt.quote)}
-                  >
-                    {/* Hover glow */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Desktop - Full Width First Card + Expandable View */}
+              <div className="hidden sm:block">
+                {/* First Card - Full Width */}
+                {safeDeepDive.receipts?.[0] && (() => {
+                  const receipt = safeDeepDive.receipts[0];
+                  const priority = getReceiptPriority(receipt, 0);
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      whileHover={{ y: -4, scale: 1.01 }}
+                      className={`receipt-card relative rounded-2xl p-8 bg-black/40 backdrop-blur-sm cursor-pointer group border-2 ${priority.borderColor} shadow-[0_0_40px_rgba(20,184,166,0.2)] transition-all duration-300`}
+                      data-autopsy-item
+                      data-index={0}
+                      onClick={() => copyToClipboard(receipt.quote)}
+                    >
+                      {/* Hover glow */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     {/* Copy Icon */}
                     <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
                     
                     {/* Quote */}
-                    <div className="relative text-white/95 text-lg mb-5 pb-5 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20">
-                      "{receipt.quote}"
+                    <div className="relative text-white/95 text-lg mb-5 pb-5 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20 text-center">
+                      💬 "{receipt.quote}"
                     </div>
                     
                     {/* Content sections with better spacing */}
@@ -1152,16 +1238,96 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       </div>
                     </div>
                   </motion.div>
-                ))}
-                {showPaywall && [1,2].map(i => (
-                  <div key={`locked-${i}`} className="bg-black/20 rounded-2xl p-6 border border-white/5 flex items-center justify-center min-h-[300px]">
-                    <div className="text-center">
-                      <Lock className="w-8 h-8 text-white/20 mx-auto mb-3" />
-                      <p className="text-white/40 text-sm">Premium Content</p>
-                    </div>
-                  </div>
-                ))}
-                </div>
+                  );
+                })()}
+
+                {/* Expandable View for Additional Cards */}
+                {safeDeepDive.receipts && safeDeepDive.receipts.length > 1 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    className="mt-6"
+                  >
+                    <button
+                      onClick={() => setShowAllAutopsy(!showAllAutopsy)}
+                      className="w-full py-4 px-6 bg-gradient-to-r from-teal-500/10 to-teal-600/5 border border-teal-400/30 rounded-xl hover:border-teal-400/50 transition-all duration-300 group"
+                    >
+                      <div className="flex items-center justify-center gap-3">
+                        <span className="text-teal-400 font-medium">
+                          {showAllAutopsy ? 'Hide Additional Evidence' : 'Click here to view more evidence'}
+                        </span>
+                        <motion.div
+                          animate={{ rotate: showAllAutopsy ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <ChevronRight className="w-4 h-4 text-teal-400 rotate-90" />
+                        </motion.div>
+                      </div>
+                    </button>
+
+                    {/* Additional Cards - Animated Expand/Collapse */}
+                    <motion.div
+                      initial={false}
+                      animate={{ 
+                        height: showAllAutopsy ? 'auto' : 0,
+                        opacity: showAllAutopsy ? 1 : 0
+                      }}
+                      transition={{ duration: 0.4, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="grid grid-cols-2 gap-6 mt-6">
+                        {safeDeepDive.receipts.slice(1, showPaywall ? 3 : 5).map((receipt, i) => {
+                          const actualIndex = i + 1;
+                          const priority = getReceiptPriority(receipt, actualIndex);
+                          return (
+                            <motion.div
+                              key={actualIndex}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.7 + (i * 0.1) }}
+                              whileHover={{ y: -4, scale: 1.02 }}
+                              className={`receipt-card relative rounded-2xl p-6 bg-black/40 backdrop-blur-sm cursor-pointer group border ${priority.borderColor} shadow-lg hover:border-teal-400/50 transition-all duration-300`}
+                              data-autopsy-item
+                              data-index={actualIndex}
+                              onClick={() => copyToClipboard(receipt.quote)}
+                            >
+                              {/* Hover glow */}
+                              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              
+                              {/* Copy Icon */}
+                              <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
+                              
+                              {/* Quote */}
+                              <div className="relative text-white/95 text-base mb-4 pb-4 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20 text-center">
+                                💬 "{receipt.quote}"
+                              </div>
+                              
+                              {/* Content sections */}
+                              <div className="space-y-3">
+                                <div>
+                                  <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
+                                  <div className="text-white text-sm leading-relaxed">{receipt.bestie_look}</div>
+                                </div>
+
+                                <div>
+                                  <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
+                                  <div className="text-white/90 text-sm leading-relaxed">{receipt.calling_it}</div>
+                                </div>
+
+                                <div>
+                                  <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
+                                  <div className="text-white/70 text-sm leading-relaxed italic">{receipt.vibe_check}</div>
+                                </div>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </div>
               </div>
             </motion.section>
 
@@ -1251,7 +1417,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                               <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/20 border border-[#14B8A6]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
                                 <ChevronRight className="w-3 h-3 text-[#14B8A6]" />
                 </div>
-                              <span className="text-stone-200/90 text-sm font-medium leading-relaxed">{move}</span>
+                              <span className="text-stone-200/90 text-base font-medium leading-relaxed">{move}</span>
                             </motion.li>
                           ))}
                       </ul>
