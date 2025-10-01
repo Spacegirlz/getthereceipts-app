@@ -909,11 +909,11 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
               }
             }
           }
-          const otherName = Array.from(allNames).find(name => name.toLowerCase() !== String(explicitUser).toLowerCase()) || 'Them';
+          const otherName = Array.from(allNames).find(name => name.toLowerCase() !== String(explicitUser).toLowerCase()) || 'they';
           console.log('✅ FINAL NAME ASSIGNMENT:', { user: explicitUser, other: otherName, allNamesFound: Array.from(allNames) });
           return { user: explicitUser, other: otherName };
         }
-        return { user: 'You', other: 'Them' };
+        return { user: 'You', other: 'they' };
       };
       
       // BUILD CLEAN CONTEXT - SINGLE SOURCE OF TRUTH
@@ -1366,7 +1366,7 @@ export const generateAlignedResults = async (message, context) => {
         }
         const speakerList = Array.from(speakers);
         const other = speakerList.find(n => n.toLowerCase() !== String(explicitMain).toLowerCase())
-                      || context?.otherName || context?.other_name || 'Them';
+                      || context?.otherName || context?.other_name || 'they';
         return { user: String(explicitMain), other };
       }
 
@@ -1453,7 +1453,7 @@ export const generateAlignedResults = async (message, context) => {
       // Fallback with partial context
       return {
         user: userName || 'You',
-        other: otherName || 'Them'
+        other: otherName || 'they'
       };
     };
     
