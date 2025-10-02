@@ -620,7 +620,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </div>
               
               <div className="p-4">
-                {/* Mobile: Circular Layout with Arrows */}
+                {/* Mobile: Circular Layout with Numbers */}
                 <div className="sm:hidden" data-cycle-mobile>
                   <div className="relative flex items-center justify-center">
                     <div className="grid grid-cols-2 gap-3 w-full max-w-xs relative">
@@ -630,55 +630,17 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.1 + index * 0.1 }}
-                          className="bg-cyan-900/30 text-cyan-300 px-2 py-2 rounded-xl text-xs font-medium text-center border border-cyan-500/20 hover:bg-cyan-800/40 transition-all duration-300"
+                          className="bg-cyan-900/30 text-cyan-300 px-2 py-2 rounded-xl text-xs font-medium text-center border border-cyan-500/20 hover:bg-cyan-800/40 transition-all duration-300 relative"
                           style={{
                             boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
                           }}
                         >
+                          <div className="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            {index + 1}
+                          </div>
                           {step}
                         </motion.div>
                       ))}
-                      {/* Mobile arrows - positioned between grid items */}
-                      <span
-                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-bold z-10"
-                        style={{
-                          color: '#FF6B6B',
-                          textShadow: '0 0 8px rgba(255, 107, 107, 0.4)',
-                          opacity: 1
-                        }}
-                      >
-                        →
-                      </span>
-                      <span
-                        className="absolute top-1/2 right-0 transform -translate-y-1/2 text-lg font-bold z-10"
-                        style={{
-                          color: '#FF6B6B',
-                          textShadow: '0 0 8px rgba(255, 107, 107, 0.4)',
-                          opacity: 1
-                        }}
-                      >
-                        ↓
-                      </span>
-                      <span
-                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-lg font-bold z-10"
-                        style={{
-                          color: '#FF6B6B',
-                          textShadow: '0 0 8px rgba(255, 107, 107, 0.4)',
-                          opacity: 1
-                        }}
-                      >
-                        ←
-                      </span>
-                      <span
-                        className="absolute top-0 left-1/2 transform -translate-x-1/2 text-lg font-bold z-10"
-                        style={{
-                          color: '#FF6B6B',
-                          textShadow: '0 0 8px rgba(255, 107, 107, 0.4)',
-                          opacity: 1
-                        }}
-                      >
-                        ↑
-                      </span>
                     </div>
                   </div>
                   <div className="text-center mt-3">
@@ -809,7 +771,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               {/* Green Flags */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-emerald-500/5 to-green-500/5">
                 <ul className="space-y-3">
-                  {Array.isArray(greenFlags) ? greenFlags.slice(0, 3).map((sign, index) => (
+                  {Array.isArray(greenFlags) && greenFlags.length > 0 ? greenFlags.slice(0, 3).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-green-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
                       <span className="text-emerald-200 text-sm leading-relaxed">{sign}</span>
@@ -826,7 +788,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               {/* This Mess Flags */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-rose-500/5 to-pink-500/5">
                 <ul className="space-y-3">
-                  {Array.isArray(thisMessFlags) ? thisMessFlags.slice(0, 3).map((sign, index) => (
+                  {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? thisMessFlags.slice(0, 3).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-red-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
                       <span className="text-rose-200 text-sm leading-relaxed">{sign}</span>
