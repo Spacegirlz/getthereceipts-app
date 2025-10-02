@@ -262,13 +262,39 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
     try {
       allToHide.forEach(n => { n.style.display = 'none'; });
-      const blob = await domtoimage.toBlob(element, {
-        width: element.offsetWidth * 2,
-        height: element.offsetHeight * 2,
-        style: { transform: 'scale(2)', transformOrigin: 'top left' },
-        bgcolor: '#1a1a2e',
-        quality: 1
+      
+      // Ensure rounded outer corners render with transparency (like Immunity)
+      const prevRadius = element.style.borderRadius;
+      const prevOverflow = element.style.overflow;
+      const prevHeight = element.style.height;
+      const prevMaxHeight = element.style.maxHeight;
+      const prevOverflowY = element.style.overflowY;
+      element.style.borderRadius = '24px';
+      element.style.overflow = 'hidden';
+      element.style.height = 'auto';
+      element.style.maxHeight = 'none';
+      element.style.overflowY = 'visible';
+
+      // Use scroll size to capture full content like Truth/ShareComponent
+      const targetWidth = element.scrollWidth || element.offsetWidth;
+      const targetHeight = Math.max(element.scrollHeight, element.offsetHeight, element.clientHeight);
+
+      const dataUrl = await domtoimage.toPng(element, {
+        pixelRatio: 2.5,
+        quality: 1.0,
+        bgcolor: 'transparent',
+        width: targetWidth,
+        height: targetHeight,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'center'
+        }
       });
+
+      // Convert data URL to blob for consistent downloader
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      
       const timestamp = Date.now();
       saveAs(blob, `Sage-Playbook-${timestamp}.png`);
       toast({ title: "Saved!", description: "Playbook image downloaded." });
@@ -285,6 +311,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       element.style.marginLeft = prevElementMargins.ml;
       element.style.marginRight = prevElementMargins.mr;
       if (prevElementMargins.m) element.style.margin = prevElementMargins.m;
+      // Restore rounded/size overrides
+      element.style.borderRadius = prevRadius;
+      element.style.overflow = prevOverflow;
+      element.style.height = prevHeight;
+      element.style.maxHeight = prevMaxHeight;
+      element.style.overflowY = prevOverflowY;
       // Restore styles (backgrounds were never changed to preserve original design)
       styledNodes.forEach(({ node, prev }) => {
         const style = node.style || {};

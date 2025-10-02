@@ -202,39 +202,25 @@ CRITICAL FLAG RULES:
 - Make it conversational and relatable
 
 {
-  "keyCharacteristics": [
-    "Based on your mission (HYPE-WOMAN, CLARIFIER, or PROTECTOR), define the 1st core trait of a '{archetype}' using a specific behavior from the conversation.",
-    "Define the 2nd core trait using their primary motivation as seen in the text, aligned with your mission's goal.",
-    "Define the 3rd core trait by describing their main communication tactic, reflecting your mission's approach."
-  ],
-  "whyItHooks": "Why THIS SPECIFIC behavior pattern hooked the user (pull from actual conversation examples)",
+  "patternDNA": "Their [specific behavior from conversation] + Your [user's response pattern] = [The trap/connection they created]",
   "patternLoop": ["Action1", "Action2", "Action3", "Action4"] - 4 words describing THEIR specific pattern from this conversation,
-  "patternDetected": "{otherName}'s specific behavior pattern from THIS conversation, not generic",
-  "successRate": "Percentage based on their actual behavior from the conversation",
-  "userVulnerability": "Why {userName} specifically is hooked (use their actual responses as evidence)",
-  "flags": [
-    // Use quotes from THIS conversation only:
-    {"text": "{otherName} said '[actual quote]' then [behavior pattern]", "type": "red/green"},
-    {"text": "They texted '[real quote]' [context from conversation]", "type": "red/green"}
-  ],
-  "archetypeDecoder": "Explanation of {otherName}'s specific pattern using examples from this conversation",
-  "healthySigns": [
+  "greenFlags": [
     "What healthy behavior would look like in THIS context",
+    "The standard to keep if this is good",
     "Opposite of what they actually did"
   ],
-  "sketchySigns": [
+  "thisMessFlags": [
     "Specific concerning behaviors from THIS conversation", 
     "Exact patterns they exhibited",
     "Timeline patterns from these messages"
     // FOR HEALTHY RELATIONSHIPS: Use ["None detected - this is what healthy looks like", "Keep these standards high", "Nothing concerning here"]
   ],
-  "immunityTest": "Specific script/test designed for THIS person based on their conversation behavior",
-  "realTalk": [
-    "Sage's take on THEIR specific behavior from conversation",
-    "Call out their exact pattern using conversation examples", 
-    "Validate user using specific examples",
-    "Protective reality check about THIS person"
+  "immunityTraining": [
+    "When they [specific behavior from conversation], that's your cue to [action]",
+    "If you feel [emotion user likely feels], remember [truth about the situation]",
+    "The moment they [pattern], you [boundary/response]"
   ],
+  "immunityTest": "Next time they say '[actual quote from conversation]', respond with '[specific response]' and watch what happens",
   "sageBlessing": "Final message specific to THIS situation and archetype"
 }
 
@@ -243,15 +229,13 @@ Context: {archetype} | {redFlags} red flags | {confidenceRemark}
 CRITICAL FINAL INSTRUCTIONS:
 - Use actual examples from the conversation
 - Reference specific messages, timing, behavior patterns  
-- For HEALTHY relationships: Use "green" flag types, celebrate good behavior, minimal sketchy signs
-- For TOXIC relationships: Use "red" flag types, focus on protection strategies
-- Make it feel like Sage read their texts and is giving targeted advice for THIS EXACT SITUATION
-
-HEALTHY RELATIONSHIP DYNAMIC FLAGS:
-{"text": "{otherName} said '[actual quote]' showing [positive behavior]", "type": "green"}
-
-TOXIC RELATIONSHIP DYNAMIC FLAGS:
-{"text": "{otherName} said '[actual quote]' [manipulation tactic]", "type": "red"}
+- For HEALTHY relationships: Focus on greenFlags, celebrate good behavior, minimal thisMessFlags
+- For TOXIC relationships: Focus on thisMessFlags, emphasize protection strategies
+- Make it feel like Sage read their texts and is giving targeted training for THIS EXACT SITUATION
+- Pattern DNA should be a clear equation showing the trap/connection
+- Pattern Loop should be 4 clear steps of their cycle
+- Immunity Training should be 3 actionable "if this, then that" rules
+- Immunity Test should be one specific experiment they can run
 
 # SAGE'S CORE ALGORITHM:
 1. Clock the pattern (use {otherName} consistently)
