@@ -202,9 +202,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       return;
     }
 
-    // Find all nodes marked to hide for share (only save/share buttons)
+    // Find all nodes marked to hide for share
     const nodesToHide = Array.from(element.querySelectorAll('[data-share-hide="true"]'));
-    const allToHide = [...nodesToHide];
+    // Additionally hide autopsy items with index >= 2 to keep only two (matching web save/share)
+    const extraAutopsyToHide = Array.from(element.querySelectorAll('[data-autopsy-item]'))
+      .filter(n => (parseInt(n.getAttribute('data-index') || '0', 10)) >= 2);
+    const allToHide = [...nodesToHide, ...extraAutopsyToHide];
     const previousDisplays = allToHide.map(n => n.style.display);
 
     // Store original element styles for restoration
@@ -918,7 +921,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             </div>
 
             {/* Metrics moved into a separate card below the summary */}
-            <div className="rounded-xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4">
+            <div className="rounded-xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4" data-share-hide="true">
 
                 {/* Key Metrics Dashboard - 1x3 horizontal layout */}
                 <div className="flex items-center justify-between mb-3">
@@ -936,7 +939,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2">
+                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
                   {(() => {
                     // Ensure we have analysisData, fallback to empty object if not
                     const data = analysisData || {};
