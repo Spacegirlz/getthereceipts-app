@@ -334,18 +334,21 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       const prevPillStyles = immunityPill ? {
         padding: immunityPill.style.padding,
         whiteSpace: immunityPill.style.whiteSpace,
-        minWidth: immunityPill.style.minWidth
+        minWidth: immunityPill.style.minWidth,
+        fontSize: immunityPill.style.fontSize
       } : null;
       
       if (immunityPill) {
-        immunityPill.style.padding = '12px 20px';
+        immunityPill.style.padding = '9px 15px'; // Reduced by 25%
         immunityPill.style.whiteSpace = 'nowrap';
-        immunityPill.style.minWidth = '280px';
+        immunityPill.style.minWidth = '210px'; // Reduced by 25%
+        immunityPill.style.fontSize = '12px'; // Reduced by 25% from 16px
       }
 
       // Reduce padding and remove borders for save/share export only
       const cycleSection = element.querySelector('[data-cycle-section]');
       const trainingSection = element.querySelector('[data-training-section]');
+      const patternDnaSection = element.querySelector('[data-pattern-dna-section]');
       const sageContainer = element.querySelector('[data-sage-blessing-container]');
       const sageHeader = element.querySelector('[data-sage-blessing-header]');
       const sageContent = element.querySelector('[data-sage-blessing-content]');
@@ -354,14 +357,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       // Store original styles for restoration
       const cycleInner = cycleSection?.querySelector('.bg-black\\/30');
       const trainingInner = trainingSection?.querySelector('.bg-black\\/30');
-      const immunityPillText = element.querySelector('[data-immunity-pill] .text-lg');
-      const patternDNASection = element.querySelector('[data-share-hide="true"]')?.closest('.mb-8');
-      const patternDNATitle = patternDNASection?.querySelector('h3');
-      const patternDNAContent = patternDNASection?.querySelector('.text-cyan-200');
-      const patternVerified = element.querySelector('.text-lg.sm\\:text-xl.md\\:text-2xl');
-      const cycleContent = cycleSection?.querySelector('.space-y-3');
-      const sageBlessingTitle = element.querySelector('[data-sage-blessing-header]');
-      const crownEmoji = sageBlessingTitle?.querySelector('span');
+      const patternDnaInner = patternDnaSection?.querySelector('.bg-black\\/30');
       
       const prevStyles = {
         cycle: cycleSection ? {
@@ -380,24 +376,13 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           padding: trainingInner.style.padding,
           border: trainingInner.style.border
         } : null,
-        immunityPillText: immunityPillText ? {
-          fontSize: immunityPillText.style.fontSize
+        patternDna: patternDnaSection ? {
+          marginBottom: patternDnaSection.style.marginBottom,
+          border: patternDnaSection.style.border
         } : null,
-        patternDNATitle: patternDNATitle ? {
-          marginBottom: patternDNATitle.style.marginBottom
-        } : null,
-        patternDNAContent: patternDNAContent ? {
-          marginTop: patternDNAContent.style.marginTop
-        } : null,
-        patternVerified: patternVerified ? {
-          fontSize: patternVerified.style.fontSize
-        } : null,
-        cycleContent: cycleContent ? {
-          paddingBottom: cycleContent.style.paddingBottom
-        } : null,
-        crownEmoji: crownEmoji ? {
-          fontSize: crownEmoji.style.fontSize,
-          marginRight: crownEmoji.style.marginRight
+        patternDnaInner: patternDnaInner ? {
+          padding: patternDnaInner.style.padding,
+          border: patternDnaInner.style.border
         } : null,
         sage: {
           container: sageContainer ? {
@@ -427,6 +412,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         trainingSection.style.marginBottom = '8px';
         trainingSection.style.border = 'none';
       }
+      if (patternDnaSection) {
+        patternDnaSection.style.marginBottom = '8px';
+        patternDnaSection.style.border = 'none';
+      }
       
       // Also reduce padding in the inner containers
       
@@ -437,6 +426,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       if (trainingInner) {
         trainingInner.style.padding = '12px';
         trainingInner.style.border = 'none';
+      }
+      if (patternDnaInner) {
+        patternDnaInner.style.padding = '12px';
+        patternDnaInner.style.border = 'none';
       }
       if (sageContainer) {
         sageContainer.style.padding = '12px';
@@ -452,40 +445,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       }
       if (sageText) {
         sageText.style.fontSize = '13px';
-      }
-
-      // Additional save/share optimizations
-      // 1. Reduce Immunity Training logo and text size by 25%
-      if (immunityPillText) {
-        immunityPillText.style.fontSize = '0.75rem'; // 25% reduction from 1rem
-      }
-
-      // 2. Reduce padding between title and core text in "What This Looks Like"
-      if (patternDNASection) {
-        if (patternDNATitle) {
-          patternDNATitle.style.marginBottom = '8px'; // Reduce from default
-        }
-        if (patternDNAContent) {
-          patternDNAContent.style.marginTop = '4px';
-        }
-      }
-
-      // 3. Reduce Pattern Verified text size by 25%
-      if (patternVerified) {
-        patternVerified.style.fontSize = '0.75rem'; // 25% reduction
-      }
-
-      // 4. Reduce padding between cycle content and bottom border
-      if (cycleContent) {
-        cycleContent.style.paddingBottom = '8px';
-      }
-
-      // 5. Move crown emoji next to Sage's Blessing title and make same size
-      if (sageBlessingTitle) {
-        if (crownEmoji) {
-          crownEmoji.style.fontSize = '1rem'; // Match title size
-          crownEmoji.style.marginRight = '8px';
-        }
       }
 
       // Add export-mode class to remove all borders (like Truth Receipt)
@@ -541,6 +500,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         immunityPill.style.padding = prevPillStyles.padding;
         immunityPill.style.whiteSpace = prevPillStyles.whiteSpace;
         immunityPill.style.minWidth = prevPillStyles.minWidth;
+        immunityPill.style.fontSize = prevPillStyles.fontSize;
       }
       
       // Restore all modified styles
@@ -560,6 +520,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         trainingInner.style.padding = prevStyles.trainingInner.padding;
         trainingInner.style.border = prevStyles.trainingInner.border;
       }
+      if (patternDnaSection && prevStyles.patternDna) {
+        patternDnaSection.style.marginBottom = prevStyles.patternDna.marginBottom;
+        patternDnaSection.style.border = prevStyles.patternDna.border;
+      }
+      if (patternDnaInner && prevStyles.patternDnaInner) {
+        patternDnaInner.style.padding = prevStyles.patternDnaInner.padding;
+        patternDnaInner.style.border = prevStyles.patternDnaInner.border;
+      }
       if (sageContainer && prevStyles.sage.container) {
         sageContainer.style.padding = prevStyles.sage.container.padding;
         sageContainer.style.marginBottom = prevStyles.sage.container.marginBottom;
@@ -574,25 +542,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       }
       if (sageText && prevStyles.sage.text) {
         sageText.style.fontSize = prevStyles.sage.text.fontSize;
-      }
-      if (immunityPillText && prevStyles.immunityPillText) {
-        immunityPillText.style.fontSize = prevStyles.immunityPillText.fontSize;
-      }
-      if (patternDNATitle && prevStyles.patternDNATitle) {
-        patternDNATitle.style.marginBottom = prevStyles.patternDNATitle.marginBottom;
-      }
-      if (patternDNAContent && prevStyles.patternDNAContent) {
-        patternDNAContent.style.marginTop = prevStyles.patternDNAContent.marginTop;
-      }
-      if (patternVerified && prevStyles.patternVerified) {
-        patternVerified.style.fontSize = prevStyles.patternVerified.fontSize;
-      }
-      if (cycleContent && prevStyles.cycleContent) {
-        cycleContent.style.paddingBottom = prevStyles.cycleContent.paddingBottom;
-      }
-      if (crownEmoji && prevStyles.crownEmoji) {
-        crownEmoji.style.fontSize = prevStyles.crownEmoji.fontSize;
-        crownEmoji.style.marginRight = prevStyles.crownEmoji.marginRight;
       }
       
       // Remove export-mode class
@@ -721,7 +670,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
         {/* Pattern DNA Formula - Central Visual */}
         {patternDNA && (
-          <div className="mb-8" data-share-hide="true">
+          <div className="mb-8" data-share-hide="true" data-pattern-dna-section>
             <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm">
               <div className="px-4 py-3 border-b border-transparent">
               <div className="flex items-center gap-2">
