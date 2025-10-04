@@ -4233,6 +4233,81 @@ Claude
 - Future Faker: "Keep you interested without committing"
 - Gaslighter: "Control through confusion"
 
+### **🛡️ Immunity Training Save/Share Optimization (December 2024)**
+**Major Redesign:** Transformed from "essay-like analysis" to "defense training manual" with Gen Z appeal
+
+#### **🎨 Visual Design Overhaul:**
+✅ **Header Redesign:**
+- Replaced custom header with pill-style header matching DeepDive/ReceiptCardViral
+- Added `sage-dark-circle.png` logo with teal border and glow effects
+- "IMMUNITY TRAINING" text with responsive sizing (`text-sm sm:text-lg`)
+- "Pattern Verified: [archetype]" subline with dynamic risk-based coloring
+
+✅ **Progressive Color Scheme:**
+- Purple-to-coral/orange gradient approach (avoiding muddy gold issues)
+- Teal headers maintaining brand consistency
+- Coral accents for premium feel without brown undertones
+
+#### **📱 Mobile-First Responsive Design:**
+✅ **Mobile Cycle Layout:**
+- 2x2 grid with numbered cards (1, 2, 3, 4) replacing confusing arrows
+- Orange numbered circles for clear visual hierarchy
+- Responsive text sizing throughout all sections
+
+✅ **Mobile "See Both Sides":**
+- Stacked vertical layout on mobile, side-by-side on desktop
+- Shows 2 items on mobile, 3 on desktop
+- Fallback messages: "No healthy signs detected" / "No red flags detected"
+
+#### **💾 Advanced Save/Share Functionality:**
+✅ **Robust Image Export System:**
+- Uses `dom-to-image-more` library (same as DeepDive component)
+- Transparent background with 24px border radius
+- High-quality 2.5x pixel ratio for crisp exports
+- Automatic style restoration after export
+
+✅ **Optimized 9:16 Aspect Ratio:**
+- **Sage Logo**: 64px x 64px (increased for prominence)
+- **Training Text**: 14px (reduced for compactness)
+- **Sage's Blessing Text**: 16px (increased for readability)
+- **Reduced Padding**: All sections optimized for social media format
+
+✅ **Smart Content Filtering:**
+- Hides Pattern DNA, Immunity Test, premium paywall, disclaimer, watermark
+- Shows only: Header, Pattern Verified, The Cycle, See Both Sides, Your Training, Sage's Blessing
+- Limits "See Both Sides" to 2 items, "Your Training" to 3 points for compact export
+
+✅ **Export-Mode Styling:**
+- Uses global `.export-mode` CSS class to strip all borders
+- Temporary style modifications for compact layout
+- Automatic restoration of original styles after export
+
+#### **🔧 Technical Implementation:**
+**Files Modified:**
+- `/src/components/ImmunityTraining.jsx` - Complete redesign and save/share optimization
+- `/src/components/DeepDive.jsx` - Updated save function to match Immunity's transparent background approach
+
+**Key Features:**
+- **Conditional Rendering**: Based on `isPremium`, `isCrisisSituation`, and data availability
+- **Dynamic Styling**: JavaScript objects for style attributes and Tailwind classes
+- **Gradient Text**: Proper WebKit implementation for cross-browser compatibility
+- **Data Attributes**: Used for targeting specific elements during export (`data-share-hide`, `data-training-item`, etc.)
+
+#### **📊 Performance Optimizations:**
+✅ **Mobile View Verification:**
+- All sections visible and properly responsive
+- Touch-friendly interactive elements
+- Proper spacing and padding for mobile devices
+- No hidden or broken content
+
+✅ **Save/Share Quality:**
+- Clean, professional exports suitable for social media
+- Consistent branding with other receipt components
+- Optimized file sizes with high visual quality
+- Reliable export process with error handling
+
+**Status:** ✅ **COMPLETE** - Immunity Training component fully optimized for web, mobile, and save/share functionality
+
 ✅ **Removed all hardcoded fallbacks:**
 - Replaced with proper loading states
 - Dynamic content prioritized over generic text
