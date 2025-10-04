@@ -202,78 +202,21 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       return;
     }
 
-    // Find all nodes marked to hide for share
+    // Find all nodes marked to hide for share (only save/share buttons)
     const nodesToHide = Array.from(element.querySelectorAll('[data-share-hide="true"]'));
-    // Additionally hide autopsy items with index >= 2 to keep only two
-    const extraAutopsyToHide = Array.from(element.querySelectorAll('[data-autopsy-item]'))
-      .filter(n => (parseInt(n.getAttribute('data-index') || '0', 10)) >= 2);
-    const allToHide = [...nodesToHide, ...extraAutopsyToHide];
+    const allToHide = [...nodesToHide];
     const previousDisplays = allToHide.map(n => n.style.display);
 
-    // Easiest robust fix: temporarily flatten backgrounds/borders to remove banding/lines
-    const styledNodes = [];
-    const isGoldOrTeal = (val = '') => /#D4AF37|212,\s*175,\s*55|rgba\(20,\s*184,\s*166/i.test(val);
-    const descendants = element.querySelectorAll('*');
-    descendants.forEach(node => {
-      const style = node.style || {};
-      const prev = {
-        background: style.background,
-        backgroundImage: style.backgroundImage,
-        backgroundColor: style.backgroundColor,
-        boxShadow: style.boxShadow,
-        border: style.border,
-        borderTop: style.borderTop,
-        borderRight: style.borderRight,
-        borderBottom: style.borderBottom,
-        borderLeft: style.borderLeft,
-        outline: style.outline,
-        backdropFilter: style.backdropFilter,
-        filter: style.filter,
-        opacity: style.opacity
-      };
-      styledNodes.push({ node, prev });
-
-      // Remove shadows/filters that cause banding; preserve original backgrounds/gradients
-      style.boxShadow = 'none';
-      style.backdropFilter = 'none';
-      style.filter = 'none';
-      style.outline = 'none';
-
-      // Remove non-gold borders that cause hairlines
-      const borders = [style.border, style.borderTop, style.borderRight, style.borderBottom, style.borderLeft];
-      const hasGold = borders.some(b => isGoldOrTeal(b));
-      if (!hasGold) {
-        style.border = 'none';
-        style.borderTop = 'none';
-        style.borderRight = 'none';
-        style.borderBottom = 'none';
-        style.borderLeft = 'none';
-      }
-    });
-    // Temporarily neutralize mobile scroller negative margins that can shift capture
-    const prevScrollerMargins = scroller ? { ml: scroller.style.marginLeft, mr: scroller.style.marginRight } : null;
-    const prevElementMargins = { ml: element.style.marginLeft, mr: element.style.marginRight, m: element.style.margin };
-    if (scroller) {
-      scroller.style.marginLeft = '0';
-      scroller.style.marginRight = '0';
-    }
-    element.style.marginLeft = '0';
-    element.style.marginRight = '0';
+    // Store original element styles for restoration
+    const prevRadius = element.style.borderRadius;
+    const prevOverflow = element.style.overflow;
 
     try {
       allToHide.forEach(n => { n.style.display = 'none'; });
       
-      // Ensure rounded outer corners render with transparency (like Immunity)
-      const prevRadius = element.style.borderRadius;
-      const prevOverflow = element.style.overflow;
-      const prevHeight = element.style.height;
-      const prevMaxHeight = element.style.maxHeight;
-      const prevOverflowY = element.style.overflowY;
+      // Ensure rounded outer corners render with transparency
       element.style.borderRadius = '24px';
       element.style.overflow = 'hidden';
-      element.style.height = 'auto';
-      element.style.maxHeight = 'none';
-      element.style.overflowY = 'visible';
 
       // Use scroll size to capture full content like Truth/ShareComponent
       const targetWidth = element.scrollWidth || element.offsetWidth;
@@ -302,38 +245,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       console.error('Clean save error', err);
       toast({ title: "Error", description: "Could not save playbook.", variant: "destructive" });
     } finally {
-      // Restore displays
+      // Restore hidden elements
       allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
-      if (scroller && prevScrollerMargins) {
-        scroller.style.marginLeft = prevScrollerMargins.ml;
-        scroller.style.marginRight = prevScrollerMargins.mr;
-      }
-      element.style.marginLeft = prevElementMargins.ml;
-      element.style.marginRight = prevElementMargins.mr;
-      if (prevElementMargins.m) element.style.margin = prevElementMargins.m;
-      // Restore rounded/size overrides
+      
+      // Restore element styles
       element.style.borderRadius = prevRadius;
       element.style.overflow = prevOverflow;
-      element.style.height = prevHeight;
-      element.style.maxHeight = prevMaxHeight;
-      element.style.overflowY = prevOverflowY;
-      // Restore styles (backgrounds were never changed to preserve original design)
-      styledNodes.forEach(({ node, prev }) => {
-        const style = node.style || {};
-        style.background = prev.background;
-        style.backgroundImage = prev.backgroundImage;
-        style.backgroundColor = prev.backgroundColor;
-        style.boxShadow = prev.boxShadow;
-        style.border = prev.border;
-        style.borderTop = prev.borderTop;
-        style.borderRight = prev.borderRight;
-        style.borderBottom = prev.borderBottom;
-        style.borderLeft = prev.borderLeft;
-        style.outline = prev.outline;
-        style.backdropFilter = prev.backdropFilter;
-        style.filter = prev.filter;
-        style.opacity = prev.opacity;
-      });
     }
   };
 
@@ -1001,7 +918,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             </div>
 
             {/* Metrics moved into a separate card below the summary */}
-            <div className="rounded-xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4" data-share-hide="true">
+            <div className="rounded-xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4">
 
                 {/* Key Metrics Dashboard - 1x3 horizontal layout */}
                 <div className="flex items-center justify-between mb-3">
@@ -1019,7 +936,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
+                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2">
                   {(() => {
                     // Ensure we have analysisData, fallback to empty object if not
                     const data = analysisData || {};
