@@ -331,24 +331,37 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
       // Ensure pill text stays on one line during export
       const immunityPill = element.querySelector('[data-immunity-pill]');
+      const sageLogo = element.querySelector('[data-immunity-pill] img');
       const prevPillStyles = immunityPill ? {
         padding: immunityPill.style.padding,
         whiteSpace: immunityPill.style.whiteSpace,
         minWidth: immunityPill.style.minWidth,
         fontSize: immunityPill.style.fontSize
       } : null;
+      const prevSageLogoStyles = sageLogo ? {
+        width: sageLogo.style.width,
+        height: sageLogo.style.height
+      } : null;
       
       if (immunityPill) {
-        immunityPill.style.padding = '9px 15px'; // Reduced by 25%
+        immunityPill.style.padding = '6px 10px'; // Reduced by additional 20%
         immunityPill.style.whiteSpace = 'nowrap';
-        immunityPill.style.minWidth = '210px'; // Reduced by 25%
-        immunityPill.style.fontSize = '12px'; // Reduced by 25% from 16px
+        immunityPill.style.minWidth = '170px'; // Reduced by additional 20%
+        immunityPill.style.fontSize = '10px'; // Reduced by additional 20%
+      }
+      
+      // Also reduce the Sage logo size within the pill
+      if (sageLogo) {
+        sageLogo.style.width = '64px'; // Increased for save/share download
+        sageLogo.style.height = '64px'; // Increased for save/share download
       }
 
       // Reduce padding and remove borders for save/share export only
       const cycleSection = element.querySelector('[data-cycle-section]');
       const trainingSection = element.querySelector('[data-training-section]');
       const patternDnaSection = element.querySelector('[data-pattern-dna-section]');
+      const seeBothSidesSection = element.querySelector('[data-see-both-sides-section]');
+      const patternVerifiedSection = element.querySelector('[data-pattern-verified-section]');
       const sageContainer = element.querySelector('[data-sage-blessing-container]');
       const sageHeader = element.querySelector('[data-sage-blessing-header]');
       const sageContent = element.querySelector('[data-sage-blessing-content]');
@@ -356,17 +369,29 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       
       // Store original styles for restoration
       const cycleInner = cycleSection?.querySelector('.bg-black\\/30');
+      const cycleContent = cycleSection?.querySelector('.p-4');
+      const cycleHeader = cycleSection?.querySelector('.px-4.py-3');
       const trainingInner = trainingSection?.querySelector('.bg-black\\/30');
+      const trainingItems = trainingSection?.querySelectorAll('.space-y-3');
+      const trainingCards = trainingSection?.querySelectorAll('.p-3');
+      const trainingHeader = trainingSection?.querySelector('.px-4.py-3');
       const patternDnaInner = patternDnaSection?.querySelector('.bg-black\\/30');
       
       const prevStyles = {
         cycle: cycleSection ? {
           marginBottom: cycleSection.style.marginBottom,
-          border: cycleSection.style.border
+          border: cycleSection.style.border,
+          paddingBottom: cycleSection.style.paddingBottom
         } : null,
         cycleInner: cycleInner ? {
           padding: cycleInner.style.padding,
           border: cycleInner.style.border
+        } : null,
+        cycleContent: cycleContent ? {
+          padding: cycleContent.style.padding
+        } : null,
+        cycleHeader: cycleHeader ? {
+          padding: cycleHeader.style.padding
         } : null,
         training: trainingSection ? {
           marginBottom: trainingSection.style.marginBottom,
@@ -376,6 +401,16 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           padding: trainingInner.style.padding,
           border: trainingInner.style.border
         } : null,
+        trainingItems: trainingItems ? Array.from(trainingItems).map(item => ({
+          gap: item.style.gap
+        })) : null,
+        trainingCards: trainingCards ? Array.from(trainingCards).map(card => ({
+          padding: card.style.padding,
+          textFontSize: card.querySelector('p.text-stone-200\\/90')?.style.fontSize
+        })) : null,
+        trainingHeader: trainingHeader ? {
+          padding: trainingHeader.style.padding
+        } : null,
         patternDna: patternDnaSection ? {
           marginBottom: patternDnaSection.style.marginBottom,
           border: patternDnaSection.style.border
@@ -383,6 +418,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         patternDnaInner: patternDnaInner ? {
           padding: patternDnaInner.style.padding,
           border: patternDnaInner.style.border
+        } : null,
+        seeBothSides: seeBothSidesSection ? {
+          marginBottom: seeBothSidesSection.style.marginBottom,
+          border: seeBothSidesSection.style.border
+        } : null,
+        patternVerified: patternVerifiedSection ? {
+          marginTop: patternVerifiedSection.style.marginTop,
+          marginBottom: patternVerifiedSection.style.marginBottom
         } : null,
         sage: {
           container: sageContainer ? {
@@ -405,35 +448,82 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
       // Apply compact styles for save/share export
       if (cycleSection) {
-        cycleSection.style.marginBottom = '8px';
+        cycleSection.style.marginBottom = '6px';
         cycleSection.style.border = 'none';
       }
       if (trainingSection) {
-        trainingSection.style.marginBottom = '8px';
+        trainingSection.style.marginBottom = '4px'; // Further reduced from 6px
         trainingSection.style.border = 'none';
       }
       if (patternDnaSection) {
-        patternDnaSection.style.marginBottom = '8px';
+        patternDnaSection.style.marginBottom = '6px';
         patternDnaSection.style.border = 'none';
+      }
+      if (seeBothSidesSection) {
+        seeBothSidesSection.style.marginBottom = '6px';
+        seeBothSidesSection.style.border = 'none';
+      }
+      if (patternVerifiedSection) {
+        patternVerifiedSection.style.marginTop = '4px'; // Reduced from mt-2 (8px)
+        patternVerifiedSection.style.marginBottom = '12px'; // Reduced from mb-6 (24px)
       }
       
       // Also reduce padding in the inner containers
       
       if (cycleInner) {
-        cycleInner.style.padding = '12px';
+        cycleInner.style.padding = '8px';
         cycleInner.style.border = 'none';
       }
+      
+      // Also reduce padding in the cycle content area specifically
+      if (cycleContent) {
+        cycleContent.style.padding = '6px 6px 2px 6px'; // Further reduce all padding
+      }
+      
+      // Reduce padding in the cycle header area
+      if (cycleHeader) {
+        cycleHeader.style.padding = '6px 8px';
+      }
+      
+      // Reduce bottom padding of the cycle section container
+      if (cycleSection) {
+        cycleSection.style.paddingBottom = '4px';
+      }
       if (trainingInner) {
-        trainingInner.style.padding = '12px';
+        trainingInner.style.padding = '4px'; // Further reduced from 6px
         trainingInner.style.border = 'none';
       }
+      
+      // Also reduce spacing between training items
+      trainingItems.forEach(item => {
+        if (item) {
+          item.style.gap = '2px'; // Further reduced from 4px to 2px
+        }
+      });
+      
+      // Reduce padding within each training item
+      trainingCards.forEach(card => {
+        if (card) {
+          card.style.padding = '4px'; // Further reduced from 6px
+          // Also reduce font size of training text to 14px
+          const trainingText = card.querySelector('p.text-stone-200\\/90');
+          if (trainingText) {
+            trainingText.style.fontSize = '14px';
+          }
+        }
+      });
+      
+      // Reduce padding in the training header area
+      if (trainingHeader) {
+        trainingHeader.style.padding = '4px 6px'; // Further reduced from 6px 8px
+      }
       if (patternDnaInner) {
-        patternDnaInner.style.padding = '12px';
+        patternDnaInner.style.padding = '10px';
         patternDnaInner.style.border = 'none';
       }
       if (sageContainer) {
         sageContainer.style.padding = '12px';
-        sageContainer.style.marginBottom = '12px';
+        sageContainer.style.marginBottom = '6px';
         sageContainer.style.border = 'none';
       }
       if (sageHeader) {
@@ -444,7 +534,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         sageContent.style.marginBottom = '8px';
       }
       if (sageText) {
-        sageText.style.fontSize = '13px';
+        sageText.style.fontSize = '16px'; // Increased for better readability
       }
 
       // Add export-mode class to remove all borders (like Truth Receipt)
@@ -502,15 +592,26 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         immunityPill.style.minWidth = prevPillStyles.minWidth;
         immunityPill.style.fontSize = prevPillStyles.fontSize;
       }
+      if (sageLogo && prevSageLogoStyles) {
+        sageLogo.style.width = prevSageLogoStyles.width;
+        sageLogo.style.height = prevSageLogoStyles.height;
+      }
       
       // Restore all modified styles
       if (cycleSection && prevStyles.cycle) {
         cycleSection.style.marginBottom = prevStyles.cycle.marginBottom;
         cycleSection.style.border = prevStyles.cycle.border;
+        cycleSection.style.paddingBottom = prevStyles.cycle.paddingBottom;
       }
       if (cycleInner && prevStyles.cycleInner) {
         cycleInner.style.padding = prevStyles.cycleInner.padding;
         cycleInner.style.border = prevStyles.cycleInner.border;
+      }
+      if (cycleContent && prevStyles.cycleContent) {
+        cycleContent.style.padding = prevStyles.cycleContent.padding;
+      }
+      if (cycleHeader && prevStyles.cycleHeader) {
+        cycleHeader.style.padding = prevStyles.cycleHeader.padding;
       }
       if (trainingSection && prevStyles.training) {
         trainingSection.style.marginBottom = prevStyles.training.marginBottom;
@@ -520,6 +621,28 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         trainingInner.style.padding = prevStyles.trainingInner.padding;
         trainingInner.style.border = prevStyles.trainingInner.border;
       }
+      if (trainingItems && prevStyles.trainingItems) {
+        trainingItems.forEach((item, index) => {
+          if (prevStyles.trainingItems[index]) {
+            item.style.gap = prevStyles.trainingItems[index].gap;
+          }
+        });
+      }
+      if (trainingCards && prevStyles.trainingCards) {
+        trainingCards.forEach((card, index) => {
+          if (prevStyles.trainingCards[index]) {
+            card.style.padding = prevStyles.trainingCards[index].padding;
+            // Restore original font size
+            const trainingText = card.querySelector('p.text-stone-200\\/90');
+            if (trainingText && prevStyles.trainingCards[index].textFontSize) {
+              trainingText.style.fontSize = prevStyles.trainingCards[index].textFontSize;
+            }
+          }
+        });
+      }
+      if (trainingHeader && prevStyles.trainingHeader) {
+        trainingHeader.style.padding = prevStyles.trainingHeader.padding;
+      }
       if (patternDnaSection && prevStyles.patternDna) {
         patternDnaSection.style.marginBottom = prevStyles.patternDna.marginBottom;
         patternDnaSection.style.border = prevStyles.patternDna.border;
@@ -527,6 +650,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       if (patternDnaInner && prevStyles.patternDnaInner) {
         patternDnaInner.style.padding = prevStyles.patternDnaInner.padding;
         patternDnaInner.style.border = prevStyles.patternDnaInner.border;
+      }
+      if (seeBothSidesSection && prevStyles.seeBothSides) {
+        seeBothSidesSection.style.marginBottom = prevStyles.seeBothSides.marginBottom;
+        seeBothSidesSection.style.border = prevStyles.seeBothSides.border;
+      }
+      if (patternVerifiedSection && prevStyles.patternVerified) {
+        patternVerifiedSection.style.marginTop = prevStyles.patternVerified.marginTop;
+        patternVerifiedSection.style.marginBottom = prevStyles.patternVerified.marginBottom;
       }
       if (sageContainer && prevStyles.sage.container) {
         sageContainer.style.padding = prevStyles.sage.container.padding;
@@ -657,7 +788,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </span>
             </div>
             {/* Pattern Verified subline */}
-            <div className="mt-2 mb-6">
+            <div className="mt-2 mb-6" data-pattern-verified-section>
               <h3
                 className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
                 style={{ color: getHeaderArchetypeColor(), textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
@@ -835,7 +966,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         )}
 
         {/* Green Flags vs This Mess */}
-        <div className="mb-8">
+        <div className="mb-8" data-see-both-sides-section>
           <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm shadow-lg">
             {/* Main Header */}
             <div className="px-4 py-3 border-b border-transparent">
