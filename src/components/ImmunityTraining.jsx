@@ -297,7 +297,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       });
     });
   };
-
+  
   // Save Immunity (Clean) using same mechanics as Truth Receipt
   const handleSaveImmunity = async () => {
     const element = document.querySelector('[data-immunity-component]');
@@ -343,43 +343,76 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         immunityPill.style.minWidth = '280px';
       }
 
-      // Reduce Sage's Blessing padding and font size for export
+      // Reduce padding and remove borders for compact save/share export
+      const allSections = element.querySelectorAll('.mb-8');
+      const cycleSection = element.querySelector('[data-cycle-mobile]')?.parentElement?.parentElement;
+      const trainingSection = element.querySelector('[data-training-item]')?.closest('.mb-8');
       const sageContainer = element.querySelector('[data-sage-blessing-container]');
       const sageHeader = element.querySelector('[data-sage-blessing-header]');
       const sageContent = element.querySelector('[data-sage-blessing-content]');
       const sageText = element.querySelector('[data-sage-blessing-text]');
       
-      const prevSageStyles = {
-        container: sageContainer ? {
-          padding: sageContainer.style.padding,
-          marginBottom: sageContainer.style.marginBottom
+      const prevStyles = {
+        sections: Array.from(allSections).map(section => ({
+          element: section,
+          marginBottom: section.style.marginBottom
+        })),
+        cycle: cycleSection ? {
+          element: cycleSection,
+          marginBottom: cycleSection.style.marginBottom
         } : null,
-        header: sageHeader ? {
-          marginBottom: sageHeader.style.marginBottom
+        training: trainingSection ? {
+          element: trainingSection,
+          marginBottom: trainingSection.style.marginBottom
         } : null,
-        content: sageContent ? {
-          padding: sageContent.style.padding,
-          marginBottom: sageContent.style.marginBottom
-        } : null,
-        text: sageText ? {
-          fontSize: sageText.style.fontSize
-        } : null
+        sage: {
+          container: sageContainer ? {
+            element: sageContainer,
+            padding: sageContainer.style.padding,
+            marginBottom: sageContainer.style.marginBottom
+          } : null,
+          header: sageHeader ? {
+            element: sageHeader,
+            marginBottom: sageHeader.style.marginBottom
+          } : null,
+          content: sageContent ? {
+            element: sageContent,
+            padding: sageContent.style.padding,
+            marginBottom: sageContent.style.marginBottom
+          } : null,
+          text: sageText ? {
+            element: sageText,
+            fontSize: sageText.style.fontSize
+          } : null
+        }
       };
 
-      // Apply reduced styles for export
+      // Apply compact styles for export
+      allSections.forEach(section => {
+        section.style.marginBottom = '12px';
+      });
+      
+      if (cycleSection) {
+        cycleSection.style.marginBottom = '12px';
+      }
+      
+      if (trainingSection) {
+        trainingSection.style.marginBottom = '12px';
+      }
+      
       if (sageContainer) {
-        sageContainer.style.padding = '16px';
-        sageContainer.style.marginBottom = '16px';
+        sageContainer.style.padding = '12px';
+        sageContainer.style.marginBottom = '12px';
       }
       if (sageHeader) {
-        sageHeader.style.marginBottom = '12px';
+        sageHeader.style.marginBottom = '8px';
       }
       if (sageContent) {
-        sageContent.style.padding = '0 12px';
-        sageContent.style.marginBottom = '12px';
+        sageContent.style.padding = '0 8px';
+        sageContent.style.marginBottom = '8px';
       }
       if (sageText) {
-        sageText.style.fontSize = '14px';
+        sageText.style.fontSize = '13px';
       }
 
       // Add export-mode class to remove all borders (like Truth Receipt)
@@ -437,20 +470,34 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         immunityPill.style.minWidth = prevPillStyles.minWidth;
       }
       
-      // Restore Sage's Blessing styles
-      if (sageContainer && prevSageStyles.container) {
-        sageContainer.style.padding = prevSageStyles.container.padding;
-        sageContainer.style.marginBottom = prevSageStyles.container.marginBottom;
+      // Restore all section styles
+      prevStyles.sections.forEach(({ element, marginBottom }) => {
+        if (element) {
+          element.style.marginBottom = marginBottom || '';
+        }
+      });
+      
+      if (prevStyles.cycle?.element) {
+        prevStyles.cycle.element.style.marginBottom = prevStyles.cycle.marginBottom || '';
       }
-      if (sageHeader && prevSageStyles.header) {
-        sageHeader.style.marginBottom = prevSageStyles.header.marginBottom;
+      
+      if (prevStyles.training?.element) {
+        prevStyles.training.element.style.marginBottom = prevStyles.training.marginBottom || '';
       }
-      if (sageContent && prevSageStyles.content) {
-        sageContent.style.padding = prevSageStyles.content.padding;
-        sageContent.style.marginBottom = prevSageStyles.content.marginBottom;
+      
+      if (prevStyles.sage.container?.element) {
+        prevStyles.sage.container.element.style.padding = prevStyles.sage.container.padding || '';
+        prevStyles.sage.container.element.style.marginBottom = prevStyles.sage.container.marginBottom || '';
       }
-      if (sageText && prevSageStyles.text) {
-        sageText.style.fontSize = prevSageStyles.text.fontSize;
+      if (prevStyles.sage.header?.element) {
+        prevStyles.sage.header.element.style.marginBottom = prevStyles.sage.header.marginBottom || '';
+      }
+      if (prevStyles.sage.content?.element) {
+        prevStyles.sage.content.element.style.padding = prevStyles.sage.content.padding || '';
+        prevStyles.sage.content.element.style.marginBottom = prevStyles.sage.content.marginBottom || '';
+      }
+      if (prevStyles.sage.text?.element) {
+        prevStyles.sage.text.element.style.fontSize = prevStyles.sage.text.fontSize || '';
       }
       
       // Remove export-mode class
@@ -489,7 +536,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
     safetyNote
   } = immunityData;
 
-
+  
   // Determine risk level based on archetype
   const actualRiskLevel = archetypeName?.includes('Healthy Partner') || 
                          archetypeName?.includes('Green Flag') ||
@@ -552,7 +599,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 src={sageDarkCircle}
                 alt="Sage"
                 className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
-                style={{
+            style={{ 
                   filter: 'brightness(1.2) contrast(1.1)',
                   boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
                 }}
@@ -572,7 +619,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 style={{ color: getHeaderArchetypeColor(), textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
               >
                 Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
-              </h3>
+            </h3>
             </div>
           </div>
         </motion.div>
@@ -582,11 +629,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           <div className="mb-8" data-share-hide="true">
             <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm">
               <div className="px-4 py-3 border-b border-transparent">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
                   <span className="text-lg">🧬</span>
                   <h4 className="font-bold text-sm tracking-wide uppercase" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
-                </div>
               </div>
+            </div>
               <div className="p-6 text-center">
                 <div className="text-lg sm:text-xl font-medium text-stone-200/90 leading-relaxed"
                   style={{ 
@@ -594,8 +641,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                     lineHeight: '1.6'
                   }}>
                   {patternDNA}
+                  </div>
                 </div>
-              </div>
             </div>
           </div>
         )}
@@ -605,7 +652,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {patternLoop.length > 0 && (
           <div className="mb-8">
             <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
-              style={{
+            style={{
                 border: '1px solid rgba(20, 184, 166, 0.35)',
                 boxShadow: '0 0 0 1px rgba(20, 184, 166, 0.25), 0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
                 backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
@@ -616,9 +663,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
                     The Cycle
                   </h4>
-                </div>
               </div>
-              
+            </div>
+            
               <div className="p-4">
                 {/* Mobile: Circular Layout with Numbers */}
                 <div className="sm:hidden" data-cycle-mobile>
@@ -637,13 +684,13 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                         >
                           <div className="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
                             {index + 1}
-                          </div>
+                  </div>
                           {step}
                         </motion.div>
                       ))}
-                    </div>
                   </div>
-                  <div className="text-center mt-3">
+                </div>
+                <div className="text-center mt-3">
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{
@@ -655,17 +702,17 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                       transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
                       className="text-xs tracking-wide"
                     >
-                      {actualRiskLevel === 'low' ? '↻ Healthy Cycle' : '↻ Endless Loop'}
+                    {actualRiskLevel === 'low' ? '↻ Healthy Cycle' : '↻ Endless Loop'}
                     </motion.span>
-                  </div>
                 </div>
-                
+              </div>
+              
                 {/* Desktop: Prominent Circular Flow */}
                 <div className="hidden sm:block" data-cycle-desktop>
                   <div className="relative flex items-center justify-center">
                     <div className="flex items-center justify-center gap-3">
                       {patternLoop.slice(0, 4).map((step, index) => (
-                        <React.Fragment key={step}>
+                    <React.Fragment key={step}>
                           <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -675,7 +722,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                               boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
                             }}
                           >
-                            {step}
+                        {step}
                           </motion.div>
                           {index < patternLoop.length - 1 && (
                             <span 
@@ -688,12 +735,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                             >
                               →
                             </span>
-                          )}
-                        </React.Fragment>
+                      )}
+                    </React.Fragment>
                       ))}
                     </div>
-                  </div>
-                  <div className="w-full flex justify-center mt-3">
+                </div>
+                <div className="w-full flex justify-center mt-3">
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{
@@ -705,13 +752,13 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                       transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
                       className="text-sm tracking-wide"
                     >
-                      {actualRiskLevel === 'low' ? '↻ Healthy Cycle' : '↻ Endless Loop'}
+                    {actualRiskLevel === 'low' ? '↻ Healthy Cycle' : '↻ Endless Loop'}
                     </motion.span>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
         )}
 
         {/* Immunity Test - Field Test */}
@@ -907,45 +954,45 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
         {/* Sage's Blessing - Premium Sunset Treatment */}
         {sageBlessing && (
-          <div className="mb-8">
+        <div className="mb-8">
             <div className="max-w-2xl mx-auto p-6 sm:p-8 relative overflow-hidden" data-sage-blessing-container style={{
               background: 'rgba(0,0,0,0.35)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: '24px',
-              border: '1px solid rgba(212, 175, 55, 0.4)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            border: '1px solid rgba(212, 175, 55, 0.4)',
               boxShadow: '0 8px 32px rgba(212, 175, 55, 0.12)'
-            }}>
+          }}>
               <div className="text-center mb-6 sm:mb-8" data-sage-blessing-header>
                 <Crown className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-4" style={{ color: '#F59E0B' }} />
-                <h4 className="font-bold text-base sm:text-lg md:text-xl tracking-wide" 
-                  style={{
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}>
-                  SAGE'S BLESSING
-                </h4>
-              </div>
-              
+              <h4 className="font-bold text-base sm:text-lg md:text-xl tracking-wide" 
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>
+                SAGE'S BLESSING
+              </h4>
+            </div>
+            
               <div className="px-4 sm:px-6 mb-8" data-sage-blessing-content>
                 <p className="text-sm sm:text-base md:text-lg lg:text-xl font-medium text-center leading-relaxed" data-sage-blessing-text
-                  style={{
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    lineHeight: '1.6'
-                  }}>
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  lineHeight: '1.6'
+                }}>
                   "{sageBlessing}"
-                </p>
-              </div>
-              
+              </p>
+            </div>
+            
               
               
               <p className="text-center text-white/60 text-xs" data-share-hide="true">Blessed by Sage 🔮</p>
-            </div>
           </div>
+        </div>
         )}
 
             {/* DISCLAIMER */}
@@ -959,11 +1006,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </>
         )}
         {/* Global WATERMARK - visible for all users and included in save/share */}
-        <div className="text-center mt-2 mb-6">
-          <p className="text-xs text-stone-200/90/40 tracking-widest">
-            www.getthereceipts.com
-          </p>
-        </div>
+            <div className="text-center mt-2 mb-6">
+              <p className="text-xs text-stone-200/90/40 tracking-widest">
+                www.getthereceipts.com
+              </p>
+            </div>
       </motion.div>
 
       {/* SEPARATE SAVE/SHARE BOX - Completely outside the immunity card */}
