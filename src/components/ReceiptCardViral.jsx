@@ -548,12 +548,6 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           </p>
         </div>
         
-        {/* Sage's Disclaimer */}
-        <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
-          <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 16+.
-          </p>
-        </div>
       </div>
     </>
   );

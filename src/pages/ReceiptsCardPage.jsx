@@ -592,48 +592,44 @@ const ReceiptsCardPage = () => {
           </div>
         </div>
 
-        {/* 2. DECODE ANOTHER MESSAGE - Primary CTA */}
-        <div className="w-full max-w-2xl mx-auto mt-16 mb-16">
-          <LinkButton
-            to="/chat-input"
-            className="w-full py-6 text-black rounded-full text-xl font-bold hover:scale-105 transition-all duration-300"
-            style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              border: '1px solid rgba(212, 175, 55, 0.9)',
-              boxShadow: '0 0 30px rgba(212, 175, 55, 0.4), 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(212, 175, 55, 0.6)',
-              filter: 'drop-shadow(0 0 20px rgba(212, 175, 55, 0.3))'
-            }}
-          >
-            ✨ Decode Another Message
-          </LinkButton>
-        </div>
 
-        {/* 3. PREMIUM UPSELL SECTION - Bottom */}
-        <div className="w-full max-w-2xl mx-auto mb-16">
-          <div className="text-center p-8 bg-gradient-to-br from-slate-900/40 to-slate-800/40 backdrop-blur rounded-3xl border border-slate-600/30 shadow-lg">
-            <h3 className="text-2xl sm:text-3xl font-bold mb-6 gradient-text animate-gradient">
-              Need More Truth Receipts?
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* 3. PREMIUM UPSELL SECTION - Receipt Style */}
+        <div className="w-full max-w-2xl mx-auto mt-12 mb-16">
+          <div className="bg-white/2 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
+            {/* Header matching receipt style */}
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-2 bg-teal-900/40 px-4 py-2 rounded-2xl border border-teal-500/50 mb-4">
+                <span className="text-2xl">✨</span>
+                <span className="text-teal-400 font-bold text-lg tracking-wide">Ready for Sage's Next Take?</span>
+              </div>
+            </div>
+            
+            {/* Two centered buttons */}
+            <div className="flex justify-center gap-4">
+              <LinkButton
+                to="/luxe-chat-input"
+                className="flex items-center gap-2 text-black font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.8)',
+                  boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
+                }}
+              >
+                <span className="text-lg">✨</span>
+                Decode Another Message
+              </LinkButton>
               <Button
                 onClick={handleFounderCheckout}
                 disabled={loadingCheckout}
-                className="text-white font-bold rounded-full py-3 hover:scale-105 transition"
+                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
                 style={{
-                  background: 'linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)',
-                  border: '1px solid rgba(20, 184, 166, 0.8)',
-                  boxShadow: '0 0 10px rgba(6, 182, 212, 0.3), inset 0 1px 0 rgba(34, 197, 194, 0.4), 0 4px 8px rgba(0, 0, 0, 0.15)'
+                  border: '1px solid rgba(20, 184, 166, 0.6)',
+                  boxShadow: '0 0 20px rgba(20, 184, 166, 0.2)'
                 }}
               >
-                {loadingCheckout ? 'Redirecting...' : '⚡ Go Premium'}
+                <span className="text-lg">⚡</span>
+                {loadingCheckout ? 'Redirecting...' : 'Go Premium Unlimited'}
               </Button>
-              <LinkButton
-                to="/refer"
-                variant="outline"
-                className="border-teal-400 text-white hover:bg-teal-500/20 rounded-full py-3"
-              >
-                🎁 Earn Free Truth Receipts
-              </LinkButton>
             </div>
           </div>
         </div>
@@ -645,6 +641,15 @@ const ReceiptsCardPage = () => {
           </div>
         )}
       </motion.div>
+      
+      {/* Sage Disclaimer */}
+      <div className="w-full max-w-2xl mx-auto px-6 py-8">
+        <div className="text-center">
+          <p className="text-xs text-gray-500 leading-relaxed">
+            🔮 Look, Sage is really good at reading the room and serving up insights, but she's not a licensed professional, and for the love of all that's holy, don't take life changing advice from an opinionated AI. For entertainment only. This service is intended for users 16+.
+          </p>
+        </div>
+      </div>
       
       {/* Age Verification Modal - Removed */}
     </div>

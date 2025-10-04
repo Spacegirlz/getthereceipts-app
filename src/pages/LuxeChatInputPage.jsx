@@ -367,6 +367,7 @@ const LuxeChatInputPage = () => {
             </p>
           </div>
 
+
           {/* Anonymous User Status */}
           {!user && anonymousStatus && (
             <div className="mb-6 p-4 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl">
@@ -577,7 +578,6 @@ const LuxeChatInputPage = () => {
                     className="w-full px-3 py-2 bg-white/5 rounded-lg text-sm text-white placeholder-white/40 border border-white/10 focus:border-yellow-400/50 focus:outline-none transition-all duration-300"
                   />
                 </div>
-                
               </div>
             </details>
           </div>
@@ -653,32 +653,7 @@ const LuxeChatInputPage = () => {
       <footer className="w-full border-t border-white/5 bg-black/10 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 py-8">
           <div className="space-y-6">
-            {/* Authority Notice */}
-            <div className="text-center">
-              <p className="text-sm text-gray-400 mb-4">
-                Make sure you have authority to use someone else's chats.
-              </p>
-            </div>
             
-            {/* Subtle Badges */}
-            <div className="flex flex-wrap justify-center gap-3 text-xs">
-              <span className="text-gray-500 bg-gray-800/30 px-3 py-1.5 rounded-md border border-gray-700/50">
-                16+ only
-              </span>
-              <span className="text-gray-500 bg-gray-800/30 px-3 py-1.5 rounded-md border border-gray-700/50">
-                For Entertainment Purposes Only
-              </span>
-              <span className="text-gray-500 bg-gray-800/30 px-3 py-1.5 rounded-md border border-gray-700/50">
-                Not therapy, legal, or medical advice
-              </span>
-            </div>
-            
-            {/* AI Disclaimer */}
-            <div className="text-center">
-              <p className="text-xs text-gray-500 italic">
-                Sage is an AI character with opinions, not facts
-              </p>
-            </div>
           </div>
         </div>
       </footer>
@@ -776,6 +751,7 @@ const LuxeChatInputPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      
     </div>
   );
 };

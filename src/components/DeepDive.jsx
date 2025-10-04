@@ -19,6 +19,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const [copiedText, setCopiedText] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [showAllAutopsy, setShowAllAutopsy] = useState(false);
+  const [autopsyScrollPosition, setAutopsyScrollPosition] = useState(0);
   const speechRef = useRef(null);
 
   // Dynamic Metrics Calculator
@@ -73,30 +74,134 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     return result;
   };
 
-  const handleShareTea = async () => {
+  const handleSharePlaybook = async () => {
     try {
-      // Use the same optimized save function as Save Playbook button
-      await handleSaveClean();
+      const element = document.querySelector('[data-deepdive-component]');
+      if (!element) {
+        toast({ title: "Error", description: "Could not find component to share.", variant: "destructive" });
+        return;
+      }
+
+      // Apply the same optimizations as save function but don't download
+      const nodesToHide = Array.from(element.querySelectorAll('[data-share-hide="true"]'));
+      const extraAutopsyToHide = Array.from(element.querySelectorAll('[data-autopsy-item]'))
+        .filter(n => (parseInt(n.getAttribute('data-index') || '0', 10)) >= 2);
+      const allToHide = [...nodesToHide, ...extraAutopsyToHide];
+      const previousDisplays = allToHide.map(n => n.style.display);
+
+      // Force desktop view for share
+      const mobileAutopsy = element.querySelector('[data-autopsy-horizontal]');
+      const desktopAutopsy = element.querySelector('.hidden.sm\\:block');
+      const prevMobileDisplay = mobileAutopsy ? mobileAutopsy.style.display : null;
+      const prevDesktopDisplay = desktopAutopsy ? desktopAutopsy.style.display : null;
+      if (mobileAutopsy) mobileAutopsy.style.display = 'none';
+      if (desktopAutopsy) desktopAutopsy.style.display = 'block';
+
+      // Apply export-mode class
+      element.classList.add('export-mode');
+
+      // Apply compact layout optimizations
+      const autopsySection = element.querySelector('[data-autopsy-section]');
+      const playbookSection = element.querySelector('[data-playbook-section]');
+      const sealSection = element.querySelector('[data-seal-section]');
       
-      const shareText = `☕ Just got the REAL TEA from SAGE: "${deepDive?.tea_wisdom || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || 'The truth is always better than pretty lies.'}" Get your own tea at getthereceipts.com #GetTheReceipts #TeaSpilled #SageSays`;
+      const prevStyles = {
+        autopsy: autopsySection ? {
+          marginBottom: autopsySection.style.marginBottom,
+          padding: autopsySection.style.padding
+        } : null,
+        playbook: playbookSection ? {
+          marginBottom: playbookSection.style.marginBottom,
+          padding: playbookSection.style.padding
+        } : null,
+        seal: sealSection ? {
+          marginBottom: sealSection.style.marginBottom,
+          padding: sealSection.style.padding
+        } : null
+      };
       
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: 'SAGE Spilled the Tea',
-            text: shareText,
-            url: 'https://getthereceipts.com'
-          });
-        } catch (error) {
+      if (autopsySection) {
+        autopsySection.style.marginBottom = '12px';
+        autopsySection.style.padding = '8px';
+      }
+      if (playbookSection) {
+        playbookSection.style.marginBottom = '12px';
+        playbookSection.style.padding = '8px';
+      }
+      if (sealSection) {
+        sealSection.style.marginBottom = '8px';
+        sealSection.style.padding = '8px';
+      }
+
+      try {
+        allToHide.forEach(n => { n.style.display = 'none'; });
+        
+        // Create optimized image for sharing
+        const blob = await domtoimage.toPng(element, {
+          width: element.offsetWidth * 2,
+          height: element.offsetHeight * 2,
+          style: {
+            transform: 'scale(2)',
+            transformOrigin: 'top left'
+          },
+          bgcolor: 'transparent',
+          quality: 1
+        });
+        
+        const shareText = `🎯 Just got my SAGE'S PLAYBOOK: "${deepDive?.tea_wisdom || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || 'The truth is always better than pretty lies.'}" Get your own playbook at www.getthereceipts.com #GetTheReceipts #SageSays`;
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'sage-playbook.png', { type: 'image/png' })] })) {
+          try {
+            const file = new File([blob], 'sage-playbook.png', { type: 'image/png' });
+            await navigator.share({
+              title: 'SAGE\'S PLAYBOOK',
+              text: shareText,
+              files: [file]
+            });
+          } catch (error) {
+            // Fallback to text-only share
+            await navigator.share({
+              title: 'SAGE\'S PLAYBOOK',
+              text: shareText,
+              url: 'https://www.getthereceipts.com'
+            });
+          }
+        } else {
+          // Fallback for browsers without native share or file sharing
           copyToClipboard(shareText);
+          toast({ title: "Copied!", description: "Playbook text copied to clipboard." });
         }
-      } else {
-        copyToClipboard(shareText);
+      } finally {
+        // Restore everything
+        allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
+        
+        if (mobileAutopsy && prevMobileDisplay !== null) {
+          mobileAutopsy.style.display = prevMobileDisplay;
+        }
+        if (desktopAutopsy && prevDesktopDisplay !== null) {
+          desktopAutopsy.style.display = prevDesktopDisplay;
+        }
+        
+        if (autopsySection && prevStyles.autopsy) {
+          autopsySection.style.marginBottom = prevStyles.autopsy.marginBottom;
+          autopsySection.style.padding = prevStyles.autopsy.padding;
+        }
+        if (playbookSection && prevStyles.playbook) {
+          playbookSection.style.marginBottom = prevStyles.playbook.marginBottom;
+          playbookSection.style.padding = prevStyles.playbook.padding;
+        }
+        if (sealSection && prevStyles.seal) {
+          sealSection.style.marginBottom = prevStyles.seal.marginBottom;
+          sealSection.style.padding = prevStyles.seal.padding;
+        }
+        
+        element.classList.remove('export-mode');
       }
     } catch (error) {
       console.log('Error in share function:', error);
-      const shareText = `☕ Just got the REAL TEA from SAGE: "${deepDive?.tea_wisdom || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || 'The truth is always better than pretty lies.'}" Get your own tea at getthereceipts.com #GetTheReceipts #TeaSpilled #SageSays`;
+      const shareText = `🎯 Just got my SAGE'S PLAYBOOK: "${deepDive?.tea_wisdom || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || 'The truth is always better than pretty lies.'}" Get your own playbook at www.getthereceipts.com #GetTheReceipts #SageSays`;
       copyToClipboard(shareText);
+      toast({ title: "Copied!", description: "Playbook text copied to clipboard." });
     }
   };
 
@@ -668,7 +773,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const getSpeakerName = (quote) => {
     if (!quote) return 'SPEAKER';
 
-    const context = safeDeepDive;
+    const contextData = context || {};
     const conversationLines = originalMessage?.split('\n') || [];
     
 
@@ -680,11 +785,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       if (match && match[2] && quote.includes(match[2].trim())) {
         const speakerName = match[1].trim();
         // Prioritize actual names over generic pronouns if context names are available
-        if (context?.userName && speakerName.toLowerCase() === context.userName.toLowerCase()) {
-          return context.userName.toUpperCase();
+        if (contextData?.userName && speakerName.toLowerCase() === contextData.userName.toLowerCase()) {
+          return contextData.userName.toUpperCase();
         }
-        if (context?.otherName && speakerName.toLowerCase() === context.otherName.toLowerCase()) {
-          return context.otherName.toUpperCase();
+        if (contextData?.otherName && speakerName.toLowerCase() === contextData.otherName.toLowerCase()) {
+          return contextData.otherName.toUpperCase();
         }
         // If no context match, but it's a valid name, use it
         const nonNames = ['you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom', 'just', 'like', 'really', 'actually', 'basically', 'literally'];
@@ -695,14 +800,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     }
 
     // Fallback to context names based on first/second-person indicators
-    if (context?.userName && context?.otherName) {
+    if (contextData?.userName && contextData?.otherName) {
       const firstPersonPatterns = /\b(I|me|my|mine)\b/i;
       if (firstPersonPatterns.test(quote)) {
-        return context.userName.toUpperCase();
+        return contextData.userName.toUpperCase();
       }
       const secondPersonPatterns = /\b(you|your|yours)\b/i;
       if (secondPersonPatterns.test(quote)) {
-        return context.otherName.toUpperCase();
+        return contextData.otherName.toUpperCase();
       }
     }
 
@@ -1024,19 +1129,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
                 {/* Key Metrics Dashboard - 1x3 horizontal layout */}
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-sm font-semibold text-white/90">Key Metrics</div>
-                  <div className="relative group">
-                    <Info className="w-4 h-4 text-white/50 hover:text-teal-400 cursor-help transition-colors" />
-                    <div className="absolute right-0 top-6 w-64 p-3 bg-black/90 border border-teal-400/30 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-                      <div className="text-xs text-white/90 leading-relaxed">
-                        <div className="font-semibold text-teal-400 mb-1">How Sage Calculates These</div>
-                        <div className="text-white/80">
-                          Sage analyzes conversation dynamics, red flags, and emotional signals to create these personalized metrics. 
-                          Each score reflects the unique patterns in your specific situation, not generic formulas.
-                        </div>
-                      </div>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>KEY METRICS</h3>
                   </div>
+                  <div className="text-xs text-stone-400/70 font-mono">ANALYSIS DATA</div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
                   {(() => {
@@ -1143,12 +1240,17 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="flex items-center justify-between mb-4">
                   <button
                     onClick={() => {
-                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
+                      const container = document.querySelector('[data-autopsy-scrollable]');
                       if (container) {
                         container.scrollBy({ left: -340, behavior: 'smooth' });
                       }
                     }}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-teal-400/30 text-teal-400 hover:bg-teal-400/10 hover:border-teal-400/50 transition-all duration-200"
+                    disabled={autopsyScrollPosition <= 0}
+                    className={`flex items-center justify-center w-10 h-10 rounded-full border transition-all duration-200 ${
+                      autopsyScrollPosition <= 0 
+                        ? 'bg-black/20 border-teal-400/10 text-teal-400/30 cursor-not-allowed' 
+                        : 'bg-black/40 border-teal-400/30 text-teal-400 hover:bg-teal-400/10 hover:border-teal-400/50'
+                    }`}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1162,12 +1264,17 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   
                   <button
                     onClick={() => {
-                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
+                      const container = document.querySelector('[data-autopsy-scrollable]');
                       if (container) {
                         container.scrollBy({ left: 340, behavior: 'smooth' });
                       }
                     }}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-teal-400/30 text-teal-400 hover:bg-teal-400/10 hover:border-teal-400/50 transition-all duration-200"
+                    disabled={autopsyScrollPosition >= 680} // Approximate max scroll for 3 items
+                    className={`flex items-center justify-center w-10 h-10 rounded-full border transition-all duration-200 ${
+                      autopsyScrollPosition >= 680 
+                        ? 'bg-black/20 border-teal-400/10 text-teal-400/30 cursor-not-allowed' 
+                        : 'bg-black/40 border-teal-400/30 text-teal-400 hover:bg-teal-400/10 hover:border-teal-400/50'
+                    }`}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -1177,25 +1284,29 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
                 <div 
                   className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6 autopsy-carousel"
+                  data-autopsy-scrollable
+                  style={{
+                    WebkitOverflowScrolling: 'touch',
+                    scrollBehavior: 'smooth',
+                    overscrollBehavior: 'contain'
+                  }}
+                  onScroll={(e) => {
+                    setAutopsyScrollPosition(e.target.scrollLeft);
+                  }}
                   onTouchStart={(e) => {
-                    // Prevent parent scroll when touching the carousel
-                    e.stopPropagation();
+                    // Store initial touch position
+                    const touch = e.touches[0];
+                    e.currentTarget.touchStartX = touch.clientX;
+                    e.currentTarget.touchStartY = touch.clientY;
                   }}
                   onTouchMove={(e) => {
-                    // Only allow horizontal scrolling within the carousel
-                    const container = e.currentTarget;
-                    const scrollLeft = container.scrollLeft;
-                    const scrollWidth = container.scrollWidth;
-                    const clientWidth = container.clientWidth;
-                    
-                    // If we're at the beginning or end, prevent vertical scroll
-                    if ((scrollLeft <= 0 && e.touches[0].clientX > e.touches[0].clientY) ||
-                        (scrollLeft >= scrollWidth - clientWidth && e.touches[0].clientX < e.touches[0].clientY)) {
-                      e.preventDefault();
-                    }
+                    // Allow natural scrolling - don't interfere with touch events
+                    // The browser will handle horizontal vs vertical scrolling naturally
                   }}
                   onTouchEnd={(e) => {
-                    e.stopPropagation();
+                    // Clean up touch tracking
+                    delete e.currentTarget.touchStartX;
+                    delete e.currentTarget.touchStartY;
                   }}
                 >
                   <div className="flex gap-4 pb-4">
@@ -1212,7 +1323,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                           onClick={() => copyToClipboard(receipt.quote)}
                         >
 
-                          <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50" />
 
                           {/* Person Badge */}
                           <div className="flex items-center gap-2 mb-3">
@@ -1289,8 +1399,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       {/* Hover glow */}
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
-                    {/* Copy Icon */}
-                    <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
                     
                     {/* Quote */}
                     <div className="relative text-white/95 text-lg mb-3 pb-3 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20 text-center">
@@ -1373,8 +1481,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                               {/* Hover glow */}
                               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               
-                              {/* Copy Icon */}
-                              <Copy className="absolute top-4 right-4 w-4 h-4 text-white/30 group-hover:text-teal-400 transition-colors" />
                               
                               {/* Quote */}
                               <div className="relative text-white/95 text-base mb-4 pb-4 font-medium italic leading-relaxed pr-8 border-b border-teal-400/20 text-center">
@@ -1575,7 +1681,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         </motion.section>
 
             {/* Actions - Premium Buttons */}
-            <div className="flex flex-wrap items-center justify-between gap-4 max-w-2xl mx-auto" data-share-hide="true">
+            <div className="flex flex-wrap items-center justify-center gap-4 max-w-2xl mx-auto" data-share-hide="true">
               <button
                 onClick={handleSaveClean}
                 className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
@@ -1589,12 +1695,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   if (window.navigator.vibrate) {
                     window.navigator.vibrate(10);
                   }
-                  handleShareTea();
+                  handleSharePlaybook();
                 }}
                 className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
               >
                 <Share2 className="w-4 h-4" />
-                Share Tea
+                Share Playbook
               </button>
         </div>
         

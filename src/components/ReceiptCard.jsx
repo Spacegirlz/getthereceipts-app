@@ -99,7 +99,7 @@ const ReceiptCard = ({ results }) => {
               AI Confidence: {confidenceScore}%
             </div>
             <p className="mono-font text-xs text-white/50 tracking-widest">
-              getthereceipts.com
+              www.getthereceipts.com
             </p>
           </div>
         </div>

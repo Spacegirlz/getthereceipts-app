@@ -229,7 +229,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
   const handleShareTrophy = async () => {
     try {
       const element = document.querySelector('[data-immunity-component]');
-      const shareText = `🛡️ Just completed my SAGE Immunity Training! Now I'm protected against ${archetypeName} tactics. Get your own protection at getthereceipts.com #GetTheReceipts #ImmunityTraining #SageSays`;
+      const shareText = `🛡️ Just completed my SAGE Immunity Training! Now I'm protected against ${archetypeName} tactics. Get your own protection at www.getthereceipts.com #GetTheReceipts #ImmunityTraining #SageSays`;
       
       if (element && navigator.share) {
         try {
@@ -261,7 +261,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               await navigator.share({
                 title: 'SAGE Immunity Training Complete',
                 text: shareText,
-                url: 'https://getthereceipts.com',
+                url: 'https://www.getthereceipts.com',
                 files: [file]
               });
             } catch (shareError) {
@@ -269,7 +269,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               await navigator.share({
                 title: 'SAGE Immunity Training Complete',
                 text: shareText,
-                url: 'https://getthereceipts.com'
+                url: 'https://www.getthereceipts.com'
               });
             }
           }
@@ -281,7 +281,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       }
     } catch (error) {
       console.log('Error in share function:', error);
-      const shareText = `🛡️ Just completed my SAGE Immunity Training! Now I'm protected against ${archetypeName} tactics. Get your own protection at getthereceipts.com #GetTheReceipts #ImmunityTraining #SageSays`;
+      const shareText = `🛡️ Just completed my SAGE Immunity Training! Now I'm protected against ${archetypeName} tactics. Get your own protection at www.getthereceipts.com #GetTheReceipts #ImmunityTraining #SageSays`;
       copyToClipboard(shareText);
     }
   };
@@ -1103,7 +1103,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   >
                     Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
                   </h3>
-                </div>
+              </div>
                 <h3 className="text-2xl font-bold text-amber-300 mb-3">Unlock Your Defense Training</h3>
                 <p className="text-amber-200/90 text-lg leading-relaxed max-w-md mx-auto">
                   Get your personalized immunity checkpoints, field test, and Sage's blessing for {userName}.
@@ -1271,7 +1271,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* Sage's Disclaimer */}
         <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
           <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, we're really good at reading the room and serving up insights, but we're not your therapist, not licensed professionals, and for the love of all that's holy, don't take life changing advice from an AI with opinions and sass. For entertainment only. Think of us as your witty friends with someone else's lived experience. This service is intended for users 16+.
+            <span className="text-amber-300/80">🔮</span> Look, Sage is really good at reading the room and serving up insights, but she's not a licensed professional, and for the love of all that's holy, don't take life changing advice from an opinionated AI. For entertainment only. This service is intended for users 16+.
           </p>
         </div>
       </div>

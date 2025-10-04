@@ -298,9 +298,9 @@ const TabbedReceiptInterface = ({
                       </div>
                     </div>
 
-                    {/* New Header Design - Matching Premium View */}
+                    {/* Updated Header Design - Matching New Immunity Training */}
                     <div className="text-center mb-6">
-                      <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-4">
+                      <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2">
                         <img
                           src={sageDarkCircle}
                           alt="Sage"
@@ -319,7 +319,7 @@ const TabbedReceiptInterface = ({
                         </span>
                       </div>
                       {/* Pattern Verified subline */}
-                      <div className="mb-4">
+                      <div className="mt-2 mb-6">
                         <h3
                           className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
                           style={{ color: '#14B8A6', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
@@ -329,57 +329,91 @@ const TabbedReceiptInterface = ({
                       </div>
                     </div>
 
-                    {/* Preview Content */}
+                    {/* Preview Content - Matching New Design */}
                     <div className="mb-8 space-y-6">
-                      {/* Pattern Recognition Preview */}
-                      <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-                        <h4 className="text-teal-400 font-bold text-sm mb-4">PATTERN RECOGNITION</h4>
-                        <div className="space-y-3">
-                          <div className="text-stone-300/90 text-lg">
-                            Pattern detected: {analysis.immunityTraining?.patternDetected || `The ${archetypeNameForImmunity} manipulation cycle`}
+                      {/* Pattern DNA Preview */}
+                      <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm">
+                        <div className="px-4 py-3 border-b border-transparent">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">🧬</span>
+                            <h4 className="font-bold text-sm tracking-wide uppercase" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
                           </div>
-                          <div className="text-purple-300 text-lg">
-                            Success rate: {analysis.immunityTraining?.successRate || '94% will repeat this pattern'}
-                          </div>
-                          <div className="text-teal-300 text-lg">
-                            Your vulnerability: {analysis.immunityTraining?.userVulnerability || 'Your genuine hope for connection'}
+                        </div>
+                        <div className="p-6 text-center">
+                          <div className="text-lg sm:text-xl font-medium text-stone-200/90 leading-relaxed"
+                            style={{ 
+                              textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+                              lineHeight: '1.6'
+                            }}>
+                            {analysis.immunityTraining?.patternDNA || `${archetypeNameForImmunity} shows mixed signals and vague communication patterns`}
                           </div>
                         </div>
                       </div>
 
-                      {/* Pattern Loop Preview */}
-                      <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-                        <h4 className="text-teal-400 font-bold text-sm mb-4">PATTERN LOOP</h4>
-                        <div className="flex items-center justify-center gap-3 flex-wrap">
-                          {analysis.immunityTraining?.patternLoop?.slice(0, 3).map((step, index) => (
-                            <div key={step} className="contents">
-                              <div className="bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full text-lg border border-purple-500/30 whitespace-nowrap">
-                                {step}
+                      {/* The Cycle Preview */}
+                      <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
+                        style={{
+                          border: '1px solid rgba(20, 184, 166, 0.35)',
+                          boxShadow: '0 0 0 1px rgba(20, 184, 166, 0.25), 0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
+                          backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
+                        }}>
+                        <div className="px-4 py-3 border-b border-transparent">
+                          <div className="flex items-center justify-start gap-2">
+                            <span className="text-lg">🔄</span>
+                            <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                              The Cycle
+                            </h4>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <div className="flex items-center justify-center gap-3 flex-wrap">
+                            {analysis.immunityTraining?.patternLoop?.slice(0, 3).map((step, index) => (
+                              <div key={step} className="contents">
+                                <div className="bg-cyan-900/30 text-cyan-300 px-3 py-2 rounded-xl text-sm font-medium text-center border border-cyan-500/20 min-w-[100px]">
+                                  {step}
+                                </div>
+                                {index < 2 && (
+                                  <span className="text-cyan-300 text-lg">→</span>
+                                )}
                               </div>
-                              {index < 2 && (
-                                <span className="text-purple-300 text-lg">→</span>
-                              )}
+                            ))}
+                            <div className="bg-cyan-900/30 text-cyan-300 px-3 py-2 rounded-xl text-sm font-medium text-center border border-cyan-500/20 opacity-50 min-w-[100px]">
+                              ...
                             </div>
-                          ))}
-                          <div className="bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full text-lg border border-purple-500/30 whitespace-nowrap opacity-50">
-                            ...
+                          </div>
+                          <div className="text-center mt-3">
+                            <span className="text-xs tracking-wide text-cyan-300">
+                              ↻ Endless Loop
+                            </span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Flags Preview */}
-                      <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-                        <h4 className="text-teal-400 font-bold text-sm mb-4">FLAGS</h4>
-                        <div className="space-y-2">
-                          {analysis.immunityTraining?.flags?.slice(0, 2).map((flag, index) => (
-                            <div key={index} className="flex items-start gap-2 text-base text-red-300">
-                              <span className="mt-0.5 flex-shrink-0">🚩</span>
-                              <span className="leading-relaxed">{flag.text}</span>
+                      {/* See Both Sides Preview */}
+                      <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm"
+                        style={{
+                          border: '1px solid rgba(20, 184, 166, 0.35)',
+                          boxShadow: '0 0 0 1px rgba(20, 184, 166, 0.25), 0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
+                          backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
+                        }}>
+                        <div className="px-4 py-3 border-b border-transparent">
+                          <div className="flex items-center justify-start gap-2">
+                            <span className="text-lg">👀</span>
+                            <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                              See Both Sides
+                            </h4>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <div className="text-green-400 text-sm font-medium">Healthy Version:</div>
+                              <div className="text-green-300 text-sm">Clear communication and consistent behavior</div>
                             </div>
-                          ))}
-                          <div className="flex items-start gap-2 text-base text-white/50">
-                            <span className="mt-0.5 flex-shrink-0">🚩</span>
-                            <span className="leading-relaxed">+ more detailed analysis...</span>
+                            <div className="space-y-2">
+                              <div className="text-red-400 text-sm font-medium">What You Get:</div>
+                              <div className="text-red-300 text-sm">Mixed signals and emotional confusion</div>
+                            </div>
                           </div>
                         </div>
                       </div>
