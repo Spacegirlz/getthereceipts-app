@@ -184,12 +184,12 @@ const TabbedReceiptInterface = ({
                   const getTabColors = () => {
                     if (index === 0) { // Receipt
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25 border border-purple-400/30' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-pink-600/20 hover:shadow-md border border-transparent hover:border-purple-400/30';
+                        ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/25 border border-blue-400/30' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-cyan-600/20 hover:shadow-md border border-transparent hover:border-blue-400/30';
                     } else if (index === 1) { // Tea
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-teal-600/20 hover:to-cyan-600/20 hover:shadow-md border border-transparent hover:border-teal-400/30';
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25 border border-purple-400/30' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-pink-600/20 hover:shadow-md border border-transparent hover:border-purple-400/30';
                     } else { // Immunity
                       return activeTab === index 
                         ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black shadow-lg shadow-amber-500/25 border border-[#D4AF37]/50' 
