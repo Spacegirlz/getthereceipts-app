@@ -1015,7 +1015,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="flex items-center justify-between mb-4">
                   <button
                     onClick={() => {
-                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
+                      const container = document.querySelector('[data-autopsy-scroll]');
                       if (container) {
                         container.scrollBy({ left: -340, behavior: 'smooth' });
                       }
@@ -1034,7 +1034,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   
                   <button
                     onClick={() => {
-                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
+                      const container = document.querySelector('[data-autopsy-scroll]');
                       if (container) {
                         container.scrollBy({ left: 340, behavior: 'smooth' });
                       }
@@ -1049,6 +1049,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
                 <div 
                   className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6 autopsy-carousel"
+                  data-autopsy-scroll
                 >
                   <div className="flex gap-4 pb-4">
                     {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
