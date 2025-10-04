@@ -31,7 +31,6 @@ const LuxeChatInputPage = () => {
   const [colorMapping, setColorMapping] = useState('');
   const [extractedTexts, setExtractedTexts] = useState([]);
   const [context, setContext] = useState('');
-  const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [anonymousStatus, setAnonymousStatus] = useState(null);
   const [showLimitModal, setShowLimitModal] = useState(false);
@@ -267,11 +266,9 @@ const LuxeChatInputPage = () => {
         relationshipType: contextType?.toLowerCase() || 'dating', // API expects lowercase
         context: contextType?.toLowerCase() || 'dating', // Legacy API field
         
-        // Additional context and question - PROPERLY TAGGED
+        // Additional context - PROPERLY TAGGED
         background: context || '',
         background_context: context || '', // Legacy API field
-        userQuestion: question || '',
-        user_question: question || '', // Legacy API field
         
         // Screenshot-specific data - PROPERLY TAGGED
         colorMapping: colorMapping || '',
@@ -290,7 +287,6 @@ const LuxeChatInputPage = () => {
           hasUserPronouns: !!userPronouns,
           hasOtherPronouns: !!otherPronouns,
           hasContext: !!context,
-          hasQuestion: !!question,
           hasColorMapping: !!colorMapping,
           hasExtractedTexts: extractedTexts.length > 0,
           hasDetectedNames: detectedNames.length > 0,
@@ -565,7 +561,7 @@ const LuxeChatInputPage = () => {
             <details className="group">
               <summary className="text-sm text-white/70 cursor-pointer hover:text-white transition-colors duration-300 mb-3 flex items-center gap-2">
                 <span>💡</span>
-                Add context and questions (optional)
+                Add context (optional)
                 <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200" />
               </summary>
               <div className="space-y-4 p-4 bg-white/5 rounded-lg border border-white/10">
@@ -582,18 +578,6 @@ const LuxeChatInputPage = () => {
                   />
                 </div>
                 
-                {/* Specific Question */}
-                <div>
-                  <label className="text-xs text-white/60 mb-2 block">
-                    Specific question for Sage (optional)
-                  </label>
-                  <input 
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="e.g., 'Are they into me?' or 'Should I respond?'"
-                    className="w-full px-3 py-2 bg-white/5 rounded-lg text-sm text-white placeholder-white/40 border border-white/10 focus:border-yellow-400/50 focus:outline-none transition-all duration-300"
-                  />
-                </div>
               </div>
             </details>
           </div>
