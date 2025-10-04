@@ -688,28 +688,20 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       if (hasNegativeWords && !hasPositiveWords) {
         return {
           level: 'red-flag',
-          badge: '⚠️',
-          label: 'RED FLAG',
-          size: 'large',
           borderColor: 'border-red-500/60',
           borderWidth: '1px',
           bgGradient: 'from-red-500/3 to-transparent',
           glowColor: 'shadow-red-500/10',
-          badgeGradient: 'from-red-500/80 to-red-400/60',
           severityColor: '#EF4444',
           severityOpacity: '0.7'
         };
       } else if (hasPositiveWords && !hasNegativeWords) {
         return {
           level: 'green-flag',
-          badge: '✅',
-          label: 'GREEN FLAG',
-          size: 'large',
           borderColor: 'border-emerald-500/60',
           borderWidth: '1px',
           bgGradient: 'from-emerald-500/3 to-transparent',
           glowColor: 'shadow-emerald-500/10',
-          badgeGradient: 'from-emerald-500/80 to-emerald-400/60',
           severityColor: '#10B981',
           severityOpacity: '0.7'
         };
@@ -717,14 +709,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         // Default to pattern for mixed or neutral content
         return {
           level: 'pattern',
-          badge: '📍',
-          label: 'PATTERN',
-          size: 'large',
           borderColor: 'border-[#14B8A6]/40',
           borderWidth: '1px',
           bgGradient: 'from-[#14B8A6]/2 to-transparent',
           glowColor: 'shadow-[#14B8A6]/5',
-          badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
           severityColor: '#14B8A6',
           severityOpacity: '0.4'
         };
@@ -736,14 +724,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       case 'smoking-gun':
         return {
           level: 'smoking-gun',
-          badge: '🔥',
-          label: 'SMOKING GUN',
-          size: 'large',
           borderColor: 'border-[#14B8A6]',
           borderWidth: '2px',
           bgGradient: 'from-[#14B8A6]/5 to-transparent',
           glowColor: 'shadow-[#14B8A6]/20',
-          badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
           severityColor: '#14B8A6',
           severityOpacity: '1.0'
         };
@@ -751,14 +735,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       case 'red-flag':
         return {
           level: 'red-flag',
-          badge: '⚠️',
-          label: 'RED FLAG',
-          size: 'large',
           borderColor: 'border-red-500/60',
           borderWidth: '1px',
           bgGradient: 'from-red-500/3 to-transparent',
           glowColor: 'shadow-red-500/10',
-          badgeGradient: 'from-red-500/80 to-red-400/60',
           severityColor: '#EF4444',
           severityOpacity: '0.7'
         };
@@ -766,14 +746,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       case 'green-flag':
         return {
           level: 'green-flag',
-          badge: '✅',
-          label: 'GREEN FLAG',
-          size: 'large',
           borderColor: 'border-emerald-500/60',
           borderWidth: '1px',
           bgGradient: 'from-emerald-500/3 to-transparent',
           glowColor: 'shadow-emerald-500/10',
-          badgeGradient: 'from-emerald-500/80 to-emerald-400/60',
           severityColor: '#10B981',
           severityOpacity: '0.7'
         };
@@ -782,14 +758,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       default:
         return {
           level: 'pattern',
-          badge: '📍',
-          label: 'PATTERN',
-          size: 'large',
           borderColor: 'border-[#14B8A6]/40',
           borderWidth: '1px',
           bgGradient: 'from-[#14B8A6]/2 to-transparent',
           glowColor: 'shadow-[#14B8A6]/5',
-          badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
           severityColor: '#14B8A6',
           severityOpacity: '0.4'
         };
@@ -1111,16 +1083,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                           data-index={i}
                           onClick={() => copyToClipboard(receipt.quote)}
                         >
-                          {/* Priority Badge */}
-                          <div 
-                            className="absolute -top-2 -right-2 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
-                            style={{
-                              background: `linear-gradient(135deg, ${priority.severityColor} 0%, ${priority.severityColor}CC 100%)`,
-                              boxShadow: `0 4px 12px ${priority.severityColor}40`
-                            }}
-                          >
-                            {priority.badge} {priority.label}
-                          </div>
 
                           <Copy className="absolute top-4 right-4 w-4 h-4 text-stone-400/50" />
 
