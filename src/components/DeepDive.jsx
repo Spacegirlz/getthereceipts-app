@@ -645,19 +645,27 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       const trimmedLine = line.trim();
       // Match "Name (time): quote" or "Name: quote"
       const match = trimmedLine.match(/^([^:]+?)(?:\s*\(.*?\))?:\s*(.*)/i);
-      if (match && match[2] && quote.includes(match[2].trim())) {
+      if (match && match[2]) {
+        const lineQuote = match[2].trim();
         const speakerName = match[1].trim();
-        // Prioritize actual names over generic pronouns if context names are available
-        if (context?.userName && speakerName.toLowerCase() === context.userName.toLowerCase()) {
-          return context.userName.toUpperCase();
-        }
-        if (context?.otherName && speakerName.toLowerCase() === context.otherName.toLowerCase()) {
-          return context.otherName.toUpperCase();
-        }
-        // If no context match, but it's a valid name, use it
-        const nonNames = ['you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom', 'just', 'like', 'really', 'actually', 'basically', 'literally'];
-        if (!nonNames.includes(speakerName.toLowerCase()) && speakerName.length > 1) {
-          return speakerName.toUpperCase();
+        
+        // Check if this line's quote matches our receipt quote (more flexible matching)
+        if (quote.includes(lineQuote) || lineQuote.includes(quote) || 
+            quote.toLowerCase().includes(lineQuote.toLowerCase()) || 
+            lineQuote.toLowerCase().includes(quote.toLowerCase())) {
+          
+          // Prioritize actual names over generic pronouns if context names are available
+          if (context?.userName && speakerName.toLowerCase() === context.userName.toLowerCase()) {
+            return context.userName.toUpperCase();
+          }
+          if (context?.otherName && speakerName.toLowerCase() === context.otherName.toLowerCase()) {
+            return context.otherName.toUpperCase();
+          }
+          // If no context match, but it's a valid name, use it
+          const nonNames = ['you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom', 'just', 'like', 'really', 'actually', 'basically', 'literally'];
+          if (!nonNames.includes(speakerName.toLowerCase()) && speakerName.length > 1) {
+            return speakerName.toUpperCase();
+          }
         }
       }
     }
@@ -750,38 +758,43 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     const maxScore = Math.max(...Object.values(scores));
     const dominantCategory = Object.keys(scores).find(key => scores[key] === maxScore);
 
-    // If no clear winner, use fallback logic based on valence and position
+    // If no clear winner, use intelligent fallback based on content analysis
     if (maxScore === 0) {
-      if (index === 0) {
+      // Analyze the quote content more deeply
+      const hasNegativeWords = /\b(no|not|never|can't|won't|don't|hate|angry|upset|mad|frustrated|annoyed|disappointed|hurt|pain|sad|depressed|lonely|empty|broken|damaged|toxic|bad|wrong|terrible|awful|horrible|disgusting|gross|stupid|dumb|idiot|moron|loser|pathetic|worthless|useless|failure|disappointment|regret|mistake|waste|ruined|destroyed|killed|died|end|over|done|finished|leave|gone|bye|goodbye|never again|hate you|don't care|whatever|fine|okay|sure|yeah right|bullshit|lies|fake|pretend|acting|manipulating|using|playing|games|messing|around|wasting|time|energy|effort|patience|hope|dreams|future|plans|promises|commitment|relationship|love|feelings|emotions|heart|soul|trust|respect|honesty|truth|reality|facts|evidence|proof|caught|exposed|revealed|admitted|confessed|guilty|blame|fault|responsibility|accountability|consequences|results|outcome|ending|breakup|divorce|separation|distance|space|time|thinking|confused|lost|stuck|trapped|stuck|helpless|hopeless|powerless|weak|vulnerable|exposed|naked|bare|raw|open|wounded|bleeding|bleeding|hurt|pain|suffering|agony|torture|hell|nightmare|disaster|catastrophe|tragedy|loss|grief|mourning|sorrow|despair|depression|anxiety|panic|fear|terror|dread|worry|stress|pressure|tension|conflict|fight|argument|disagreement|dispute|problem|issue|trouble|difficulty|challenge|obstacle|barrier|wall|block|stop|end|finish|complete|done|over|gone|lost|missing|absent|away|far|distant|cold|frozen|dead|lifeless|empty|hollow|void|nothing|nobody|nowhere|never|always|forever|eternity|infinity|endless|infinite|boundless|limitless|unlimited|unrestricted|free|liberated|released|escaped|fled|ran|left|abandoned|deserted|forsaken|betrayed|deceived|lied|cheated|stolen|taken|robbed|deprived|denied|rejected|refused|ignored|neglected|forgotten|erased|deleted|removed|eliminated|destroyed|killed|murdered|executed|terminated|ended|finished|completed|accomplished|achieved|succeeded|won|victory|triumph|success|happiness|joy|pleasure|satisfaction|fulfillment|contentment|peace|calm|serenity|tranquility|harmony|balance|stability|security|safety|protection|comfort|warmth|love|affection|care|concern|worry|anxiety|fear|terror|panic|dread|apprehension|nervousness|tension|stress|pressure|burden|weight|load|responsibility|duty|obligation|commitment|promise|vow|pledge|oath|contract|agreement|deal|arrangement|plan|strategy|approach|method|way|path|road|journey|trip|adventure|experience|memory|recollection|remembrance|nostalgia|longing|yearning|desire|want|need|requirement|necessity|essential|important|significant|meaningful|valuable|precious|treasured|cherished|beloved|dear|special|unique|rare|uncommon|extraordinary|exceptional|outstanding|remarkable|amazing|incredible|fantastic|wonderful|marvelous|magnificent|brilliant|genius|intelligent|smart|clever|wise|knowledgeable|experienced|skilled|talented|gifted|blessed|lucky|fortunate|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful)\b/i.test(quote);
+      const hasPositiveWords = /\b(yes|love|care|miss|appreciate|respect|support|honest|open|clear|direct|consistent|reliable|sorry|apologize|understand|listen|compromise|healthy|mature|kind|thoughtful|considerate|future|together|commitment|exclusive|serious|happy|joy|pleasure|satisfaction|fulfillment|contentment|peace|calm|serenity|tranquility|harmony|balance|stability|security|safety|protection|comfort|warmth|affection|concern|worry|anxiety|fear|terror|panic|dread|apprehension|nervousness|tension|stress|pressure|burden|weight|load|responsibility|duty|obligation|commitment|promise|vow|pledge|oath|contract|agreement|deal|arrangement|plan|strategy|approach|method|way|path|road|journey|trip|adventure|experience|memory|recollection|remembrance|nostalgia|longing|yearning|desire|want|need|requirement|necessity|essential|important|significant|meaningful|valuable|precious|treasured|cherished|beloved|dear|special|unique|rare|uncommon|extraordinary|exceptional|outstanding|remarkable|amazing|incredible|fantastic|wonderful|marvelous|magnificent|brilliant|genius|intelligent|smart|clever|wise|knowledgeable|experienced|skilled|talented|gifted|blessed|lucky|fortunate|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful)\b/i.test(quote);
+      
+      // Use content analysis instead of position
+      if (hasNegativeWords && !hasPositiveWords) {
         return {
-          level: 'smoking-gun',
-          badge: '🔥',
-          label: 'SMOKING GUN',
+          level: 'red-flag',
+          badge: '⚠️',
+          label: 'RED FLAG',
           size: 'large',
-          borderColor: 'border-[#14B8A6]',
-          borderWidth: '2px',
-          bgGradient: 'from-[#14B8A6]/5 to-transparent',
-          glowColor: 'shadow-[#14B8A6]/20',
-          badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
-          severityColor: '#14B8A6',
-          severityOpacity: '1.0'
-        };
-      } else if (index === 1) {
-        const isGreen = currentValence === 'green';
-        return {
-          level: isGreen ? 'green-flag' : 'red-flag',
-          badge: isGreen ? '✅' : '⚠️',
-          label: isGreen ? 'GREEN FLAG' : 'RED FLAG',
-          size: 'large',
-          borderColor: isGreen ? 'border-emerald-500/60' : 'border-red-500/60',
+          borderColor: 'border-red-500/60',
           borderWidth: '1px',
-          bgGradient: isGreen ? 'from-emerald-500/3 to-transparent' : 'from-red-500/3 to-transparent',
-          glowColor: isGreen ? 'shadow-emerald-500/10' : 'shadow-red-500/10',
-          badgeGradient: isGreen ? 'from-emerald-500/80 to-emerald-400/60' : 'from-red-500/80 to-red-400/60',
-          severityColor: isGreen ? '#10B981' : '#EF4444',
+          bgGradient: 'from-red-500/3 to-transparent',
+          glowColor: 'shadow-red-500/10',
+          badgeGradient: 'from-red-500/80 to-red-400/60',
+          severityColor: '#EF4444',
+          severityOpacity: '0.7'
+        };
+      } else if (hasPositiveWords && !hasNegativeWords) {
+        return {
+          level: 'green-flag',
+          badge: '✅',
+          label: 'GREEN FLAG',
+          size: 'large',
+          borderColor: 'border-emerald-500/60',
+          borderWidth: '1px',
+          bgGradient: 'from-emerald-500/3 to-transparent',
+          glowColor: 'shadow-emerald-500/10',
+          badgeGradient: 'from-emerald-500/80 to-emerald-400/60',
+          severityColor: '#10B981',
           severityOpacity: '0.7'
         };
       } else {
+        // Default to pattern for mixed or neutral content
         return {
           level: 'pattern',
           badge: '📍',
