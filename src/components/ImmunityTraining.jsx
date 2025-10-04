@@ -1075,16 +1075,35 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           <div className="mb-8" data-share-hide="true">
             {/* Premium Tease */}
             <div className="bg-gradient-to-br from-amber-500/10 to-yellow-500/10 rounded-3xl p-6 sm:p-8 border border-amber-400/30 relative overflow-hidden backdrop-blur-sm shadow-lg">
-              {/* Unlock Icon */}
-              <div className="absolute top-4 right-4">
-                <div className="w-10 h-10 bg-amber-500/20 rounded-full flex items-center justify-center border border-amber-400/40">
-                  <Lock className="w-5 h-5 text-amber-400" />
-                </div>
-              </div>
-              
-              {/* Content */}
+              {/* New Header Design - Matching Premium View */}
               <div className="text-center mb-6">
-                <Crown className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+                <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-4">
+                  <img
+                    src={sageDarkCircle}
+                    alt="Sage"
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40"
+                    style={{ 
+                      filter: 'brightness(1.2) contrast(1.1)',
+                      boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
+                    }}
+                  />
+                  <span className="text-sm sm:text-lg font-bold tracking-widest"
+                    style={{
+                      color: '#14B8A6',
+                      textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                    }}>
+                    IMMUNITY TRAINING
+                  </span>
+                </div>
+                {/* Pattern Verified subline */}
+                <div className="mb-4">
+                  <h3
+                    className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
+                    style={{ color: getHeaderArchetypeColor(), textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+                  >
+                    Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
+                  </h3>
+                </div>
                 <h3 className="text-2xl font-bold text-amber-300 mb-3">Unlock Your Defense Training</h3>
                 <p className="text-amber-200/90 text-lg leading-relaxed max-w-md mx-auto">
                   Get your personalized immunity checkpoints, field test, and Sage's blessing for {userName}.
