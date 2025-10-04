@@ -338,71 +338,83 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       } : null;
       
       if (immunityPill) {
-        immunityPill.style.padding = '12px 24px';
+        immunityPill.style.padding = '12px 20px';
         immunityPill.style.whiteSpace = 'nowrap';
-        immunityPill.style.minWidth = '320px';
+        immunityPill.style.minWidth = '280px';
       }
 
-      // Reduce padding and remove borders for compact save/share export
-      const allSections = element.querySelectorAll('.mb-8');
-      const cycleSection = element.querySelector('[data-cycle-mobile]')?.parentElement?.parentElement;
-      const trainingSection = element.querySelector('[data-training-item]')?.closest('.mb-8');
+      // Reduce padding and remove borders for save/share export only
+      const cycleSection = element.querySelector('[data-cycle-section]');
+      const trainingSection = element.querySelector('[data-training-section]');
       const sageContainer = element.querySelector('[data-sage-blessing-container]');
       const sageHeader = element.querySelector('[data-sage-blessing-header]');
       const sageContent = element.querySelector('[data-sage-blessing-content]');
       const sageText = element.querySelector('[data-sage-blessing-text]');
       
+      // Store original styles for restoration
+      const cycleInner = cycleSection?.querySelector('.bg-black\\/30');
+      const trainingInner = trainingSection?.querySelector('.bg-black\\/30');
+      
       const prevStyles = {
-        sections: Array.from(allSections).map(section => ({
-          element: section,
-          marginBottom: section.style.marginBottom
-        })),
         cycle: cycleSection ? {
-          element: cycleSection,
-          marginBottom: cycleSection.style.marginBottom
+          marginBottom: cycleSection.style.marginBottom,
+          border: cycleSection.style.border
+        } : null,
+        cycleInner: cycleInner ? {
+          padding: cycleInner.style.padding,
+          border: cycleInner.style.border
         } : null,
         training: trainingSection ? {
-          element: trainingSection,
-          marginBottom: trainingSection.style.marginBottom
+          marginBottom: trainingSection.style.marginBottom,
+          border: trainingSection.style.border
+        } : null,
+        trainingInner: trainingInner ? {
+          padding: trainingInner.style.padding,
+          border: trainingInner.style.border
         } : null,
         sage: {
           container: sageContainer ? {
-            element: sageContainer,
             padding: sageContainer.style.padding,
-            marginBottom: sageContainer.style.marginBottom
+            marginBottom: sageContainer.style.marginBottom,
+            border: sageContainer.style.border
           } : null,
           header: sageHeader ? {
-            element: sageHeader,
             marginBottom: sageHeader.style.marginBottom
           } : null,
           content: sageContent ? {
-            element: sageContent,
             padding: sageContent.style.padding,
             marginBottom: sageContent.style.marginBottom
           } : null,
           text: sageText ? {
-            element: sageText,
             fontSize: sageText.style.fontSize
           } : null
         }
       };
 
-      // Apply compact styles for export
-      allSections.forEach(section => {
-        section.style.marginBottom = '12px';
-      });
-      
+      // Apply compact styles for save/share export
       if (cycleSection) {
-        cycleSection.style.marginBottom = '12px';
+        cycleSection.style.marginBottom = '8px';
+        cycleSection.style.border = 'none';
       }
-      
       if (trainingSection) {
-        trainingSection.style.marginBottom = '12px';
+        trainingSection.style.marginBottom = '8px';
+        trainingSection.style.border = 'none';
       }
       
+      // Also reduce padding in the inner containers
+      
+      if (cycleInner) {
+        cycleInner.style.padding = '12px';
+        cycleInner.style.border = 'none';
+      }
+      if (trainingInner) {
+        trainingInner.style.padding = '12px';
+        trainingInner.style.border = 'none';
+      }
       if (sageContainer) {
         sageContainer.style.padding = '12px';
         sageContainer.style.marginBottom = '12px';
+        sageContainer.style.border = 'none';
       }
       if (sageHeader) {
         sageHeader.style.marginBottom = '8px';
@@ -470,34 +482,37 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         immunityPill.style.minWidth = prevPillStyles.minWidth;
       }
       
-      // Restore all section styles
-      prevStyles.sections.forEach(({ element, marginBottom }) => {
-        if (element) {
-          element.style.marginBottom = marginBottom || '';
-        }
-      });
-      
-      if (prevStyles.cycle?.element) {
-        prevStyles.cycle.element.style.marginBottom = prevStyles.cycle.marginBottom || '';
+      // Restore all modified styles
+      if (cycleSection && prevStyles.cycle) {
+        cycleSection.style.marginBottom = prevStyles.cycle.marginBottom;
+        cycleSection.style.border = prevStyles.cycle.border;
       }
-      
-      if (prevStyles.training?.element) {
-        prevStyles.training.element.style.marginBottom = prevStyles.training.marginBottom || '';
+      if (cycleInner && prevStyles.cycleInner) {
+        cycleInner.style.padding = prevStyles.cycleInner.padding;
+        cycleInner.style.border = prevStyles.cycleInner.border;
       }
-      
-      if (prevStyles.sage.container?.element) {
-        prevStyles.sage.container.element.style.padding = prevStyles.sage.container.padding || '';
-        prevStyles.sage.container.element.style.marginBottom = prevStyles.sage.container.marginBottom || '';
+      if (trainingSection && prevStyles.training) {
+        trainingSection.style.marginBottom = prevStyles.training.marginBottom;
+        trainingSection.style.border = prevStyles.training.border;
       }
-      if (prevStyles.sage.header?.element) {
-        prevStyles.sage.header.element.style.marginBottom = prevStyles.sage.header.marginBottom || '';
+      if (trainingInner && prevStyles.trainingInner) {
+        trainingInner.style.padding = prevStyles.trainingInner.padding;
+        trainingInner.style.border = prevStyles.trainingInner.border;
       }
-      if (prevStyles.sage.content?.element) {
-        prevStyles.sage.content.element.style.padding = prevStyles.sage.content.padding || '';
-        prevStyles.sage.content.element.style.marginBottom = prevStyles.sage.content.marginBottom || '';
+      if (sageContainer && prevStyles.sage.container) {
+        sageContainer.style.padding = prevStyles.sage.container.padding;
+        sageContainer.style.marginBottom = prevStyles.sage.container.marginBottom;
+        sageContainer.style.border = prevStyles.sage.container.border;
       }
-      if (prevStyles.sage.text?.element) {
-        prevStyles.sage.text.element.style.fontSize = prevStyles.sage.text.fontSize || '';
+      if (sageHeader && prevStyles.sage.header) {
+        sageHeader.style.marginBottom = prevStyles.sage.header.marginBottom;
+      }
+      if (sageContent && prevStyles.sage.content) {
+        sageContent.style.padding = prevStyles.sage.content.padding;
+        sageContent.style.marginBottom = prevStyles.sage.content.marginBottom;
+      }
+      if (sageText && prevStyles.sage.text) {
+        sageText.style.fontSize = prevStyles.sage.text.fontSize;
       }
       
       // Remove export-mode class
@@ -594,7 +609,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           className="mb-8"
         >
           <div className="text-center mb-1 relative z-50">
-            <div className="inline-flex items-center gap-3 bg-black/40 px-10 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
+            <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
               <img
                 src={sageDarkCircle}
                 alt="Sage"
@@ -650,7 +665,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
         {/* The Cycle - Prominent & Animated */}
         {patternLoop.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-8" data-cycle-section>
             <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
             style={{
                 border: '1px solid rgba(20, 184, 166, 0.35)',
@@ -854,7 +869,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
         {/* Your Training - Checkpoints */}
         {immunityTraining.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-8" data-training-section>
             <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
               style={{
                 border: 'none',
