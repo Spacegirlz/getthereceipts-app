@@ -338,9 +338,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       } : null;
       
       if (immunityPill) {
-        immunityPill.style.padding = '12px 20px';
+        immunityPill.style.padding = '12px 24px';
         immunityPill.style.whiteSpace = 'nowrap';
-        immunityPill.style.minWidth = '280px';
+        immunityPill.style.minWidth = '320px';
       }
 
       // Reduce padding and remove borders for compact save/share export
@@ -594,7 +594,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           className="mb-8"
         >
           <div className="text-center mb-1 relative z-50">
-            <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
+            <div className="inline-flex items-center gap-3 bg-black/40 px-10 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
               <img
                 src={sageDarkCircle}
                 alt="Sage"
