@@ -204,22 +204,76 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
     // Find all nodes marked to hide for share
     const nodesToHide = Array.from(element.querySelectorAll('[data-share-hide="true"]'));
-    // Additionally hide autopsy items with index >= 2 to keep only two (matching web save/share)
+    // Additionally hide autopsy items with index >= 2 to keep only two
     const extraAutopsyToHide = Array.from(element.querySelectorAll('[data-autopsy-item]'))
       .filter(n => (parseInt(n.getAttribute('data-index') || '0', 10)) >= 2);
     const allToHide = [...nodesToHide, ...extraAutopsyToHide];
     const previousDisplays = allToHide.map(n => n.style.display);
 
-    // Store original element styles for restoration
-    const prevRadius = element.style.borderRadius;
-    const prevOverflow = element.style.overflow;
+    // Easiest robust fix: temporarily flatten backgrounds/borders to remove banding/lines
+    const styledNodes = [];
+    const isGoldOrTeal = (val = '') => /#D4AF37|212,\s*175,\s*55|rgba\(20,\s*184,\s*166/i.test(val);
+    const descendants = element.querySelectorAll('*');
+    descendants.forEach(node => {
+      const style = node.style || {};
+      const prev = {
+        background: style.background,
+        backgroundImage: style.backgroundImage,
+        backgroundColor: style.backgroundColor,
+        boxShadow: style.boxShadow,
+        border: style.border,
+        borderTop: style.borderTop,
+        borderRight: style.borderRight,
+        borderBottom: style.borderBottom,
+        borderLeft: style.borderLeft,
+        outline: style.outline,
+        backdropFilter: style.backdropFilter,
+        filter: style.filter,
+        opacity: style.opacity
+      };
+      styledNodes.push({ node, prev });
+
+      // Remove shadows/filters that cause banding; preserve original backgrounds/gradients
+      style.boxShadow = 'none';
+      style.backdropFilter = 'none';
+      style.filter = 'none';
+      style.outline = 'none';
+
+      // Remove non-gold borders that cause hairlines
+      const borders = [style.border, style.borderTop, style.borderRight, style.borderBottom, style.borderLeft];
+      const hasGold = borders.some(b => isGoldOrTeal(b));
+      if (!hasGold) {
+        style.border = 'none';
+        style.borderTop = 'none';
+        style.borderRight = 'none';
+        style.borderBottom = 'none';
+        style.borderLeft = 'none';
+      }
+    });
+    // Temporarily neutralize mobile scroller negative margins that can shift capture
+    const prevScrollerMargins = scroller ? { ml: scroller.style.marginLeft, mr: scroller.style.marginRight } : null;
+    const prevElementMargins = { ml: element.style.marginLeft, mr: element.style.marginRight, m: element.style.margin };
+    if (scroller) {
+      scroller.style.marginLeft = '0';
+      scroller.style.marginRight = '0';
+    }
+    element.style.marginLeft = '0';
+    element.style.marginRight = '0';
 
     try {
       allToHide.forEach(n => { n.style.display = 'none'; });
       
-      // Ensure rounded outer corners render with transparency
+      // Ensure rounded outer corners render with transparency (like Immunity)
+      const prevRadius = element.style.borderRadius;
+      const prevOverflow = element.style.overflow;
+      const prevHeight = element.style.height;
+      const prevMaxHeight = element.style.maxHeight;
+      const prevOverflowY = element.style.overflowY;
       element.style.borderRadius = '24px';
       element.style.overflow = 'hidden';
+      element.style.height = 'auto';
+      element.style.maxHeight = 'none';
+      element.style.overflowY = 'visible';
 
       // Use scroll size to capture full content like Truth/ShareComponent
       const targetWidth = element.scrollWidth || element.offsetWidth;
@@ -248,12 +302,38 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       console.error('Clean save error', err);
       toast({ title: "Error", description: "Could not save playbook.", variant: "destructive" });
     } finally {
-      // Restore hidden elements
+      // Restore displays
       allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
-      
-      // Restore element styles
+      if (scroller && prevScrollerMargins) {
+        scroller.style.marginLeft = prevScrollerMargins.ml;
+        scroller.style.marginRight = prevScrollerMargins.mr;
+      }
+      element.style.marginLeft = prevElementMargins.ml;
+      element.style.marginRight = prevElementMargins.mr;
+      if (prevElementMargins.m) element.style.margin = prevElementMargins.m;
+      // Restore rounded/size overrides
       element.style.borderRadius = prevRadius;
       element.style.overflow = prevOverflow;
+      element.style.height = prevHeight;
+      element.style.maxHeight = prevMaxHeight;
+      element.style.overflowY = prevOverflowY;
+      // Restore styles (backgrounds were never changed to preserve original design)
+      styledNodes.forEach(({ node, prev }) => {
+        const style = node.style || {};
+        style.background = prev.background;
+        style.backgroundImage = prev.backgroundImage;
+        style.backgroundColor = prev.backgroundColor;
+        style.boxShadow = prev.boxShadow;
+        style.border = prev.border;
+        style.borderTop = prev.borderTop;
+        style.borderRight = prev.borderRight;
+        style.borderBottom = prev.borderBottom;
+        style.borderLeft = prev.borderLeft;
+        style.outline = prev.outline;
+        style.backdropFilter = prev.backdropFilter;
+        style.filter = prev.filter;
+        style.opacity = prev.opacity;
+      });
     }
   };
 
@@ -553,39 +633,25 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     const context = safeDeepDive;
     const conversationLines = originalMessage?.split('\n') || [];
     
-    // Debug logging
-    console.log('🔍 Speaker extraction debug:', {
-      quote: quote?.substring(0, 50) + '...',
-      contextNames: { userName: context?.userName, otherName: context?.otherName },
-      conversationLines: conversationLines.length
-    });
 
     // Try to find the speaker from the original conversation lines
     for (const line of conversationLines) {
       const trimmedLine = line.trim();
       // Match "Name (time): quote" or "Name: quote"
       const match = trimmedLine.match(/^([^:]+?)(?:\s*\(.*?\))?:\s*(.*)/i);
-      if (match && match[2]) {
-        const lineQuote = match[2].trim();
+      if (match && match[2] && quote.includes(match[2].trim())) {
         const speakerName = match[1].trim();
-        
-        // Check if this line's quote matches our receipt quote (more flexible matching)
-        if (quote.includes(lineQuote) || lineQuote.includes(quote) || 
-            quote.toLowerCase().includes(lineQuote.toLowerCase()) || 
-            lineQuote.toLowerCase().includes(quote.toLowerCase())) {
-          
-          // Prioritize actual names over generic pronouns if context names are available
-          if (context?.userName && speakerName.toLowerCase() === context.userName.toLowerCase()) {
-            return context.userName.toUpperCase();
-          }
-          if (context?.otherName && speakerName.toLowerCase() === context.otherName.toLowerCase()) {
-            return context.otherName.toUpperCase();
-          }
-          // If no context match, but it's a valid name, use it
-          const nonNames = ['you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom', 'just', 'like', 'really', 'actually', 'basically', 'literally'];
-          if (!nonNames.includes(speakerName.toLowerCase()) && speakerName.length > 1) {
-            return speakerName.toUpperCase();
-          }
+        // Prioritize actual names over generic pronouns if context names are available
+        if (context?.userName && speakerName.toLowerCase() === context.userName.toLowerCase()) {
+          return context.userName.toUpperCase();
+        }
+        if (context?.otherName && speakerName.toLowerCase() === context.otherName.toLowerCase()) {
+          return context.otherName.toUpperCase();
+        }
+        // If no context match, but it's a valid name, use it
+        const nonNames = ['you', 'i', 'we', 'they', 'he', 'she', 'it', 'this', 'that', 'because', 'respect', 'a', 'an', 'the', 'and', 'or', 'but', 'so', 'if', 'when', 'where', 'why', 'how', 'what', 'who', 'which', 'whose', 'whom', 'just', 'like', 'really', 'actually', 'basically', 'literally'];
+        if (!nonNames.includes(speakerName.toLowerCase()) && speakerName.length > 1) {
+          return speakerName.toUpperCase();
         }
       }
     }
@@ -678,41 +744,48 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     const maxScore = Math.max(...Object.values(scores));
     const dominantCategory = Object.keys(scores).find(key => scores[key] === maxScore);
 
-    // If no clear winner, use intelligent fallback based on content analysis
+    // If no clear winner, use fallback logic based on valence and position
     if (maxScore === 0) {
-      // Analyze the quote content more deeply
-      const hasNegativeWords = /\b(no|not|never|can't|won't|don't|hate|angry|upset|mad|frustrated|annoyed|disappointed|hurt|pain|sad|depressed|lonely|empty|broken|damaged|toxic|bad|wrong|terrible|awful|horrible|disgusting|gross|stupid|dumb|idiot|moron|loser|pathetic|worthless|useless|failure|disappointment|regret|mistake|waste|ruined|destroyed|killed|died|end|over|done|finished|leave|gone|bye|goodbye|never again|hate you|don't care|whatever|fine|okay|sure|yeah right|bullshit|lies|fake|pretend|acting|manipulating|using|playing|games|messing|around|wasting|time|energy|effort|patience|hope|dreams|future|plans|promises|commitment|relationship|love|feelings|emotions|heart|soul|trust|respect|honesty|truth|reality|facts|evidence|proof|caught|exposed|revealed|admitted|confessed|guilty|blame|fault|responsibility|accountability|consequences|results|outcome|ending|breakup|divorce|separation|distance|space|time|thinking|confused|lost|stuck|trapped|stuck|helpless|hopeless|powerless|weak|vulnerable|exposed|naked|bare|raw|open|wounded|bleeding|bleeding|hurt|pain|suffering|agony|torture|hell|nightmare|disaster|catastrophe|tragedy|loss|grief|mourning|sorrow|despair|depression|anxiety|panic|fear|terror|dread|worry|stress|pressure|tension|conflict|fight|argument|disagreement|dispute|problem|issue|trouble|difficulty|challenge|obstacle|barrier|wall|block|stop|end|finish|complete|done|over|gone|lost|missing|absent|away|far|distant|cold|frozen|dead|lifeless|empty|hollow|void|nothing|nobody|nowhere|never|always|forever|eternity|infinity|endless|infinite|boundless|limitless|unlimited|unrestricted|free|liberated|released|escaped|fled|ran|left|abandoned|deserted|forsaken|betrayed|deceived|lied|cheated|stolen|taken|robbed|deprived|denied|rejected|refused|ignored|neglected|forgotten|erased|deleted|removed|eliminated|destroyed|killed|murdered|executed|terminated|ended|finished|completed|accomplished|achieved|succeeded|won|victory|triumph|success|happiness|joy|pleasure|satisfaction|fulfillment|contentment|peace|calm|serenity|tranquility|harmony|balance|stability|security|safety|protection|comfort|warmth|love|affection|care|concern|worry|anxiety|fear|terror|panic|dread|apprehension|nervousness|tension|stress|pressure|burden|weight|load|responsibility|duty|obligation|commitment|promise|vow|pledge|oath|contract|agreement|deal|arrangement|plan|strategy|approach|method|way|path|road|journey|trip|adventure|experience|memory|recollection|remembrance|nostalgia|longing|yearning|desire|want|need|requirement|necessity|essential|important|significant|meaningful|valuable|precious|treasured|cherished|beloved|dear|special|unique|rare|uncommon|extraordinary|exceptional|outstanding|remarkable|amazing|incredible|fantastic|wonderful|marvelous|magnificent|brilliant|genius|intelligent|smart|clever|wise|knowledgeable|experienced|skilled|talented|gifted|blessed|lucky|fortunate|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful)\b/i.test(quote);
-      const hasPositiveWords = /\b(yes|love|care|miss|appreciate|respect|support|honest|open|clear|direct|consistent|reliable|sorry|apologize|understand|listen|compromise|healthy|mature|kind|thoughtful|considerate|future|together|commitment|exclusive|serious|happy|joy|pleasure|satisfaction|fulfillment|contentment|peace|calm|serenity|tranquility|harmony|balance|stability|security|safety|protection|comfort|warmth|affection|concern|worry|anxiety|fear|terror|panic|dread|apprehension|nervousness|tension|stress|pressure|burden|weight|load|responsibility|duty|obligation|commitment|promise|vow|pledge|oath|contract|agreement|deal|arrangement|plan|strategy|approach|method|way|path|road|journey|trip|adventure|experience|memory|recollection|remembrance|nostalgia|longing|yearning|desire|want|need|requirement|necessity|essential|important|significant|meaningful|valuable|precious|treasured|cherished|beloved|dear|special|unique|rare|uncommon|extraordinary|exceptional|outstanding|remarkable|amazing|incredible|fantastic|wonderful|marvelous|magnificent|brilliant|genius|intelligent|smart|clever|wise|knowledgeable|experienced|skilled|talented|gifted|blessed|lucky|fortunate|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful|blessed|fortunate|lucky|privileged|honored|respected|admired|loved|cherished|treasured|valued|appreciated|grateful|thankful)\b/i.test(quote);
-      
-      // Use content analysis instead of position
-      if (hasNegativeWords && !hasPositiveWords) {
+      if (index === 0) {
         return {
-          level: 'red-flag',
-          borderColor: 'border-red-500/60',
-          borderWidth: '1px',
-          bgGradient: 'from-red-500/3 to-transparent',
-          glowColor: 'shadow-red-500/10',
-          severityColor: '#EF4444',
-          severityOpacity: '0.7'
+          level: 'smoking-gun',
+          badge: '🔥',
+          label: 'SMOKING GUN',
+          size: 'large',
+          borderColor: 'border-[#14B8A6]',
+          borderWidth: '2px',
+          bgGradient: 'from-[#14B8A6]/5 to-transparent',
+          glowColor: 'shadow-[#14B8A6]/20',
+          badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
+          severityColor: '#14B8A6',
+          severityOpacity: '1.0'
         };
-      } else if (hasPositiveWords && !hasNegativeWords) {
+      } else if (index === 1) {
+        const isGreen = currentValence === 'green';
         return {
-          level: 'green-flag',
-          borderColor: 'border-emerald-500/60',
+          level: isGreen ? 'green-flag' : 'red-flag',
+          badge: isGreen ? '✅' : '⚠️',
+          label: isGreen ? 'GREEN FLAG' : 'RED FLAG',
+          size: 'large',
+          borderColor: isGreen ? 'border-emerald-500/60' : 'border-red-500/60',
           borderWidth: '1px',
-          bgGradient: 'from-emerald-500/3 to-transparent',
-          glowColor: 'shadow-emerald-500/10',
-          severityColor: '#10B981',
+          bgGradient: isGreen ? 'from-emerald-500/3 to-transparent' : 'from-red-500/3 to-transparent',
+          glowColor: isGreen ? 'shadow-emerald-500/10' : 'shadow-red-500/10',
+          badgeGradient: isGreen ? 'from-emerald-500/80 to-emerald-400/60' : 'from-red-500/80 to-red-400/60',
+          severityColor: isGreen ? '#10B981' : '#EF4444',
           severityOpacity: '0.7'
         };
       } else {
-        // Default to pattern for mixed or neutral content
         return {
           level: 'pattern',
+          badge: '📍',
+          label: 'PATTERN',
+          size: 'large',
           borderColor: 'border-[#14B8A6]/40',
           borderWidth: '1px',
           bgGradient: 'from-[#14B8A6]/2 to-transparent',
           glowColor: 'shadow-[#14B8A6]/5',
+          badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
           severityColor: '#14B8A6',
           severityOpacity: '0.4'
         };
@@ -724,10 +797,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       case 'smoking-gun':
         return {
           level: 'smoking-gun',
+          badge: '🔥',
+          label: 'SMOKING GUN',
+          size: 'large',
           borderColor: 'border-[#14B8A6]',
           borderWidth: '2px',
           bgGradient: 'from-[#14B8A6]/5 to-transparent',
           glowColor: 'shadow-[#14B8A6]/20',
+          badgeGradient: 'from-[#14B8A6] to-[#2DD4BF]',
           severityColor: '#14B8A6',
           severityOpacity: '1.0'
         };
@@ -735,10 +812,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       case 'red-flag':
         return {
           level: 'red-flag',
+          badge: '⚠️',
+          label: 'RED FLAG',
+          size: 'large',
           borderColor: 'border-red-500/60',
           borderWidth: '1px',
           bgGradient: 'from-red-500/3 to-transparent',
           glowColor: 'shadow-red-500/10',
+          badgeGradient: 'from-red-500/80 to-red-400/60',
           severityColor: '#EF4444',
           severityOpacity: '0.7'
         };
@@ -746,10 +827,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       case 'green-flag':
         return {
           level: 'green-flag',
+          badge: '✅',
+          label: 'GREEN FLAG',
+          size: 'large',
           borderColor: 'border-emerald-500/60',
           borderWidth: '1px',
           bgGradient: 'from-emerald-500/3 to-transparent',
           glowColor: 'shadow-emerald-500/10',
+          badgeGradient: 'from-emerald-500/80 to-emerald-400/60',
           severityColor: '#10B981',
           severityOpacity: '0.7'
         };
@@ -758,10 +843,14 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       default:
         return {
           level: 'pattern',
+          badge: '📍',
+          label: 'PATTERN',
+          size: 'large',
           borderColor: 'border-[#14B8A6]/40',
           borderWidth: '1px',
           bgGradient: 'from-[#14B8A6]/2 to-transparent',
           glowColor: 'shadow-[#14B8A6]/5',
+          badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
           severityColor: '#14B8A6',
           severityOpacity: '0.4'
         };
@@ -782,11 +871,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           scrollbar-width: none;
         }
         .autopsy-carousel {
-          touch-action: pan-x pan-y;
+          touch-action: pan-x;
           overscroll-behavior-x: contain;
         }
         .autopsy-carousel * {
-          touch-action: pan-x pan-y;
+          touch-action: pan-x;
         }
       `}</style>
       
@@ -1015,7 +1104,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 <div className="flex items-center justify-between mb-4">
                   <button
                     onClick={() => {
-                      const container = document.querySelector('[data-autopsy-scroll]');
+                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
                       if (container) {
                         container.scrollBy({ left: -340, behavior: 'smooth' });
                       }
@@ -1034,7 +1123,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   
                   <button
                     onClick={() => {
-                      const container = document.querySelector('[data-autopsy-scroll]');
+                      const container = document.querySelector('[data-autopsy-horizontal] .flex');
                       if (container) {
                         container.scrollBy({ left: 340, behavior: 'smooth' });
                       }
@@ -1049,7 +1138,26 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
                 <div 
                   className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6 autopsy-carousel"
-                  data-autopsy-scroll
+                  onTouchStart={(e) => {
+                    // Prevent parent scroll when touching the carousel
+                    e.stopPropagation();
+                  }}
+                  onTouchMove={(e) => {
+                    // Only allow horizontal scrolling within the carousel
+                    const container = e.currentTarget;
+                    const scrollLeft = container.scrollLeft;
+                    const scrollWidth = container.scrollWidth;
+                    const clientWidth = container.clientWidth;
+                    
+                    // If we're at the beginning or end, prevent vertical scroll
+                    if ((scrollLeft <= 0 && e.touches[0].clientX > e.touches[0].clientY) ||
+                        (scrollLeft >= scrollWidth - clientWidth && e.touches[0].clientX < e.touches[0].clientY)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                  }}
                 >
                   <div className="flex gap-4 pb-4">
                     {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
