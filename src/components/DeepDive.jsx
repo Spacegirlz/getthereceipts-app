@@ -782,11 +782,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           scrollbar-width: none;
         }
         .autopsy-carousel {
-          touch-action: pan-x;
+          touch-action: pan-x pan-y;
           overscroll-behavior-x: contain;
         }
         .autopsy-carousel * {
-          touch-action: pan-x;
+          touch-action: pan-x pan-y;
         }
       `}</style>
       
@@ -1049,26 +1049,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
                 <div 
                   className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6 autopsy-carousel"
-                  onTouchStart={(e) => {
-                    // Prevent parent scroll when touching the carousel
-                    e.stopPropagation();
-                  }}
-                  onTouchMove={(e) => {
-                    // Only allow horizontal scrolling within the carousel
-                    const container = e.currentTarget;
-                    const scrollLeft = container.scrollLeft;
-                    const scrollWidth = container.scrollWidth;
-                    const clientWidth = container.clientWidth;
-                    
-                    // If we're at the beginning or end, prevent vertical scroll
-                    if ((scrollLeft <= 0 && e.touches[0].clientX > e.touches[0].clientY) ||
-                        (scrollLeft >= scrollWidth - clientWidth && e.touches[0].clientX < e.touches[0].clientY)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  onTouchEnd={(e) => {
-                    e.stopPropagation();
-                  }}
                 >
                   <div className="flex gap-4 pb-4">
                     {(safeDeepDive.receipts?.slice(0, 3) || []).map((receipt, i) => {
