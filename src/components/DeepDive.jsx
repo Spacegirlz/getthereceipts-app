@@ -267,6 +267,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     const prevDesktopDisplay = desktopAutopsy ? desktopAutopsy.style.display : null;
     if (mobileAutopsy) mobileAutopsy.style.display = 'none';
     if (desktopAutopsy) desktopAutopsy.style.display = 'block';
+    
+    // Apply export-mode class to remove all borders (like Truth Receipt)
+    element.classList.add('export-mode');
 
     try {
       allToHide.forEach(n => { n.style.display = 'none'; });
@@ -320,6 +323,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       if (desktopAutopsy && prevDesktopDisplay !== null) {
         desktopAutopsy.style.display = prevDesktopDisplay;
       }
+      
+      // Remove export-mode class
+      element.classList.remove('export-mode');
       if (scroller && prevScrollerMargins) {
         scroller.style.marginLeft = prevScrollerMargins.ml;
         scroller.style.marginRight = prevScrollerMargins.mr;
