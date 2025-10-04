@@ -780,12 +780,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           badge: '📍',
           label: 'PATTERN',
           size: 'large',
-          borderColor: 'border-[#14B8A6]/40',
-          borderWidth: '1px',
-          bgGradient: 'from-[#14B8A6]/2 to-transparent',
-          glowColor: 'shadow-[#14B8A6]/5',
-          badgeGradient: 'from-[#14B8A6]/60 to-[#2DD4BF]/40',
-          severityColor: '#14B8A6',
+          borderColor: 'border-[#A855F7]/60',
+          borderWidth: '2px',
+          bgGradient: 'from-[#A855F7]/2 to-transparent',
+          glowColor: 'shadow-[#A855F7]/5',
+          badgeGradient: 'from-[#A855F7]/60 to-[#EC4899]/40',
+          severityColor: '#A855F7',
           severityOpacity: '0.4'
         };
       }
