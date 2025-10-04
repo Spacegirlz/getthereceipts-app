@@ -75,51 +75,18 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
   const handleShareTea = async () => {
     try {
-      const element = document.querySelector('[data-deepdive-component]');
+      // Use the same optimized save function as Save Playbook button
+      await handleSaveClean();
+      
       const shareText = `☕ Just got the REAL TEA from SAGE: "${deepDive?.tea_wisdom || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || 'The truth is always better than pretty lies.'}" Get your own tea at getthereceipts.com #GetTheReceipts #TeaSpilled #SageSays`;
       
-      if (element && navigator.share) {
+      if (navigator.share) {
         try {
-          const blob = await domtoimage.toBlob(element, {
-            width: element.offsetWidth * 2,
-            height: element.offsetHeight * 2,
-            style: {
-              transform: 'scale(2)',
-              transformOrigin: 'top left'
-            },
-            bgcolor: '#1a1a2e',
-            quality: 1,
-            filter: (node) => {
-              // Remove border styles but preserve gold borders
-              if (node.style && !node.style.borderColor?.includes('yellow') && !node.style.borderColor?.includes('amber') && !node.style.borderColor?.includes('212, 175, 55')) {
-                node.style.border = 'none';
-                node.style.borderTop = 'none';
-                node.style.borderBottom = 'none';
-                node.style.borderLeft = 'none';
-                node.style.borderRight = 'none';
-              }
-              return true;
-            }
+          await navigator.share({
+            title: 'SAGE Spilled the Tea',
+            text: shareText,
+            url: 'https://getthereceipts.com'
           });
-          
-          if (blob) {
-            const file = new File([blob], `sages-tea-${Date.now()}.png`, { type: 'image/png' });
-            try {
-              await navigator.share({
-                title: 'SAGE Spilled the Tea',
-                text: shareText,
-                url: 'https://getthereceipts.com',
-                files: [file]
-              });
-            } catch (shareError) {
-              // Fallback to text-only share
-              await navigator.share({
-                title: 'SAGE Spilled the Tea',
-                text: shareText,
-                url: 'https://getthereceipts.com'
-              });
-            }
-          }
         } catch (error) {
           copyToClipboard(shareText);
         }
