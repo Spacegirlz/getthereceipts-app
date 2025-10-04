@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import ReceiptCardViral from '@/components/ReceiptCardViral';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
+import sageDarkCircle from '@/assets/sage-dark-circle.png';
 
 const TabbedReceiptInterface = ({ 
   analysis, 
@@ -297,20 +298,36 @@ const TabbedReceiptInterface = ({
                       </div>
                     </div>
 
-                    {/* Header */}
-                    <h2 className="text-3xl font-bold mb-4"
-                      style={{
-                        background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                      }}>
-                      SAGE'S IMMUNITY TRAINING
-                    </h2>
-                    
-                    <h3 className="text-lg font-medium text-amber-300 mb-6">
-                      Understanding Your {archetypeNameForImmunity}
-                    </h3>
+                    {/* New Header Design - Matching Premium View */}
+                    <div className="text-center mb-6">
+                      <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-4">
+                        <img
+                          src={sageDarkCircle}
+                          alt="Sage"
+                          className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40"
+                          style={{ 
+                            filter: 'brightness(1.2) contrast(1.1)',
+                            boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
+                          }}
+                        />
+                        <span className="text-sm sm:text-lg font-bold tracking-widest"
+                          style={{
+                            color: '#14B8A6',
+                            textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                          }}>
+                          IMMUNITY TRAINING
+                        </span>
+                      </div>
+                      {/* Pattern Verified subline */}
+                      <div className="mb-4">
+                        <h3
+                          className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
+                          style={{ color: '#14B8A6', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+                        >
+                          Pattern Verified: {archetypeNameForImmunity?.replace(/^The /, '') || 'Pattern'}
+                        </h3>
+                      </div>
+                    </div>
 
                     {/* Preview Content */}
                     <div className="mb-8 space-y-6">
