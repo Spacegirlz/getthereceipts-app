@@ -260,14 +260,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     element.style.marginLeft = '0';
     element.style.marginRight = '0';
 
-    // Force desktop view for save/share (like Immunity Training)
-    const mobileAutopsy = element.querySelector('[data-autopsy-horizontal]');
-    const desktopAutopsy = element.querySelector('.hidden.sm\\:block');
-    const prevMobileDisplay = mobileAutopsy ? mobileAutopsy.style.display : null;
-    const prevDesktopDisplay = desktopAutopsy ? desktopAutopsy.style.display : null;
-    if (mobileAutopsy) mobileAutopsy.style.display = 'none';
-    if (desktopAutopsy) desktopAutopsy.style.display = 'block';
-    
     // Apply export-mode class to remove all borders (like Truth Receipt)
     element.classList.add('export-mode');
 
@@ -315,14 +307,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     } finally {
       // Restore displays
       allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
-      
-      // Restore mobile/desktop view states
-      if (mobileAutopsy && prevMobileDisplay !== null) {
-        mobileAutopsy.style.display = prevMobileDisplay;
-      }
-      if (desktopAutopsy && prevDesktopDisplay !== null) {
-        desktopAutopsy.style.display = prevDesktopDisplay;
-      }
       
       // Remove export-mode class
       element.classList.remove('export-mode');
