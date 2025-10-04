@@ -271,6 +271,41 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     // Apply export-mode class to remove all borders (like Truth Receipt)
     element.classList.add('export-mode');
 
+    // Apply compact layout optimizations for save/share (like Immunity Training)
+    const autopsySection = element.querySelector('[data-autopsy-section]');
+    const playbookSection = element.querySelector('[data-playbook-section]');
+    const sealSection = element.querySelector('[data-seal-section]');
+    
+    // Store original styles for restoration
+    const prevStyles = {
+      autopsy: autopsySection ? {
+        marginBottom: autopsySection.style.marginBottom,
+        padding: autopsySection.style.padding
+      } : null,
+      playbook: playbookSection ? {
+        marginBottom: playbookSection.style.marginBottom,
+        padding: playbookSection.style.padding
+      } : null,
+      seal: sealSection ? {
+        marginBottom: sealSection.style.marginBottom,
+        padding: sealSection.style.padding
+      } : null
+    };
+    
+    // Apply compact styling for save/share
+    if (autopsySection) {
+      autopsySection.style.marginBottom = '12px';
+      autopsySection.style.padding = '8px';
+    }
+    if (playbookSection) {
+      playbookSection.style.marginBottom = '12px';
+      playbookSection.style.padding = '8px';
+    }
+    if (sealSection) {
+      sealSection.style.marginBottom = '8px';
+      sealSection.style.padding = '8px';
+    }
+
     try {
       allToHide.forEach(n => { n.style.display = 'none'; });
       
@@ -322,6 +357,20 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       }
       if (desktopAutopsy && prevDesktopDisplay !== null) {
         desktopAutopsy.style.display = prevDesktopDisplay;
+      }
+      
+      // Restore compact layout styles
+      if (autopsySection && prevStyles.autopsy) {
+        autopsySection.style.marginBottom = prevStyles.autopsy.marginBottom;
+        autopsySection.style.padding = prevStyles.autopsy.padding;
+      }
+      if (playbookSection && prevStyles.playbook) {
+        playbookSection.style.marginBottom = prevStyles.playbook.marginBottom;
+        playbookSection.style.padding = prevStyles.playbook.padding;
+      }
+      if (sealSection && prevStyles.seal) {
+        sealSection.style.marginBottom = prevStyles.seal.marginBottom;
+        sealSection.style.padding = prevStyles.seal.padding;
       }
       
       // Remove export-mode class
@@ -1110,6 +1159,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="mb-3"
+              data-autopsy-section
             >
               <div className="bg-black/45 backdrop-blur-sm rounded-xl p-3 border border-white/[0.12] shadow-2xl">
                 <div className="flex items-center justify-between mb-3">
@@ -1423,6 +1473,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
                   className="mb-3"
+                  data-playbook-section
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
@@ -1494,6 +1545,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
               className="mb-3"
+              data-seal-section
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
