@@ -895,8 +895,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
             backdropFilter: 'blur(20px) saturate(200%)',
             WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-            border: '2px solid rgba(20, 184, 166, 0.4)',
-            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+            border: '2px solid rgba(168, 85, 247, 0.4)',
+            boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15), 0 0 80px rgba(168, 85, 247, 0.05)'
           }}>
           <div className="relative z-10">
 
