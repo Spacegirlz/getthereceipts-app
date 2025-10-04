@@ -354,6 +354,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       // Store original styles for restoration
       const cycleInner = cycleSection?.querySelector('.bg-black\\/30');
       const trainingInner = trainingSection?.querySelector('.bg-black\\/30');
+      const immunityPillText = element.querySelector('[data-immunity-pill] .text-lg');
+      const patternDNASection = element.querySelector('[data-share-hide="true"]')?.closest('.mb-8');
+      const patternDNATitle = patternDNASection?.querySelector('h3');
+      const patternDNAContent = patternDNASection?.querySelector('.text-cyan-200');
+      const patternVerified = element.querySelector('.text-lg.sm\\:text-xl.md\\:text-2xl');
+      const cycleContent = cycleSection?.querySelector('.space-y-3');
+      const sageBlessingTitle = element.querySelector('[data-sage-blessing-header]');
+      const crownEmoji = sageBlessingTitle?.querySelector('span');
       
       const prevStyles = {
         cycle: cycleSection ? {
@@ -371,6 +379,25 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         trainingInner: trainingInner ? {
           padding: trainingInner.style.padding,
           border: trainingInner.style.border
+        } : null,
+        immunityPillText: immunityPillText ? {
+          fontSize: immunityPillText.style.fontSize
+        } : null,
+        patternDNATitle: patternDNATitle ? {
+          marginBottom: patternDNATitle.style.marginBottom
+        } : null,
+        patternDNAContent: patternDNAContent ? {
+          marginTop: patternDNAContent.style.marginTop
+        } : null,
+        patternVerified: patternVerified ? {
+          fontSize: patternVerified.style.fontSize
+        } : null,
+        cycleContent: cycleContent ? {
+          paddingBottom: cycleContent.style.paddingBottom
+        } : null,
+        crownEmoji: crownEmoji ? {
+          fontSize: crownEmoji.style.fontSize,
+          marginRight: crownEmoji.style.marginRight
         } : null,
         sage: {
           container: sageContainer ? {
@@ -425,6 +452,40 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       }
       if (sageText) {
         sageText.style.fontSize = '13px';
+      }
+
+      // Additional save/share optimizations
+      // 1. Reduce Immunity Training logo and text size by 25%
+      if (immunityPillText) {
+        immunityPillText.style.fontSize = '0.75rem'; // 25% reduction from 1rem
+      }
+
+      // 2. Reduce padding between title and core text in "What This Looks Like"
+      if (patternDNASection) {
+        if (patternDNATitle) {
+          patternDNATitle.style.marginBottom = '8px'; // Reduce from default
+        }
+        if (patternDNAContent) {
+          patternDNAContent.style.marginTop = '4px';
+        }
+      }
+
+      // 3. Reduce Pattern Verified text size by 25%
+      if (patternVerified) {
+        patternVerified.style.fontSize = '0.75rem'; // 25% reduction
+      }
+
+      // 4. Reduce padding between cycle content and bottom border
+      if (cycleContent) {
+        cycleContent.style.paddingBottom = '8px';
+      }
+
+      // 5. Move crown emoji next to Sage's Blessing title and make same size
+      if (sageBlessingTitle) {
+        if (crownEmoji) {
+          crownEmoji.style.fontSize = '1rem'; // Match title size
+          crownEmoji.style.marginRight = '8px';
+        }
       }
 
       // Add export-mode class to remove all borders (like Truth Receipt)
@@ -513,6 +574,25 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       }
       if (sageText && prevStyles.sage.text) {
         sageText.style.fontSize = prevStyles.sage.text.fontSize;
+      }
+      if (immunityPillText && prevStyles.immunityPillText) {
+        immunityPillText.style.fontSize = prevStyles.immunityPillText.fontSize;
+      }
+      if (patternDNATitle && prevStyles.patternDNATitle) {
+        patternDNATitle.style.marginBottom = prevStyles.patternDNATitle.marginBottom;
+      }
+      if (patternDNAContent && prevStyles.patternDNAContent) {
+        patternDNAContent.style.marginTop = prevStyles.patternDNAContent.marginTop;
+      }
+      if (patternVerified && prevStyles.patternVerified) {
+        patternVerified.style.fontSize = prevStyles.patternVerified.fontSize;
+      }
+      if (cycleContent && prevStyles.cycleContent) {
+        cycleContent.style.paddingBottom = prevStyles.cycleContent.paddingBottom;
+      }
+      if (crownEmoji && prevStyles.crownEmoji) {
+        crownEmoji.style.fontSize = prevStyles.crownEmoji.fontSize;
+        crownEmoji.style.marginRight = prevStyles.crownEmoji.marginRight;
       }
       
       // Remove export-mode class
