@@ -269,7 +269,7 @@ const PricingPage = () => {
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.15),rgba(255,255,255,0))] pointer-events-none" />
 
       {/* Matte Rich Design System */}
-      <style jsx="true">{`
+      <style>{`
         .founder-card {
           position: relative;
           background: rgba(20, 25, 45, 0.6);

@@ -555,7 +555,8 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
   const apiKeys = [
     import.meta.env.VITE_OPENAI_API_KEY,
     import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
-    import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2  // Gemini API as third backup
+    import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2,  // Gemini API as third backup
+    import.meta.env.VITE_GOOGLE_API_KEY  // Use the existing Google key as backup
   ].filter(key => key && key.trim());
 
   if (attemptNumber >= apiKeys.length) {
@@ -582,14 +583,21 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
   console.log(`🔍 DEBUG - Key has spaces after removal:`, currentKey.includes(' '));
 
   try {
+    // Add timeout to prevent hanging requests
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Authorization': authHeader,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -598,7 +606,12 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
 
     return await response.json();
   } catch (error) {
-    console.error(`Attempt ${attemptNumber + 1} failed:`, error.message);
+    if (error.name === 'AbortError') {
+      console.error(`Attempt ${attemptNumber + 1} timed out after 30 seconds`);
+      error.message = 'Request timed out after 30 seconds';
+    } else {
+      console.error(`Attempt ${attemptNumber + 1} failed:`, error.message);
+    }
     
     // Try next API key
     if (attemptNumber < apiKeys.length - 1) {
@@ -843,14 +856,17 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
   const apiKeys = [
     import.meta.env.VITE_OPENAI_API_KEY,
     import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
-    import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2  // Gemini API as third backup
+    import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2,  // Gemini API as third backup
+    import.meta.env.VITE_GOOGLE_API_KEY  // Use the existing Google key as backup
   ].filter(key => key && key.trim());
   
   console.log(`🔍 DEBUG - Environment variables check:`);
   console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY exists:`, !!import.meta.env.VITE_OPENAI_API_KEY);
   console.log(`🔍 DEBUG - VITE_OPENAI_API_KEY_BACKUP1 exists:`, !!import.meta.env.VITE_OPENAI_API_KEY_BACKUP1);
   console.log(`🔍 DEBUG - VITE_GOOGLE_API_KEY_BACKUP2 exists:`, !!import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2);
+  console.log(`🔍 DEBUG - VITE_GOOGLE_API_KEY exists:`, !!import.meta.env.VITE_GOOGLE_API_KEY);
   console.log(`🔍 DEBUG - Total valid keys found:`, apiKeys.length);
+  console.log(`🔍 DEBUG - Available keys:`, apiKeys.map((key, i) => `Key ${i+1}: ${key?.substring(0, 10)}...`));
 
   // If we've exhausted all keys, return fallback
   if (attemptNumber >= apiKeys.length) {
@@ -1103,13 +1119,20 @@ IMPORTANT:
         }
       };
       
+      // Add timeout to Gemini API calls
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -1348,7 +1371,19 @@ export const generateAdvancedResults = (message, context) => {
 
 // Function to generate ALIGNED results for premium users (same analysis for Share Shot + Deep Dive)
 export const generateAlignedResults = async (message, context) => {
+  const startTime = performance.now();
   console.log('🔄 Starting 3-API analysis system...');
+  
+  // Smart content truncation for long inputs (5000+ characters)
+  const MAX_INPUT_LENGTH = 3000; // ~750 tokens, leaves room for response
+  let processedMessage = message;
+  if (message.length > MAX_INPUT_LENGTH) {
+    console.log(`📝 Input too long (${message.length} chars), truncating to ${MAX_INPUT_LENGTH} chars`);
+    // Keep the beginning and end for context
+    const start = message.substring(0, MAX_INPUT_LENGTH * 0.6);
+    const end = message.substring(message.length - MAX_INPUT_LENGTH * 0.4);
+    processedMessage = start + '\n\n[... content truncated for performance ...]\n\n' + end;
+  }
   
   // Build clean context for all API calls
   const buildCleanContext = (message, context) => {
@@ -1482,14 +1517,22 @@ export const generateAlignedResults = async (message, context) => {
   const cleanContext = buildCleanContext(message, context);
   
   // API Call 1: Truth Receipt (Main Analysis)
+  const api1Start = performance.now();
   console.log('📊 API Call 1: Truth Receipt analysis...');
-  const shareShotAnalysis = await analyzeWithGPT(message, cleanContext, 0);
-  
-  console.log('✅ Truth Receipt complete');
+  const shareShotAnalysis = await analyzeWithGPT(processedMessage, cleanContext, 0);
+  const api1Time = performance.now() - api1Start;
+  console.log(`✅ Truth Receipt complete in ${(api1Time / 1000).toFixed(2)}s`);
 
   // API Call 2: Deep Dive (Premium Analysis)
+  const api2Start = performance.now();
   console.log('🔍 API Call 2: Deep Dive analysis...');
   let alignedDeepDive = null;
+  
+  // Add timeout for Deep Dive to prevent excessive delays
+  const deepDiveTimeout = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Deep Dive timeout after 15 seconds')), 15000)
+  );
+  
   try {
     const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
     const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark)
@@ -1530,25 +1573,37 @@ export const generateAlignedResults = async (message, context) => {
         model: openAIModel,
         messages: [
           { role: 'system', content: deepDiveSystemPrompt },
-          { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${message}` }
+          { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${processedMessage}` }
         ],
-        temperature: 1.2,
-        max_completion_tokens: 2000,
+        temperature: 0.8,
+        max_completion_tokens: 1200,
         response_format: { type: 'json_object' }
       };
       console.log('🔧 OpenAI Deep Dive request:', { endpoint, model: openAIModel });
-      const data = await makeApiCallWithBackup(endpoint, body);
+      
+      // Race between API call and timeout
+      const data = await Promise.race([
+        makeApiCallWithBackup(endpoint, body),
+        deepDiveTimeout
+      ]);
       
       // Standard chat completions format
       rawContent = data.choices?.[0]?.message?.content || '';
       console.log('🔧 OpenAI Deep Dive response length:', rawContent.length);
     } else {
       const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
+      // Add timeout to Deep Dive Gemini API call
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } })
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } }),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       const data = await response.json();
       rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
@@ -1678,8 +1733,12 @@ export const generateAlignedResults = async (message, context) => {
     }
     
   } catch (e) {
-    console.error('🚨 DEEP DIVE GENERATION FAILED:', e);
-    console.error('Error details:', e.message);
+    if (e.message.includes('timeout')) {
+      console.warn('⏰ Deep Dive timed out after 15 seconds - using fallback');
+    } else {
+      console.error('🚨 DEEP DIVE GENERATION FAILED:', e);
+      console.error('Error details:', e.message);
+    }
     
     // Provide fallback structure even when API fails
     alignedDeepDive = {
@@ -1716,9 +1775,11 @@ export const generateAlignedResults = async (message, context) => {
     };
   }
   
-  console.log('✅ Deep Dive complete');
+  const api2Time = performance.now() - api2Start;
+  console.log(`✅ Deep Dive complete in ${(api2Time / 1000).toFixed(2)}s`);
   
   // API Call 3: Immunity Training (Premium Protection)
+  const api3Start = performance.now();
   console.log('🛡️ API Call 3: Immunity Training...');
   let immunityTraining = null;
   try {
@@ -1750,10 +1811,10 @@ export const generateAlignedResults = async (message, context) => {
         model: openAIModel,
         messages: [
           { role: 'system', content: immunitySystemPrompt },
-          { role: 'user', content: `TEXTS:\n${message}` }
+          { role: 'user', content: `TEXTS:\n${processedMessage}` }
         ],
-        temperature: 0.8,
-        max_completion_tokens: 1500,
+        temperature: 0.7,
+        max_completion_tokens: 1000,
         response_format: { type: 'json_object' }
       };
       
@@ -1764,14 +1825,21 @@ export const generateAlignedResults = async (message, context) => {
       console.log('🛡️ Immunity Training response length:', rawContent.length);
     } else {
       const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
+      // Add timeout to Immunity Training Gemini API call
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nTEXTS:\n${message}` }] }], 
           generationConfig: { temperature: 0.8, maxOutputTokens: 1500 } 
-        })
+        }),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       const data = await response.json();
       rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
@@ -1805,7 +1873,8 @@ export const generateAlignedResults = async (message, context) => {
     
     immunityTraining = sanitizeImmunity(immunityTraining);
     
-    console.log('✅ Immunity Training complete');
+    const api3Time = performance.now() - api3Start;
+    console.log(`✅ Immunity Training complete in ${(api3Time / 1000).toFixed(2)}s`);
   } catch (e) {
     console.error('🚨 IMMUNITY TRAINING GENERATION FAILED:', e);
     console.log('⚠️ Immunity Training failed, using fallback');
@@ -1821,6 +1890,7 @@ export const generateAlignedResults = async (message, context) => {
   }
   
   // Combine all results into final response
+  const processingStart = performance.now();
   console.log('🔄 Combining all 3 API results...');
   let finalResult = {
     ...shareShotAnalysis,
@@ -1875,7 +1945,11 @@ export const generateAlignedResults = async (message, context) => {
     if (result.teaAndMovePlay && Array.isArray(result.teaAndMovePlay)) {
       result.teaAndMovePlay = result.teaAndMovePlay.map(sanitizeString);
     }
-    console.log('✅ Post-processing sanitization complete');
+    const processingTime = performance.now() - processingStart;
+  console.log(`✅ Post-processing complete in ${(processingTime / 1000).toFixed(2)}s`);
+  
+  const totalTime = performance.now() - startTime;
+  console.log(`🎉 TOTAL ANALYSIS TIME: ${(totalTime / 1000).toFixed(2)}s`);
     return result;
   };
 

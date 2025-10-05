@@ -1614,7 +1614,7 @@ const LandingPage = () => {
       </motion.div>
       
       {/* CSS Animations for Ticker Counter */}
-      <style jsx="true">{`
+      <style>{`
         @keyframes tickerPulse {
           0% { color: #fbbf24; }
           50% { color: #f59e0b; }

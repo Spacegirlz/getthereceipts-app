@@ -30,7 +30,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https:; style-src 'self' 'unsafe-inline' data: blob: https:; font-src 'self' data: blob: https:; img-src 'self' data: https: blob:; connect-src 'self' data: blob: https:; frame-src 'self' https:; object-src 'none';"
+          "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: http:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https: http: localhost:*; style-src 'self' 'unsafe-inline' data: blob: https: http:; font-src 'self' data: blob: https: http:; img-src 'self' data: https: http: blob:; connect-src 'self' data: blob: https: http: localhost:*; frame-src 'self' https: http:; object-src 'none';"
         }
       ]
     }

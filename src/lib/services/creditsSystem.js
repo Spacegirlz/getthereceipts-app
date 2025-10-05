@@ -17,12 +17,28 @@ export const getUserCredits = async (userId) => {
       (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     
     if (isLocalhost) {
-      console.log('🚨 LOCALHOST: Everyone gets 3 credits for testing');
+      // Check if this is the dev user
+      const isDevUser = userId === '00000000-0000-0000-0000-000000000001' || 
+                       (typeof window !== 'undefined' && window.location.search.includes('dev=true'));
+      
+      if (isDevUser) {
+        console.log('🚨 LOCALHOST: Dev user detected - unlimited credits');
+        return {
+          credits: 999, // Unlimited credits for dev user
+          subscription: 'dev', // Show as dev tier
+          last_free_receipt_date: new Date().toISOString().split('T')[0],
+          deepDivesRemaining: 999 // Unlimited deep dives
+        };
+      }
+      
+      // Get simulated credits from localStorage for other users
+      const simulatedCredits = parseInt(localStorage.getItem('test_credits') || '3');
+      console.log('🚨 LOCALHOST: Using simulated credits for testing:', simulatedCredits);
       return {
-        credits: 3, // Everyone gets 3 credits for testing
+        credits: simulatedCredits, // Use simulated credits that can be deducted
         subscription: 'free', // Show as free tier for testing
         last_free_receipt_date: new Date().toISOString().split('T')[0],
-        deepDivesRemaining: 3 // Limited for testing
+        deepDivesRemaining: simulatedCredits // Limited for testing
       };
     }
     
@@ -242,8 +258,22 @@ export const deductCredits = async (userId, amount = 1) => {
       (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     
     if (isLocalhost) {
-      console.log('🚨 LOCALHOST: Skipping credit deduction for testing');
-      return { success: true };
+      // Check if this is the dev user
+      const isDevUser = userId === '00000000-0000-0000-0000-000000000001' || 
+                       (typeof window !== 'undefined' && window.location.search.includes('dev=true'));
+      
+      if (isDevUser) {
+        console.log('🚨 LOCALHOST: Dev user - no credit deduction');
+        return { success: true, newCredits: 999 }; // Keep unlimited credits
+      }
+      
+      console.log('🚨 LOCALHOST: Simulating credit deduction for testing');
+      // Simulate credit deduction by updating localStorage for testing
+      const currentCredits = parseInt(localStorage.getItem('test_credits') || '3');
+      const newCredits = Math.max(0, currentCredits - amount);
+      localStorage.setItem('test_credits', newCredits.toString());
+      console.log(`🚨 LOCALHOST: Simulated deduction. Credits: ${currentCredits} → ${newCredits}`);
+      return { success: true, newCredits };
     }
 
     // Get current user data
@@ -288,4 +318,15 @@ export const deductCredits = async (userId, amount = 1) => {
     console.error('deductCredits error:', error);
     return { success: false, error };
   }
+};
+
+// Reset credits for localhost testing
+export const resetTestCredits = () => {
+  if (typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    localStorage.setItem('test_credits', '3');
+    console.log('🚨 LOCALHOST: Reset test credits to 3');
+    return true;
+  }
+  return false;
 };

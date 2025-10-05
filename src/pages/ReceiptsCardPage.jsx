@@ -105,6 +105,9 @@ const ReceiptsCardPage = () => {
   };
 
   const handleSaveReceipt = () => {
+    const startTime = performance.now();
+    console.log('🚀 Save process started at:', startTime);
+    
     const element = document.getElementById('receipt-card-shareable');
     if (!element) {
       toast({ title: "Error", description: "Could not find receipt to save.", variant: "destructive" });
@@ -126,18 +129,29 @@ const ReceiptsCardPage = () => {
         useCORS: true,
         allowTaint: true,
         backgroundColor: 'transparent',
-        scale: 2,
+        scale: 1.5, // Reduced from 2 to 1.5 for faster processing
         width: element.offsetWidth,
-        height: Math.max(element.offsetHeight, element.scrollHeight, element.clientHeight) + 30
+        height: Math.max(element.offsetHeight, element.scrollHeight, element.clientHeight) + 30,
+        logging: false, // Disable logging for faster processing
+        removeContainer: true // Clean up faster
       }).then(function(canvas) {
+        const canvasTime = performance.now();
+        console.log('⏱️ Canvas generated in:', (canvasTime - startTime).toFixed(2), 'ms');
+        
         // Restore original elements
         restoreOriginalElements(originalElements);
 
         canvas.toBlob(function(blob) {
+          const blobTime = performance.now();
+          console.log('⏱️ Blob created in:', (blobTime - startTime).toFixed(2), 'ms');
+          // Check if we're on mobile and can use Web Share API for saving to photos
+          const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          
+          // Always use traditional download for "Save to Files" button
           const timestamp = Date.now();
           saveAs(blob, `Sage's Truth Receipt #${timestamp}.png`);
-          toast({ title: "Receipt saved!", description: "Your truth receipt has been downloaded." });
-          element.classList.remove('save-mode'); // Remove save-mode class
+          toast({ title: "💾 Saved to Files!", description: "Your receipt has been downloaded to your Downloads folder." });
+          element.classList.remove('save-mode');
           setIsSharing(false);
         });
       }).catch(function(error) {
@@ -428,18 +442,33 @@ const ReceiptsCardPage = () => {
         restoreOriginalElements(originalElements);
         
         canvas.toBlob(function(blob) {
-          const file = new File([blob], "receipt.png", { type: "image/png" });
-          if (navigator.share && navigator.canShare({ files: [file] })) {
+          const file = new File([blob], "Sage Truth Receipt.png", { type: "image/png" });
+          
+          // Check if we're on mobile and can use Web Share API
+          const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          
+          if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
+            // Mobile: Use Web Share API for sharing and saving to photos
             navigator.share({
-              files: [file],
-              title: 'My Receipt from Get The Receipts',
-              text: `Just got my receipts and... ${receiptData?.analysis?.archetype || 'the accuracy'} 😭 The accuracy is scary accurate`
+              files: [file]
+            }).then(() => {
+              toast({ title: "📱 Shared!", description: "You can save to Photos from the share menu." });
+            }).catch((shareError) => {
+              if (shareError.name !== 'AbortError') {
+                console.error('Share error:', shareError);
+                // Fallback to download
+                const timestamp = Date.now();
+                saveAs(blob, `Sage's Truth Receipt #${timestamp}.png`);
+                toast({ title: "Downloaded instead", description: "Receipt saved to Downloads folder." });
+              } else {
+                toast({ title: "Share cancelled", description: "No worries, try again when ready!" });
+              }
             });
           } else {
-            // Fallback: download
+            // Desktop: Use traditional download
             const timestamp = Date.now();
             saveAs(blob, `Sage's Truth Receipt #${timestamp}.png`);
-            toast({ title: "Screenshot saved!", description: "Your receipt has been downloaded." });
+            toast({ title: "💾 Downloaded!", description: "Your receipt has been saved to Downloads. You can then save it to Photos manually." });
           }
           setIsSharing(false);
         });
@@ -472,7 +501,7 @@ const ReceiptsCardPage = () => {
       </Helmet>
       
       {/* Flowing Gradient CSS */}
-      <style jsx="true">{`
+      <style>{`
         .gradient-text {
           background: linear-gradient(-45deg, #60A5FA, #A78BFA, #C084FC, #60A5FA);
           background-size: 400% 400%;
@@ -600,35 +629,35 @@ const ReceiptsCardPage = () => {
             <div className="text-center mb-6">
               <div className="inline-flex items-center gap-2 bg-teal-900/40 px-4 py-2 rounded-2xl border border-teal-500/50 mb-4">
                 <span className="text-2xl">✨</span>
-                <span className="text-teal-400 font-bold text-lg tracking-wide">Ready for Sage's Next Take?</span>
+                <span className="text-cyan-400 font-bold text-lg tracking-wide">Ready for Sage's Next Take?</span>
               </div>
             </div>
             
             {/* Two centered buttons */}
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
               <LinkButton
                 to="/luxe-chat-input"
-                className="flex items-center gap-2 text-black font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                className="flex items-center justify-center gap-2 text-black font-medium w-full sm:w-auto px-6 py-3 sm:px-4 sm:py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg text-sm sm:text-base whitespace-nowrap"
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                   border: '1px solid rgba(212, 175, 55, 0.8)',
                   boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
                 }}
               >
-                <span className="text-lg">✨</span>
-                Decode Another Message
+                <span className="text-base sm:text-lg">✨</span>
+                <span className="text-sm sm:text-base">Decode Another</span>
               </LinkButton>
               <Button
                 onClick={handleFounderCheckout}
                 disabled={loadingCheckout}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
+                className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium w-full sm:w-auto px-6 py-3 sm:px-4 sm:py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50 text-sm sm:text-base whitespace-nowrap"
                 style={{
                   border: '1px solid rgba(20, 184, 166, 0.6)',
                   boxShadow: '0 0 20px rgba(20, 184, 166, 0.2)'
                 }}
               >
-                <span className="text-lg">⚡</span>
-                {loadingCheckout ? 'Redirecting...' : 'Go Premium Unlimited'}
+                <span className="text-base sm:text-lg">⚡</span>
+                <span className="text-sm sm:text-base">{loadingCheckout ? 'Redirecting...' : 'Go Premium'}</span>
               </Button>
             </div>
           </div>

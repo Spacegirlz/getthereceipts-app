@@ -104,8 +104,10 @@ const ChatInputPage = () => {
             while ((match = pattern.exec(limitedText)) !== null) {
               const name = match[1].trim();
               if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
-                speakers.add(name);
-                console.log('✅ Added name from fallback:', name);
+                if (!speakers.has(name)) {  // Only add if not already present
+                  speakers.add(name);
+                  console.log('✅ Added name from fallback:', name);
+                }
               }
             }
           }
@@ -125,8 +127,10 @@ const ChatInputPage = () => {
             console.log('🔍 Found potential name:', name);
             // Filter out common false positives
             if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
-              speakers.add(name);
-              console.log('✅ Added name to speakers:', name);
+              if (!speakers.has(name)) {  // Only add if not already present
+                speakers.add(name);
+                console.log('✅ Added name to speakers:', name);
+              }
             } else {
               console.log('❌ Filtered out name:', name);
             }

@@ -369,6 +369,7 @@ export const AuthProvider = ({ children }) => {
       
       if (isLocalhost) {
         console.log('🚨 DEVELOPMENT MODE: Using mock auth instead of Google OAuth');
+        console.log('🚨 Current user state:', { user, session, loading });
         
         // Mock authentication for localhost development
         try {

@@ -24,6 +24,7 @@ const TestMetrics = lazy(() => import('@/components/TestMetrics'));
 const TestAnalysis = lazy(() => import('@/components/TestAnalysis'));
 const TestReceipt = lazy(() => import('@/pages/TestReceipt'));
 const TestReceiptPage = lazy(() => import('@/pages/TestReceiptPage'));
+const MobileTestPage = lazy(() => import('@/pages/MobileTestPage'));
 const Success = lazy(() => import('@/pages/Success'));
 import { Helmet } from 'react-helmet';
 import AuthModal from '@/components/AuthModal';
@@ -66,6 +67,7 @@ function App() {
                   <Route path="/luxe-chat-input" element={<LuxeChatInputPage />} />
                   <Route path="/test-receipt" element={<TestReceipt />} />
                   <Route path="/test-analysis" element={<TestAnalysis />} />
+                  <Route path="/mobile-test" element={<MobileTestPage />} />
                 </>
               )}
               <Route path="/refer/apply" element={<AffiliateApplicationPage />} />

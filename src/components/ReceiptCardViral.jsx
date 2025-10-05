@@ -507,7 +507,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             }}
           >
             <Download className="h-4 w-4" />
-            {isSharing ? 'Saving...' : 'Save Receipt'}
+            {isSharing ? 'Saving...' : 'Save to Files'}
           </button>
           
           <motion.button 
@@ -534,7 +534,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             }}
           >
             <Share2 className="h-4 w-4" />
-            {isSharing ? 'Sharing...' : 'Share Receipt'}
+            {isSharing ? 'Sharing...' : 'Share & Save to Photos'}
           </motion.button>
         </div>
         
