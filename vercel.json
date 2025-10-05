@@ -6,7 +6,7 @@
   "devCommand": "npm run dev",
   "functions": {
     "api/**/*.js": {
-      "runtime": "nodejs20.x"
+      "runtime": "nodejs22.x"
     }
   },
   "rewrites": [
