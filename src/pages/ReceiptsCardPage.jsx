@@ -675,7 +675,7 @@ const ReceiptsCardPage = () => {
       <div className="w-full max-w-2xl mx-auto px-6 py-8">
         <div className="text-center">
           <p className="text-xs text-gray-500 leading-relaxed">
-            🔮 Look, Sage is really good at reading the room and serving up insights, but she's not a licensed professional, and for the love of all that's holy, don't take life changing advice from an opinionated AI. For entertainment only. This service is intended for users 16+.
+            🔮 Look, we get it. Sage is really good at reading the room and serving up insights, but she’s not a licensed professional. For the love of all that’s holy, never take life‑changing advice from an opinionated AI, even if she’s kinda fire. For entertainment only. Intended for users 16+.
           </p>
         </div>
       </div>

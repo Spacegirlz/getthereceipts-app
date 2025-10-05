@@ -31,7 +31,25 @@ export const getUserCredits = async (userId) => {
         };
       }
       
-      // Get simulated credits from localStorage for other users
+      // For localhost testing, check if user has a real subscription status
+      // If they have a free subscription, give them unlimited credits
+      const { data: localhostData, error: localhostError } = await supabase
+        .from('users')
+        .select('subscription_status')
+        .eq('id', userId)
+        .single();
+      
+      if (!localhostError && localhostData?.subscription_status === 'free') {
+        console.log('🚨 LOCALHOST: Free user detected - unlimited credits');
+        return {
+          credits: CREDIT_AMOUNTS.PREMIUM_UNLIMITED, // -1 indicates unlimited
+          subscription: 'free',
+          last_free_receipt_date: new Date().toISOString().split('T')[0],
+          deepDivesRemaining: CREDIT_AMOUNTS.PREMIUM_UNLIMITED // Unlimited for free users
+        };
+      }
+      
+      // Get simulated credits from localStorage for other users (non-free)
       const simulatedCredits = parseInt(localStorage.getItem('test_credits') || '3');
       console.log('🚨 LOCALHOST: Using simulated credits for testing:', simulatedCredits);
       return {
@@ -67,61 +85,14 @@ export const getUserCredits = async (userId) => {
     if (data.subscription_status === 'premium' || data.subscription_status === 'yearly' || data.subscription_status === 'founder') {
       creditsRemaining = CREDIT_AMOUNTS.PREMIUM_UNLIMITED; // -1 indicates unlimited
     }
-    // For free users, check if we need to reset daily credits
+    // For free users, give unlimited credits (no daily reset)
     else if (data.subscription_status === 'free') {
-      const today = now.toISOString().split('T')[0];
-      const lastResetDate = data.last_free_receipt_date;
-      
-      console.log('🔍 Daily reset check:', {
-        today,
-        lastResetDate,
-        currentCredits: creditsRemaining,
-        userId: userId.substring(0, 8) + '...'
-      });
-      
-      const needsDailyReset = !lastResetDate || lastResetDate !== today;
-      
-      if (needsDailyReset) {
-        console.log('🔄 Daily reset needed - checking bonus period...');
-        
-        // Check if user is still in their new user bonus period
-        const userCreatedDate = new Date(data.created_at);
-        const daysSinceSignup = Math.floor((now - userCreatedDate) / (1000 * 60 * 60 * 24));
-        
-        console.log('📅 User bonus check:', {
-          userCreatedDate: userCreatedDate.toISOString(),
-          daysSinceSignup,
-          currentCredits: creditsRemaining,
-          hasExcessCredits: creditsRemaining > 1
-        });
-        
-        // If user signed up today and still has bonus credits, don't reset
-        if (daysSinceSignup === 0 && creditsRemaining > 1) {
-          // User is still in their first day with bonus credits, don't reset
-          console.log('⏭️ User still in new user bonus period, not resetting credits');
-        } else {
-          // Reset to 1 credit per day (standard free tier)
-          console.log(`🔄 Resetting credits from ${creditsRemaining} to ${CREDIT_AMOUNTS.FREE_USER_DAILY}`);
-          creditsRemaining = CREDIT_AMOUNTS.FREE_USER_DAILY;
-          
-          // Update the database with new credits and reset date
-          const { error: updateError } = await supabase
-            .from('users')
-            .update({
-              credits_remaining: creditsRemaining,
-              last_free_receipt_date: today
-            })
-            .eq('id', userId);
-            
-          if (updateError) {
-            console.error('Error updating daily credit reset:', updateError);
-          } else {
-            console.log('✅ Daily reset complete - credits set to 1');
-          }
-        }
-      } else {
-        console.log('✅ No daily reset needed - using current credits:', creditsRemaining);
-      }
+      creditsRemaining = CREDIT_AMOUNTS.PREMIUM_UNLIMITED; // -1 indicates unlimited
+    }
+    // Legacy logic for other subscription types (emergency pack, etc.)
+    else {
+      // Keep existing credits for other subscription types
+      console.log('✅ Using existing credits for subscription type:', data.subscription_status);
     }
 
     return {
@@ -267,6 +238,18 @@ export const deductCredits = async (userId, amount = 1) => {
         return { success: true, newCredits: 999 }; // Keep unlimited credits
       }
       
+      // Check if user has a real free subscription
+      const { data: localhostData, error: localhostError } = await supabase
+        .from('users')
+        .select('subscription_status')
+        .eq('id', userId)
+        .single();
+      
+      if (!localhostError && localhostData?.subscription_status === 'free') {
+        console.log('🚨 LOCALHOST: Free user - no credit deduction needed');
+        return { success: true, newCredits: CREDIT_AMOUNTS.PREMIUM_UNLIMITED };
+      }
+      
       console.log('🚨 LOCALHOST: Simulating credit deduction for testing');
       // Simulate credit deduction by updating localStorage for testing
       const currentCredits = parseInt(localStorage.getItem('test_credits') || '3');
@@ -288,11 +271,12 @@ export const deductCredits = async (userId, amount = 1) => {
       return { success: false, error: fetchError };
     }
 
-    // Don't deduct for unlimited users (premium/yearly/founder)
+    // Don't deduct for unlimited users (premium/yearly/founder/free)
     if (userData.subscription_status === 'premium' || 
         userData.subscription_status === 'yearly' || 
-        userData.subscription_status === 'founder') {
-      console.log('Premium user - no credit deduction needed');
+        userData.subscription_status === 'founder' ||
+        userData.subscription_status === 'free') {
+      console.log('Unlimited user - no credit deduction needed');
       return { success: true };
     }
 

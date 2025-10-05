@@ -6,7 +6,7 @@ import { useAuthModal } from '@/contexts/AuthModalContext';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap, LogIn, LogOut, User, Trash2 } from 'lucide-react';
+import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap, LogIn, LogOut, User, Trash2, Crown } from 'lucide-react';
 import LinkButton from '@/components/LinkButton';
 import CouponModal from '@/components/CouponModal';
 import { useToast } from '@/components/ui/use-toast';
@@ -128,16 +128,26 @@ const DashboardPage = () => {
 
 
   const getPlanName = (subscription) => {
-    if (!subscription) return 'Free Daily Receipt';
+    if (!subscription) return 'Free Unlimited Sage Receipts';
     if (subscription === 'premium') return 'Unlimited Monthly';
     if (subscription === 'yearly') return 'OG Founder Yearly';
     if (subscription === 'founder') return 'OG Founder Yearly';
-    return 'Free Daily Receipt';
+    return 'Free Unlimited Sage Receipts';
+  };
+
+  const getPlanDescription = (subscription) => {
+    if (!subscription || subscription === 'free') {
+      return 'Unlimited Free Sage Receipts + Playbook & Immunity previews';
+    }
+    if (subscription === 'premium' || subscription === 'yearly' || subscription === 'founder') {
+      return 'Full access to all features';
+    }
+    return 'Unlimited Free Sage Receipts + Playbook & Immunity previews';
   };
 
   const getCreditsDisplay = () => {
     if (!userCredits) return '0';
-    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') {
+    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder' || userCredits.subscription === 'free') {
       return 'Unlimited';
     }
     return String(userCredits.credits || 0);
@@ -340,42 +350,12 @@ const DashboardPage = () => {
           </div>
         </motion.header>
 
-        {/* Quick Actions (2x2 on mobile) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-          <LinkButton 
-            to="/chat-input" 
-            className="w-full text-center bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0"
-          >
-            New Receipt
-          </LinkButton>
-          <LinkButton 
-            to="/refer" 
-            variant="outline" 
-            className="w-full text-center text-white border-purple-400 hover:bg-purple-500/20"
-          >
-            Earn Rewards
-          </LinkButton>
-          <LinkButton 
-            to={userCredits?.subscription === 'free' ? '/pricing' : '/settings'} 
-            variant="outline" 
-            className="w-full text-center text-white border-blue-400 hover:bg-blue-500/20"
-          >
-            {userCredits?.subscription === 'free' ? 'Manage Plan' : 'Billing'}
-          </LinkButton>
-          <LinkButton 
-            to="/settings" 
-            variant="outline" 
-            className="w-full text-center text-white border-slate-400 hover:bg-white/10"
-          >
-            Settings
-          </LinkButton>
-        </div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
         >
           <div className="meme-card p-6 rounded-2xl">
             <h2 className="font-bold text-xl mb-2 flex items-center">
@@ -385,87 +365,150 @@ const DashboardPage = () => {
             <p className="text-2xl font-bold gradient-text">{getPlanName(userCredits.subscription)}</p>
           </div>
           
+
+           
           <div className="meme-card p-6 rounded-2xl">
-            <h2 className="font-bold text-xl mb-2 flex items-center justify-between">
-              <span className="flex items-center">
-                <Receipt className="mr-2 h-5 w-5 text-green-400" />
-                Credits
-              </span>
-              <button
-                onClick={() => {
-                  console.log('🔄 Manual credit refresh requested');
-                  if (user?.id) fetchData(user.id);
-                }}
-                className="text-xs px-2 py-1 bg-green-500/20 hover:bg-green-500/30 text-green-300 rounded-md transition-colors"
-                title="Refresh credits"
-              >
-                Refresh
-              </button>
+            <h2 className="font-bold text-xl mb-4 flex items-center">
+              <CreditCard className="mr-2 h-5 w-5 text-blue-400" />
+              Upgrade to Premium
             </h2>
-            <p className="text-2xl font-bold gradient-text">{getCreditsDisplay()}</p>
-            {userCredits.subscription === 'free' && (
-              <p className="text-sm text-gray-400 mt-1">Resets daily at midnight UTC (8pm ET / 5pm PT)</p>
-            )}
+            <p className="text-sm text-gray-300 mb-4 text-center">
+              Ready to level up? Get unlimited Sage Receipts, Playbook insights, and Immunity training.
+            </p>
+            <div className="space-y-3">
+              <Button 
+                size="sm" 
+                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-0 text-sm font-semibold"
+                onClick={() => navigate('/pricing')}
+              >
+                Monthly Premium - $6.99
+              </Button>
+              <Button 
+                size="sm" 
+                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 text-sm font-semibold"
+                onClick={() => navigate('/pricing')}
+              >
+                OG Founders Yearly Premium $29.99
+              </Button>
+            </div>
           </div>
 
           <div className="meme-card p-6 rounded-2xl">
             <h2 className="font-bold text-xl mb-2 flex items-center">
-              <Gift className="mr-2 h-5 w-5 text-purple-400" />
-              Referrals
+              <Settings className="mr-2 h-5 w-5 text-cyan-400" />
+              Account Settings
             </h2>
-            <p className="text-2xl font-bold gradient-text">{referralStats?.totalReferrals || 0}</p>
-            <p className="text-sm text-gray-400 mt-1">+{referralStats?.bonusCreditsEarned || 0} bonus credits</p>
-          </div>
-           
-          <div className="meme-card p-6 rounded-2xl flex flex-col justify-center items-center">
-            <h2 className="font-bold text-xl mb-3 flex items-center">
-              <CreditCard className="mr-2 h-5 w-5 text-blue-400" />
-              Actions
-            </h2>
-            <div className="flex flex-col gap-3 w-full">
-              {/* Receipt Saving Toggle for Premium Users - DISABLED FOR LAUNCH */}
-              {/* {(userCredits?.subscription === 'premium' || userCredits?.subscription === 'yearly' || userCredits?.subscription === 'founder') && (
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white/5">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-medium">Save Receipts</span>
-                    <span className="text-xs text-gray-400">
-                      {receipts.length}/50 saved
-                      {receipts.length >= 45 && (
-                        <span className="text-yellow-400 ml-1">⚠️ Near limit</span>
-                      )}
-                    </span>
-                  </div>
-                  <Switch
-                    checked={saveReceipts}
-                    onCheckedChange={handleSaveReceiptsToggle}
-                    className="ml-2"
-                  />
-                </div>
-              )} */}
-              
-              {userCredits?.subscription === 'free' && (
-                <LinkButton to="/pricing" size="sm" variant="outline" className="text-xs">
-                  Upgrade Plan
-                </LinkButton>
-              )}
-              <LinkButton to="/refer" size="sm" variant="secondary" className="text-xs">
-                Refer Friends
-              </LinkButton>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 text-sm">Email:</span>
+                <span className="text-white text-sm truncate">{user?.email}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 text-sm">Plan:</span>
+                <span className="text-white text-sm">{getPlanName(userCredits.subscription)}</span>
+              </div>
+              <div className="text-xs text-gray-400 mt-2">
+                {getPlanDescription(userCredits.subscription)}
+              </div>
+            </div>
+            <div className="mt-4 space-y-2">
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="w-full border-purple-400 text-white hover:bg-purple-500/20 text-xs"
+                onClick={() => navigate('/pricing')}
+              >
+                <CreditCard className="mr-2 h-4 w-4" />
+                Manage Plan
+              </Button>
             </div>
           </div>
         </motion.div>
 
-        {/* Referral Progress Section */}
-        {user && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8"
-          >
-            <ReferralProgressCard userId={user.id} userCredits={userCredits} />
-          </motion.section>
-        )}
+        {/* Receipts & Riches Program Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-8"
+        >
+          <div className="max-w-4xl mx-auto">
+            <motion.div 
+              className="rounded-3xl p-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 backdrop-blur-sm"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-center mb-8">
+                <Crown className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  <span className="gradient-text">Receipts & Riches</span>
+                </h2>
+                <p className="text-xl text-blue-200 mb-6 max-w-2xl mx-auto">
+                  Our affiliate program for creators and connectors. Earn real cash.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">✓</span>
+                    </div>
+                    <span className="text-white font-semibold">30% commission on subscriptions</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">✓</span>
+                    </div>
+                    <span className="text-white font-semibold">Monthly payouts via PayPal</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">✓</span>
+                    </div>
+                    <span className="text-white font-semibold">$1000+ earning potential</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">🎯</span>
+                    </div>
+                    <span className="text-blue-200">Perfect for content creators</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">📱</span>
+                    </div>
+                    <span className="text-blue-200">Social media influencers</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">👥</span>
+                    </div>
+                    <span className="text-blue-200">Connectors with friend networks</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-4"
+                  onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
+                >
+                  <Crown className="mr-2 h-5 w-5" />
+                  Apply to Receipts & Riches
+                </Button>
+                <p className="text-sm text-gray-400">
+                  Join our exclusive creator program and start earning today
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+
 
         {/* Your Receipt History Section - DISABLED FOR LAUNCH */}
         {/* <motion.section

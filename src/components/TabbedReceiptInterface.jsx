@@ -70,9 +70,10 @@ const TabbedReceiptInterface = ({
           onSaveReceipt={onSaveReceipt}
           onScreenshot={onScreenshot}
           isSharing={isSharing}
+          isPremium={isPremium}
         />
       ),
-      isPremium: false
+      isPremium: true
     },
     {
       id: 'immunity',
@@ -199,7 +200,7 @@ const TabbedReceiptInterface = ({
 
                   const getLockIconColor = () => {
                     // Make lock/crown icons visible based on active state and tab
-                    if (index === 2 && activeTab === index) {
+                    if ((index === 1 || index === 2) && activeTab === index) {
                       return 'text-black'; // Black icon on gold background when active
                     }
                     return 'text-amber-400'; // Default amber color
@@ -282,15 +283,21 @@ const TabbedReceiptInterface = ({
             className="w-full"
           >
             {activeTab === 2 && !isPremium ? (
-              // Premium Lock Screen
-              <div className="text-center py-16 px-8">
+              // Premium Lock Screen (constrained to same width as Playbook/Immunity)
+              <div className="w-full max-w-2xl mx-auto text-center py-16 px-8">
                 <div className="relative">
                   {/* Premium Background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 via-teal-900/20 to-cyan-900/30 rounded-3xl"></div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 rounded-3xl"></div>
                   
                   {/* Content */}
-                  <div className="relative backdrop-blur-xl bg-black/40 border border-white/10 rounded-3xl p-12">
+                  <div
+                    className="relative backdrop-blur-xl bg-black/40 border rounded-3xl p-12"
+                    style={{
+                      border: '1px solid rgba(212, 175, 55, 0.65)',
+                      boxShadow: '0 0 0 1px rgba(212, 175, 55, 0.25), 0 8px 32px rgba(212, 175, 55, 0.18), 0 0 60px rgba(212, 175, 55, 0.10)'
+                    }}
+                  >
                     {/* Lock Icon */}
                     <div className="flex justify-center mb-6">
                       <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-400/20 flex items-center justify-center border border-yellow-400/30">
@@ -389,7 +396,7 @@ const TabbedReceiptInterface = ({
                         </div>
                       </div>
 
-                      {/* See Both Sides Preview */}
+                      {/* See Both Sides Preview - headings only */}
                       <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm"
                         style={{
                           border: '1px solid rgba(20, 184, 166, 0.35)',
@@ -407,16 +414,32 @@ const TabbedReceiptInterface = ({
                         <div className="p-4">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                              <div className="text-green-400 text-sm font-medium">Healthy Version:</div>
-                              <div className="text-green-300 text-sm">Clear communication and consistent behavior</div>
+                              <div className="text-green-400 text-sm sm:text-base font-semibold">Healthy Version:</div>
                             </div>
                             <div className="space-y-2">
-                              <div className="text-red-400 text-sm font-medium">What You Get:</div>
-                              <div className="text-red-300 text-sm">Mixed signals and emotional confusion</div>
+                              <div className="text-red-400 text-sm sm:text-base font-semibold">What You Get:</div>
                             </div>
                           </div>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Full-width CTA - matches Playbook style */}
+                    <div className="mb-8 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-2xl p-8 border border-[#D4AF37]/20 text-center">
+                      <Lock className="w-8 h-8 text-[#D4AF37] mx-auto mb-4" />
+                      <h4 className="text-xl font-light text-stone-200/90 mb-2">Unlock Complete Analysis</h4>
+                      <p className="text-stone-300/80 mb-6">Get the full dynamics, playbook, and Sage's wisdom</p>
+                      <button
+                        onClick={handleUpgradeClick}
+                        className="px-8 py-3 text-black font-bold rounded-xl transition-all duration-300 hover:scale-105"
+                        style={{
+                          background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                          border: '1px solid rgba(212, 175, 55, 0.8)',
+                          boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
+                        }}
+                      >
+                        Go Premium
+                      </button>
                     </div>
 
                     {/* Upgrade CTA */}
@@ -424,11 +447,10 @@ const TabbedReceiptInterface = ({
                       <p className="text-white/80 text-lg mb-6">
                         Unlock the complete immunity training to become bulletproof against this pattern
                       </p>
-                      
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex flex-col gap-4">
                         <button
                           onClick={handleUpgradeClick}
-                          className="px-8 py-4 text-black font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
+                          className="w-full px-8 py-4 text-black font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
                           style={{
                             background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                             border: '1px solid rgba(212, 175, 55, 0.8)',
@@ -437,13 +459,6 @@ const TabbedReceiptInterface = ({
                         >
                           <Crown className="w-5 h-5" />
                           Unlock Immunity Training
-                        </button>
-                        
-                        <button
-                          onClick={() => navigateToTab(1)}
-                          className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all duration-300 border border-white/20"
-                        >
-                          Continue with Sage's Tea
                         </button>
                       </div>
                       

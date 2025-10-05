@@ -15,7 +15,7 @@ import ImmunityTraining from '@/components/ImmunityTraining';
 const TestReceiptPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isPremium } = useAuth();
   
   const [testMessage, setTestMessage] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -74,7 +74,12 @@ const TestReceiptPage = () => {
             userCredits.subscription === 'founder') {
           canProceed = true;
           creditMessage = 'Premium user - unlimited analysis';
+        } else if (userCredits.subscription === 'free' && userCredits.credits === -1) {
+          // Free users with unlimited credits (new system)
+          canProceed = true;
+          creditMessage = 'Free user - unlimited analysis';
         } else if (userCredits.credits > 0) {
+          // Legacy users with limited credits
           canProceed = true;
           creditMessage = `Free user - ${userCredits.credits} credits remaining`;
         } else {
@@ -290,6 +295,7 @@ const TestReceiptPage = () => {
                   analysisData={analysisResult}
                   originalMessage={testMessage}
                   context={{}}
+                  isPremium={isPremium}
                 />
               </motion.div>
             )}

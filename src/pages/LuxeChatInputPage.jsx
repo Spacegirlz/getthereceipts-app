@@ -188,7 +188,12 @@ const LuxeChatInputPage = () => {
             userCredits.subscription === 'founder') {
           canProceed = true;
           creditMessage = 'Premium user - unlimited analysis';
+        } else if (userCredits.subscription === 'free' && userCredits.credits === -1) {
+          // Free users with unlimited credits (new system)
+          canProceed = true;
+          creditMessage = 'Free user - unlimited analysis';
         } else if (userCredits.credits > 0) {
+          // Legacy users with limited credits
           canProceed = true;
           creditMessage = `Free user - ${userCredits.credits} credits remaining`;
         } else {

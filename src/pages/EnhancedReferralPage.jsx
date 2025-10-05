@@ -248,106 +248,92 @@ const EnhancedReferralPage = () => {
             transition={{ duration: 0.7 }}
             className="text-center mb-12 w-full"
           >
-            {/* Toggle Buttons */}
-            <div className="flex justify-center mb-8">
-              <div className="bg-gray-800/50 rounded-xl p-1 flex">
-                <button
-                  onClick={() => setViewMode('forYou')}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                    viewMode === 'forYou' 
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg' 
-                      : 'text-blue-200 bg-[#0b1b3b] border border-blue-500/30 hover:border-blue-400'
-                  }`}
+
+            {/* Receipts & Riches Program */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+            >
+              <Crown className="h-24 w-24 text-yellow-400 mx-auto mb-6" />
+              <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
+                <span className="gradient-text">Receipts & Riches Program</span>
+              </h1>
+                  <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Share your link and earn cash for every friend who joins! 🚀
+                  </p>
+              <p className="text-lg font-semibold text-yellow-400 mb-8">
+                30% commission • Monthly payments • $1000+ earning potential
+              </p>
+              
+              <div className="max-w-4xl mx-auto mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">✓</span>
+                      </div>
+                      <span className="text-white font-semibold">30% commission on subscriptions</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">✓</span>
+                      </div>
+                      <span className="text-white font-semibold">Monthly payouts via PayPal</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">✓</span>
+                      </div>
+                      <span className="text-white font-semibold">$1000+ earning potential</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">🎯</span>
+                      </div>
+                      <span className="text-blue-200">Perfect for content creators</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">📱</span>
+                      </div>
+                      <span className="text-blue-200">Social media influencers</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">👥</span>
+                      </div>
+                      <span className="text-blue-200">Community builders</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-6"
+                  onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
                 >
-                  <User className="h-4 w-4" />
-                  For You
-                </button>
+                  <Crown className="mr-2 h-5 w-5" />
+                  Apply to Receipts & Riches
+                </Button>
+                <p className="text-sm text-gray-400 mb-4">
+                  Join our exclusive creator program and start earning today
+                </p>
+              </div>
+              <div className="text-center">
                 <button
-                  onClick={() => setViewMode('forCreators')}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                    viewMode === 'forCreators' 
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg' 
-                      : 'text-blue-200 bg-[#0b1b3b] border border-blue-500/30 hover:border-blue-400'
-                  }`}
+                  onClick={() => openModal('sign_up')}
+                  className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4"
                 >
-                  <DollarSign className="h-4 w-4" />
-                  For Creators
+                  Sign up first to get started →
                 </button>
               </div>
-            </div>
-
-            {/* Content based on view mode */}
-            <AnimatePresence mode="wait">
-              {viewMode === 'forYou' ? (
-                <motion.div
-                  key="forYou"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Gift className="h-24 w-24 text-yellow-400 mx-auto mb-6" />
-                  <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
-                    <span className="gradient-text">Share & Earn Free Receipts</span>
-                  </h1>
-                  <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
-                    Your friends get clarity. You get credits.
-                  </p>
-                  <p className="text-lg font-semibold text-yellow-400 mb-8">
-                    Every friend who signs up = You get 🎁 3 free Sage receipts = Use or trade in for bonus packages
-                  </p>
-                  <Button 
-                    size="lg" 
-                    className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-6"
-                    onClick={() => openModal('sign_up')}
-                  >
-                    Sign Up to Start Sharing
-                  </Button>
-                  <div className="text-center">
-                    <button
-                      onClick={() => setViewMode('forCreators')}
-                      className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4"
-                    >
-                      Are you a content creator? Make real money with Receipts & Riches →
-                    </button>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="forCreators"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Gift className="h-24 w-24 text-yellow-400 mx-auto mb-6" />
-                  <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
-                    <span className="gradient-text">Receipts & Riches Program</span>
-                  </h1>
-                  <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
-                    Turn confusing text messages into steady income
-                  </p>
-                  <p className="text-lg font-semibold text-yellow-400 mb-8">
-                    30% commission • Monthly payments • 🎁 $1000+ potential
-                  </p>
-                  <Button 
-                    size="lg" 
-                    className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-6"
-                    onClick={() => navigate('/refer/apply')}
-                  >
-                    Apply to Earn Cash
-                  </Button>
-                  <div className="text-center">
-                    <button
-                      onClick={() => setViewMode('forYou')}
-                      className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4"
-                    >
-                      Just want free credits? Join our regular referral program →
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            </motion.div>
 
             {/* How It Works Section */}
             <motion.div
@@ -356,12 +342,6 @@ const EnhancedReferralPage = () => {
               transition={{ delay: 0.5, duration: 0.7 }}
               className="mt-16 w-full"
             >
-              {/* Credits-only header */}
-              <div className="mb-4 max-w-4xl">
-                <h2 className="text-2xl font-bold text-white">Refer & Earn Credits</h2>
-                <p className="text-purple-200 text-sm">This section is for the credits-only program (no cash payouts).</p>
-                <p className="text-gray-400 text-xs mt-1">Refer & Earn Credits Dashboard</p>
-              </div>
               <h2 className="text-2xl font-bold text-white mb-8">How It Works</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <motion.div 
@@ -369,17 +349,12 @@ const EnhancedReferralPage = () => {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white font-bold">1</span>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-xl">1</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {viewMode === 'forYou' ? 'Share Your Link' : 'Get Approved'}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-white mb-2">Apply & Get Approved</h3>
                   <p className="text-gray-400 text-sm">
-                    {viewMode === 'forYou' 
-                      ? 'Get your unique referral link and share it with friends'
-                      : 'Apply to our creator program and get approved for commission rates'
-                    }
+                    Apply to our creator program and get approved for commission rates
                   </p>
                 </motion.div>
                 <motion.div 
@@ -387,17 +362,12 @@ const EnhancedReferralPage = () => {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white font-bold">2</span>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-xl">2</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {viewMode === 'forYou' ? 'Friends Sign Up' : 'Promote & Earn'}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-white mb-2">Promote & Earn</h3>
                   <p className="text-gray-400 text-sm">
-                    {viewMode === 'forYou' 
-                      ? 'Your friends create accounts and start getting receipts'
-                      : 'Share with your audience and earn commission on every signup'
-                    }
+                    Share with your audience and earn commission on every signup
                   </p>
                 </motion.div>
                 <motion.div 
@@ -405,17 +375,12 @@ const EnhancedReferralPage = () => {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white font-bold">3</span>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-xl">3</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {viewMode === 'forYou' ? 'Earn Credits' : 'Get Paid'}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-white mb-2">Earn Riches</h3>
                   <p className="text-gray-400 text-sm">
-                    {viewMode === 'forYou' 
-                      ? 'Get 3 free receipts for every friend who joins'
-                      : 'Receive monthly payments for your referrals'
-                    }
+                    Receive monthly payments for your referrals
                   </p>
                 </motion.div>
               </div>
@@ -435,209 +400,194 @@ const EnhancedReferralPage = () => {
                 <span className="gradient-text">Refer & Earn</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                Share your unique link and earn credits for every friend who joins! 🚀
+                Share your link and earn cash for every friend who joins! 🚀
               </p>
 
-              {/* Options CTA (logged-in) */}
-              <div className="max-w-5xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                  {/* Option 1 */}
-                  <div className="rounded-2xl p-6 bg-gray-800/40 border border-white/10">
-                    <h2 className="text-2xl font-bold text-white mb-2">Option 1: Refer & Earn Credits</h2>
-                    <p className="text-gray-300 mb-4">Share your link. Every friend who joins gives you 3 free Sage receipts.</p>
-                    <ul className="list-disc list-inside text-gray-300 text-sm mb-4 space-y-1">
-                      <li>Fast and simple — no application</li>
-                      <li>Perfect for group chats and friends</li>
-                    </ul>
-                    <Button 
-                      variant="outline" 
-                      className="border-purple-400 text-purple-200 hover:bg-purple-500/10"
-                      onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                    >
-                      See how it works
-                    </Button>
+              {/* Receipts & Riches CTA (logged-in) */}
+              <div className="max-w-4xl mx-auto">
+                <motion.div 
+                  className="rounded-3xl p-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 backdrop-blur-sm"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="text-center mb-8">
+                    <Crown className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                      <span className="gradient-text">Receipts & Riches</span>
+                    </h2>
+                    <p className="text-xl text-blue-200 mb-6 max-w-2xl mx-auto">
+                      Our affiliate program for creators and connectors. Earn real cash.
+                    </p>
                   </div>
-                  {/* Option 2 */}
-                  <div className="rounded-2xl p-6 bg-blue-500/10 border border-blue-500/30">
-                    <h2 className="text-2xl font-bold text-white mb-2">Option 2: Receipts & Riches</h2>
-                    <p className="text-blue-200 mb-4">Our affiliate program for creators and connectors. Earn real cash.</p>
-                    <ul className="list-disc list-inside text-blue-100 text-sm mb-4 space-y-1">
-                      <li>30% commission on subscriptions</li>
-                      <li>Monthly payouts via PayPal</li>
-                    </ul>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Button 
-                        className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-6 py-3 rounded-xl"
-                        onClick={() => navigate('/refer/apply')}
-                      >
-                        Apply to Receipts & Riches
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="border-blue-400 text-blue-200 hover:bg-blue-500/10"
-                        onClick={() => openModal('sign_up')}
-                      >
-                        Sign up first
-                      </Button>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">✓</span>
+                        </div>
+                        <span className="text-white font-semibold">30% commission on subscriptions</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">✓</span>
+                        </div>
+                        <span className="text-white font-semibold">Monthly payouts via PayPal</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">✓</span>
+                        </div>
+                        <span className="text-white font-semibold">$1000+ earning potential</span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">🎯</span>
+                        </div>
+                        <span className="text-blue-200">Perfect for content creators</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">📱</span>
+                        </div>
+                        <span className="text-blue-200">Social media influencers</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">👥</span>
+                        </div>
+                        <span className="text-blue-200">Connectors with friend networks</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                  
+                  <div className="text-center">
+                    <Button 
+                      size="lg"
+                      className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-4"
+                      onClick={() => navigate('/refer/apply')}
+                    >
+                      <Crown className="mr-2 h-5 w-5" />
+                      Apply to Receipts & Riches
+                    </Button>
+                    <p className="text-sm text-gray-400">
+                      Join our exclusive creator program and start earning today
+                    </p>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
 
+            {/* How It Works Section */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="w-full max-w-3xl meme-card p-8 rounded-3xl text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="mt-16 w-full"
             >
-              {/* Dashboard Header */}
-              <div className="mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Refer & Earn Credits Dashboard</h2>
-                <p className="text-gray-400 text-base md:text-lg">Credits-only program (no cash payouts).</p>
-              </div>
-
-              {/* Real-time Stats */}
-              <div className="grid grid-cols-2 gap-6 mb-8">
+              <h2 className="text-2xl font-bold text-white mb-8">How It Works</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <motion.div 
-                  className="text-center"
+                  className="text-center p-6 bg-gray-800/30 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold text-white">{stats.totalReferrals}</h3>
-                  <p className="text-gray-400 text-sm">Friends Referred</p>
-                  <p className="text-green-400 text-xs mt-1">+{stats.totalRewards * 3} credits earned</p>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-xl">1</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Apply & Get Approved</h3>
+                  <p className="text-gray-400 text-sm">
+                    Apply to our creator program and get approved for commission rates
+                  </p>
                 </motion.div>
                 <motion.div 
-                  className="text-center"
+                  className="text-center p-6 bg-gray-800/30 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <Award className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold text-white">{stats.totalRewards}</h3>
-                  <p className="text-gray-400 text-sm">Rewards Earned</p>
-                  <p className="text-yellow-400 text-xs mt-1">Milestone progress</p>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-xl">2</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Promote & Earn</h3>
+                  <p className="text-gray-400 text-sm">
+                    Share with your audience and earn commission on every signup
+                  </p>
+                </motion.div>
+                <motion.div 
+                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-xl">3</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Earn Riches</h3>
+                  <p className="text-gray-400 text-sm">
+                    Receive monthly payments for your referrals
+                  </p>
                 </motion.div>
               </div>
+            </motion.div>
 
-              {/* Milestone Progress */}
-              <div className="bg-gray-800/50 rounded-xl p-6 mb-6">
-                <h3 className="text-lg font-bold mb-4 flex items-center justify-center">
-                  <Target className="h-5 w-5 mr-2" />
-                  Milestone Progress
-                </h3>
-                <div className="space-y-4">
-                  {milestoneProgress.map((milestone, index) => (
-                    <motion.div
-                      key={milestone.target}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 rounded-lg bg-gray-700/50"
-                    >
-                      <div className="flex items-center">
-                        <span className="text-2xl mr-3">{milestone.icon}</span>
-                        <div className="text-left">
-                          <p className="font-semibold text-white">{milestone.reward}</p>
-                          <p className="text-sm text-gray-400">
-                            {milestone.completed ? 'Completed!' : `${milestone.remaining} more referrals needed`}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center">
-                        {milestone.completed ? (
-                          <CheckCircle className="h-6 w-6 text-green-400" />
-                        ) : (
-                          <div className="w-16 h-2 bg-gray-600 rounded-full overflow-hidden">
-                            <motion.div
-                              className="h-full bg-gradient-to-r from-yellow-400 to-orange-400"
-                              initial={{ width: 0 }}
-                              animate={{ width: `${milestone.progress}%` }}
-                              transition={{ duration: 1, delay: index * 0.2 }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Referral Link */}
-              <div className="bg-gray-800/50 rounded-xl p-6 mb-6">
-                <h3 className="text-lg font-bold mb-4 flex items-center justify-center">
-                  <Share2 className="h-5 w-5 mr-2" />
-                  Your Referral Link
-                </h3>
-                <div className="flex flex-col sm:flex-row gap-2 mb-4">
-                  <Input
-                    value={referralLink}
-                    readOnly
-                    className="bg-gray-700 text-white border-gray-600 w-full"
-                  />
-                  <Button
-                    onClick={handleCopyLink}
-                    variant="outline"
-                    className="border-purple-400 text-white hover:bg-purple-500/20 w-full sm:w-auto"
+            {/* Ready to Apply Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.7 }}
+              className="mt-16 w-full"
+            >
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-white mb-4">Ready to Apply?</h2>
+                  <p className="text-lg text-gray-300 mb-6">
+                    Ready to apply? Tap below to open the secure portal and submit in under 2 minutes.
+                  </p>
+                  <Button 
+                    size="lg"
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-green-500/25 transition-all duration-300 hover:scale-105 hover:shadow-green-500/40 mb-8"
+                    onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
                   >
-                    <Copy className="h-4 w-4" />
+                    Apply Now
                   </Button>
                 </div>
-                <p className="text-gray-400 text-sm">
-                  Share this link with friends. When they sign up, you both get rewards! 🎁
-                </p>
-              </div>
-
-              {/* How it works */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <motion.div 
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <Share2 className="h-12 w-12 text-pink-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">Share Your Link</h3>
-                  <p className="text-gray-400 text-sm">Send your unique referral link to friends</p>
-                </motion.div>
-                <motion.div 
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <Heart className="h-12 w-12 text-red-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">Friend Signs Up</h3>
-                  <p className="text-gray-400 text-sm">They create an account using your link</p>
-                </motion.div>
-                <motion.div 
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">Earn Credits</h3>
-                  <p className="text-gray-400 text-sm">Get 3 credits instantly + milestone rewards!</p>
-                </motion.div>
-              </div>
-              
-              <div className="space-y-3">
-                <Button 
-                  size="lg" 
-                  className="viral-button font-bold w-full md:w-auto"
-                  onClick={() => navigate('/chat-input')}
-                >
-                  Get Your Receipt Now
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-purple-400 text-white hover:bg-purple-500/20 font-bold w-full md:w-auto"
-                  onClick={() => navigate('/dashboard')}
-                >
-                  Go to Dashboard
-                </Button>
+                
+                <div className="bg-gray-800/30 rounded-2xl p-8">
+                  <h3 className="text-xl font-bold text-white mb-6 text-center">Program Requirements</h3>
+                  <div className="max-w-2xl mx-auto">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-sm">✓</span>
+                        </div>
+                        <span className="text-gray-300 text-center">Active social presence or a strong friend-network</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-sm">✓</span>
+                        </div>
+                        <span className="text-gray-300 text-center">Content aligns with respect, privacy, and honesty</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-sm">✓</span>
+                        </div>
+                        <span className="text-gray-300 text-center">You must be over 18 years old</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center mt-6">
+                    <p className="text-lg text-purple-300 font-medium">
+                      Creator or connector, you are welcome. If your voice moves conversations, you've got this!
+                    </p>
+                  </div>
+                </div>
               </div>
             </motion.div>
+
           </>
         )}
       </main>

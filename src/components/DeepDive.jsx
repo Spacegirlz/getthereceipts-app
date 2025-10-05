@@ -1,10 +1,11 @@
 import React, { useState, useRef, memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight, Info } from 'lucide-react';
+import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight, Info, Crown } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
+import BlurredSection from './BlurredSection';
 // import { voiceService } from '@/lib/voiceService';
 
 const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPremium = true }) => {
@@ -1039,8 +1040,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
             backdropFilter: 'blur(20px) saturate(200%)',
             WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-            border: '2px solid rgba(168, 85, 247, 0.4)',
-            boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15), 0 0 80px rgba(168, 85, 247, 0.05)'
+            border: '1px solid rgba(236, 72, 153, 0.6)',
+            boxShadow: '0 0 0 1px rgba(236, 72, 153, 0.25), 0 8px 32px rgba(236, 72, 153, 0.15), 0 0 60px rgba(236, 72, 153, 0.10)'
           }}>
           <div className="relative z-10">
 
@@ -1053,7 +1054,15 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               >
                 {/* SAGE HEADER - Exact Match to Truth Receipts */}
         <div className="text-center mb-1 relative z-50">
-          <div className="inline-flex items-center gap-2 bg-black/40 px-3 py-1 rounded-full border border-stone-400/20 mb-2 relative z-50">
+          {/* Centered lock badge above header for locked view (match Immunity) */}
+          {!isPremium && (
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-400/20 flex items-center justify-center border border-yellow-400/30">
+                <Lock className="w-10 h-10 text-yellow-400" />
+              </div>
+            </div>
+          )}
+          <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50">
             <img
               src={sageDarkCircle}
               alt="Sage's Playbook"
@@ -1071,6 +1080,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               SAGE'S PLAYBOOK
             </span>
           </div>
+          {/* Locked label removed per request */}
         </div>
                 
                 {/* Hot Takes Badge - Humor Protection */}
@@ -1522,7 +1532,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 animate={{ opacity: 1 }}
                 className="mb-8 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-2xl p-8 border border-[#D4AF37]/20 text-center"
               >
-                <Lock className="w-8 h-8 text-[#D4AF37] mx-auto mb-4" />
+                {/* Centered lock at top like Immunity */}
+                <div className="flex justify-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-400/20 flex items-center justify-center border border-yellow-400/30">
+                    <Lock className="w-8 h-8 text-yellow-400" />
+                  </div>
+                </div>
                 <h4 className="text-xl font-light text-stone-200/90 mb-2">Unlock Complete Analysis</h4>
                 <p className="text-stone-300/80 mb-6">Get the full dynamics, playbook, and Sage's wisdom</p>
                 <button
@@ -1531,6 +1546,38 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 >
                   Go Premium
                 </button>
+              </motion.div>
+            ) : null}
+
+            {showPaywall ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mb-8 bg-black/30 rounded-2xl p-8 border border-[#D4AF37]/30 text-center backdrop-blur-sm"
+                style={{
+                  boxShadow: '0 0 0 1px rgba(212, 175, 55, 0.18), 0 8px 32px rgba(212, 175, 55, 0.12), 0 0 40px rgba(212, 175, 55, 0.08)'
+                }}
+              >
+                <p className="text-white/80 text-lg mb-6">
+                  Unlock the complete immunity training to become bulletproof against this pattern
+                </p>
+                <div className="flex flex-col gap-4">
+                  <button
+                    onClick={() => window.location.href = '/pricing'}
+                    className="w-full px-8 py-4 text-black font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                      border: '1px solid rgba(212, 175, 55, 0.8)',
+                      boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
+                    }}
+                  >
+                    <Crown className="w-5 h-5" />
+                    Unlock Immunity Training
+                  </button>
+                  <p className="text-white/60 text-sm">
+                    Premium members get unlimited access to all immunity training modules
+                  </p>
+                </div>
               </motion.div>
             ) : null}
 
@@ -1613,6 +1660,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         )}
 
             {/* Strategic Recommendation */}
+        {/* Hide Sage's Seal section for locked and premium views per request */}
+        {false && (
         <motion.section 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1679,42 +1728,35 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           </div>
           </div>
         </motion.section>
+        )}
 
             {/* Actions - Premium Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-4 max-w-2xl mx-auto" data-share-hide="true">
-              <button
-                onClick={handleSaveClean}
-                className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Save Playbook
-              </button>
-              <button
-                onClick={() => {
-                  // Haptic feedback for mobile
-                  if (window.navigator.vibrate) {
-                    window.navigator.vibrate(10);
-                  }
-                  handleSharePlaybook();
-                }}
-                className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
-              >
-                <Share2 className="w-4 h-4" />
-                Share Playbook
-              </button>
-        </div>
+            {isPremium && (
+              <div className="flex flex-wrap items-center justify-center gap-4 max-w-2xl mx-auto" data-share-hide="true">
+                <button
+                  onClick={handleSaveClean}
+                  className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Save Playbook
+                </button>
+                <button
+                  onClick={() => {
+                    // Haptic feedback for mobile
+                    if (window.navigator.vibrate) {
+                      window.navigator.vibrate(10);
+                    }
+                    handleSharePlaybook();
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  <Share2 className="w-4 h-4" />
+                  Share Playbook
+                </button>
+              </div>
+            )}
         
-            {/* Footer - match Sage Receipt */}
-            <div className="text-center mt-8 mb-2">
-              <p className="text-xs text-stone-400/70 italic">
-                For entertainment purposes - Sage calls it like she sees it
-              </p>
-            </div>
-            <div className="text-center mt-2 mb-6">
-              <p className="text-xs text-stone-200/90/40 tracking-widest">
-                www.getthereceipts.com
-              </p>
-            </div>
+            {/* Footer hidden per request */}
           </div>
         </div>
       </motion.div>

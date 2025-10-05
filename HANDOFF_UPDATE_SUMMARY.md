@@ -1,3 +1,55 @@
+## Free Tier + Paywall/UI Deltas (Oct 5, 2025)
+
+This addendum documents the exact edits made today for the reworked free tier, blurred paywalls, lock treatments, and copy updates. Use this as the single source of truth to validate behavior across Playbook and Immunity.
+
+### What changed (high‑signal)
+- Free users (logged‑in): Unlimited receipts; premium content paywalled with previews.
+- Non‑login users: 1 free receipt per day (handled elsewhere; unchanged today).
+- Save/Share buttons are hidden for free users on both Playbook and Immunity.
+- Shared paywall visual language: centered circular gold lock badge, sticky CTA blocks, and pricing CTAs.
+- Visual width parity: Playbook and Immunity containers constrained to `max-w-2xl` inside the tab content; Immunity lock screen now uses the same container width.
+- Playbook outer container border/glow switched to magenta/pink; Immunity retains gold.
+- Playbook tab now displays a lock when user is not premium (same logic as Immunity tab).
+- Playbook header shows a centered circular lock badge above the title when locked.
+- Sage’s Seal section and footer lines are hidden in the locked Playbook view (maintains teaser, reduces clutter).
+- New full‑width gold gradient CTA added beneath Playbook’s “Unlock Complete Analysis,” promoting Immunity Training unlock.
+- Immunity lock screen: added thin gold border + glow; added full‑width “Unlock Immunity Training” button; removed “Continue with Sage’s Tea.”
+- Disclaimer copy updated across receipt footers (see Copy section below).
+
+### Files touched today
+- `src/components/DeepDive.jsx`
+  - Added centered circular lock badge above Playbook header (matches Immunity style)
+  - Marked Playbook tab as premium via `TabbedReceiptInterface` (lock on tab)
+  - Hid Save/Share buttons for free users; premium only
+  - Hid “SAGE’S SEAL / FINAL WISDOM” and footer lines in locked view
+  - Added Immunity CTA block under the Playbook paywall section
+  - Changed Playbook container border/glow to magenta/pink
+- `src/components/ImmunityTraining.jsx`
+  - Hid Save/Share buttons for free users; premium only
+  - Footer disclaimer updated
+- `src/components/TabbedReceiptInterface.jsx`
+  - Constrained Immunity lock screen to `max-w-2xl`
+  - Added thin gold border/glow on the lock screen card
+  - Playbook tab marked premium so free users see lock on tab
+  - Added headings‑only version of “See Both Sides” in lock preview
+  - Inserted Playbook‑style full‑width CTA block (headline + gold gradient button)
+- `src/pages/ReceiptsCardPage.jsx`, `src/components/ReceiptCardViral.jsx`
+  - Footer disclaimer copy updated
+
+### Copy (final, current)
+🔮 Look, we get it. Sage is really good at reading the room and serving up insights, but she’s not a licensed professional. For the love of all that’s holy, never take life‑changing advice from an opinionated AI, even if she’s kinda fire. For entertainment only. Intended for users 16+.
+
+### QA checklist (today’s deltas)
+- Playbook tab shows lock for non‑premium users
+- Playbook header shows centered circular gold lock badge (same size/spacing as Immunity)
+- Immunity lock screen constrained to `max-w-2xl` and has thin gold border/glow
+- “Unlock Immunity Training” button is full‑width; no “Continue with Sage’s Tea”
+- Playbook container uses pink/magenta thin border + glow
+- Save/Share buttons hidden for free users on Playbook and Immunity
+- “SAGE’S SEAL / FINAL WISDOM” hidden in locked Playbook; footer lines removed
+- Footer disclaimer text matches the Copy section above across components
+
+---
 ## Deep Dive UI + Save/Share Updates (Sept 30, 2025)
 
 This section documents the latest product/design changes and the exact implementation details so future devs can maintain parity across mobile/desktop and the export flows.
@@ -156,6 +208,37 @@ The handoff guide now contains everything needed for a successful weekend launch
 **The handoff guide is now comprehensive and launch-ready!** 🚀
 
 ---
+## 📌 Paywall/Preview Attempts - Oct 5, 2025 (Implementation Notes)
+
+Purpose: Rework free-tier experience so Playbook shows a real teaser from the actual receipt while premium content remains locked behind a blur/paywall.
+
+What was attempted (chronological):
+- Added a reusable `src/components/BlurredSection.jsx` to provide a frosted blur overlay, lock ribbon, and sticky CTA bar.
+- First pass showed a generic preview (icon + bullets). Result: Not acceptable because it wasn’t using actual Playbook content.
+- Switched to passing real content via a new `previewContent` prop so the teaser could display actual Playbook data (e.g., `next_48h`, `your_move`). This worked visually but preview placement was mid‑section, not the top the user wanted.
+- Passed `isPremium` down to `DeepDive` callers and ensured default `isPremium=false` to correctly blur for free users.
+- Attempted “selective blurring” inside `src/components/DeepDive.jsx` by wrapping only the premium sections with `BlurredSection` (Strategic Moves and Sage’s Seal). Outcome: functional, but teaser still not the exact portion desired.
+- Moved the blur boundary to begin at “Hide Additional Evidence” so the teaser shows the button + initial tactic cards. During this step, a few edits caused JSX structure issues (mismatched wrappers and a malformed map closure). These were reverted immediately via `git restore` to the last working version.
+
+Current safe baseline (post‑revert):
+- `DeepDive.jsx` is back to the last known good version (no syntax errors, no missing content).
+- `BlurredSection.jsx` exists and is stable; supports `previewContent` for future controlled teasers.
+
+Next recommended minimal change (to implement carefully, one edit at a time):
+- Wrap only the content starting at the “Hide Additional Evidence” button with a single `BlurredSection` and provide a small, real-content teaser via `previewContent` (e.g., first tactic lines). Do not modify any other parts of `DeepDive.jsx`.
+
+Files touched in this effort:
+- `src/components/DeepDive.jsx` (primary surface where blur boundary must sit)
+- `src/components/BlurredSection.jsx` (utility overlay component; added `previewContent` prop)
+
+Files only inspected/verified earlier in the broader paywall work (not changed in the last revert cycle):
+- `src/components/ImmunityTraining.jsx` (uses blur for Immunity previews)
+- `src/components/TabbedReceiptInterface.jsx` (ensures `isPremium` is passed to `DeepDive`)
+- `src/lib/services/creditsSystem.js` (free tier unlimited receipts logic already fixed previously)
+
+Notes / Cautions:
+- Keep changes strictly localized. Avoid replacing original Playbook content—only wrap with a blur when `!isPremium`.
+- After every edit, run locally and verify both free and premium views before proceeding.
 
 ## 🎯 **LATEST UPDATES: SAGE'S PLAYBOOK REBRAND & CLEAN SAVE OPTIMIZATION (January 2025)**
 

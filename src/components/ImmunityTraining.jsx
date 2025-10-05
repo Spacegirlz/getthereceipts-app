@@ -5,6 +5,7 @@ import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
+import BlurredSection from './BlurredSection';
 
 const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false, isPremium = false, originalMessage, context, analysisData }) => {
   const { toast } = useToast();
@@ -734,24 +735,26 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
     return '#FB923C'; // orange-400
   };
 
-  return (
-    <div className="relative w-full max-w-2xl mx-auto px-0 pb-6">
-      
-      {/* Main Immunity Card - Mobile-optimized with max-width constraints */}
-      <motion.div 
-        data-immunity-component
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
-        style={{
-          background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-          backdropFilter: 'blur(20px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-          border: '2px solid rgba(212, 175, 55, 0.4)',
-          boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
-        }}
-      >
+  // For free users, show blurred version
+  if (!isPremium && !isCrisisSituation) {
+    return (
+      <div className="relative w-full max-w-2xl mx-auto px-0 pb-6">
+        <BlurredSection surface="immunity" previewHeight="400px">
+          {/* Main Immunity Card - Mobile-optimized with max-width constraints */}
+          <motion.div 
+            data-immunity-component
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
+            style={{
+              background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+              backdropFilter: 'blur(20px) saturate(200%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+              border: '2px solid rgba(212, 175, 55, 0.4)',
+              boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
+            }}
+          >
         {/* Premium dot pattern background */}
         <div 
           className="absolute inset-0 opacity-[0.02] pointer-events-none"
@@ -1070,80 +1073,31 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </div>
         )}
 
-        {/* Premium Paywall - Show tease for free users */}
-        {!isPremium && !isCrisisSituation ? (
-          <div className="mb-8" data-share-hide="true">
-            {/* Premium Tease */}
-            <div className="bg-gradient-to-br from-amber-500/10 to-yellow-500/10 rounded-3xl p-6 sm:p-8 border border-amber-400/30 relative overflow-hidden backdrop-blur-sm shadow-lg">
-              {/* New Header Design - Matching Premium View */}
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-4">
-                  <img
-                    src={sageDarkCircle}
-                    alt="Sage"
-                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40"
-                    style={{ 
-                      filter: 'brightness(1.2) contrast(1.1)',
-                      boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
-                    }}
-                  />
-                  <span className="text-sm sm:text-lg font-bold tracking-widest"
-                    style={{
-                      color: '#14B8A6',
-                      textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
-                    }}>
-                    IMMUNITY TRAINING
-                  </span>
-                </div>
-                {/* Pattern Verified subline */}
-                <div className="mb-4">
-                  <h3
-                    className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
-                    style={{ color: getHeaderArchetypeColor(), textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
-                  >
-                    Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
-                  </h3>
-              </div>
-                <h3 className="text-2xl font-bold text-amber-300 mb-3">Unlock Your Defense Training</h3>
-                <p className="text-amber-200/90 text-lg leading-relaxed max-w-md mx-auto">
-                  Get your personalized immunity checkpoints, field test, and Sage's blessing for {userName}.
-                </p>
-              </div>
-              
-              {/* Premium Features Preview */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <div className="bg-amber-500/10 rounded-2xl p-4 border border-amber-400/20">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">🎯</span>
-                    <h4 className="text-amber-300 font-semibold">Training Checkpoints</h4>
-                  </div>
-                  <p className="text-amber-200/70 text-sm">3 specific "if this, then that" rules for your situation</p>
-                </div>
-                <div className="bg-amber-500/10 rounded-2xl p-4 border border-amber-400/20">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">🧪</span>
-                    <h4 className="text-amber-300 font-semibold">Field Test</h4>
-                  </div>
-                  <p className="text-amber-200/70 text-sm">One experiment to verify the pattern and test your immunity</p>
-                </div>
-              </div>
-              
-              {/* CTA Button */}
-              <div className="text-center">
-                <button
-                  onClick={() => window.location.href = '/pricing'}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-black font-bold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg text-lg"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  ⚡ Unlock Training
-                  <Crown className="w-5 h-5" />
-                </button>
-                <p className="text-amber-200/60 text-sm mt-3">Unlimited receipts • Full immunity training • Defense strategies</p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <>
+          </motion.div>
+        </BlurredSection>
+      </div>
+    );
+  }
+
+  // For premium users, show full content
+  return (
+    <div className="relative w-full max-w-2xl mx-auto px-0 pb-6">
+      
+      {/* Main Immunity Card - Mobile-optimized with max-width constraints */}
+      <motion.div 
+        data-immunity-component
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+        className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
+        style={{
+          background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+          backdropFilter: 'blur(20px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+          border: '2px solid rgba(212, 175, 55, 0.4)',
+          boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
+        }}
+      >
 
 
         {/* Sage's Blessing - Premium Sunset Treatment */}
@@ -1197,8 +1151,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             </div>
             
             {/* WATERMARK - moved below to render for all users */}
-          </>
-        )}
         {/* Global WATERMARK - visible for all users and included in save/share */}
             <div className="text-center mt-2 mb-6">
               <p className="text-xs text-stone-200/90/40 tracking-widest">
@@ -1208,73 +1160,75 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       </motion.div>
 
       {/* SEPARATE SAVE/SHARE BOX - Completely outside the immunity card */}
-      <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
-        <div 
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
-          style={{
-            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-            border: '2px solid rgba(20, 184, 166, 0.4)',
-            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
-          }}
-        >
-          <button 
-            onClick={handleSaveBadge}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+      {isPremium && (
+        <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
+          <div 
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
             style={{
-              border: '1px solid rgba(212, 175, 55, 0.6)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+              background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+              border: '2px solid rgba(20, 184, 166, 0.4)',
+              boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
             }}
           >
-            <LogOut className="h-4 w-4" />
-            Save Badge
-          </button>
+            <button 
+              onClick={handleSaveBadge}
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+              style={{
+                border: '1px solid rgba(212, 175, 55, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+              }}
+            >
+              <LogOut className="h-4 w-4" />
+              Save Badge
+            </button>
+            
+            <button 
+              onClick={handleSaveImmunity}
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+              style={{
+                border: '1px solid rgba(20, 184, 166, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+              }}
+            >
+              <Download className="h-4 w-4" />
+              Save Immunity
+            </button>
+            
+            <motion.button 
+              animate={{ 
+                scale: [1, 1.02, 1],
+                boxShadow: [
+                  '0 0 20px rgba(212, 175, 55, 0.3)',
+                  '0 0 30px rgba(212, 175, 55, 0.5)', 
+                  '0 0 20px rgba(212, 175, 55, 0.3)'
+                ]
+              }}
+              onClick={handleShareTrophy}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+              style={{
+                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                border: '1px solid rgba(212, 175, 55, 0.9)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+              }}
+            >
+              <Zap className="h-4 w-4" />
+              Share Trophy
+            </motion.button>
+          </div>
           
-          <button 
-            onClick={handleSaveImmunity}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-            style={{
-              border: '1px solid rgba(20, 184, 166, 0.6)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-            }}
-          >
-            <Download className="h-4 w-4" />
-            Save Immunity
-          </button>
-          
-          <motion.button 
-            animate={{ 
-              scale: [1, 1.02, 1],
-              boxShadow: [
-                '0 0 20px rgba(212, 175, 55, 0.3)',
-                '0 0 30px rgba(212, 175, 55, 0.5)', 
-                '0 0 20px rgba(212, 175, 55, 0.3)'
-              ]
-            }}
-            onClick={handleShareTrophy}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-            style={{
-              background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              border: '1px solid rgba(212, 175, 55, 0.9)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-            }}
-          >
-            <Zap className="h-4 w-4" />
-            Share Trophy
-          </motion.button>
+          {/* Sage's Disclaimer */}
+          <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
+            <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
+              🔮 Look, we get it. Sage is really good at reading the room and serving up insights, but she’s not a licensed professional. For the love of all that’s holy, never take life‑changing advice from an opinionated AI, even if she’s kinda fire. For entertainment only. Intended for users 16+.
+            </p>
+          </div>
         </div>
-        
-        {/* Sage's Disclaimer */}
-        <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
-          <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-            <span className="text-amber-300/80">🔮</span> Look, Sage is really good at reading the room and serving up insights, but she's not a licensed professional, and for the love of all that's holy, don't take life changing advice from an opinionated AI. For entertainment only. This service is intended for users 16+.
-          </p>
-        </div>
-      </div>
+      )}
 
     </div>
   );

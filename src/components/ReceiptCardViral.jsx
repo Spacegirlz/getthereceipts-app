@@ -472,8 +472,8 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           
           {/* DISCLAIMER */}
           <div className="text-center mt-4 mb-4">
-            <p className="text-xs text-stone-400/70 italic">
-              For entertainment purposes - Sage calls it like she sees it
+            <p className="text-xs text-stone-400/70">
+              🔮 Look, we get it. Sage is really good at reading the room and serving up insights, but she’s not a licensed professional. For the love of all that’s holy, never take life‑changing advice from an opinionated AI, even if she’s kinda fire. For entertainment only. Intended for users 16+.
             </p>
           </div>
           
