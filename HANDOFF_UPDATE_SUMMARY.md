@@ -50,6 +50,25 @@ This addendum documents the exact edits made today for the reworked free tier, b
 - Footer disclaimer text matches the Copy section above across components
 
 ---
+
+## Deployment note (Vercel runtime error fix)
+
+Symptom
+- Build failed with: “Function Runtimes must have a valid version, for example `now-php@1.0.0`.”
+
+Cause
+- `vercel.json` included a `functions` runtime block with an explicit Node runtime path/version that Vercel rejected for this project layout.
+
+Fix (applied)
+- Removed the custom `functions` block from `vercel.json` so Vercel uses its default Node runtime for this Vite app.
+- Commit refs:
+  - 98024ae → set nodejs20.x (intermediate)
+  - 35860b0 → set nodejs22.x (still failed)
+  - 44252ea → remove `functions` block entirely (successful build)
+
+Actionable guidance
+- For static/Vite frontends with minimal serverless needs, prefer omitting the `functions` runtime block unless you have API routes that require a specific runtime.
+
 ## Deep Dive UI + Save/Share Updates (Sept 30, 2025)
 
 This section documents the latest product/design changes and the exact implementation details so future devs can maintain parity across mobile/desktop and the export flows.

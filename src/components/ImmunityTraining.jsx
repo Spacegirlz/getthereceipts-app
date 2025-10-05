@@ -1098,6 +1098,230 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
         }}
       >
+        {/* Premium dot pattern background */}
+        <div 
+          className="absolute inset-0 opacity-[0.02] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+            backgroundSize: '20px 20px'
+          }}
+        />
+
+        {/* Immunity Training Header - Matches Receipt pill header */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-8"
+        >
+          <div className="text-center mb-1 relative z-50">
+            <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
+              <img
+                src={sageDarkCircle}
+                alt="Sage"
+                className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
+                style={{ 
+                  filter: 'brightness(1.2) contrast(1.1)',
+                  boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
+                }}
+              />
+              <span className="text-sm sm:text-lg font-bold tracking-widest relative z-50"
+                style={{
+                  color: '#14B8A6',
+                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                }}>
+                IMMUNITY TRAINING
+              </span>
+            </div>
+            {/* Pattern Verified subline */}
+            <div className="mt-2 mb-6" data-pattern-verified-section>
+              <h3
+                className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
+                style={{ color: getHeaderArchetypeColor(), textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+              >
+                Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
+              </h3>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Pattern DNA Formula - Central Visual */}
+        {patternDNA && (
+          <div className="mb-8" data-pattern-dna-section>
+            <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm">
+              <div className="px-4 py-3 border-b border-transparent">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🧬</span>
+                  <h4 className="font-bold text-sm tracking-wide uppercase" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
+                </div>
+              </div>
+              <div className="p-6 text-center">
+                <div className="text-lg sm:text-xl font-medium text-stone-200/90 leading-relaxed"
+                  style={{ 
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+                    lineHeight: '1.6'
+                  }}>
+                  {patternDNA}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* The Cycle */}
+        {patternLoop.length > 0 && (
+          <div className="mb-8" data-cycle-section>
+            <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
+              style={{
+                border: '1px solid rgba(20, 184, 166, 0.35)',
+                boxShadow: '0 0 0 1px rgba(20, 184, 166, 0.25), 0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
+                backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
+              }}>
+              <div className="px-4 py-3 border-b border-transparent">
+                <div className="flex items-center justify-start gap-2">
+                  <span className="text-lg">🔄</span>
+                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                    The Cycle
+                  </h4>
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="hidden sm:block" data-cycle-desktop>
+                  <div className="relative flex items-center justify-center">
+                    <div className="flex items-center justify-center gap-3">
+                      {patternLoop.slice(0, 4).map((step, index) => (
+                        <React.Fragment key={step}>
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.1 + index * 0.1 }}
+                            className="bg-cyan-900/30 text-cyan-300 px-3 py-2 rounded-xl text-sm font-medium text-center border border-cyan-500/20 hover:scale-105 hover:bg-cyan-800/40 transition-all duration-300 cursor-default min-w-[100px]"
+                            style={{ boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)' }}
+                          >
+                            {step}
+                          </motion.div>
+                          {index < patternLoop.length - 1 && (
+                            <span className="text-lg flex-shrink-0 z-10 relative" style={{ color: '#FF6B6B', textShadow: '0 0 8px rgba(255, 107, 107, 0.4)', opacity: 1 }}>
+                              →
+                            </span>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Immunity Test */}
+        {immunityTest && (
+          <div className="mb-8" data-share-hide="true">
+            <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg">
+              <div className="px-4 py-3 border-b border-white/10">
+                <div className="flex items-center justify-start gap-2">
+                  <span className="text-lg">🧪</span>
+                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                    Immunity Test
+                  </h4>
+                </div>
+              </div>
+              <div className="p-6">
+                <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed text-center font-medium" 
+                  style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)', lineHeight: '1.6' }}>
+                  {immunityTest}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* See Both Sides */}
+        <div className="mb-8" data-see-both-sides-section>
+          <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm shadow-lg">
+            <div className="px-4 py-3 border-b border-transparent">
+              <div className="flex items-center justify-start gap-2">
+                <span className="text-lg">⚖️</span>
+                <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>See Both Sides</h4>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-600/20">
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-emerald-500/5 to-green-500/5">
+                <ul className="space-y-3">
+                  {Array.isArray(greenFlags) && greenFlags.length > 0 ? greenFlags.slice(0, 3).map((sign, index) => (
+                    <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-green-flag={index >= 2 ? "true" : undefined}>
+                      <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
+                      <span className="text-emerald-200 text-sm leading-relaxed">{sign}</span>
+                    </li>
+                  )) : (
+                    <li className="flex items-start gap-3">
+                      <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
+                      <span className="text-emerald-200 text-sm leading-relaxed">No healthy signs detected</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-rose-500/5 to-pink-500/5">
+                <ul className="space-y-3">
+                  {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? thisMessFlags.slice(0, 3).map((sign, index) => (
+                    <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-red-flag={index >= 2 ? "true" : undefined}>
+                      <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
+                      <span className="text-rose-200 text-sm leading-relaxed">{sign}</span>
+                    </li>
+                  )) : (
+                    <li className="flex items-start gap-3">
+                      <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
+                      <span className="text-rose-200 text-sm leading-relaxed">No red flags detected</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Your Training */}
+        {immunityTraining.length > 0 && (
+          <div className="mb-8" data-training-section>
+            <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
+              style={{
+                border: 'none',
+                boxShadow: '0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
+                backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
+              }}>
+              <div className="px-4 py-3 border-b border-transparent">
+                <div className="flex items-center justify-start gap-2">
+                  <span className="text-lg">🎯</span>
+                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                    Your Training
+                  </h4>
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="space-y-3">
+                  {immunityTraining.map((checkpoint, index) => (
+                    <motion.div
+                      key={index}
+                      data-training-item={index > 0 ? "true" : undefined}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 + index * 0.1 }}
+                      className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-transparent hover:bg-white/10 transition-all duration-300"
+                    >
+                      <div className="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-transparent">
+                        <span className="text-teal-300 text-sm font-bold">✓</span>
+                      </div>
+                      <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed font-medium">
+                        {checkpoint}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
 
         {/* Sage's Blessing - Premium Sunset Treatment */}
@@ -1170,18 +1394,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
             }}
           >
-            <button 
-              onClick={handleSaveBadge}
-              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-              style={{
-                border: '1px solid rgba(212, 175, 55, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <LogOut className="h-4 w-4" />
-              Save Badge
-            </button>
-            
+          
             <button 
               onClick={handleSaveImmunity}
               className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"

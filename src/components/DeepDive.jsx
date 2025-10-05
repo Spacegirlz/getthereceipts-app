@@ -1040,8 +1040,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
             backdropFilter: 'blur(20px) saturate(200%)',
             WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-            border: '1px solid rgba(236, 72, 153, 0.6)',
-            boxShadow: '0 0 0 1px rgba(236, 72, 153, 0.25), 0 8px 32px rgba(236, 72, 153, 0.15), 0 0 60px rgba(236, 72, 153, 0.10)'
+            border: '1px solid rgba(168, 85, 247, 0.65)',
+            boxShadow: '0 0 0 1px rgba(168, 85, 247, 0.30), 0 8px 32px rgba(168, 85, 247, 0.18), 0 0 60px rgba(168, 85, 247, 0.10)'
           }}>
           <div className="relative z-10">
 
@@ -1660,8 +1660,8 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         )}
 
             {/* Strategic Recommendation */}
-        {/* Hide Sage's Seal section for locked and premium views per request */}
-        {false && (
+        {/* Sage's Seal (Final Wisdom) - show for premium users only */}
+        {!showPaywall && (
         <motion.section 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1756,7 +1756,21 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               </div>
             )}
         
-            {/* Footer hidden per request */}
+            {/* Footer - visible for premium users only */}
+            {!showPaywall && (
+            <>
+            <div className="text-center mt-8 mb-2">
+              <p className="text-xs text-stone-400/70 italic">
+                For entertainment purposes - Sage calls it like she sees it
+              </p>
+            </div>
+            <div className="text-center mt-2 mb-6">
+              <p className="text-xs text-stone-200/90/40 tracking-widest">
+                www.getthereceipts.com
+              </p>
+            </div>
+            </>
+            )}
           </div>
         </div>
       </motion.div>
