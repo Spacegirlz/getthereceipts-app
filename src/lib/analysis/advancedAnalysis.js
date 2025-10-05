@@ -1,6 +1,11 @@
 // Advanced Psychology Analysis Engine - Get The Receipts
 // Integrating OpenAI GPT-4o-mini with sophisticated psychological profiling
 
+// Perf logging gate (enable with ?perf=1 or in DEV)
+const PERF_LOG = (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('perf') === '1') ||
+                 (typeof importMeta !== 'undefined' ? false : (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV));
+const safeLog = (...args) => { if (PERF_LOG) console.log(...args); };
+
 // Detect Sage mode based on user context and message content
 const detectSageMode = (message, context) => {
   const lowerMessage = message.toLowerCase();
@@ -209,7 +214,7 @@ const detectToxicityMode = (userText, otherText) => {
   const otherScore = scoreSpeaker(otherText);
   const margin = userScore.total - otherScore.total;
 
-  console.log('🔍 Toxicity Detection:', {
+  safeLog('🔍 Toxicity Detection:', {
     userScore: userScore.total,
     otherScore: otherScore.total,
     margin,
@@ -356,49 +361,59 @@ const detectContextMathematically = (message) => {
     'gathering': 15
   };
   
-  // Calculate scores for each context
-  Object.entries(workplaceKeywords).forEach(([keyword, weight]) => {
-    if (lowercased.includes(keyword)) {
-      contextScores.workplace += weight;
+  // Calculate scores for each context with early-exit threshold
+  const THRESHOLD = 60;
+  const addAndCheck = (ctxKey, weight) => {
+    contextScores[ctxKey] += weight;
+    if (contextScores[ctxKey] >= THRESHOLD) {
+      safeLog('⏩ Context early decision:', ctxKey, contextScores[ctxKey]);
+      return ctxKey; // early winner
     }
-  });
-  
-  Object.entries(datingKeywords).forEach(([keyword, weight]) => {
-    if (lowercased.includes(keyword)) {
-      contextScores.dating += weight;
+    return null;
+  };
+
+  let earlyWinner = null;
+  for (const [keyword, weight] of Object.entries(workplaceKeywords)) {
+    if (lowercased.includes(keyword)) { earlyWinner = addAndCheck('workplace', weight) || earlyWinner; if (earlyWinner) break; }
+  }
+  if (!earlyWinner) {
+    for (const [keyword, weight] of Object.entries(datingKeywords)) {
+      if (lowercased.includes(keyword)) { earlyWinner = addAndCheck('dating', weight) || earlyWinner; if (earlyWinner) break; }
     }
-  });
-  
-  Object.entries(familyKeywords).forEach(([keyword, weight]) => {
-    if (lowercased.includes(keyword)) {
-      contextScores.family += weight;
+  }
+  if (!earlyWinner) {
+    for (const [keyword, weight] of Object.entries(familyKeywords)) {
+      if (lowercased.includes(keyword)) { earlyWinner = addAndCheck('family', weight) || earlyWinner; if (earlyWinner) break; }
     }
-  });
-  
-  Object.entries(friendshipKeywords).forEach(([keyword, weight]) => {
-    if (lowercased.includes(keyword)) {
-      contextScores.friendship += weight;
+  }
+  if (!earlyWinner) {
+    for (const [keyword, weight] of Object.entries(friendshipKeywords)) {
+      if (lowercased.includes(keyword)) { earlyWinner = addAndCheck('friendship', weight) || earlyWinner; if (earlyWinner) break; }
     }
-  });
-  
-  Object.entries(socialKeywords).forEach(([keyword, weight]) => {
-    if (lowercased.includes(keyword)) {
-      contextScores.social += weight;
+  }
+  if (!earlyWinner) {
+    for (const [keyword, weight] of Object.entries(socialKeywords)) {
+      if (lowercased.includes(keyword)) { earlyWinner = addAndCheck('social', weight) || earlyWinner; if (earlyWinner) break; }
     }
-  });
+  }
+
+  if (earlyWinner) {
+    safeLog('🏁 Context decided early:', earlyWinner);
+    return earlyWinner;
+  }
   
   // Find the highest scoring context
   const maxScore = Math.max(...Object.values(contextScores));
   const detectedContext = Object.keys(contextScores).find(key => contextScores[key] === maxScore);
   
-  console.log('🧮 MATHEMATICAL CONTEXT DETECTION:');
-  console.log('📊 Context Scores:', contextScores);
-  console.log('🎯 Highest Score:', maxScore);
-  console.log('🏆 Detected Context:', detectedContext);
+  safeLog('🧮 MATHEMATICAL CONTEXT DETECTION:');
+  safeLog('📊 Context Scores:', contextScores);
+  safeLog('🎯 Highest Score:', maxScore);
+  safeLog('🏆 Detected Context:', detectedContext);
   
   // Confidence threshold - if no clear winner, default to dating
   if (maxScore < 20) {
-    console.log('⚠️ Low confidence, defaulting to dating context');
+    safeLog('⚠️ Low confidence, defaulting to dating context');
     return 'dating';
   }
   
@@ -499,31 +514,39 @@ const parseConversationSides = (message, context) => {
   const lines = message.split('\n');
   const userName = context?.userName || context?.user_name || 'user';
   
-  console.log('🔍 Parsing conversation for mode detection:', { userName, totalLines: lines.length });
+  safeLog('🔍 Parsing conversation for mode detection:', { userName, totalLines: lines.length });
   
-  lines.forEach(line => {
+  let processed = 0;
+  for (const line of lines) {
+    if (processed >= 200) {
+      safeLog('⏩ parseConversationSides: early stop at 200 lines');
+      break;
+    }
     // Enhanced parsing to handle multiple formats
     const trimmedLine = line.trim();
-    if (!trimmedLine) return;
+    if (!trimmedLine) continue;
 
     // Format 1: "Alex (10:41 PM): text" - with timestamp
     if (line.includes(`${userName} (`)) {
       const text = line.substring(line.indexOf('):') + 2);
       userText += ' ' + text;
-      console.log(`  ✅ ${userName} line (with timestamp):`, text.slice(0, 50));
+      safeLog(`  ✅ ${userName} line (with timestamp):`, text.slice(0, 50));
+      processed++;
     }
     // Format 2: "Alex: text" - simple format (NEW)
     else if (line.startsWith(`${userName}:`)) {
       const text = line.substring(line.indexOf(':') + 1).trim();
       userText += ' ' + text;
-      console.log(`  ✅ ${userName} line (simple format):`, text.slice(0, 50));
+      safeLog(`  ✅ ${userName} line (simple format):`, text.slice(0, 50));
+      processed++;
     }
     // Format 3: Other party with timestamp "Mateo (10:42 PM): text"
     else if (line.includes('(') && line.includes('):') && !line.includes('—')) {
       const text = line.substring(line.indexOf('):') + 2);
       otherText += ' ' + text;
       const speaker = line.substring(0, line.indexOf(' ('));
-      console.log(`  ✅ ${speaker} line (with timestamp):`, text.slice(0, 50));
+      safeLog(`  ✅ ${speaker} line (with timestamp):`, text.slice(0, 50));
+      processed++;
     }
     // Format 4: Other party simple format "Name: text" (NEW)
     else if (line.includes(':') && !line.includes('(') && !line.includes('—')) {
@@ -534,13 +557,14 @@ const parseConversationSides = (message, context) => {
       // Only process if speaker is not the known user and looks like a valid name
       if (speaker !== userName && speaker.length > 0 && speaker.length < 20 && text.length > 0) {
         otherText += ' ' + text;
-        console.log(`  ✅ ${speaker} line (simple format):`, text.slice(0, 50));
+        safeLog(`  ✅ ${speaker} line (simple format):`, text.slice(0, 50));
+        processed++;
       }
     }
-  });
+  }
   
   const result = { userText: userText.trim(), otherText: otherText.trim() };
-  console.log('📝 Parsed result:', {
+  safeLog('📝 Parsed result:', {
     userTextLength: result.userText.length,
     otherTextLength: result.otherText.length,
     userPreview: result.userText.slice(0, 100),
@@ -909,27 +933,58 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
     // Import the working prompt - now fully dynamic
     const { brutalPrompt } = await import('../prompts/brutalPrompt');
 
-      // EXTRACT ACTUAL NAMES - SIMPLE AND FOOLPROOF
+      // EXTRACT ACTUAL NAMES - ROBUST FOR SCREENSHOTS/HEADERS
       const extractNamesFromConversation = (text, context) => {
-        const explicitUser = context?.user_name || context?.user_side || context?.userName;
-        if (explicitUser) {
-          console.log('✅ EXPLICIT USER PROVIDED:', explicitUser);
-          const lines = String(text || '').split('\n').filter(line => line.trim());
-          const allNames = new Set();
-          for (const line of lines) {
-            const match = line.match(/^([A-Za-z]+)\s*[\(:]/);
-            if (match) {
-              const name = match[1].trim();
-              if (name && name.length > 1 && name.length < 20) {
-                allNames.add(name);
-              }
-            }
-          }
-          const otherName = Array.from(allNames).find(name => name.toLowerCase() !== String(explicitUser).toLowerCase()) || 'they';
-          console.log('✅ FINAL NAME ASSIGNMENT:', { user: explicitUser, other: otherName, allNamesFound: Array.from(allNames) });
-          return { user: explicitUser, other: otherName };
+        const explicitUser = context?.selectedMainUser || context?.user_name || context?.user_side || context?.userName;
+        const explicitOther = context?.otherName || context?.other_name || context?.their_name;
+        const content = String(text || '');
+
+        // If both provided, trust them
+        if (explicitUser && explicitOther) {
+          safeLog('✅ Using explicit names from context');
+          return { user: String(explicitUser), other: String(explicitOther) };
         }
-        return { user: 'You', other: 'they' };
+
+        // Stopwords/timestamp tokens to ignore
+        const STOP = new Set(['mon','tue','tues','weds','wed','thu','thur','thurs','fri','sat','sun','monday','tuesday','wednesday','thursday','friday','saturday','sunday','am','pm','to','delivered','edited','reply']);
+        const MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','sept','oct','nov','dec'];
+        MONTHS.forEach(m => STOP.add(m));
+
+        const isBadToken = (tok) => {
+          const t = tok.toLowerCase();
+          if (!t || t.length < 2 || t.length > 20) return true;
+          if (/[0-9]/.test(t)) return true; // timestamps like 9:31AM
+          return STOP.has(t);
+        };
+
+        // Detect header like "To: Fiona Lee"
+        const toHeader = content.match(/\bTo:\s*([A-Za-z]+)(?:\s+([A-Za-z\-']+))?/i);
+        let headerOther = null;
+        if (toHeader) {
+          const cand = [toHeader[1], toHeader[2]].filter(Boolean).join(' ').trim();
+          if (cand && !isBadToken(cand.split(' ')[0])) headerOther = cand.split(' ')[0];
+        }
+
+        const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
+        const nameCandidates = new Set();
+        for (const line of lines) {
+          // patterns: "Name:", "Name (time):"
+          let m = line.match(/^([A-Za-z][A-Za-z\-']{1,19})\s*[:(]/);
+          if (m && !isBadToken(m[1])) {
+            nameCandidates.add(m[1]);
+            continue;
+          }
+          // lines like "Piet — ..." or "Fiona — ..."
+          m = line.match(/^([A-Za-z][A-Za-z\-']{1,19})\s*[—-]/);
+          if (m && !isBadToken(m[1])) nameCandidates.add(m[1]);
+        }
+
+        const allNames = Array.from(nameCandidates);
+        const finalUser = explicitUser || (allNames.length ? allNames[0] : 'You');
+        let finalOther = explicitOther || headerOther || (allNames.find(n => n.toLowerCase() !== String(finalUser).toLowerCase()) || 'they');
+
+        safeLog('✅ FINAL NAME ASSIGNMENT:', { user: finalUser, other: finalOther, allNamesFound: allNames });
+        return { user: finalUser, other: finalOther };
       };
       
       // BUILD CLEAN CONTEXT - SINGLE SOURCE OF TRUTH
@@ -1375,7 +1430,7 @@ export const generateAlignedResults = async (message, context) => {
   console.log('🔄 Starting 3-API analysis system...');
   
   // Smart content truncation for long inputs (5000+ characters)
-  const MAX_INPUT_LENGTH = 3000; // ~750 tokens, leaves room for response
+  const MAX_INPUT_LENGTH = 8000; // allow longer screenshot transcripts while keeping headroom
   let processedMessage = message;
   if (message.length > MAX_INPUT_LENGTH) {
     console.log(`📝 Input too long (${message.length} chars), truncating to ${MAX_INPUT_LENGTH} chars`);
@@ -1523,371 +1578,142 @@ export const generateAlignedResults = async (message, context) => {
   const api1Time = performance.now() - api1Start;
   console.log(`✅ Truth Receipt complete in ${(api1Time / 1000).toFixed(2)}s`);
 
-  // API Call 2: Deep Dive (Premium Analysis)
-  const api2Start = performance.now();
-  console.log('🔍 API Call 2: Deep Dive analysis...');
-  let alignedDeepDive = null;
-  
-  // Add timeout for Deep Dive to prevent excessive delays
-  const deepDiveTimeout = new Promise((_, reject) => 
-    setTimeout(() => reject(new Error('Deep Dive timeout after 15 seconds')), 15000)
-  );
-  
-  try {
-    const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
-    const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark)
-      .replace(/\{userName\}/g, cleanContext.userName || 'You')
-      .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
-
-    // Use backup system for Deep Dive - start with first available key
-    const apiKeys = [
-      import.meta.env.VITE_OPENAI_API_KEY,
-      import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
-      import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2
-    ].filter(key => key && key.trim());
-    
-    const currentKey = apiKeys[0]?.replace(/\s/g, ''); // Use first available key
-    const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
-    
-    // 🔍 TELEMETRY - Track what's actually happening
-    const cacheKey = `deepDiveV4:${shareShotAnalysis.archetype}:${encodeURIComponent(message.slice(0,100))}`;
-    console.info('🔍 DEEP DIVE TELEMETRY:', {
-      promptVersion: 'deepDiveV4',
-      usedPromptId: 'deepDivePrompt.js',
-      cacheKey,
-      provider,
-      archetype: shareShotAnalysis.archetype,
-      redFlags: shareShotAnalysis.redFlags,
-      messageLength: message.length,
-      systemPromptLength: deepDiveSystemPrompt.length
-    });
-    
-    console.log('🔧 Deep Dive using provider:', provider);
-    const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
-    const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
-
-    let rawContent = '';
-    if (provider === 'openai') {
-      const endpoint = 'https://api.openai.com/v1/chat/completions';
-      const body = {
-        model: openAIModel,
-        messages: [
-          { role: 'system', content: deepDiveSystemPrompt },
-          { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${processedMessage}` }
-        ],
-        temperature: 0.8,
-        max_completion_tokens: 1200,
-        response_format: { type: 'json_object' }
+  // API Call 2 and 3 in parallel: Deep Dive and Immunity Training
+  const runDeepDive = async () => {
+    const api2Start = performance.now();
+    console.log('🔍 API Call 2: Deep Dive analysis...');
+    let alignedDeepDive = null;
+    const deepDiveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Deep Dive timeout after 15 seconds')), 15000));
+    try {
+      const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
+      const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark)
+        .replace(/\{userName\}/g, cleanContext.userName || 'You')
+        .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
+      const apiKeys = [import.meta.env.VITE_OPENAI_API_KEY, import.meta.env.VITE_OPENAI_API_KEY_BACKUP1, import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2].filter(key => key && key.trim());
+      const currentKey = apiKeys[0]?.replace(/\s/g, '');
+      const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
+      const cacheKey = `deepDiveV4:${shareShotAnalysis.archetype}:${encodeURIComponent(message.slice(0,100))}`;
+      console.info('🔍 DEEP DIVE TELEMETRY:', { promptVersion: 'deepDiveV4', usedPromptId: 'deepDivePrompt.js', cacheKey, provider, archetype: shareShotAnalysis.archetype, redFlags: shareShotAnalysis.redFlags, messageLength: message.length, systemPromptLength: deepDiveSystemPrompt.length });
+      console.log('🔧 Deep Dive using provider:', provider);
+      const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
+      const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
+      let rawContent = '';
+      if (provider === 'openai') {
+        const endpoint = 'https://api.openai.com/v1/chat/completions';
+        const body = { model: openAIModel, messages: [ { role: 'system', content: deepDiveSystemPrompt }, { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${processedMessage}` } ], temperature: 0.8, max_completion_tokens: 1200, response_format: { type: 'json_object' } };
+        console.log('🔧 OpenAI Deep Dive request:', { endpoint, model: openAIModel });
+        const data = await Promise.race([ makeApiCallWithBackup(endpoint, body), deepDiveTimeout ]);
+        rawContent = data.choices?.[0]?.message?.content || '';
+        console.log('🔧 OpenAI Deep Dive response length:', rawContent.length);
+      } else {
+        const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const response = await fetch(geminiEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } }), signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await response.json();
+        rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      }
+      try { alignedDeepDive = JSON.parse(rawContent); } catch { const m = rawContent.match(/\{[\s\S]*\}/); if (m) alignedDeepDive = JSON.parse(m[0]); }
+      const bannedNgrams = ["analysis in progress","pattern continuation predicted","sage wisdom pending","detected]","pending]","escalation likely","measure anticipated","[placeholder","[template"];
+      const needsRegeneration = (text) => { const t = (text || '').toLowerCase(); return bannedNgrams.some(n => t.includes(n)); };
+      if (alignedDeepDive && Object.values(alignedDeepDive).some(v => needsRegeneration(String(v)))) {
+        console.warn('🚨 BANNED CONTENT DETECTED - Deep Dive contains template phrases');
+        if (alignedDeepDive.verdict?.act) {
+          alignedDeepDive.verdict.act = alignedDeepDive.verdict.act.replace(/\[[^\]]+\]/g, '').trim() || "Mixed Signal Territory";
+        }
+      }
+      const sanitizeDeepDive = (dd) => {
+        if (!dd) return null;
+        const BANNED_PATTERNS = /\[[^\]]+\]|analysis in progress|pattern continuation predicted|sage wisdom pending|vague promise detected|detected\]|pending\]|escalation likely|measure anticipated/i;
+        let hasTemplateContent = false;
+        if (dd.verdict) { if (BANNED_PATTERNS.test(dd.verdict.act) || BANNED_PATTERNS.test(dd.verdict.subtext)) { hasTemplateContent = true; } }
+        if (dd.receipts && Array.isArray(dd.receipts)) { dd.receipts.forEach(r => { if (BANNED_PATTERNS.test(r.quote) || BANNED_PATTERNS.test(r.pattern) || BANNED_PATTERNS.test(r.cost)) { hasTemplateContent = true; } }); }
+        if (dd.physics) { if (BANNED_PATTERNS.test(dd.physics.you_bring) || BANNED_PATTERNS.test(dd.physics.they_exploit) || BANNED_PATTERNS.test(dd.physics.result)) { hasTemplateContent = true; } }
+        if (dd.playbook) { if (BANNED_PATTERNS.test(dd.playbook.next_48h) || BANNED_PATTERNS.test(dd.playbook.next_week) || BANNED_PATTERNS.test(dd.playbook.trump_card)) { hasTemplateContent = true; } }
+        if (BANNED_PATTERNS.test(dd.sages_seal)) { hasTemplateContent = true; }
+        if (hasTemplateContent) { console.warn('🚨 Template content detected in Deep Dive - rejecting response'); return null; }
+        return dd;
       };
-      console.log('🔧 OpenAI Deep Dive request:', { endpoint, model: openAIModel });
-      
-      // Race between API call and timeout
-      const data = await Promise.race([
-        makeApiCallWithBackup(endpoint, body),
-        deepDiveTimeout
-      ]);
-      
-      // Standard chat completions format
-      rawContent = data.choices?.[0]?.message?.content || '';
-      console.log('🔧 OpenAI Deep Dive response length:', rawContent.length);
-    } else {
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
-      // Add timeout to Deep Dive Gemini API call
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-      
-      const response = await fetch(geminiEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } }),
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      const data = await response.json();
-      rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      alignedDeepDive = sanitizeDeepDive(alignedDeepDive);
+      if (!alignedDeepDive) {
+        console.log('🔄 Deep Dive failed - creating fallback structure based on main analysis');
+        alignedDeepDive = { mode: "mirror", verdict: { act: shareShotAnalysis.archetype || "Communication Territory", subtext: `${shareShotAnalysis.redFlags || 0} red flags detected` }, receipts: [ { quote: "Pattern analysis in progress", pattern: "Communication Style", cost: "Clarity needed" } ], physics: { you_bring: "Genuine interest and questions", they_exploit: "Your patience and understanding", result: "Mixed signals and confusion" }, playbook: { next_48h: "Ask one direct question about intentions", next_week: "Notice if actions match their words", trump_card: "Calendar test - suggest specific plans" }, sages_seal: shareShotAnalysis.confidenceRemark === 'TOXIC AF' ? "Trust your gut. Red flags aren't confetti." : "Actions over words. Every single time.", red_flag_tags: shareShotAnalysis.redFlagTags || [], metrics: { wastingTime: shareShotAnalysis.wastingTime || 0, actuallyIntoYou: shareShotAnalysis.actuallyIntoYou || 0, redFlags: shareShotAnalysis.redFlags || 0 }, next_move_script: shareShotAnalysis.redFlags > 5 ? "Say: 'I need consistency, not confusion.'" : null };
+      }
+    } catch (e) {
+      if (e.message?.includes('timeout')) {
+        console.warn('⏰ Deep Dive timed out after 15 seconds - using fallback');
+      } else {
+        console.error('🚨 DEEP DIVE GENERATION FAILED:', e);
+        console.error('Error details:', e.message);
+      }
+      alignedDeepDive = { mode: "mirror", verdict: { act: shareShotAnalysis.archetype || "Communication Territory", subtext: "Analysis incomplete - try again" }, receipts: [ { quote: "API connection issue", pattern: "Technical Difficulty", cost: "Retry needed" } ], physics: { you_bring: "Patience during technical issues", they_exploit: "System limitations", result: "Temporary analysis unavailable" }, playbook: { next_48h: "Refresh and try analysis again", next_week: "Check connection and retry", trump_card: "Manual pattern recognition" }, sages_seal: "Technical hiccup. Your situation is still valid.", red_flag_tags: [], metrics: { wastingTime: 0, actuallyIntoYou: 0, redFlags: 0 }, next_move_script: null };
     }
-    try { alignedDeepDive = JSON.parse(rawContent); } catch { const m = rawContent.match(/\{[\s\S]*\}/); if (m) alignedDeepDive = JSON.parse(m[0]); }
-    
-    // 🛡️ BANNED N-GRAM FILTER - Check for template leakage (less aggressive)
-    const bannedNgrams = [
-      "analysis in progress",
-      "pattern continuation predicted", 
-      "sage wisdom pending",
-      "detected]",
-      "pending]",
-      "escalation likely",
-      "measure anticipated",
-      "[placeholder",
-      "[template"
-    ];
-    
-    const needsRegeneration = (text) => {
-      const t = (text || '').toLowerCase();
-      return bannedNgrams.some(n => t.includes(n));
-    };
-    
-    // Check all sections for banned content - but don't null out completely
-    if (alignedDeepDive && Object.values(alignedDeepDive).some(v => needsRegeneration(String(v)))) {
-      console.warn('🚨 BANNED CONTENT DETECTED - Deep Dive contains template phrases');
-      // Don't null out - instead clean the content
-      if (alignedDeepDive.verdict?.act) {
-        alignedDeepDive.verdict.act = alignedDeepDive.verdict.act.replace(/\[[^\]]+\]/g, '').trim() || "Mixed Signal Territory";
-      }
-    }
-    
-    // 🛡️ DEEP DIVE SANITIZATION - Check for template content
-    const sanitizeDeepDive = (dd) => {
-      if (!dd) return null;
-      
-      const BANNED_PATTERNS = /\[[^\]]+\]|analysis in progress|pattern continuation predicted|sage wisdom pending|vague promise detected|detected\]|pending\]|escalation likely|measure anticipated/i;
-      
-      // Check all text fields for banned patterns
-      let hasTemplateContent = false;
-      
-      // Check verdict
-      if (dd.verdict) {
-        if (BANNED_PATTERNS.test(dd.verdict.act) || BANNED_PATTERNS.test(dd.verdict.subtext)) {
-          hasTemplateContent = true;
-        }
-      }
-      
-      // Check receipts
-      if (dd.receipts && Array.isArray(dd.receipts)) {
-        dd.receipts.forEach(r => {
-          if (BANNED_PATTERNS.test(r.quote) || BANNED_PATTERNS.test(r.pattern) || BANNED_PATTERNS.test(r.cost)) {
-            hasTemplateContent = true;
-          }
-        });
-      }
-      
-      // Check physics
-      if (dd.physics) {
-        if (BANNED_PATTERNS.test(dd.physics.you_bring) || BANNED_PATTERNS.test(dd.physics.they_exploit) || BANNED_PATTERNS.test(dd.physics.result)) {
-          hasTemplateContent = true;
-        }
-      }
-      
-      // Check playbook
-      if (dd.playbook) {
-        if (BANNED_PATTERNS.test(dd.playbook.next_48h) || BANNED_PATTERNS.test(dd.playbook.next_week) || BANNED_PATTERNS.test(dd.playbook.trump_card)) {
-          hasTemplateContent = true;
-        }
-      }
-      
-      // Check sage's seal
-      if (BANNED_PATTERNS.test(dd.sages_seal)) {
-        hasTemplateContent = true;
-      }
-      
-      // If template content detected, return null
-      if (hasTemplateContent) {
-        console.warn('🚨 Template content detected in Deep Dive - rejecting response');
-        return null;
-      }
-      
-      return dd;
-    };
-    
-    alignedDeepDive = sanitizeDeepDive(alignedDeepDive);
-    
-    // If sanitization failed, provide a minimal valid structure
-    if (!alignedDeepDive) {
-      console.log('🔄 Deep Dive failed - creating fallback structure based on main analysis');
-      alignedDeepDive = {
-        mode: "mirror",
-        verdict: {
-          act: shareShotAnalysis.archetype || "Communication Territory",
-          subtext: `${shareShotAnalysis.redFlags || 0} red flags detected`
-        },
-        receipts: [
-          {
-            quote: "Pattern analysis in progress",
-            pattern: "Communication Style",
-            cost: "Clarity needed"
-          }
-        ],
-        physics: {
-          you_bring: "Genuine interest and questions",
-          they_exploit: "Your patience and understanding", 
-          result: "Mixed signals and confusion"
-        },
-        playbook: {
-          next_48h: "Ask one direct question about intentions",
-          next_week: "Notice if actions match their words",
-          trump_card: "Calendar test - suggest specific plans"
-        },
-        sages_seal: shareShotAnalysis.confidenceRemark === 'TOXIC AF' 
-          ? "Trust your gut. Red flags aren't confetti." 
-          : "Actions over words. Every single time.",
-        red_flag_tags: shareShotAnalysis.redFlagTags || [],
-        metrics: {
-          wastingTime: shareShotAnalysis.wastingTime || 0,
-          actuallyIntoYou: shareShotAnalysis.actuallyIntoYou || 0,
-          redFlags: shareShotAnalysis.redFlags || 0
-        },
-        next_move_script: shareShotAnalysis.redFlags > 5 
-          ? "Say: 'I need consistency, not confusion.'" 
-          : null
-      };
-    }
-    
-  } catch (e) {
-    if (e.message.includes('timeout')) {
-      console.warn('⏰ Deep Dive timed out after 15 seconds - using fallback');
-    } else {
-      console.error('🚨 DEEP DIVE GENERATION FAILED:', e);
-      console.error('Error details:', e.message);
-    }
-    
-    // Provide fallback structure even when API fails
-    alignedDeepDive = {
-      mode: "mirror",
-      verdict: {
-        act: shareShotAnalysis.archetype || "Communication Territory", 
-        subtext: "Analysis incomplete - try again"
-      },
-      receipts: [
-        {
-          quote: "API connection issue",
-          pattern: "Technical Difficulty", 
-          cost: "Retry needed"
-        }
-      ],
-      physics: {
-        you_bring: "Patience during technical issues",
-        they_exploit: "System limitations",
-        result: "Temporary analysis unavailable"
-      },
-      playbook: {
-        next_48h: "Refresh and try analysis again",
-        next_week: "Check connection and retry",
-        trump_card: "Manual pattern recognition"
-      },
-      sages_seal: "Technical hiccup. Your situation is still valid.",
-      red_flag_tags: [],
-      metrics: {
-        wastingTime: 0,
-        actuallyIntoYou: 0, 
-        redFlags: 0
-      },
-      next_move_script: null
-    };
-  }
-  
-  const api2Time = performance.now() - api2Start;
-  console.log(`✅ Deep Dive complete in ${(api2Time / 1000).toFixed(2)}s`);
-  
-  // API Call 3: Immunity Training (Premium Protection)
-  const api3Start = performance.now();
-  console.log('🛡️ API Call 3: Immunity Training...');
-  let immunityTraining = null;
-  try {
-    const { immunityPrompt } = await import('../prompts/immunityPrompt');
-    const immunitySystemPrompt = immunityPrompt
-      .replace(/\{archetype\}/g, shareShotAnalysis.archetype)
-      .replace(/\{message\}/g, message)
-      .replace(/\{redFlags\}/g, String(shareShotAnalysis.redFlags))
-      .replace(/\{confidenceRemark\}/g, shareShotAnalysis.confidenceRemark)
-      .replace(/\{userName\}/g, cleanContext.userName || 'You')
-      .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
-    
-    // Use backup system for Immunity Training - start with first available key
-    const apiKeys = [
-      import.meta.env.VITE_OPENAI_API_KEY,
-      import.meta.env.VITE_OPENAI_API_KEY_BACKUP1,
-      import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2
-    ].filter(key => key && key.trim());
-    
-    const currentKey = apiKeys[0]?.replace(/\s/g, ''); // Use first available key
-    const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
-    const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
-    const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
+    const api2Time = performance.now() - api2Start;
+    console.log(`✅ Deep Dive complete in ${(api2Time / 1000).toFixed(2)}s`);
+    return alignedDeepDive;
+  };
 
-    let rawContent = '';
-    if (provider === 'openai') {
-      const endpoint = 'https://api.openai.com/v1/chat/completions';
-      const body = {
-        model: openAIModel,
-        messages: [
-          { role: 'system', content: immunitySystemPrompt },
-          { role: 'user', content: `TEXTS:\n${processedMessage}` }
-        ],
-        temperature: 0.7,
-        max_completion_tokens: 1000,
-        response_format: { type: 'json_object' }
+  const runImmunity = async () => {
+    const api3Start = performance.now();
+    console.log('🛡️ API Call 3: Immunity Training...');
+    let immunityTraining = null;
+    try {
+      const { immunityPrompt } = await import('../prompts/immunityPrompt');
+      const immunitySystemPrompt = immunityPrompt
+        .replace(/\{archetype\}/g, shareShotAnalysis.archetype)
+        .replace(/\{message\}/g, message)
+        .replace(/\{redFlags\}/g, String(shareShotAnalysis.redFlags))
+        .replace(/\{confidenceRemark\}/g, shareShotAnalysis.confidenceRemark)
+        .replace(/\{userName\}/g, cleanContext.userName || 'You')
+        .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
+      const apiKeys = [import.meta.env.VITE_OPENAI_API_KEY, import.meta.env.VITE_OPENAI_API_KEY_BACKUP1, import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2].filter(key => key && key.trim());
+      const currentKey = apiKeys[0]?.replace(/\s/g, '');
+      const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
+      const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
+      const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
+      let rawContent = '';
+      if (provider === 'openai') {
+        const endpoint = 'https://api.openai.com/v1/chat/completions';
+        const body = { model: openAIModel, messages: [ { role: 'system', content: immunitySystemPrompt }, { role: 'user', content: `TEXTS:\n${processedMessage}` } ], temperature: 0.7, max_completion_tokens: 1000, response_format: { type: 'json_object' } };
+        const data = await makeApiCallWithBackup(endpoint, body);
+        rawContent = data.choices?.[0]?.message?.content || '';
+        console.log('🛡️ Immunity Training response length:', rawContent.length);
+      } else {
+        const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const response = await fetch(geminiEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 1500 } }), signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await response.json();
+        rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      }
+      try { immunityTraining = JSON.parse(rawContent); } catch { const m = rawContent.match(/\{[\s\S]*\}/); if (m) immunityTraining = JSON.parse(m[0]); }
+      const sanitizeImmunity = (it) => {
+        if (!it) return null;
+        const BANNED_PATTERNS = /\[[^\]]+\]|analysis in progress|pattern continuation predicted|sage wisdom pending|generic advice/i;
+        ['redFlagDrills', 'patternBreakers', 'immunityShield', 'earlyWarnings', 'exitStrategy'].forEach(k => { if (!it[k] || BANNED_PATTERNS.test(it[k])) it[k] = null; });
+        if (!it.redFlagDrills) it.redFlagDrills = "Bestie, watch for these moves - they're classic manipulation tactics designed to keep you guessing.";
+        if (!it.patternBreakers) it.patternBreakers = "When you catch them pulling this, call it out directly. No more tiptoeing around their feelings.";
+        if (!it.immunityShield) it.immunityShield = "Remember: confusion isn't chemistry. Clarity is your superpower.";
+        if (!it.earlyWarnings) it.earlyWarnings = "Trust your gut when something feels off. That instinct is your best protection.";
+        if (!it.exitStrategy) it.exitStrategy = "Your peace is premium. Protect it first, explain yourself never.";
+        return it;
       };
-      
-      const data = await makeApiCallWithBackup(endpoint, body);
-      
-      // Standard chat completions format
-      rawContent = data.choices?.[0]?.message?.content || '';
-      console.log('🛡️ Immunity Training response length:', rawContent.length);
-    } else {
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
-      // Add timeout to Immunity Training Gemini API call
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-      
-      const response = await fetch(geminiEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          contents: [{ role: 'user', parts: [{ text: immunitySystemPrompt + `\n\nTEXTS:\n${message}` }] }], 
-          generationConfig: { temperature: 0.8, maxOutputTokens: 1500 } 
-        }),
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      const data = await response.json();
-      rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      immunityTraining = sanitizeImmunity(immunityTraining);
+      const api3Time = performance.now() - api3Start;
+      console.log(`✅ Immunity Training complete in ${(api3Time / 1000).toFixed(2)}s`);
+      return immunityTraining;
+    } catch (e) {
+      console.error('🚨 IMMUNITY TRAINING GENERATION FAILED:', e);
+      console.log('⚠️ Immunity Training failed, using fallback');
+      return { redFlagDrills: "Watch for the patterns you saw today", patternBreakers: "When they do this again, you'll know", immunityShield: "Your standards are your protection", earlyWarnings: "Trust your gut from the start", exitStrategy: "You deserve consistency", riskLevel: shareShotAnalysis.redFlags <= 3 ? 'low' : shareShotAnalysis.redFlags <= 6 ? 'medium' : 'high', safetyNote: "Only you decide next steps. If you feel unsafe, limit contact and reach out to trusted support." };
     }
-    
-    try { 
-      immunityTraining = JSON.parse(rawContent); 
-    } catch { 
-      const m = rawContent.match(/\{[\s\S]*\}/); 
-      if (m) immunityTraining = JSON.parse(m[0]); 
-    }
-    
-    // 🛡️ IMMUNITY TRAINING SANITIZATION
-    const sanitizeImmunity = (it) => {
-      if (!it) return null;
-      
-      const BANNED_PATTERNS = /\[[^\]]+\]|analysis in progress|pattern continuation predicted|sage wisdom pending|generic advice/i;
-      
-      ['redFlagDrills', 'patternBreakers', 'immunityShield', 'earlyWarnings', 'exitStrategy'].forEach(k => {
-        if (!it[k] || BANNED_PATTERNS.test(it[k])) it[k] = null;
-      });
-      
-      // Provide clean fallbacks with Sage's voice
-      if (!it.redFlagDrills) it.redFlagDrills = "Bestie, watch for these moves - they're classic manipulation tactics designed to keep you guessing.";
-      if (!it.patternBreakers) it.patternBreakers = "When you catch them pulling this, call it out directly. No more tiptoeing around their feelings.";
-      if (!it.immunityShield) it.immunityShield = "Remember: confusion isn't chemistry. Clarity is your superpower.";
-      if (!it.earlyWarnings) it.earlyWarnings = "Trust your gut when something feels off. That instinct is your best protection.";
-      if (!it.exitStrategy) it.exitStrategy = "Your peace is premium. Protect it first, explain yourself never.";
-      
-      return it;
-    };
-    
-    immunityTraining = sanitizeImmunity(immunityTraining);
-    
-    const api3Time = performance.now() - api3Start;
-    console.log(`✅ Immunity Training complete in ${(api3Time / 1000).toFixed(2)}s`);
-  } catch (e) {
-    console.error('🚨 IMMUNITY TRAINING GENERATION FAILED:', e);
-    console.log('⚠️ Immunity Training failed, using fallback');
-    immunityTraining = {
-      redFlagDrills: "Watch for the patterns you saw today",
-      patternBreakers: "When they do this again, you'll know",
-      immunityShield: "Your standards are your protection",
-      earlyWarnings: "Trust your gut from the start",
-      exitStrategy: "You deserve consistency",
-      riskLevel: shareShotAnalysis.redFlags <= 3 ? 'low' : shareShotAnalysis.redFlags <= 6 ? 'medium' : 'high',
-      safetyNote: "Only you decide next steps. If you feel unsafe, limit contact and reach out to trusted support."
-    };
-  }
+  };
+
+  const [deepResult, immResult] = await Promise.allSettled([runDeepDive(), runImmunity()]);
+  const alignedDeepDive = deepResult.status === 'fulfilled' ? deepResult.value : null;
+  const immunityTraining = immResult.status === 'fulfilled' ? immResult.value : null;
   
   // Combine all results into final response
   const processingStart = performance.now();

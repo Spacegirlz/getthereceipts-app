@@ -11,12 +11,14 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
+import { usePerfTimer } from '@/hooks/usePerfTimer';
 
 const ChatInputPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
   const { openModal } = useAuthModal();
+  const perf = usePerfTimer();
   
   // State Management
   const [step, setStep] = useState(1);
@@ -209,6 +211,8 @@ const ChatInputPage = () => {
     setIsLoading(true);
     
     try {
+      perf.mark('total');
+      perf.mark('credit_check');
       // 🔐 CREDIT CHECK: Verify user can perform analysis
       const { AnonymousUserService } = await import('@/lib/services/anonymousUserService');
       const { getUserCredits, deductCredits } = await import('@/lib/services/creditsSystem');
@@ -279,7 +283,8 @@ const ChatInputPage = () => {
         return;
       }
       
-      console.log('✅ Credit check passed:', creditMessage);
+      const creditMs = perf.end('credit_check');
+      console.log('✅ Credit check passed:', creditMessage, `(${Math.round(creditMs)}ms)`);
       // Combine all text inputs
       const message = texts.trim() + '\n' + extractedTexts.join('\n');
       
@@ -342,14 +347,17 @@ const ChatInputPage = () => {
       console.log('🚀 Submitting analysis with full context:', analysisContext);
       
       // Import the actual analysis function
+      perf.mark('import_analysis');
       const { generateAlignedResults } = await import('@/lib/analysis/advancedAnalysis');
+      perf.end('import_analysis');
       
       // Call the real analysis API with all inputs
-      const analysisResult = await generateAlignedResults(message, analysisContext);
+      const analysisResult = await perf.measure('api_analysis', () => generateAlignedResults(message, analysisContext));
       
       console.log('✅ Analysis complete:', analysisResult);
       
       // 🔐 DEDUCT CREDITS: After successful analysis
+      perf.mark('deduct');
       if (user) {
         // Logged-in user: Deduct credit
         const deductResult = await deductCredits(user.id, 1);
@@ -362,8 +370,10 @@ const ChatInputPage = () => {
         // Anonymous user: Credit already deducted in atomic operation
         console.log('✅ Anonymous analysis count already updated in atomic operation');
       }
+      perf.end('deduct');
       
       // Navigate to results with real analysis data
+      perf.mark('navigate');
       navigate('/receipts', { 
         state: { 
           analysis: analysisResult,
@@ -371,6 +381,7 @@ const ChatInputPage = () => {
           context: analysisContext
         } 
       });
+      perf.end('navigate');
       
     } catch (error) {
       console.error('❌ Analysis failed:', error);
@@ -380,6 +391,8 @@ const ChatInputPage = () => {
         description: 'Please try again. If the problem persists, contact support.'
       });
     } finally {
+      perf.end('total');
+      perf.report('ChatInput');
       setIsLoading(false);
     }
   };
