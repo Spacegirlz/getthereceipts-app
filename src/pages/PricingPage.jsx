@@ -47,7 +47,7 @@ const SocialProofTicker = () => {
 const PricingPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isPremium } = useAuth();
+  const { user, isPremium, loading } = useAuth();
   const { openModal } = useAuthModal();
   const stripe = useStripe();
   const [loadingPriceId, setLoadingPriceId] = useState(null);
@@ -118,6 +118,7 @@ const PricingPage = () => {
   // }, []);
 
   const handleCheckout = async (priceId, tierName) => {
+    if (loading) return; // wait for auth to settle
     if (!user) {
       openModal('sign_up');
       toast({ 
@@ -568,38 +569,7 @@ const PricingPage = () => {
         }
       `}</style>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-8 py-6 bg-black/85 border-b border-white/10">
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center space-x-3"
-        >
-          <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
-            <span className="text-xl">🔮</span>
-          </div>
-          <a href="/" className="text-xl font-bold moving-gradient-text hover:opacity-80 transition-opacity">
-            Get The Receipts
-          </a>
-        </motion.div>
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex items-center space-x-6"
-        >
-          <a href="/pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
-          <a href="/refer" className="text-gray-300 hover:text-white transition-colors">Earn Rewards</a>
-          <a href="/about" className="text-gray-300 hover:text-white transition-colors">About</a>
-          <Button
-            onClick={() => openModal('sign_in')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-          >
-            → Sign In
-          </Button>
-        </motion.div>
-      </nav>
+      {/* Navigation removed in favor of global MainHeader */}
 
       <div className="max-w-6xl mx-auto pt-32">
         {/* Hero Section */}

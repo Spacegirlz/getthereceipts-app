@@ -553,6 +553,60 @@ const DashboardPage = () => {
         isOpen={isCouponModalOpen} 
         onClose={() => setIsCouponModalOpen(false)} 
       />
+      {/* Footer */}
+      <footer className="relative px-6 lg:px-8 py-16 border-t border-white/10">
+        <div className="mx-auto max-w-7xl">
+          {/* CTA */}
+          <div className="flex justify-center mb-10">
+            <a
+              href="/chat-input"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 text-white font-semibold shadow-lg hover:shadow-xl hover:from-violet-600 hover:to-blue-600 transition"
+            >
+              Start Getting Receipts 📄
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {/* Brand */}
+            <div>
+              <div className="text-2xl font-black gradient-text mb-3">Get The Receipts</div>
+              <p className="text-gray-400 max-w-md">
+                Stop second‑guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
+              </p>
+            </div>
+
+            {/* Product */}
+            <div>
+              <h4 className="font-semibold text-white mb-4">Product</h4>
+              <div className="space-y-2">
+                <a href="/about" className="block text-gray-400 hover:text-white transition-colors">About</a>
+                <a href="/pricing" className="block text-gray-400 hover:text-white transition-colors">Pricing</a>
+                <a href="/refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</a>
+              </div>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <div className="space-y-2">
+                <a href="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                <a href="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                <a href="/refund-policy" className="block text-gray-400 hover:text-white transition-colors">Refund Policy</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Fine print */}
+          <div className="border-t border-white/10 pt-6 text-center text-gray-400 space-y-2">
+            <div>© 2025 Get The Receipts. All rights reserved.</div>
+            <div>For Entertainment & Insight Purposes Only.</div>
+            <div>16+ · Not therapy, legal, or medical advice · Use at your own risk</div>
+            <div>
+              Support: <a href="mailto:support@getthereceipts.com" className="text-purple-300 hover:text-purple-200">support@getthereceipts.com</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </>
   );
 };
