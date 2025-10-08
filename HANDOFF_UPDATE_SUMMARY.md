@@ -1,3 +1,67 @@
+## Social Export System + Viral Sharing (Dec 2024)
+
+This section documents the complete social export system implementation with viral sharing capabilities, Save vs Share behavior, and mobile-optimized sharing.
+
+### What was implemented
+- **Complete social export system** for Truth Receipt, Playbook, and Immunity cards
+- **Save vs Share behavior**: Save buttons download directly, Share buttons open native share menu
+- **Viral share texts**: 9 rotating Gen Z texts with hashtags for maximum shareability
+- **Mobile sharing**: Web Share API with one-tap save to Photos
+- **Desktop fallback**: Clean download to Downloads folder
+- **Flag logic alignment**: Desktop's exact health calculation and flag selection logic
+- **Emoji-formatted flags**: Default flags with proper emojis matching AI format
+- **720x1280px social cards**: Optimized for mobile sharing with perfect dimensions
+
+### Files created/modified
+- `src/hooks/useSocialExport.js` (NEW)
+  - Core social export functionality with html2canvas + file-saver
+  - Web Share API integration for mobile
+  - 9 rotating viral share texts with Gen Z language
+  - Save vs Share behavior control via useShareAPI parameter
+- `src/components/exports/SocialCards.jsx` (NEW)
+  - Three social card components: SocialReceiptCard, SocialPlaybookCard, SocialImmunityCard
+  - Desktop's exact flag logic with proper health calculation
+  - Emoji-formatted default flags with fallbacks
+  - Optimized styling for 720x1280px mobile sharing
+- `src/pages/ReceiptsCardPage.jsx`
+  - Updated handleSaveReceipt() and handleScreenshot() to use new social export
+  - Added useSocialExport hook integration
+- `src/components/DeepDive.jsx`
+  - Updated handleSaveClean() and handleSharePlaybook() to use new social export
+  - Added useSocialExport hook integration
+- `src/components/ReceiptCardViral.jsx`
+  - Updated button labels: "Save to Files" → "Save Receipt", "Share & Save to Photos" → "Share Receipt"
+
+### Viral Share Texts (9 rotating options)
+1. "Sage AI just read my texts and I'm not okay 💀"
+2. "This AI called me out on my own messages and I'm deceased ☠️"
+3. "Sage just analyzed my texts and I need therapy now 🫠"
+4. "This AI read my messages and absolutely destroyed me 💀"
+5. "Sage just exposed my text game and I'm crying 😭"
+6. "Sage AI decoded my entire life in 30 seconds 💀"
+7. "Sage gets it 🔥"
+8. "I wasn't ready for this 💀"
+9. "Well damn 😭"
+
+Each with hashtags: `#getthereceipts #sageknows`
+
+### Technical Implementation
+- **Save buttons**: `captureById(elementId, filename, false)` - Direct download only
+- **Share buttons**: `captureById(elementId, filename, true)` - Native share menu with viral text
+- **Mobile detection**: Web Share API with file sharing support
+- **Fallback handling**: Graceful degradation to download if share fails
+- **Flag logic**: Desktop's `overallHealth = (actuallyIntoYou || 0) - (wastingTime || 0)` and `isHealthy = overallHealth >= 60 || (actuallyIntoYou || 0) >= 80`
+- **Default flags**: Emoji-formatted with proper fallbacks to prevent empty states
+
+### User Experience
+- **Mobile**: Tap Share → Native share menu → Choose "Save to Photos" or share to platform
+- **Desktop**: Click Share → Downloads to Downloads folder
+- **Save buttons**: Always download directly to Downloads folder
+- **Viral potential**: Authentic Gen Z language that encourages sharing
+- **Brand consistency**: Clean hashtags without spammy URLs
+
+---
+
 ## Free Tier + Paywall/UI Deltas (Oct 5, 2025)
 
 This addendum documents the exact edits made today for the reworked free tier, blurred paywalls, lock treatments, and copy updates. Use this as the single source of truth to validate behavior across Playbook and Immunity.
