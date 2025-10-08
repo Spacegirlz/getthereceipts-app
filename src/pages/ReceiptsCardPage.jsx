@@ -6,6 +6,8 @@ import { useToast } from '@/components/ui/use-toast';
 import ReceiptCardViral from '@/components/ReceiptCardViral';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
+import { SocialReceiptCard, SocialPlaybookCard, SocialImmunityCard } from '@/components/exports/SocialCards';
+import { useSocialExport } from '@/hooks/useSocialExport';
 import DetailedResults from '@/components/DetailedResults';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
@@ -31,6 +33,7 @@ import redFlag from '@/assets/red-flag.png'; // 7-10 red flags - Savage Sage
 
 
 const ReceiptsCardPage = () => {
+  const { captureById } = useSocialExport();
   // Inject moving gradient styles
   React.useEffect(() => {
     injectMovingGradientStyles();
@@ -105,68 +108,8 @@ const ReceiptsCardPage = () => {
   };
 
   const handleSaveReceipt = () => {
-    const startTime = performance.now();
-    console.log('🚀 Save process started at:', startTime);
-    
-    const element = document.getElementById('receipt-card-shareable');
-    if (!element) {
-      toast({ title: "Error", description: "Could not find receipt to save.", variant: "destructive" });
-      return;
-    }
-    
-    setIsSharing(true);
-    
-    // Add save-mode class for cleaner save
-    element.classList.add('save-mode');
-    
-    // Fix gradient elements before screenshot
-    const originalElements = fixGradientElements(element);
-    console.log(`Found ${originalElements.length} gradient elements in Receipt component`);
-    
-    // Wait for DOM to update
-    setTimeout(() => {
-      html2canvas(element, {
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: 'transparent',
-        scale: 1.5, // Reduced from 2 to 1.5 for faster processing
-        width: element.offsetWidth,
-        height: Math.max(element.offsetHeight, element.scrollHeight, element.clientHeight) + 30,
-        logging: false, // Disable logging for faster processing
-        removeContainer: true // Clean up faster
-      }).then(function(canvas) {
-        const canvasTime = performance.now();
-        console.log('⏱️ Canvas generated in:', (canvasTime - startTime).toFixed(2), 'ms');
-        
-        // Restore original elements
-        restoreOriginalElements(originalElements);
-
-        canvas.toBlob(function(blob) {
-          const blobTime = performance.now();
-          console.log('⏱️ Blob created in:', (blobTime - startTime).toFixed(2), 'ms');
-          // Check if we're on mobile and can use Web Share API for saving to photos
-          const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-          
-          // Always use traditional download for "Save to Files" button
-          const timestamp = Date.now();
-          saveAs(blob, `Sage's Truth Receipt #${timestamp}.png`);
-          toast({ title: "💾 Saved to Files!", description: "Your receipt has been downloaded to your Downloads folder." });
-          element.classList.remove('save-mode');
-          setIsSharing(false);
-        });
-      }).catch(function(error) {
-        // Restore on error too
-        restoreOriginalElements(originalElements);
-        
-        console.error('Error saving receipt:', error);
-        toast({ 
-          title: "Error", 
-          description: "Could not save receipt. Please try again.", 
-          variant: "destructive" 
-        });
-        setIsSharing(false);
-      });
-    }, 100);
+    // Use the new social export system for Truth Receipt - direct download only
+    captureById('social-receipt-card', "Sage-Receipt", false);
   };
 
   const handleFounderCheckout = async () => {
@@ -417,77 +360,32 @@ const ReceiptsCardPage = () => {
   // Deep Dive data (generated alongside receipt) - New 5-field structure
   const deep = analysis?.deepDive || {};
   const { patternExpose, theirGame, whyYoureStuck, yourPattern, finalRead } = deep;
+  const archetypeTitle = analysis?.archetype || '';
 
   const handleScreenshot = async () => {
-    setIsSharing(true);
-    const element = document.getElementById('receipt-card-shareable');
-    if (!element) {
-      toast({ title: "Error", description: "Could not find receipt card to screenshot.", variant: "destructive" });
-      setIsSharing(false);
-      return;
-    }
-    
-    // Fix gradient elements before screenshot
-    const originalElements = fixGradientElements(element);
-    
-    // Wait for DOM to update
-    setTimeout(() => {
-      html2canvas(element, {
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#11162B',
-        scale: 2
-      }).then(function(canvas) {
-        // Restore original elements
-        restoreOriginalElements(originalElements);
-        
-        canvas.toBlob(function(blob) {
-          const file = new File([blob], "Sage Truth Receipt.png", { type: "image/png" });
-          
-          // Check if we're on mobile and can use Web Share API
-          const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-          
-          if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
-            // Mobile: Use Web Share API for sharing and saving to photos
-            navigator.share({
-              files: [file]
-            }).then(() => {
-              toast({ title: "📱 Shared!", description: "You can save to Photos from the share menu." });
-            }).catch((shareError) => {
-              if (shareError.name !== 'AbortError') {
-                console.error('Share error:', shareError);
-                // Fallback to download
-                const timestamp = Date.now();
-                saveAs(blob, `Sage's Truth Receipt #${timestamp}.png`);
-                toast({ title: "Downloaded instead", description: "Receipt saved to Downloads folder." });
-              } else {
-                toast({ title: "Share cancelled", description: "No worries, try again when ready!" });
-              }
-            });
-          } else {
-            // Desktop: Use traditional download
-            const timestamp = Date.now();
-            saveAs(blob, `Sage's Truth Receipt #${timestamp}.png`);
-            toast({ title: "💾 Downloaded!", description: "Your receipt has been saved to Downloads. You can then save it to Photos manually." });
-          }
-          setIsSharing(false);
-        });
-      }).catch(function(error) {
-        // Restore on error too
-        restoreOriginalElements(originalElements);
-        console.error('Screenshot error:', error);
-        toast({ title: "Screenshot failed", description: "Please try again.", variant: "destructive" });
-        setIsSharing(false);
-      });
-    }, 100);
+    // Use the new social export system for Truth Receipt sharing - with share menu
+    captureById('social-receipt-card', "Sage-Receipt", true);
   };
+
+  // Social exports (720x1280) at scale 1.0
+  const handleExportReceipt = () => captureById('social-receipt-card', "Sage-Receipt");
+  const handleExportPlaybook = () => captureById('social-playbook-card', "Sage-Playbook");
+  const handleExportImmunity = () => captureById('social-immunity-card', "Sage-Immunity");
 
   // Extract archetype name (keep full for card), and a "clean" version without a leading 'The' for Immunity Training subtitle only
   const archetypeName = analysis?.archetype?.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').trim() || 'Breadcrumber';
   const archetypeNameForImmunity = archetypeName.replace(/^The\s+/i, '');
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-8 text-white overflow-y-auto" style={{minHeight: '200vh'}}>
+    <div className="min-h-screen flex flex-col items-center px-4 py-2 text-white overflow-y-auto">
+      {/* Hidden export cards - Positioned off-screen to avoid layout gap */}
+      {analysis && (
+        <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none" aria-hidden="true">
+          <SocialReceiptCard analysis={analysis} archetype={analysis.archetype} />
+          <SocialPlaybookCard deepDive={analysis.deepDive} archetype={analysis.archetype} analysis={analysis} />
+          <SocialImmunityCard immunityData={analysis.immunityTraining} archetype={archetypeNameForImmunity} analysis={analysis} />
+        </div>
+      )}
        <Helmet>
         <title>{helmetTitle}</title>
         <meta name="description" content={helmetDesc} />
@@ -552,8 +450,8 @@ const ReceiptsCardPage = () => {
         )}
 
         {/* Page Title */}
-        <div className="text-center mb-6 md:mb-8 py-6 md:py-8 px-2">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 md:mb-8 px-2 md:px-4 py-2 md:py-4 leading-relaxed">
+        <div className="text-center mb-3 md:mb-4 py-1 md:py-2 px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 px-2 md:px-3 py-0 md:py-1 leading-relaxed">
             <span style={{
               background: 'linear-gradient(90deg, #a58bfa 0%, #0a92aa 50%, #59a5fb 100%)',
               WebkitBackgroundClip: 'text',
@@ -598,6 +496,8 @@ const ReceiptsCardPage = () => {
               </ErrorBoundary>
             </motion.div>
 
+            {/* Hidden export cards are rendered at the top of the page tree */}
+
         {/* Mobile Navigation Block */}
         <div className="flex justify-center mt-8 mb-16 sm:hidden">
           <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-2 backdrop-blur-md border border-slate-600/40 shadow-lg">
@@ -622,43 +522,58 @@ const ReceiptsCardPage = () => {
         </div>
 
 
-        {/* 3. PREMIUM UPSELL SECTION - Receipt Style */}
+        {/* Social Export Buttons */}
+        <div className="w-full max-w-2xl mx-auto mt-8">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button onClick={handleExportReceipt} className="flex-1">Save Social: Receipt</Button>
+            <Button onClick={handleExportPlaybook} className="flex-1">Save Social: Playbook</Button>
+            <Button onClick={handleExportImmunity} className="flex-1">Save Social: Immunity</Button>
+          </div>
+        </div>
+
+        {/* 3. NEXT TAKE + PREMIUM CTA (redesigned) */}
         <div className="w-full max-w-2xl mx-auto mt-12 mb-16">
-          <div className="bg-white/2 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
-            {/* Header matching receipt style */}
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 bg-teal-900/40 px-4 py-2 rounded-2xl border border-teal-500/50 mb-4">
-                <span className="text-2xl">✨</span>
-                <span className="text-cyan-400 font-bold text-lg tracking-wide">Ready for Sage's Next Take?</span>
+          {/* Next Take - full width CTA directly below save/share */}
+          <div
+            className="rounded-2xl p-3 sm:p-4 mb-6 shadow-[0_0_30px_rgba(96,165,250,0.18)]"
+            style={{
+              background: 'linear-gradient(135deg, rgba(165,139,250,0.12) 0%, rgba(10,146,170,0.12) 50%, rgba(89,165,251,0.12) 100%)'
+            }}
+          >
+            <LinkButton
+              to="/luxe-chat-input"
+              className="w-full flex items-center justify-center gap-2 font-semibold px-6 py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] shadow-xl text-white"
+              style={{
+                background: 'linear-gradient(90deg, #a58bfa 0%, #0a92aa 50%, #59a5fb 100%)',
+                boxShadow: '0 8px 30px rgba(96,165,250,0.25)'
+              }}
+            >
+              <span className="text-lg">✨</span>
+              <span className="text-base">Decode Another Text</span>
+            </LinkButton>
+          </div>
+
+          {/* Premium Upsell - prominent founders copy */}
+          <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-purple-900/30 via-violet-900/20 to-slate-900/40 border border-violet-500/20 shadow-[0_0_30px_rgba(139,92,246,0.15)]">
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold text-xs tracking-wide">
+                LIMITED LAUNCH • OG FOUNDERS
               </div>
             </div>
-            
-            {/* Two centered buttons */}
-            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-              <LinkButton
-                to="/luxe-chat-input"
-                className="flex items-center justify-center gap-2 text-black font-medium w-full sm:w-auto px-6 py-3 sm:px-4 sm:py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg text-sm sm:text-base whitespace-nowrap"
-                style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                  border: '1px solid rgba(212, 175, 55, 0.8)',
-                  boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
-                }}
-              >
-                <span className="text-base sm:text-lg">✨</span>
-                <span className="text-sm sm:text-base">Decode Another</span>
-              </LinkButton>
+            <h3 className="text-center text-2xl sm:text-3xl font-extrabold mb-2" style={{color:'#FDE68A'}}>Get Unlimited Premium Receipts</h3>
+            <p className="text-center text-sm text-violet-200/80 mb-4">
+              Full Playbook + Immunity Training on every receipt. Price locked for life.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Button
                 onClick={handleFounderCheckout}
                 disabled={loadingCheckout}
-                className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium w-full sm:w-auto px-6 py-3 sm:px-4 sm:py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50 text-sm sm:text-base whitespace-nowrap"
-                style={{
-                  border: '1px solid rgba(20, 184, 166, 0.6)',
-                  boxShadow: '0 0 20px rgba(20, 184, 166, 0.2)'
-                }}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg disabled:opacity-50"
               >
-                <span className="text-base sm:text-lg">⚡</span>
-                <span className="text-sm sm:text-base">{loadingCheckout ? 'Redirecting...' : 'Go Premium'}</span>
+                <span className="text-lg">⚡</span>
+                <span>{loadingCheckout ? 'Redirecting…' : 'Go Premium – $29.99/yr'}</span>
               </Button>
+              <div className="text-xs text-violet-200/70">Founder price • Limited spots</div>
             </div>
           </div>
         </div>
@@ -671,14 +586,6 @@ const ReceiptsCardPage = () => {
         )}
       </motion.div>
       
-      {/* Sage Disclaimer */}
-      <div className="w-full max-w-2xl mx-auto px-6 py-8">
-        <div className="text-center">
-          <p className="text-xs text-gray-500 leading-relaxed">
-            🔮 Look, we get it. Sage is really good at reading the room and serving up insights, but she’s not a licensed professional. For the love of all that’s holy, never take life‑changing advice from an opinionated AI, even if she’s kinda fire. For entertainment only. Intended for users 16+.
-          </p>
-        </div>
-      </div>
       
       {/* Age Verification Modal - Removed */}
     </div>

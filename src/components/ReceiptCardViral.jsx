@@ -139,7 +139,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
       flagType = 'negative';
     }
     
-    const numFlags = Math.min(Math.max(flagCount, 2), 4); // Show 2-4 flags
+    const numFlags = Math.min(Math.max(flagCount, 2), 6); // Show 2-6 flags
     return { 
       flags: flagsToShow.slice(0, numFlags),
       type: flagType
@@ -170,19 +170,19 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
       // For healthy relationships - prioritize green flags
       finalFlags = results?.greenFlagChips?.filter(Boolean) || 
                    results?.redFlagChips?.filter(Boolean) ||
-                   defaultGreenFlags.slice(0, 4);
+                   defaultGreenFlags.slice(0, 6);
     } else {
       // For unhealthy relationships - use red flags
       finalFlags = results?.redFlagChips?.filter(Boolean) || 
                    results?.deepDive?.red_flag_tags?.filter(Boolean) ||
                    results?.redFlagTags?.filter(Boolean) ||
                    (results?.receipts || []).map(r => r.pattern).filter(Boolean) ||
-                   defaultRedFlags.slice(0, 4);
+                   defaultRedFlags.slice(0, 6);
     }
     
     // ABSOLUTE GUARANTEE: If somehow still empty, use defaults
     if (!finalFlags || finalFlags.length === 0) {
-      finalFlags = isHealthy ? defaultGreenFlags.slice(0, 3) : defaultRedFlags.slice(0, 3);
+      finalFlags = isHealthy ? defaultGreenFlags.slice(0, 6) : defaultRedFlags.slice(0, 6);
     }
     
     return finalFlags;
@@ -470,12 +470,6 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           </div>
           
-          {/* DISCLAIMER */}
-          <div className="text-center mt-4 mb-4">
-            <p className="text-xs text-stone-400/70">
-              🔮 Look, we get it. Sage is really good at reading the room and serving up insights, but she’s not a licensed professional. For the love of all that’s holy, never take life‑changing advice from an opinionated AI, even if she’s kinda fire. For entertainment only. Intended for users 16+.
-            </p>
-          </div>
           
           {/* WATERMARK - Final element in Sage's Receipt */}
           <div className="text-center mt-2 mb-6">
@@ -507,7 +501,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             }}
           >
             <Download className="h-4 w-4" />
-            {isSharing ? 'Saving...' : 'Save to Files'}
+            {isSharing ? 'Saving...' : 'Save Receipt'}
           </button>
           
           <motion.button 
@@ -534,7 +528,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             }}
           >
             <Share2 className="h-4 w-4" />
-            {isSharing ? 'Sharing...' : 'Share & Save to Photos'}
+            {isSharing ? 'Sharing...' : 'Share Receipt'}
           </motion.button>
         </div>
         

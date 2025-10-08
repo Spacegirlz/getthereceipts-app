@@ -68,6 +68,7 @@ const LuxeChatInputPage = () => {
         const lines = limitedText.split('\n');
         
         lines.forEach(line => {
+          const trimmedLine = line.trim();
           // More robust name detection pattern - handles various formats
           const patterns = [
             /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/,  // "Jess:", "Tom:"
@@ -76,7 +77,7 @@ const LuxeChatInputPage = () => {
           ];
           
           for (const pattern of patterns) {
-            const match = line.match(pattern);
+            const match = trimmedLine.match(pattern);
             if (match) {
               const name = match[1].trim();
               // Filter out common false positives

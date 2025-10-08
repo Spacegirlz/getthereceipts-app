@@ -1434,12 +1434,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             </motion.button>
           </div>
           
-          {/* Sage's Disclaimer */}
-          <div className="mt-4 sm:mt-6 text-center px-4 sm:px-0">
-            <p className="text-xs sm:text-sm text-stone-400/70 leading-relaxed max-w-sm sm:max-w-md mx-auto">
-              🔮 Look, we get it. Sage is really good at reading the room and serving up insights, but she’s not a licensed professional. For the love of all that’s holy, never take life‑changing advice from an opinionated AI, even if she’s kinda fire. For entertainment only. Intended for users 16+.
-            </p>
-          </div>
         </div>
       )}
 

@@ -149,7 +149,7 @@ CRITICAL: Generate ACTUAL analysis based on THIS conversation.
 EVIDENCE FIRST
 - Pull 2–4 verbatim quotes from chat_excerpt and label the tactic per quote.
 - Only use content from this chat/context. No placeholders.
-- When analyzing: Use USER and OTHER consistently
+- When analyzing: Use {userName} and {otherName} consistently; never output literal USER or OTHER as names
 
 METRICS
 - metrics.redFlags = receipts.length (integer ≥0).
@@ -158,8 +158,9 @@ METRICS
 
 TAGS
 - red_flag_tags = 3-5 specific behaviors from the actual conversation, 10-18 chars each
+- CRITICAL: Each tag MUST start with a relevant emoji followed by the behavior text
 - Extract from what they actually did/said, not generic categories
-- Examples: "Late response games", "Plans never happen", "Mixed signals", "Guilt trip tactics", "Hot-cold pattern"
+- Examples: "🌙 Late response games", "📅 Plans never happen", "🎭 Mixed signals", "🎯 Guilt trip tactics", "🌡️ Hot-cold pattern"
 - Make tags unique to their specific behavior pattern
 
 ONE-LINERS

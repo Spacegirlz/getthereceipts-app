@@ -647,176 +647,122 @@ const makeApiCallWithBackup = async (endpoint, body, attemptNumber = 0) => {
   }
 };
 
-// Helper: Detect healthy boundary setting in ANY context
-const isHealthyBoundarySetting = (message, context) => {
-  const lowerMessage = String(message || '').toLowerCase();
+// ============================================================================
+// SIMPLIFIED SAFETY SYSTEM - Permissive by Default
+// Only blocks: Adult+Minor, Immediate Danger, Non-Consensual Acts
+// ============================================================================
 
-  // ACTIVE REFUSAL patterns (someone saying NO to control/surveillance)
-  const refusalPhrases = [
-    /\bi don't do (that|proof|location|surveillance|check-ins|tracking|monitoring)/i,
-    /\bnot doing (that|proof|location|surveillance|tracking)/i,
-    /\bno (proof|location|surveillance|check-ins|pop-ins|surprise|tracking|monitoring)/i,
-    /\bdon't (track|monitor|audit|check on) me\b/i,
-    /\bsame rule either way\b/i,
-    /\bnot proof[,\s]/i
-  ];
-
-  // BOUNDARY-SETTING patterns (asserting limits)
-  const boundaryPhrases = [
-    /\bI (can't|won't|don't want to|choose not to)\b/i,
-    /\b(not available|have plans|keeping my plan|not attending|my decision)\b/i,
-    /\b(house rules|my rules|our rules|my boundary|boundaries)\b/i,
-    /\b(please don't|stop comparing|don't explain me)\b/i,
-    /\b(one reschedule|no surprise|calendar first|clarity first)\b/i
-  ];
-
-  const refusalCount = refusalPhrases.filter(p => p.test(lowerMessage)).length;
-  const boundaryCount = boundaryPhrases.filter(p => p.test(lowerMessage)).length;
-
-  // UNIVERSAL TRIGGER: If someone is actively refusing OR setting boundaries
-  if (refusalCount >= 2 || (refusalCount >= 1 && boundaryCount >= 1) || boundaryCount >= 3) {
-    console.log('✅ Healthy boundary setting/refusal detected (universal)', {
-      refusalCount,
-      boundaryCount,
-      context: context?.context_type || 'unspecified'
-    });
-    return true;
-  }
-
-  return false;
-};
-
-// CRITICAL SAFETY DETECTION SYSTEM (universal, context-agnostic for boundaries)
-const detectSafetyIssues = (message, context = {}) => {
-  console.log('🔍 SAFETY CHECK START:', { 
-    contextType: context?.context_type || 'unspecified',
-    messagePreview: String(message || '').slice(0, 100) 
-  });
-
-  // FIRST: Filter out healthy boundary setting (works for ALL contexts)
-  if (isHealthyBoundarySetting(message, context)) {
-    console.log('✅ EARLY EXIT: Healthy boundary setting/refusal detected');
-    return { triggered: false };
-  }
-
+// STEP 1: Pre-GPT Hard Blocks (Immediate Danger Only)
+const IMMEDIATE_DANGER_CHECK = (message) => {
   const text = String(message || '').toLowerCase();
-  const contextType = (context?.context_type || context?.relationshipType || '').toLowerCase();
 
-  // ALWAYS TRIGGER (suicide/self-harm - no context exceptions)
-  const alwaysTrigger = [
-    /thinking about ending it/i,
-    /want to die/i,
-    /kill myself/i,
-    /end my life/i,
-    /not worth living/i,
-    /better off dead/i,
-    /\bsuicide\b/i,
-    /meds in front of me/i,
-    /pills in front of me/i,
-    /overdose/i,
-    /\bcan't keep going\b.*\b(anymore|much longer)\b/i,
-    /point of being alive/i,
-    /cut myself/i,
-    /hurt myself/i,
-    /self[- ]harm/i,
-    /\bcutting\b/i,
-    /burning myself/i
+  // ONLY suicide/self-harm with clear intent
+  const suicidePatterns = [
+    /\b(took|swallowed|overdosed on) (pills|medication|meds)\b/i,
+    /\bgonna (kill myself|end it)\b/i,
+    /\bsuicide note\b/i,
+    /\bcut (my|myself).*wrist/i
   ];
 
-  if (alwaysTrigger.some(p => p.test(text))) {
-    console.log('🚨 CRISIS: Suicide/self-harm detected');
+  // ONLY active violence happening right now
+  const activeViolence = [
+    /\b(he's|she's|they're) (hitting|beating|choking) me\b/i,
+    /\b(just|currently) (beat|raped|assaulted) (me|her|him)\b/i
+  ];
+
+  if (suicidePatterns.some(p => p.test(text))) {
     return {
       triggered: true,
-      severity: 'genuine_crisis',
-      categories: ['suicide_or_self_harm'],
-      message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
+      category: 'suicide_immediate',
+      message: 'Your safety is the priority. Please reach out for help.',
       resources: [
-        '🆘 988 Suicide & Crisis Lifeline: 988',
+        '🆘 988 Suicide & Crisis Lifeline: Call or text 988',
         '🆘 Crisis Text Line: Text HOME to 741741'
       ]
     };
   }
 
-  // CONTEXT-AWARE violence/assault detection
-  const contextSensitive = [
-    /\brape\b/i,
-    /\bassault\b/i,
-    /forced.*sex/i,
-    /didn't consent/i,
-    /beat\s+(me|you|them|.*up)\b/i,
-    /punch.*face/i,
-    /\bchoke[ds]?\b/i,
-    /\bstrangl/i,
-    /threaten.*kill/i
-  ];
-
-  const matches = contextSensitive.filter(p => p.test(text)).length;
-
-  // UNIVERSAL THRESHOLD: Higher bar for non-romantic contexts
-  const isRomanticContext = /dating|situationship|marriage|romantic|partner|boyfriend|girlfriend|ex/i.test(contextType);
-  const threshold = isRomanticContext ? 1 : 2;
-
-  if (matches >= threshold) {
-    console.log('🚨 CRISIS: Violence/assault detected', { matches, threshold, contextType });
+  if (activeViolence.some(p => p.test(text))) {
     return {
       triggered: true,
-      severity: 'genuine_crisis',
-      categories: ['violence_or_assault'],
-      message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
+      category: 'violence_immediate',
+      message: 'This isn\'t drama, it\'s danger. Please reach out for help.',
       resources: [
-        '🆘 RAINN (Sexual Assault): 1-800-656-4673',
-        '🆘 National DV Hotline: 1-800-799-7233'
+        '🆘 National DV Hotline: 1-800-799-7233',
+        '🆘 RAINN: 1-800-656-4673'
       ]
     };
   }
 
-  // AGE GAP CHECK (universal - works for all contexts)
-  const minorAgeMatch = text.match(/\b(13|14|15|16|17)\b/);
-  const adultAgeMatch = text.match(/\b(1[89]|2[0-9]|3[0-9])\b/);
+  return { triggered: false };
+};
 
-  if (minorAgeMatch && adultAgeMatch) {
-    const minorAge = parseInt(minorAgeMatch[1]);
-    const adultAge = parseInt(adultAgeMatch[1]);
+// STEP 2: Add Safety Check to GPT Prompt (Permissive Instructions)
+// SAFETY_CHECK_PROMPT moved to prompts/brutalPrompt.js and imported dynamically
 
-    if (adultAge - minorAge >= 3 || adultAge >= 20) {
-      console.log('🚨 CRISIS: Age gap detected', { minorAge, adultAge });
+// STEP 3: Post-GPT Validation (Sanity Check)
+const validateSafetyTrigger = (gptResponse, originalMessage) => {
+  const text = String(originalMessage || '').toLowerCase();
+
+  // If GPT didn't trigger, we're done
+  if (!gptResponse?.safetyCheck?.triggered) {
+    return { shouldTrigger: false };
+  }
+
+  // GPT triggered - verify with simple regex
+  const category = gptResponse.safetyCheck.category;
+
+  if (category === 'age_gap') {
+    // Check for actual age gap (minor + adult)
+    const ages = text.match(/\b(13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30)\b/g);
+    if (!ages || ages.length < 2) return { shouldTrigger: false };
+
+    const numericAges = ages.map(Number);
+    const hasMinor = numericAges.some(age => age >= 13 && age <= 17);
+    const hasAdult = numericAges.some(age => age >= 20);
+
+    if (hasMinor && hasAdult) {
+      // Confirm romantic/sexual context
+      const romanticContext = /\b(dating|boyfriend|girlfriend|relationship|sex|love|kiss|hook.*up)\b/i.test(text);
+      if (romanticContext) {
+        return {
+          shouldTrigger: true,
+          category: 'age_gap_grooming',
+          message: 'This conversation involves an age gap that raises safety concerns.',
+          resources: [
+            '🆘 RAINN: 1-800-656-4673',
+            '🆘 Crisis Text Line: Text HOME to 741741'
+          ]
+        };
+      }
+    }
+  }
+
+  if (category === 'non_consensual') {
+    // Check for actual non-consent language
+    const nonConsentPatterns = [
+      /\b(forced|made) me (to )?(have sex|do|perform)\b/i,
+      /\bI said no but (he|she|they)\b/i,
+      /\b(didn't|did not) consent\b/i,
+      /\btold (him|her|them) to stop but\b/i
+    ];
+
+    if (nonConsentPatterns.some(p => p.test(text))) {
       return {
-        triggered: true,
-        severity: 'genuine_crisis',
-        categories: ['minor_involvement'],
-        message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
+        shouldTrigger: true,
+        category: 'non_consensual',
+        message: 'This describes a non-consensual situation. Support is available.',
         resources: [
           '🆘 RAINN (Sexual Assault): 1-800-656-4673',
-          '🆘 Crisis Text Line: Text HOME to 741741'
+          '🆘 National DV Hotline: 1-800-799-7233'
         ]
       };
     }
   }
 
-  // Grooming patterns (universal)
-  const groomingPatterns = [
-    /mature for your age/i,
-    /our (little )?secret/i,
-    /don't tell (them|anyone|your parents)/i,
-    /keep this between us/i
-  ];
-
-  if (groomingPatterns.some(p => p.test(text))) {
-    console.log('🚨 CRISIS: Grooming patterns detected');
-    return {
-      triggered: true,
-      severity: 'genuine_crisis',
-      categories: ['grooming'],
-      message: 'This isn\'t drama, it\'s danger. You deserve safety and support.',
-      resources: [
-        '🆘 RAINN: 1-800-656-4673',
-        '🆘 Crisis Text Line: Text HOME to 741741'
-      ]
-    };
-  }
-
-  console.log('✅ No crisis detected - proceeding with regular analysis');
-  return { triggered: false };
+  // GPT triggered but we can't confirm - don't block
+  console.log('⚠️ GPT flagged concern but validation failed - allowing through');
+  return { shouldTrigger: false };
 };
 
 // Advanced OpenAI Integration - CLEANED VERSION
@@ -930,60 +876,81 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
 
   try {
           console.log('Calling AI with context:', actualContext);
-    // Import the working prompt - now fully dynamic
-    const { brutalPrompt } = await import('../prompts/brutalPrompt');
+    // Import the working prompts - now fully dynamic
+    const { brutalPrompt, SAFETY_CHECK_PROMPT } = await import('../prompts/brutalPrompt');
 
       // EXTRACT ACTUAL NAMES - ROBUST FOR SCREENSHOTS/HEADERS
       const extractNamesFromConversation = (text, context) => {
-        const explicitUser = context?.selectedMainUser || context?.user_name || context?.user_side || context?.userName;
-        const explicitOther = context?.otherName || context?.other_name || context?.their_name;
-        const content = String(text || '');
-
-        // If both provided, trust them
-        if (explicitUser && explicitOther) {
-          safeLog('✅ Using explicit names from context');
-          return { user: String(explicitUser), other: String(explicitOther) };
+        // BLACKLIST: Only used for auto-detection validation
+        const FORBIDDEN_NAMES = new Set([
+          'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
+          'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec',
+          'delivered', 'edited', 'read', 'sent'
+        ]);
+        
+        // Priority 1: If names explicitly provided, ALWAYS use them (even if "Wednesday")
+        const userName = context?.userName || context?.user_name || context?.user_side;
+        const otherName = context?.otherName || context?.other_name || context?.their_name;
+        
+        if (userName && otherName && userName.trim().length > 0 && otherName.trim().length > 0) {
+          console.log('✅ Using EXPLICIT names (trusted):', { userName, otherName });
+          return {
+            user: userName.trim(),
+            other: otherName.trim()
+          };
         }
-
-        // Stopwords/timestamp tokens to ignore
-        const STOP = new Set(['mon','tue','tues','weds','wed','thu','thur','thurs','fri','sat','sun','monday','tuesday','wednesday','thursday','friday','saturday','sunday','am','pm','to','delivered','edited','reply']);
-        const MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','sept','oct','nov','dec'];
-        MONTHS.forEach(m => STOP.add(m));
-
-        const isBadToken = (tok) => {
-          const t = tok.toLowerCase();
-          if (!t || t.length < 2 || t.length > 20) return true;
-          if (/[0-9]/.test(t)) return true; // timestamps like 9:31AM
-          return STOP.has(t);
-        };
-
-        // Detect header like "To: Fiona Lee"
-        const toHeader = content.match(/\bTo:\s*([A-Za-z]+)(?:\s+([A-Za-z\-']+))?/i);
-        let headerOther = null;
-        if (toHeader) {
-          const cand = [toHeader[1], toHeader[2]].filter(Boolean).join(' ').trim();
-          if (cand && !isBadToken(cand.split(' ')[0])) headerOther = cand.split(' ')[0];
-        }
-
-        const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
-        const nameCandidates = new Set();
+        
+        // Only auto-detect if NO explicit names
+        console.log('ℹ️ No explicit names, running auto-detection');
+        
+        const lines = text.split('\n').filter(line => line.trim());
+        const speakers = new Map();
+        
         for (const line of lines) {
-          // patterns: "Name:", "Name (time):"
-          let m = line.match(/^([A-Za-z][A-Za-z\-']{1,19})\s*[:(]/);
-          if (m && !isBadToken(m[1])) {
-            nameCandidates.add(m[1]);
-            continue;
+          const patterns = [
+            /^([^:]+):/,                    
+            /^([^(]+)\s*\([^)]+\):/,       
+            /^([^:]+):\s*/                  
+          ];
+          
+          for (const pattern of patterns) {
+            const match = line.match(pattern);
+            if (match) {
+              const speaker = match[1].trim();
+              const speakerLower = speaker.toLowerCase();
+              
+              // SMART CHECK: Is this a timestamp disguised as a name?
+              const hasTimestamp = /\d|am|pm/i.test(speaker);
+              const isBlacklisted = FORBIDDEN_NAMES.has(speakerLower);
+              
+              // Skip if it's blacklisted AND has timestamp indicators
+              if ((isBlacklisted && hasTimestamp) || 
+                  speaker.length < 2 || 
+                  speaker.length > 20) {
+                continue;
+              }
+              
+              speakers.set(speakerLower, speaker);
+              break;
+            }
           }
-          // lines like "Piet — ..." or "Fiona — ..."
-          m = line.match(/^([A-Za-z][A-Za-z\-']{1,19})\s*[—-]/);
-          if (m && !isBadToken(m[1])) nameCandidates.add(m[1]);
         }
-
-        const allNames = Array.from(nameCandidates);
-        const finalUser = explicitUser || (allNames.length ? allNames[0] : 'You');
-        let finalOther = explicitOther || headerOther || (allNames.find(n => n.toLowerCase() !== String(finalUser).toLowerCase()) || 'they');
-
-        safeLog('✅ FINAL NAME ASSIGNMENT:', { user: finalUser, other: finalOther, allNamesFound: allNames });
+        
+        const speakerArray = Array.from(speakers.values());
+        const actualNames = speakerArray.filter(s => 
+          !['me', 'i', 'myself', 'her', 'him', 'them', 'they'].includes(s.toLowerCase())
+        );
+        // Use detected names to fill any missing explicit values
+        let detectedUser = actualNames.length >= 2 ? actualNames[1] : null;
+        let detectedOther = actualNames.length >= 2 ? actualNames[0] : (actualNames.length === 1 ? actualNames[0] : null);
+        const finalUser = (userName && userName.trim()) || detectedUser || 'You';
+        // If otherName not given, pick the first detected name that isn't finalUser
+        let autoOther = detectedOther;
+        if (!autoOther && actualNames.length > 0) {
+          autoOther = actualNames.find(n => n.toLowerCase() !== String(finalUser).toLowerCase()) || null;
+        }
+        const finalOther = (otherName && otherName.trim()) || autoOther || 'Them';
+        console.log('✅ FINAL NAME ASSIGNMENT:', { user: finalUser, other: finalOther, detected: actualNames });
         return { user: finalUser, other: finalOther };
       };
       
@@ -1036,20 +1003,16 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
         }
       }
 
-      // CRITICAL: Check for safety issues AFTER context is defined
-      const safetyCheck = detectSafetyIssues(message, {
-        context_type: actualContext,
-        relationshipType: cleanContext.relationshipType
-      });
-      
-      if (safetyCheck.triggered) {
-        console.log('🚨 Safety override triggered - returning crisis resources');
+      // CRITICAL: Pre-GPT immediate danger check ONLY (permissive system)
+      const immediateDanger = IMMEDIATE_DANGER_CHECK(message) || checkImmediateDanger?.(message) || { triggered: false };
+      if (immediateDanger.triggered) {
+        console.log('🚨 IMMEDIATE DANGER DETECTED:', immediateDanger.category);
         return {
           mode: 'safety_override',
-          safetyOverride: safetyCheck,
-          archetype: 'Emergency Support 🛡️',
-          verdict: safetyCheck.message,
-          realTea: 'This goes beyond relationship analysis. Your safety is the priority.',
+          safetyOverride: immediateDanger,
+          archetype: 'Emergency Support 🆘',
+          verdict: immediateDanger.message,
+          realTea: 'Your safety matters most right now.',
           wastingTime: 0,
           actuallyIntoYou: 0,
           redFlags: 10,
@@ -1059,8 +1022,8 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
           prophecy: 'Next: prioritize your wellbeing',
           redFlagTags: ['crisis situation'],
           deepDive: { valence: 'red' },
-          immunityTraining: { riskLevel: 'high', safetyNote: safetyCheck.message },
-          resources: safetyCheck.resources,
+          immunityTraining: { riskLevel: 'high', safetyNote: immediateDanger.message },
+          resources: immediateDanger.resources,
           userName: actualUserName,
           otherName: actualOtherName
         };
@@ -1134,6 +1097,7 @@ IMPORTANT:
       const endpoint = 'https://api.openai.com/v1/chat/completions';
       const messages = [
         { role: 'system', content: brutalPrompt },
+        { role: 'system', content: SAFETY_CHECK_PROMPT },
         { role: 'user', content: userContent }
       ];
       
@@ -1158,7 +1122,9 @@ IMPORTANT:
       // Google Gemini with structured output
       const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
       
-      const promptText = voiceOverride ? `${brutalPrompt}\n\n${voiceOverride}\n\n${userContent}` : `${brutalPrompt}\n\n${userContent}`;
+      const promptText = voiceOverride 
+        ? `${brutalPrompt}\n\n${SAFETY_CHECK_PROMPT}\n\n${voiceOverride}\n\n${userContent}` 
+        : `${brutalPrompt}\n\n${SAFETY_CHECK_PROMPT}\n\n${userContent}`;
       
       const body = {
         contents: [
@@ -1282,6 +1248,28 @@ IMPORTANT:
     const isCrisisArchetype = (truthReceipt.archetype || result.archetype || '').includes('Emergency Support') || 
                              (truthReceipt.archetype || result.archetype || '').includes('Crisis');
 
+    // POST-GPT VALIDATION of safety (permissive): verify any GPT safetyCheck
+    const postValidation = validateSafetyTrigger(result, message) || validateGPTSafety?.(result, message) || { shouldTrigger: false };
+    if (postValidation.shouldTrigger) {
+      console.log('🚨 SAFETY CONFIRMED (post-GPT):', postValidation.category);
+      return {
+        mode: 'safety_override',
+        safetyOverride: postValidation,
+        archetype: 'Safety Concern Detected 🛡️',
+        verdict: postValidation.message,
+        realTea: 'This situation requires careful attention.',
+        wastingTime: 0,
+        actuallyIntoYou: 0,
+        redFlags: 10,
+        confidenceScore: 100,
+        confidenceRemark: 'SAFETY PRIORITY',
+        yourMove: ['Talk to a trusted adult', 'Reach out for support'],
+        prophecy: 'Next: prioritize your safety',
+        redFlagTags: [postValidation.category],
+        resources: postValidation.resources
+      };
+    }
+
     // Transform to match existing component expectations (wrapped in analysis object)
     let finalResult = {
       // Core truth receipt fields (directly at root level for compatibility)
@@ -1291,9 +1279,10 @@ IMPORTANT:
       verdict: truthReceipt.verdict || result.verdict || 'Analysis in progress...',
       realTea: truthReceipt.realTea || (result.teaAndMovePlay ? result.teaAndMovePlay.slice(0, 2).join(' ') : 'Tea is brewing...'),
       // Crisis metrics override
-      wastingTime: isCrisisArchetype ? 0 : Math.max(0, Math.min(100, truthReceipt.wastingTime || result.wastingTime || 50)),
-      actuallyIntoYou: isCrisisArchetype ? 0 : Math.max(0, Math.min(100, truthReceipt.actuallyIntoYou || result.actuallyIntoYou || 50)),
-      redFlags: isCrisisArchetype ? 10 : Math.max(0, Math.min(10, truthReceipt.redFlags || result.redFlags || 5)),
+      // Defaults set to 0 to avoid false positives on healthy conversations
+      wastingTime: isCrisisArchetype ? 0 : Math.max(0, Math.min(100, truthReceipt.wastingTime || result.wastingTime || 0)),
+      actuallyIntoYou: isCrisisArchetype ? 0 : Math.max(0, Math.min(100, truthReceipt.actuallyIntoYou || result.actuallyIntoYou || 0)),
+      redFlags: isCrisisArchetype ? 10 : Math.max(0, Math.min(10, truthReceipt.redFlags || result.redFlags || 0)),
       confidenceScore: Math.max(0, Math.min(100, truthReceipt.confidenceScore || result.confidenceScore || 85)),
       confidenceRemark: truthReceipt.confidenceRemark || result.confidenceRemark || 'CONFUSED',
       yourMove: Array.isArray(truthReceipt.yourMove) ? truthReceipt.yourMove.slice(0, 2) : (result.teaAndMovePlay ? result.teaAndMovePlay.slice(2, 4) : ['Check back later', 'Try again']),
@@ -1583,7 +1572,7 @@ export const generateAlignedResults = async (message, context) => {
     const api2Start = performance.now();
     console.log('🔍 API Call 2: Deep Dive analysis...');
     let alignedDeepDive = null;
-    const deepDiveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Deep Dive timeout after 15 seconds')), 15000));
+    const deepDiveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Deep Dive timeout after 25 seconds')), 25000));
     try {
       const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
       const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark)
@@ -1615,24 +1604,36 @@ export const generateAlignedResults = async (message, context) => {
         rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
       }
       try { alignedDeepDive = JSON.parse(rawContent); } catch { const m = rawContent.match(/\{[\s\S]*\}/); if (m) alignedDeepDive = JSON.parse(m[0]); }
-      const bannedNgrams = ["analysis in progress","pattern continuation predicted","sage wisdom pending","detected]","pending]","escalation likely","measure anticipated","[placeholder","[template"];
-      const needsRegeneration = (text) => { const t = (text || '').toLowerCase(); return bannedNgrams.some(n => t.includes(n)); };
-      if (alignedDeepDive && Object.values(alignedDeepDive).some(v => needsRegeneration(String(v)))) {
-        console.warn('🚨 BANNED CONTENT DETECTED - Deep Dive contains template phrases');
-        if (alignedDeepDive.verdict?.act) {
-          alignedDeepDive.verdict.act = alignedDeepDive.verdict.act.replace(/\[[^\]]+\]/g, '').trim() || "Mixed Signal Territory";
-        }
-      }
+      // aggressive banned n-gram rejection removed; handled by sanitizeDeepDive
       const sanitizeDeepDive = (dd) => {
         if (!dd) return null;
-        const BANNED_PATTERNS = /\[[^\]]+\]|analysis in progress|pattern continuation predicted|sage wisdom pending|vague promise detected|detected\]|pending\]|escalation likely|measure anticipated/i;
-        let hasTemplateContent = false;
-        if (dd.verdict) { if (BANNED_PATTERNS.test(dd.verdict.act) || BANNED_PATTERNS.test(dd.verdict.subtext)) { hasTemplateContent = true; } }
-        if (dd.receipts && Array.isArray(dd.receipts)) { dd.receipts.forEach(r => { if (BANNED_PATTERNS.test(r.quote) || BANNED_PATTERNS.test(r.pattern) || BANNED_PATTERNS.test(r.cost)) { hasTemplateContent = true; } }); }
-        if (dd.physics) { if (BANNED_PATTERNS.test(dd.physics.you_bring) || BANNED_PATTERNS.test(dd.physics.they_exploit) || BANNED_PATTERNS.test(dd.physics.result)) { hasTemplateContent = true; } }
-        if (dd.playbook) { if (BANNED_PATTERNS.test(dd.playbook.next_48h) || BANNED_PATTERNS.test(dd.playbook.next_week) || BANNED_PATTERNS.test(dd.playbook.trump_card)) { hasTemplateContent = true; } }
-        if (BANNED_PATTERNS.test(dd.sages_seal)) { hasTemplateContent = true; }
-        if (hasTemplateContent) { console.warn('🚨 Template content detected in Deep Dive - rejecting response'); return null; }
+        const BANNED_PATTERNS = /\[placeholder\]|\[template\]|\[pending\]|analysis in progress|pattern continuation predicted/i;
+        const sanitizeField = (value, defaultValue) => {
+          if (!value || typeof value !== 'string' || BANNED_PATTERNS.test(value)) return defaultValue;
+          return value;
+        };
+        if (dd.verdict) {
+          dd.verdict.act = sanitizeField(dd.verdict.act, shareShotAnalysis?.archetype || "Mixed Signal Territory");
+          dd.verdict.subtext = sanitizeField(dd.verdict.subtext, "Let's break down what's really happening here");
+        }
+        if (dd.receipts && Array.isArray(dd.receipts)) {
+          dd.receipts = dd.receipts.map((r) => ({
+            quote: sanitizeField(r.quote, "Pattern observed in conversation"),
+            bestie_look: sanitizeField(r.bestie_look, "Notice how they're controlling the narrative here"),
+            calling_it: sanitizeField(r.calling_it, "They'll keep this pattern going"),
+            vibe_check: sanitizeField(r.vibe_check, "Try being direct and watch what happens")
+          }));
+        }
+        if (dd.physics) {
+          dd.physics.you_bring = sanitizeField(dd.physics.you_bring, "Your genuine interest and emotional availability");
+          dd.physics.they_exploit = sanitizeField(dd.physics.they_exploit, "Your patience and willingness to accept uncertainty");
+          dd.physics.result = sanitizeField(dd.physics.result, "You're doing all the emotional work while they maintain control");
+        }
+        if (dd.playbook) {
+          dd.playbook.next_48h = sanitizeField(dd.playbook.next_48h, "Watch for their next move - it'll follow the same pattern");
+          dd.playbook.your_move = sanitizeField(dd.playbook.your_move, "Ask one direct question. Make one clear boundary. Notice their response.");
+        }
+        dd.sages_seal = sanitizeField(dd.sages_seal, shareShotAnalysis?.confidenceRemark === 'TOXIC AF' ? "Trust your gut. Red flags aren't confetti." : "Actions over words. Every single time.");
         return dd;
       };
       alignedDeepDive = sanitizeDeepDive(alignedDeepDive);

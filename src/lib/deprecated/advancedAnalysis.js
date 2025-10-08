@@ -847,9 +847,10 @@ export const analyzeWithGPT = async (message, context) => {
       archetype: truthReceipt.archetype || result.archetype || 'The Analyzer 🔮',
       verdict: truthReceipt.verdict || result.verdict || 'Analysis in progress...',
       realTea: truthReceipt.realTea || (result.teaAndMovePlay ? result.teaAndMovePlay.slice(0, 2).join(' ') : 'Tea is brewing...'),
-      wastingTime: Math.max(0, Math.min(100, truthReceipt.wastingTime || result.wastingTime || 50)),
-      actuallyIntoYou: Math.max(0, Math.min(100, truthReceipt.actuallyIntoYou || result.actuallyIntoYou || 50)),
-      redFlags: Math.max(0, Math.min(10, truthReceipt.redFlags || result.redFlags || 5)),
+      // Defaults set to 0 to avoid false positives on healthy conversations
+      wastingTime: Math.max(0, Math.min(100, truthReceipt.wastingTime || result.wastingTime || 0)),
+      actuallyIntoYou: Math.max(0, Math.min(100, truthReceipt.actuallyIntoYou || result.actuallyIntoYou || 0)),
+      redFlags: Math.max(0, Math.min(10, truthReceipt.redFlags || result.redFlags || 0)),
       confidenceScore: Math.max(0, Math.min(100, truthReceipt.confidenceScore || result.confidenceScore || 85)),
       confidenceRemark: truthReceipt.confidenceRemark || result.confidenceRemark || 'CONFUSED',
       yourMove: Array.isArray(truthReceipt.yourMove) ? truthReceipt.yourMove.slice(0, 2) : (result.teaAndMovePlay ? result.teaAndMovePlay.slice(2, 4) : ['Check back later', 'Try again']),

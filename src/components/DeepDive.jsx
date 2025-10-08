@@ -2,6 +2,7 @@ import React, { useState, useRef, memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight, Info, Crown } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { useSocialExport } from '@/hooks/useSocialExport';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
@@ -17,15 +18,22 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   }, [deepDive, analysisData, isPremium]);
   
   const { toast } = useToast();
+  const { captureById } = useSocialExport();
   const [copiedText, setCopiedText] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [showAllAutopsy, setShowAllAutopsy] = useState(false);
   const [autopsyScrollPosition, setAutopsyScrollPosition] = useState(0);
   const speechRef = useRef(null);
 
-  // Dynamic Metrics Calculator
+  // Dynamic Metrics Calculator (now incorporates green flags)
   const calculateMetrics = (analysis) => {
-    const { redFlags = 0, wastingTime = 0, actuallyIntoYou = 0, redFlagChips = [] } = analysis;
+    const {
+      redFlags = 0,
+      wastingTime = 0,
+      actuallyIntoYou = 0,
+      redFlagChips = [],
+      greenFlagChips = []
+    } = analysis;
     
     // Debug logging to verify data
     if (process.env.NODE_ENV === 'development') {
@@ -38,15 +46,24 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       });
     }
     
-    // Risk Level
-    const risk = redFlags <= 2 
+    // Incorporate green flags
+    const g = Array.isArray(greenFlagChips) ? greenFlagChips.length : 0;
+    const r = redFlags;
+    const into = actuallyIntoYou;
+    const waste = wastingTime;
+
+    // Effective red flags reduced by greens
+    const effectiveRed = Math.max(0, Math.min(10, r - 0.5 * g));
+
+    // Risk Level (LOW: 0-3, MEDIUM: 4-7, HIGH: 8-10) using effectiveRed
+    const risk = effectiveRed <= 3 
       ? { level: 'LOW', color: 'green', text: 'Manageable situation', width: '25%' }
-      : redFlags <= 6
+      : effectiveRed <= 7
       ? { level: 'MEDIUM', color: 'orange', text: 'Proceed with awareness', width: '60%' }
       : { level: 'HIGH', color: 'red', text: 'Requires immediate attention', width: '85%' };
     
-    // Compatibility
-    const compatScore = Math.max(15, actuallyIntoYou - (redFlags * 2));
+    // Compatibility: into + 3*g − 2*r (clamped)
+    const compatScore = Math.max(0, Math.min(100, into + 3 * g - 2 * r));
     const compat = compatScore >= 70
       ? { score: compatScore, status: 'STRONG', text: 'Above optimal threshold', color: 'green', width: `${compatScore}%` }
       : compatScore >= 40
@@ -58,7 +75,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     const hasCommIssues = redFlagChips.some(chip => 
       commFlags.some(flag => chip.toLowerCase().includes(flag))
     );
-    const commScore = Math.max(0, 100 - wastingTime - (hasCommIssues ? 20 : 0));
+    const greenEase = Math.min(g, 5); // cap boost
+    const effectiveWaste = waste * (1 - 0.02 * greenEase); // up to 10% easing
+    const issuePenalty = hasCommIssues ? 20 : 0;
+    const commScore = Math.max(0, Math.min(100, 100 - effectiveWaste - issuePenalty + 2 * greenEase));
     const comm = commScore >= 70
       ? { score: commScore, quality: 'STRONG', text: 'Clear and consistent', color: 'green', width: `${commScore}%` }
       : commScore >= 40
@@ -75,135 +95,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     return result;
   };
 
-  const handleSharePlaybook = async () => {
-    try {
-      const element = document.querySelector('[data-deepdive-component]');
-      if (!element) {
-        toast({ title: "Error", description: "Could not find component to share.", variant: "destructive" });
-        return;
-      }
-
-      // Apply the same optimizations as save function but don't download
-      const nodesToHide = Array.from(element.querySelectorAll('[data-share-hide="true"]'));
-      const extraAutopsyToHide = Array.from(element.querySelectorAll('[data-autopsy-item]'))
-        .filter(n => (parseInt(n.getAttribute('data-index') || '0', 10)) >= 2);
-      const allToHide = [...nodesToHide, ...extraAutopsyToHide];
-      const previousDisplays = allToHide.map(n => n.style.display);
-
-      // Force desktop view for share
-      const mobileAutopsy = element.querySelector('[data-autopsy-horizontal]');
-      const desktopAutopsy = element.querySelector('.hidden.sm\\:block');
-      const prevMobileDisplay = mobileAutopsy ? mobileAutopsy.style.display : null;
-      const prevDesktopDisplay = desktopAutopsy ? desktopAutopsy.style.display : null;
-      if (mobileAutopsy) mobileAutopsy.style.display = 'none';
-      if (desktopAutopsy) desktopAutopsy.style.display = 'block';
-
-      // Apply export-mode class
-      element.classList.add('export-mode');
-
-      // Apply compact layout optimizations
-      const autopsySection = element.querySelector('[data-autopsy-section]');
-      const playbookSection = element.querySelector('[data-playbook-section]');
-      const sealSection = element.querySelector('[data-seal-section]');
-      
-      const prevStyles = {
-        autopsy: autopsySection ? {
-          marginBottom: autopsySection.style.marginBottom,
-          padding: autopsySection.style.padding
-        } : null,
-        playbook: playbookSection ? {
-          marginBottom: playbookSection.style.marginBottom,
-          padding: playbookSection.style.padding
-        } : null,
-        seal: sealSection ? {
-          marginBottom: sealSection.style.marginBottom,
-          padding: sealSection.style.padding
-        } : null
-      };
-      
-      if (autopsySection) {
-        autopsySection.style.marginBottom = '12px';
-        autopsySection.style.padding = '8px';
-      }
-      if (playbookSection) {
-        playbookSection.style.marginBottom = '12px';
-        playbookSection.style.padding = '8px';
-      }
-      if (sealSection) {
-        sealSection.style.marginBottom = '8px';
-        sealSection.style.padding = '8px';
-      }
-
-      try {
-        allToHide.forEach(n => { n.style.display = 'none'; });
-        
-        // Create optimized image for sharing
-        const blob = await domtoimage.toPng(element, {
-          width: element.offsetWidth * 2,
-          height: element.offsetHeight * 2,
-          style: {
-            transform: 'scale(2)',
-            transformOrigin: 'top left'
-          },
-          bgcolor: 'transparent',
-          quality: 1
-        });
-        
-        const shareText = `🎯 Just got my SAGE'S PLAYBOOK: "${deepDive?.tea_wisdom || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || 'The truth is always better than pretty lies.'}" Get your own playbook at www.getthereceipts.com #GetTheReceipts #SageSays`;
-        
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'sage-playbook.png', { type: 'image/png' })] })) {
-          try {
-            const file = new File([blob], 'sage-playbook.png', { type: 'image/png' });
-            await navigator.share({
-              title: 'SAGE\'S PLAYBOOK',
-              text: shareText,
-              files: [file]
-            });
-          } catch (error) {
-            // Fallback to text-only share
-            await navigator.share({
-              title: 'SAGE\'S PLAYBOOK',
-              text: shareText,
-              url: 'https://www.getthereceipts.com'
-            });
-          }
-        } else {
-          // Fallback for browsers without native share or file sharing
-          copyToClipboard(shareText);
-          toast({ title: "Copied!", description: "Playbook text copied to clipboard." });
-        }
-      } finally {
-        // Restore everything
-        allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
-        
-        if (mobileAutopsy && prevMobileDisplay !== null) {
-          mobileAutopsy.style.display = prevMobileDisplay;
-        }
-        if (desktopAutopsy && prevDesktopDisplay !== null) {
-          desktopAutopsy.style.display = prevDesktopDisplay;
-        }
-        
-        if (autopsySection && prevStyles.autopsy) {
-          autopsySection.style.marginBottom = prevStyles.autopsy.marginBottom;
-          autopsySection.style.padding = prevStyles.autopsy.padding;
-        }
-        if (playbookSection && prevStyles.playbook) {
-          playbookSection.style.marginBottom = prevStyles.playbook.marginBottom;
-          playbookSection.style.padding = prevStyles.playbook.padding;
-        }
-        if (sealSection && prevStyles.seal) {
-          sealSection.style.marginBottom = prevStyles.seal.marginBottom;
-          sealSection.style.padding = prevStyles.seal.padding;
-        }
-        
-        element.classList.remove('export-mode');
-      }
-    } catch (error) {
-      console.log('Error in share function:', error);
-      const shareText = `🎯 Just got my SAGE'S PLAYBOOK: "${deepDive?.tea_wisdom || analysisData?.deepDive?.sages_seal || analysisData?.sages_seal || 'The truth is always better than pretty lies.'}" Get your own playbook at www.getthereceipts.com #GetTheReceipts #SageSays`;
-      copyToClipboard(shareText);
-      toast({ title: "Copied!", description: "Playbook text copied to clipboard." });
-    }
+  const handleSharePlaybook = () => {
+    // Use the new social export system for Playbook sharing - with share menu
+    captureById('social-playbook-card', "Sage-Playbook", true);
   };
 
   const handleSaveTea = async () => {
@@ -266,219 +160,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     }
   };
 
-  // Save current DeepDive view but hide certain sections (metrics, HOT TAKES badge, Dynamics)
-  const handleSaveClean = async () => {
-    const element = document.querySelector('[data-deepdive-component]');
-    const scroller = document.querySelector('[data-autopsy-horizontal]');
-    if (!element) {
-      toast({ title: "Error", description: "Could not find component to save.", variant: "destructive" });
-      return;
-    }
-
-    // Find all nodes marked to hide for share
-    const nodesToHide = Array.from(element.querySelectorAll('[data-share-hide="true"]'));
-    // Additionally hide autopsy items with index >= 2 to keep only two
-    const extraAutopsyToHide = Array.from(element.querySelectorAll('[data-autopsy-item]'))
-      .filter(n => (parseInt(n.getAttribute('data-index') || '0', 10)) >= 2);
-    const allToHide = [...nodesToHide, ...extraAutopsyToHide];
-    const previousDisplays = allToHide.map(n => n.style.display);
-
-    // Easiest robust fix: temporarily flatten backgrounds/borders to remove banding/lines
-    const styledNodes = [];
-    const isGoldOrTeal = (val = '') => /#D4AF37|212,\s*175,\s*55|rgba\(20,\s*184,\s*166/i.test(val);
-    const descendants = element.querySelectorAll('*');
-    descendants.forEach(node => {
-      const style = node.style || {};
-      const prev = {
-        background: style.background,
-        backgroundImage: style.backgroundImage,
-        backgroundColor: style.backgroundColor,
-        boxShadow: style.boxShadow,
-        border: style.border,
-        borderTop: style.borderTop,
-        borderRight: style.borderRight,
-        borderBottom: style.borderBottom,
-        borderLeft: style.borderLeft,
-        outline: style.outline,
-        backdropFilter: style.backdropFilter,
-        filter: style.filter,
-        opacity: style.opacity
-      };
-      styledNodes.push({ node, prev });
-
-      // Remove shadows/filters that cause banding; preserve original backgrounds/gradients
-      style.boxShadow = 'none';
-      style.backdropFilter = 'none';
-      style.filter = 'none';
-      style.outline = 'none';
-
-      // Remove non-gold borders that cause hairlines
-      const borders = [style.border, style.borderTop, style.borderRight, style.borderBottom, style.borderLeft];
-      const hasGold = borders.some(b => isGoldOrTeal(b));
-      if (!hasGold) {
-        style.border = 'none';
-        style.borderTop = 'none';
-        style.borderRight = 'none';
-        style.borderBottom = 'none';
-        style.borderLeft = 'none';
-      }
-    });
-    // Temporarily neutralize mobile scroller negative margins that can shift capture
-    const prevScrollerMargins = scroller ? { ml: scroller.style.marginLeft, mr: scroller.style.marginRight } : null;
-    const prevElementMargins = { ml: element.style.marginLeft, mr: element.style.marginRight, m: element.style.margin };
-    if (scroller) {
-      scroller.style.marginLeft = '0';
-      scroller.style.marginRight = '0';
-    }
-    element.style.marginLeft = '0';
-    element.style.marginRight = '0';
-
-    // Force desktop view for save/share (like Immunity Training)
-    const mobileAutopsy = element.querySelector('[data-autopsy-horizontal]');
-    const desktopAutopsy = element.querySelector('.hidden.sm\\:block');
-    const prevMobileDisplay = mobileAutopsy ? mobileAutopsy.style.display : null;
-    const prevDesktopDisplay = desktopAutopsy ? desktopAutopsy.style.display : null;
-    if (mobileAutopsy) mobileAutopsy.style.display = 'none';
-    if (desktopAutopsy) desktopAutopsy.style.display = 'block';
-
-    // Apply export-mode class to remove all borders (like Truth Receipt)
-    element.classList.add('export-mode');
-
-    // Apply compact layout optimizations for save/share (like Immunity Training)
-    const autopsySection = element.querySelector('[data-autopsy-section]');
-    const playbookSection = element.querySelector('[data-playbook-section]');
-    const sealSection = element.querySelector('[data-seal-section]');
-    
-    // Store original styles for restoration
-    const prevStyles = {
-      autopsy: autopsySection ? {
-        marginBottom: autopsySection.style.marginBottom,
-        padding: autopsySection.style.padding
-      } : null,
-      playbook: playbookSection ? {
-        marginBottom: playbookSection.style.marginBottom,
-        padding: playbookSection.style.padding
-      } : null,
-      seal: sealSection ? {
-        marginBottom: sealSection.style.marginBottom,
-        padding: sealSection.style.padding
-      } : null
-    };
-    
-    // Apply compact styling for save/share
-    if (autopsySection) {
-      autopsySection.style.marginBottom = '12px';
-      autopsySection.style.padding = '8px';
-    }
-    if (playbookSection) {
-      playbookSection.style.marginBottom = '12px';
-      playbookSection.style.padding = '8px';
-    }
-    if (sealSection) {
-      sealSection.style.marginBottom = '8px';
-      sealSection.style.padding = '8px';
-    }
-
-    try {
-      allToHide.forEach(n => { n.style.display = 'none'; });
-      
-      // Ensure rounded outer corners render with transparency (like Immunity)
-      const prevRadius = element.style.borderRadius;
-      const prevOverflow = element.style.overflow;
-      const prevHeight = element.style.height;
-      const prevMaxHeight = element.style.maxHeight;
-      const prevOverflowY = element.style.overflowY;
-      element.style.borderRadius = '24px';
-      element.style.overflow = 'hidden';
-      element.style.height = 'auto';
-      element.style.maxHeight = 'none';
-      element.style.overflowY = 'visible';
-
-      // Use scroll size to capture full content like Truth/ShareComponent
-      const targetWidth = element.scrollWidth || element.offsetWidth;
-      const targetHeight = Math.max(element.scrollHeight, element.offsetHeight, element.clientHeight);
-
-      const dataUrl = await domtoimage.toPng(element, {
-        pixelRatio: 2.5,
-        quality: 1.0,
-        bgcolor: 'transparent',
-        width: targetWidth,
-        height: targetHeight,
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'center'
-        }
-      });
-
-      // Convert data URL to blob for consistent downloader
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
-      
-      const timestamp = Date.now();
-      saveAs(blob, `Sage-Playbook-${timestamp}.png`);
-      toast({ title: "Saved!", description: "Playbook image downloaded." });
-    } catch (err) {
-      console.error('Clean save error', err);
-      toast({ title: "Error", description: "Could not save playbook.", variant: "destructive" });
-    } finally {
-      // Restore displays
-      allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
-      
-      // Restore mobile/desktop view states (like Immunity Training)
-      if (mobileAutopsy && prevMobileDisplay !== null) {
-        mobileAutopsy.style.display = prevMobileDisplay;
-      }
-      if (desktopAutopsy && prevDesktopDisplay !== null) {
-        desktopAutopsy.style.display = prevDesktopDisplay;
-      }
-      
-      // Restore compact layout styles
-      if (autopsySection && prevStyles.autopsy) {
-        autopsySection.style.marginBottom = prevStyles.autopsy.marginBottom;
-        autopsySection.style.padding = prevStyles.autopsy.padding;
-      }
-      if (playbookSection && prevStyles.playbook) {
-        playbookSection.style.marginBottom = prevStyles.playbook.marginBottom;
-        playbookSection.style.padding = prevStyles.playbook.padding;
-      }
-      if (sealSection && prevStyles.seal) {
-        sealSection.style.marginBottom = prevStyles.seal.marginBottom;
-        sealSection.style.padding = prevStyles.seal.padding;
-      }
-      
-      // Remove export-mode class
-      element.classList.remove('export-mode');
-      if (scroller && prevScrollerMargins) {
-        scroller.style.marginLeft = prevScrollerMargins.ml;
-        scroller.style.marginRight = prevScrollerMargins.mr;
-      }
-      element.style.marginLeft = prevElementMargins.ml;
-      element.style.marginRight = prevElementMargins.mr;
-      if (prevElementMargins.m) element.style.margin = prevElementMargins.m;
-      // Restore rounded/size overrides
-      element.style.borderRadius = prevRadius;
-      element.style.overflow = prevOverflow;
-      element.style.height = prevHeight;
-      element.style.maxHeight = prevMaxHeight;
-      element.style.overflowY = prevOverflowY;
-      // Restore styles (backgrounds were never changed to preserve original design)
-      styledNodes.forEach(({ node, prev }) => {
-        const style = node.style || {};
-        style.background = prev.background;
-        style.backgroundImage = prev.backgroundImage;
-        style.backgroundColor = prev.backgroundColor;
-        style.boxShadow = prev.boxShadow;
-        style.border = prev.border;
-        style.borderTop = prev.borderTop;
-        style.borderRight = prev.borderRight;
-        style.borderBottom = prev.borderBottom;
-        style.borderLeft = prev.borderLeft;
-        style.outline = prev.outline;
-        style.backdropFilter = prev.backdropFilter;
-        style.filter = prev.filter;
-        style.opacity = prev.opacity;
-      });
-    }
+  const handleSaveClean = () => {
+    // Use the new social export system for Playbook - direct download only
+    captureById('social-playbook-card', "Sage-Playbook", false);
   };
 
   // Generate 9:16 share images (hero | autopsy | actions)
@@ -660,7 +344,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const getArchetypeColor = () => {
     const flagCount = analysisData?.redFlags || 0;
     if (flagCount <= 3) return "text-green-400";   // Green for 0-3 flags (good)
-    if (flagCount <= 6) return "text-orange-400";  // Orange for 4-6 flags (mixed)
+    if (flagCount <= 7) return "text-orange-400";  // Orange for 4-7 flags (mixed)
     return "text-red-400";                         // Red for 7-10 flags (toxic)
   };
 
@@ -1046,7 +730,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           <div className="relative z-10">
 
             {/* Sage's Playbook Header - Horizontal Banner Style */}
-            <div className="mb-12">
+            <div className="mb-2">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1083,26 +767,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           {/* Locked label removed per request */}
         </div>
                 
-                {/* Hot Takes Badge - Humor Protection */}
-                <div className="mt-2 text-center">
-                <div className="inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-full">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                      <span className="text-red-400 text-sm font-bold tracking-wider uppercase">HOT</span>
-                    </div>
-                    <div className="w-1 h-1 bg-white/40 rounded-full"></div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
-                      <span className="text-orange-400 text-sm font-bold tracking-wider uppercase">TAKES</span>
-                  </div>
-                    <div className="w-1 h-1 bg-white/40 rounded-full"></div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></div>
-                      <span className="text-yellow-400 text-sm font-bold tracking-wider uppercase">SERVED</span>
-                  </div>
-                  </div>
-                </div>
-                
               </motion.div>
             </div>
             
@@ -1130,6 +794,26 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed">
                       {safeDeepDive.verdict?.subtext}
                     </p>
+                  </div>
+                </div>
+                
+                {/* Hot Takes Badge - Humor Protection */}
+                <div className="mt-2 mb-4 text-center">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-full">
+                    <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+                      <span className="text-red-400 text-xs font-bold tracking-wider uppercase">HOT</span>
+                    </div>
+                    <div className="w-0.5 h-0.5 bg-white/40 rounded-full"></div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+                      <span className="text-orange-400 text-xs font-bold tracking-wider uppercase">TAKES</span>
+                  </div>
+                    <div className="w-0.5 h-0.5 bg-white/40 rounded-full"></div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }}></div>
+                      <span className="text-yellow-400 text-xs font-bold tracking-wider uppercase">SERVED</span>
+                  </div>
                   </div>
                 </div>
             </div>

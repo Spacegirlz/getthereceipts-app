@@ -82,28 +82,35 @@ This section documents the latest product/design changes and the exact implement
 - Removed the entire "SAGE'S DYNAMICS" section per request.
 - Receipt schema in UI updated to new fields: `bestie_look`, `calling_it`, `vibe_check`.
 
-### Save/Share behavior (dom-to-image)
-Files: `src/components/DeepDive.jsx`
+### Save/Share behavior (current - html2canvas + Web Share + file-saver)
+Files: `src/pages/ReceiptsCardPage.jsx`, `src/utils/mobileSaveShare.js`
 
-We have two buttons: Save (normal) and Save Clean.
+Implementation we ship today:
+- Web capture via `html2canvas(element)` → `canvas.toBlob(...)`
+- Desktop save via `file-saver` `saveAs(blob, filename)`
+- Mobile share via Web Share API: `navigator.share({ files: [file] })` with a generated `File([blob], name, { type: 'image/png' })`, falling back to download when not supported/cancelled
 
-Shared goals:
-- Preserve centering and sizing parity across both flows
-- Avoid horizontal shift caused by mobile scroller negative margins
+Key handlers in `ReceiptsCardPage.jsx`:
+- Save flow: adds `save-mode` class, fixes gradient text for capture, runs html2canvas, restores DOM; see ~lines 119–156 and 127–137
+- Screenshot/share flow: higher scale capture (2x) and Web Share path; see ~lines 435–472
 
-Key implementation details:
-- Both flows capture the root `[data-deepdive-component]` with the same transform sizing used by the original implementation:
-  - `width: element.offsetWidth * 2`
-  - `height: element.offsetHeight * 2`
-  - `style: { transform: 'scale(2)', transformOrigin: 'top left' }`
-  - `bgcolor: '#1a1a2e'`
-- During capture, we temporarily neutralize mobile scroller margins and left-align the root element to guarantee a consistent left origin for dom-to-image. After export, all margins are restored.
-- Save Clean hides `data-share-hide="true"` nodes and all Autopsy items with `data-index >= 2`, then restores them post-capture.
+Hidden/visible elements during save:
+- We toggle a container class: `element.classList.add('save-mode')` before capture and remove it after
+- Use CSS to hide/show:
+  - `.save-mode .no-save { display: none !important; }`
+  - `.save-mode .only-save { visibility: visible !important; }`
+- Mark UI we don’t want in the image (e.g., CTAs, buttons) with `no-save`; add watermark/frame with `only-save` if needed
 
-Code anchors:
-- Normal Save handler: `handleSaveTea` (adds temporary margin overrides, restores after capture)
-- Clean Save handler: `handleSaveClean` (same margin overrides + hide/show logic)
-- Mobile scroller marker: `[data-autopsy-horizontal]` (added to the horizontal container)
+Gradient text stabilization during capture:
+- `fixGradientElements(element)` temporarily replaces text-gradient nodes with solid color to avoid artifacts in the bitmap; `restoreOriginalElements(...)` reverts post-capture
+
+Capture target:
+- Default capture element id: `receipt-card-shareable` within `ReceiptsCardPage.jsx`
+- To capture the viral card layout instead, render `ReceiptCardViral` and assign this id to its wrapper
+
+Notes on previously explored approaches (from earlier attempts in handoff):
+- dom-to-image/html-to-image were evaluated; html2canvas proved more stable with our gradients/backdrop filters after the gradient-fix step
+- We tuned quality vs speed by using scale 1.5 for standard save and scale 2 for share
 
 ### Prompt/Analysis changes (context enforcement)
 Files: `src/lib/analysis/advancedAnalysis.js`, `src/lib/prompts/brutalPrompt.js`, `src/lib/prompts/deepDivePrompt.js`, `src/lib/prompts/immunityPrompt.js`

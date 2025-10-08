@@ -205,15 +205,15 @@ CRITICAL FLAG RULES:
   "patternDNA": "Their [specific behavior from conversation] + Your [user's response pattern] = [The trap/connection they created]",
   "patternLoop": ["Action1", "Action2", "Action3", "Action4"] - 4 words describing THEIR specific pattern from this conversation,
   "greenFlags": [
-    "What healthy behavior would look like in THIS context",
-    "The standard to keep if this is good",
-    "Opposite of what they actually did"
+    "✅ What healthy behavior would look like in THIS context",
+    "✅ The standard to keep if this is good",
+    "✅ Opposite of what they actually did"
   ],
   "thisMessFlags": [
-    "Specific concerning behaviors from THIS conversation", 
-    "Exact patterns they exhibited",
-    "Timeline patterns from these messages"
-    // FOR HEALTHY RELATIONSHIPS: Use ["None detected - this is what healthy looks like", "Keep these standards high", "Nothing concerning here"]
+    "🚩 Specific concerning behaviors from THIS conversation", 
+    "🚩 Exact patterns they exhibited",
+    "🚩 Timeline patterns from these messages"
+    // FOR HEALTHY RELATIONSHIPS: Use ["✅ None detected - this is what healthy looks like", "✅ Keep these standards high", "✅ Nothing concerning here"]
   ],
   "immunityTraining": [
     "When they [specific behavior from conversation], that's your cue to [action]",

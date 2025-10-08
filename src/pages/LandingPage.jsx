@@ -367,39 +367,7 @@ const LandingPage = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.15),transparent)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.08),transparent)] pointer-events-none" />
       
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-8 py-6 bg-black/85 border-b border-white/10">
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center space-x-3"
-        >
-          <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
-            <span className="text-xl">🔮</span>
-          </div>
-          <span className="text-xl font-bold moving-gradient-text">
-            Get The Receipts
-          </span>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="hidden md:flex items-center space-x-8"
-        >
-          <Link to="/about" className="text-gray-300 hover:text-white transition-colors">About</Link>
-          <Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</Link>
-          <button onClick={() => openModal('login')} className="text-gray-300 hover:text-white transition-colors">Login</button>
-          <Button 
-            onClick={handleGetStarted}
-            className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white px-6 py-2 rounded-full shadow-lg shadow-violet-500/25 transition-all duration-300 hover:scale-105"
-          >
-            Get Started
-          </Button>
-        </motion.div>
-      </nav>
+      {/* Navigation is handled globally by App.jsx MainHeader */}
 
       {/* Hero Section */}
       <section id="home" className="relative px-6 lg:px-8 pt-32 pb-32">
