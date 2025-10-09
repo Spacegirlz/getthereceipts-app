@@ -1532,13 +1532,29 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               </div>
             )}
         
-            {/* Footer - visible for premium users only */}
+            {/* High-End SaaS Footer - visible for premium users only */}
             {!showPaywall && (
             <>
-            <div className="text-center mt-8 mb-2">
-              <p className="text-xs text-stone-400/70 italic">
-                For entertainment purposes - Sage calls it like she sees it
-              </p>
+            <div className="text-center mt-8 mb-4 space-y-3">
+              {/* Privacy & Share Messaging */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <p className="text-xs text-gray-400/80 bg-gray-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/30 backdrop-blur-sm">
+                  🔒 Private. Chat deleted. Never stored.
+                </p>
+                <p className="text-xs text-purple-400/90 bg-purple-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-purple-700/30 backdrop-blur-sm font-medium">
+                  💰 Share & earn • 30% commission • Join 12K+ creators
+                </p>
+              </div>
+              
+              {/* Analysis Context & Disclaimer */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <p className="text-xs text-gray-400/70 bg-gray-900/15 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/20 backdrop-blur-sm">
+                  📍 Based on your message only
+                </p>
+                <p className="text-xs text-stone-400/70 bg-stone-900/15 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-stone-700/20 backdrop-blur-sm italic">
+                  For entertainment purposes - Sage calls it like she sees it
+                </p>
+              </div>
             </div>
             <div className="text-center mt-2 mb-6">
               <p className="text-xs text-stone-200/90/40 tracking-widest">
