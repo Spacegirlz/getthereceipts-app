@@ -1119,51 +1119,63 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       {isPremium && (
         <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
           <div 
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
+            className="flex flex-col gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
             style={{
               background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
               border: '2px solid rgba(20, 184, 166, 0.4)',
               boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
             }}
           >
-          
-            <button 
-              onClick={handleSaveImmunity}
-              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-              style={{
-                border: '1px solid rgba(20, 184, 166, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <Download className="h-4 w-4" />
-              Save Immunity
-            </button>
+            {/* Save/Share Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center">
+              <button 
+                onClick={handleSaveImmunity}
+                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                style={{
+                  border: '1px solid rgba(20, 184, 166, 0.6)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <Download className="h-4 w-4" />
+                Save Immunity
+              </button>
+              
+              <motion.button 
+                animate={{ 
+                  scale: [1, 1.02, 1],
+                  boxShadow: [
+                    '0 0 20px rgba(212, 175, 55, 0.3)',
+                    '0 0 30px rgba(212, 175, 55, 0.5)', 
+                    '0 0 20px rgba(212, 175, 55, 0.3)'
+                  ]
+                }}
+                onClick={handleShareTrophy}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.9)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <Zap className="h-4 w-4" />
+                Share Trophy
+              </motion.button>
+            </div>
             
-            <motion.button 
-              animate={{ 
-                scale: [1, 1.02, 1],
-                boxShadow: [
-                  '0 0 20px rgba(212, 175, 55, 0.3)',
-                  '0 0 30px rgba(212, 175, 55, 0.5)', 
-                  '0 0 20px rgba(212, 175, 55, 0.3)'
-                ]
-              }}
-              onClick={handleShareTrophy}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.9)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-              }}
-            >
-              <Zap className="h-4 w-4" />
-              Share Trophy
-            </motion.button>
+            {/* Subtle Share & Earn Message */}
+            <div className="text-center">
+              <p className="text-xs text-yellow-400/80 font-medium">
+                💰 Share & earn 30% commission
+              </p>
+              <p className="text-[10px] text-yellow-300/60">
+                Every share that converts = $$$
+              </p>
+            </div>
           </div>
           
         </div>

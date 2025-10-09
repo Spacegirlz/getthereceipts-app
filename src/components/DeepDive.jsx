@@ -1489,27 +1489,39 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
 
             {/* Actions - Premium Buttons */}
             {isPremium && (
-              <div className="flex flex-wrap items-center justify-center gap-4 max-w-2xl mx-auto" data-share-hide="true">
-                <button
-                  onClick={handleSaveClean}
-                  className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  Save Playbook
-                </button>
-                <button
-                  onClick={() => {
-                    // Haptic feedback for mobile
-                    if (window.navigator.vibrate) {
-                      window.navigator.vibrate(10);
-                    }
-                    handleSharePlaybook();
-                  }}
-                  className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
-                >
-                  <Share2 className="w-4 h-4" />
-                  Share Playbook
-                </button>
+              <div className="flex flex-col items-center justify-center gap-4 max-w-2xl mx-auto" data-share-hide="true">
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  <button
+                    onClick={handleSaveClean}
+                    className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    Save Playbook
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Haptic feedback for mobile
+                      if (window.navigator.vibrate) {
+                        window.navigator.vibrate(10);
+                      }
+                      handleSharePlaybook();
+                    }}
+                    className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Share Playbook
+                  </button>
+                </div>
+                
+                {/* Subtle Share & Earn Message */}
+                <div className="text-center">
+                  <p className="text-xs text-purple-400/80 font-medium">
+                    💰 Share & earn 30% commission
+                  </p>
+                  <p className="text-[10px] text-purple-300/60">
+                    Every share that converts = $$$
+                  </p>
+                </div>
               </div>
             )}
         
