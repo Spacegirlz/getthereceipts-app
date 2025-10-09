@@ -1140,31 +1140,37 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 Save Immunity
               </button>
               
-              <motion.button 
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                  boxShadow: [
-                    '0 0 20px rgba(212, 175, 55, 0.3)',
-                    '0 0 30px rgba(212, 175, 55, 0.5)', 
-                    '0 0 20px rgba(212, 175, 55, 0.3)'
-                  ]
-                }}
-                onClick={handleShareTrophy}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                  border: '1px solid rgba(212, 175, 55, 0.9)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-                }}
-              >
-                <Zap className="h-4 w-4" />
-                Share Trophy
-              </motion.button>
+              {/* Share Button with Urgency Micro-copy */}
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-xs text-rose-400/90 font-medium animate-pulse">
+                  😱 Your friends need to see this
+                </p>
+                <motion.button 
+                  animate={{ 
+                    scale: [1, 1.02, 1],
+                    boxShadow: [
+                      '0 0 20px rgba(212, 175, 55, 0.3)',
+                      '0 0 30px rgba(212, 175, 55, 0.5)', 
+                      '0 0 20px rgba(212, 175, 55, 0.3)'
+                    ]
+                  }}
+                  onClick={handleShareTrophy}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                    border: '1px solid rgba(212, 175, 55, 0.9)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                  }}
+                >
+                  <Zap className="h-4 w-4" />
+                  🔗 Share Trophy
+                </motion.button>
+              </div>
             </div>
             
             {/* Subtle Share & Earn Message */}

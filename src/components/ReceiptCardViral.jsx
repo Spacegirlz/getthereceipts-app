@@ -522,32 +522,38 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
               {isSharing ? 'Saving...' : 'Save Receipt'}
             </button>
             
-            <motion.button 
-              animate={{ 
-                scale: [1, 1.02, 1],
-                boxShadow: [
-                  '0 0 24px rgba(212, 175, 55, 0.4)',
-                  '0 0 36px rgba(212, 175, 55, 0.6)', 
-                  '0 0 24px rgba(212, 175, 55, 0.4)'
-                ]
-              }}
-              onClick={onScreenshot}
-              disabled={isSharing}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="flex items-center gap-3 text-black font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl disabled:opacity-50"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                border: '2px solid rgba(212, 175, 55, 0.9)',
-                boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)'
-              }}
-            >
-              <Share2 className="h-4 w-4" />
-              {isSharing ? 'Sharing...' : 'Share Receipt'}
-            </motion.button>
+            {/* Share Button with Urgency Micro-copy */}
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-xs text-rose-400/90 font-medium animate-pulse">
+                😱 Your friends need to see this
+              </p>
+              <motion.button 
+                animate={{ 
+                  scale: [1, 1.02, 1],
+                  boxShadow: [
+                    '0 0 24px rgba(212, 175, 55, 0.4)',
+                    '0 0 36px rgba(212, 175, 55, 0.6)', 
+                    '0 0 24px rgba(212, 175, 55, 0.4)'
+                  ]
+                }}
+                onClick={onScreenshot}
+                disabled={isSharing}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="flex items-center gap-3 text-black font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl disabled:opacity-50"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  border: '2px solid rgba(212, 175, 55, 0.9)',
+                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)'
+                }}
+              >
+                <Share2 className="h-4 w-4" />
+                {isSharing ? 'Sharing...' : '🔗 Share Receipt'}
+              </motion.button>
+            </div>
           </div>
           
           {/* Subtle Share & Earn Message */}

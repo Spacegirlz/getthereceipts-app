@@ -1498,19 +1498,26 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     <Download className="w-4 h-4" />
                     Save Playbook
                   </button>
-                  <button
-                    onClick={() => {
-                      // Haptic feedback for mobile
-                      if (window.navigator.vibrate) {
-                        window.navigator.vibrate(10);
-                      }
-                      handleSharePlaybook();
-                    }}
-                    className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    Share Playbook
-                  </button>
+                  
+                  {/* Share Button with Urgency Micro-copy */}
+                  <div className="flex flex-col items-center gap-2">
+                    <p className="text-xs text-rose-400/90 font-medium animate-pulse">
+                      😱 Your friends need to see this
+                    </p>
+                    <button
+                      onClick={() => {
+                        // Haptic feedback for mobile
+                        if (window.navigator.vibrate) {
+                          window.navigator.vibrate(10);
+                        }
+                        handleSharePlaybook();
+                      }}
+                      className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      🔗 Share Playbook
+                    </button>
+                  </div>
                 </div>
                 
                 {/* Subtle Share & Earn Message */}
