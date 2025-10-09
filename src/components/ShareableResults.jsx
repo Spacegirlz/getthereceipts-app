@@ -62,7 +62,7 @@ const ShareableResults = ({ interest, actionItems }) => {
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {actionItems.map((item, index) => (
             <li key={index} style={{ fontSize: '15px', marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-              <span style={{ marginRight: '10px', fontSize: '20px', lineHeight: '1' }}>✅</span>
+              <span style={{ marginRight: '10px', fontSize: '20px', lineHeight: '1' }}>✓</span>
               {item}
             </li>
           ))}

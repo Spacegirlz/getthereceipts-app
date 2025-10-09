@@ -186,7 +186,7 @@ const BlurredSection = ({
               Unlimited Receipts + full {config.title} + Immunity Training
             </p>
             <p className="text-amber-300 text-xs">
-              $29.99/yr • 287 spots left
+              Less than $2.49/month • Cancel anytime
             </p>
           </div>
           

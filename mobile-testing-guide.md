@@ -50,3 +50,4 @@ Create a debug page that simulates mobile behavior and shows detailed logs.
 
 3. **Test on real mobile device** using the ngrok URL
 
+

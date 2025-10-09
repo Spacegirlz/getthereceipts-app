@@ -1,14 +1,46 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useState, useEffect } from 'react';
 import { Shield, AlertTriangle, Zap, Eye, LogOut, Crown, CheckCircle, Calendar, Target, TrendingUp, Clock, Mic, Activity, Download, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
+import { useSocialExport } from '@/hooks/useSocialExport';
+
+// Helper function to remove bad emojis (specifically ✅)
+const cleanFlagText = (text) => {
+  if (!text) return '';
+  // Remove the specific ✅ emoji that's causing double flag issues
+  return text.replace(/✅/g, '').trim();
+};
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
 import BlurredSection from './BlurredSection';
 
 const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false, isPremium = false, originalMessage, context, analysisData }) => {
   const { toast } = useToast();
+  const { captureById } = useSocialExport();
+  
+  // Compact mode state with localStorage persistence
+  const [isCompact, setIsCompact] = useState(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? window.localStorage.getItem('gtr_density') : null;
+      return saved ? saved === 'compact' : true; // default to compact for mobile-first
+    } catch {
+      return true;
+    }
+  });
+  
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('gtr_density', isCompact ? 'compact' : 'standard');
+      }
+    } catch {}
+  }, [isCompact]);
+
+  // Collapsible sections state
+  const [showMoreSides, setShowMoreSides] = useState(false);
+  const [openImmunityTest, setOpenImmunityTest] = useState(false);
+  const [openTraining, setOpenTraining] = useState(false);
   
   // Extract user names from analysis data
   const userName = analysisData?.userName || context?.userName || 'You';
@@ -227,64 +259,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
     }
   };
 
-  const handleShareTrophy = async () => {
-    try {
-      const element = document.querySelector('[data-immunity-component]');
-      const shareText = `🛡️ Just completed my SAGE Immunity Training! Now I'm protected against ${archetypeName} tactics. Get your own protection at www.getthereceipts.com #GetTheReceipts #ImmunityTraining #SageSays`;
-      
-      if (element && navigator.share) {
-        try {
-          const blob = await domtoimage.toBlob(element, {
-            width: element.offsetWidth * 2,
-            height: element.offsetHeight * 2,
-            style: {
-              transform: 'scale(2)',
-              transformOrigin: 'top left'
-            },
-            bgcolor: '#1a1a2e',
-            quality: 1,
-            filter: (node) => {
-              // Remove border styles from captured elements
-              if (node.style) {
-                node.style.border = 'none';
-                node.style.borderTop = 'none';
-                node.style.borderBottom = 'none';
-                node.style.borderLeft = 'none';
-                node.style.borderRight = 'none';
-              }
-              return true;
-            }
-          });
-          
-          if (blob) {
-            const file = new File([blob], `sages-immunity-${Date.now()}.png`, { type: 'image/png' });
-            try {
-              await navigator.share({
-                title: 'SAGE Immunity Training Complete',
-                text: shareText,
-                url: 'https://www.getthereceipts.com',
-                files: [file]
-              });
-            } catch (shareError) {
-              // Fallback to text-only share
-              await navigator.share({
-                title: 'SAGE Immunity Training Complete',
-                text: shareText,
-                url: 'https://www.getthereceipts.com'
-              });
-            }
-          }
-        } catch (error) {
-          copyToClipboard(shareText);
-        }
-      } else {
-        copyToClipboard(shareText);
-      }
-    } catch (error) {
-      console.log('Error in share function:', error);
-      const shareText = `🛡️ Just completed my SAGE Immunity Training! Now I'm protected against ${archetypeName} tactics. Get your own protection at www.getthereceipts.com #GetTheReceipts #ImmunityTraining #SageSays`;
-      copyToClipboard(shareText);
-    }
+  const handleShareTrophy = () => {
+    // Use the new social export system for Immunity Training sharing - with share menu
+    captureById('social-immunity-card', 'Sage-Immunity', true);
   };
 
   const copyToClipboard = (text) => {
@@ -300,391 +277,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
   };
   
   // Save Immunity (Clean) using same mechanics as Truth Receipt
-  const handleSaveImmunity = async () => {
-    const element = document.querySelector('[data-immunity-component]');
-    if (!element) {
-      toast({ title: 'Error', description: 'Could not find immunity component to save.', variant: 'destructive' });
-      return;
-    }
-
-    // Hide everything except: Header Pill, Pattern Verified, THE CYCLE, SEE BOTH SIDES, Your Training, SAGE'S BLESSING
-    const nodesToHide = Array.from(element.querySelectorAll('[data-share-hide="true"]'));
-    
-    // Hide third items in See Both Sides for save/share (keep only 2 each)
-    const thirdGreenFlags = Array.from(element.querySelectorAll('[data-green-flag="true"]'));
-    const thirdRedFlags = Array.from(element.querySelectorAll('[data-red-flag="true"]'));
-
-    // For clean share: show all training items (no longer limiting to 1)
-    const allToHide = [...nodesToHide, ...thirdGreenFlags, ...thirdRedFlags];
-    const previousDisplays = allToHide.map(n => n.style.display);
-
-    try {
-      // Hide unwanted sections
-      allToHide.forEach(n => { n.style.display = 'none'; });
-
-      // Force desktop cycle layout on all devices for export
-      const mobileCycle = element.querySelector('[data-cycle-mobile]');
-      const desktopCycle = element.querySelector('[data-cycle-desktop]');
-      const prevMobileDisplay = mobileCycle ? mobileCycle.style.display : null;
-      const prevDesktopDisplay = desktopCycle ? desktopCycle.style.display : null;
-      if (mobileCycle) mobileCycle.style.display = 'none';
-      if (desktopCycle) desktopCycle.style.display = 'block';
-
-      // Ensure pill text stays on one line during export
-      const immunityPill = element.querySelector('[data-immunity-pill]');
-      const sageLogo = element.querySelector('[data-immunity-pill] img');
-      const prevPillStyles = immunityPill ? {
-        padding: immunityPill.style.padding,
-        whiteSpace: immunityPill.style.whiteSpace,
-        minWidth: immunityPill.style.minWidth,
-        fontSize: immunityPill.style.fontSize
-      } : null;
-      const prevSageLogoStyles = sageLogo ? {
-        width: sageLogo.style.width,
-        height: sageLogo.style.height
-      } : null;
-      
-      if (immunityPill) {
-        immunityPill.style.padding = '6px 10px'; // Reduced by additional 20%
-        immunityPill.style.whiteSpace = 'nowrap';
-        immunityPill.style.minWidth = '170px'; // Reduced by additional 20%
-        immunityPill.style.fontSize = '10px'; // Reduced by additional 20%
-      }
-      
-      // Also reduce the Sage logo size within the pill
-      if (sageLogo) {
-        sageLogo.style.width = '64px'; // Increased for save/share download
-        sageLogo.style.height = '64px'; // Increased for save/share download
-      }
-
-      // Reduce padding and remove borders for save/share export only
-      const cycleSection = element.querySelector('[data-cycle-section]');
-      const trainingSection = element.querySelector('[data-training-section]');
-      const patternDnaSection = element.querySelector('[data-pattern-dna-section]');
-      const seeBothSidesSection = element.querySelector('[data-see-both-sides-section]');
-      const patternVerifiedSection = element.querySelector('[data-pattern-verified-section]');
-      const sageContainer = element.querySelector('[data-sage-blessing-container]');
-      const sageHeader = element.querySelector('[data-sage-blessing-header]');
-      const sageContent = element.querySelector('[data-sage-blessing-content]');
-      const sageText = element.querySelector('[data-sage-blessing-text]');
-      
-      // Store original styles for restoration
-      const cycleInner = cycleSection?.querySelector('.bg-black\\/30');
-      const cycleContent = cycleSection?.querySelector('.p-4');
-      const cycleHeader = cycleSection?.querySelector('.px-4.py-3');
-      const trainingInner = trainingSection?.querySelector('.bg-black\\/30');
-      const trainingItems = trainingSection?.querySelectorAll('.space-y-3');
-      const trainingCards = trainingSection?.querySelectorAll('.p-3');
-      const trainingHeader = trainingSection?.querySelector('.px-4.py-3');
-      const patternDnaInner = patternDnaSection?.querySelector('.bg-black\\/30');
-      
-      const prevStyles = {
-        cycle: cycleSection ? {
-          marginBottom: cycleSection.style.marginBottom,
-          border: cycleSection.style.border,
-          paddingBottom: cycleSection.style.paddingBottom
-        } : null,
-        cycleInner: cycleInner ? {
-          padding: cycleInner.style.padding,
-          border: cycleInner.style.border
-        } : null,
-        cycleContent: cycleContent ? {
-          padding: cycleContent.style.padding
-        } : null,
-        cycleHeader: cycleHeader ? {
-          padding: cycleHeader.style.padding
-        } : null,
-        training: trainingSection ? {
-          marginBottom: trainingSection.style.marginBottom,
-          border: trainingSection.style.border
-        } : null,
-        trainingInner: trainingInner ? {
-          padding: trainingInner.style.padding,
-          border: trainingInner.style.border
-        } : null,
-        trainingItems: trainingItems ? Array.from(trainingItems).map(item => ({
-          gap: item.style.gap
-        })) : null,
-        trainingCards: trainingCards ? Array.from(trainingCards).map(card => ({
-          padding: card.style.padding,
-          textFontSize: card.querySelector('p.text-stone-200\\/90')?.style.fontSize
-        })) : null,
-        trainingHeader: trainingHeader ? {
-          padding: trainingHeader.style.padding
-        } : null,
-        patternDna: patternDnaSection ? {
-          marginBottom: patternDnaSection.style.marginBottom,
-          border: patternDnaSection.style.border
-        } : null,
-        patternDnaInner: patternDnaInner ? {
-          padding: patternDnaInner.style.padding,
-          border: patternDnaInner.style.border
-        } : null,
-        seeBothSides: seeBothSidesSection ? {
-          marginBottom: seeBothSidesSection.style.marginBottom,
-          border: seeBothSidesSection.style.border
-        } : null,
-        patternVerified: patternVerifiedSection ? {
-          marginTop: patternVerifiedSection.style.marginTop,
-          marginBottom: patternVerifiedSection.style.marginBottom
-        } : null,
-        sage: {
-          container: sageContainer ? {
-            padding: sageContainer.style.padding,
-            marginBottom: sageContainer.style.marginBottom,
-            border: sageContainer.style.border
-          } : null,
-          header: sageHeader ? {
-            marginBottom: sageHeader.style.marginBottom
-          } : null,
-          content: sageContent ? {
-            padding: sageContent.style.padding,
-            marginBottom: sageContent.style.marginBottom
-          } : null,
-          text: sageText ? {
-            fontSize: sageText.style.fontSize
-          } : null
-        }
-      };
-
-      // Apply compact styles for save/share export
-      if (cycleSection) {
-        cycleSection.style.marginBottom = '6px';
-        cycleSection.style.border = 'none';
-      }
-      if (trainingSection) {
-        trainingSection.style.marginBottom = '4px'; // Further reduced from 6px
-        trainingSection.style.border = 'none';
-      }
-      if (patternDnaSection) {
-        patternDnaSection.style.marginBottom = '6px';
-        patternDnaSection.style.border = 'none';
-      }
-      if (seeBothSidesSection) {
-        seeBothSidesSection.style.marginBottom = '6px';
-        seeBothSidesSection.style.border = 'none';
-      }
-      if (patternVerifiedSection) {
-        patternVerifiedSection.style.marginTop = '4px'; // Reduced from mt-2 (8px)
-        patternVerifiedSection.style.marginBottom = '12px'; // Reduced from mb-6 (24px)
-      }
-      
-      // Also reduce padding in the inner containers
-      
-      if (cycleInner) {
-        cycleInner.style.padding = '8px';
-        cycleInner.style.border = 'none';
-      }
-      
-      // Also reduce padding in the cycle content area specifically
-      if (cycleContent) {
-        cycleContent.style.padding = '6px 6px 2px 6px'; // Further reduce all padding
-      }
-      
-      // Reduce padding in the cycle header area
-      if (cycleHeader) {
-        cycleHeader.style.padding = '6px 8px';
-      }
-      
-      // Reduce bottom padding of the cycle section container
-      if (cycleSection) {
-        cycleSection.style.paddingBottom = '4px';
-      }
-      if (trainingInner) {
-        trainingInner.style.padding = '4px'; // Further reduced from 6px
-        trainingInner.style.border = 'none';
-      }
-      
-      // Also reduce spacing between training items
-      trainingItems.forEach(item => {
-        if (item) {
-          item.style.gap = '2px'; // Further reduced from 4px to 2px
-        }
-      });
-      
-      // Reduce padding within each training item
-      trainingCards.forEach(card => {
-        if (card) {
-          card.style.padding = '4px'; // Further reduced from 6px
-          // Also reduce font size of training text to 14px
-          const trainingText = card.querySelector('p.text-stone-200\\/90');
-          if (trainingText) {
-            trainingText.style.fontSize = '14px';
-          }
-        }
-      });
-      
-      // Reduce padding in the training header area
-      if (trainingHeader) {
-        trainingHeader.style.padding = '4px 6px'; // Further reduced from 6px 8px
-      }
-      if (patternDnaInner) {
-        patternDnaInner.style.padding = '10px';
-        patternDnaInner.style.border = 'none';
-      }
-      if (sageContainer) {
-        sageContainer.style.padding = '12px';
-        sageContainer.style.marginBottom = '6px';
-        sageContainer.style.border = 'none';
-      }
-      if (sageHeader) {
-        sageHeader.style.marginBottom = '8px';
-      }
-      if (sageContent) {
-        sageContent.style.padding = '0 8px';
-        sageContent.style.marginBottom = '8px';
-      }
-      if (sageText) {
-        sageText.style.fontSize = '16px'; // Increased for better readability
-      }
-
-      // Add export-mode class to remove all borders (like Truth Receipt)
-      element.classList.add('export-mode');
-
-      // Ensure rounded outer corners render with transparency
-      const prevRadius = element.style.borderRadius;
-      const prevOverflow = element.style.overflow;
-      const prevHeight = element.style.height;
-      const prevMaxHeight = element.style.maxHeight;
-      const prevOverflowY = element.style.overflowY;
-      element.style.borderRadius = '24px';
-      element.style.overflow = 'hidden';
-      element.style.height = 'auto';
-      element.style.maxHeight = 'none';
-      element.style.overflowY = 'visible';
-
-      // Use scroll size to capture full content like Truth/ShareComponent
-      const targetWidth = element.scrollWidth || element.offsetWidth;
-      const targetHeight = Math.max(element.scrollHeight, element.offsetHeight, element.clientHeight);
-
-      const dataUrl = await domtoimage.toPng(element, {
-        pixelRatio: 2.5,
-        quality: 1.0,
-        bgcolor: 'transparent',
-        width: targetWidth,
-        height: targetHeight,
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'center'
-        }
-      });
-
-      // Convert data URL to blob for consistent downloader
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
-
-      const timestamp = Date.now();
-      saveAs(blob, `Sage-Immunity-${timestamp}.png`);
-      toast({ title: 'Saved!', description: 'Immunity image downloaded.' });
-    } catch (err) {
-      console.error('Save immunity error', err);
-      toast({ title: 'Error', description: 'Could not save immunity.', variant: 'destructive' });
-    } finally {
-      // Restore hidden nodes
-      allToHide.forEach((n, i) => { n.style.display = previousDisplays[i]; });
-      // Restore forced layout
-      if (mobileCycle && prevMobileDisplay !== null) mobileCycle.style.display = prevMobileDisplay;
-      if (desktopCycle && prevDesktopDisplay !== null) desktopCycle.style.display = prevDesktopDisplay;
-      
-      // Restore pill styles
-      if (immunityPill && prevPillStyles) {
-        immunityPill.style.padding = prevPillStyles.padding;
-        immunityPill.style.whiteSpace = prevPillStyles.whiteSpace;
-        immunityPill.style.minWidth = prevPillStyles.minWidth;
-        immunityPill.style.fontSize = prevPillStyles.fontSize;
-      }
-      if (sageLogo && prevSageLogoStyles) {
-        sageLogo.style.width = prevSageLogoStyles.width;
-        sageLogo.style.height = prevSageLogoStyles.height;
-      }
-      
-      // Restore all modified styles
-      if (cycleSection && prevStyles.cycle) {
-        cycleSection.style.marginBottom = prevStyles.cycle.marginBottom;
-        cycleSection.style.border = prevStyles.cycle.border;
-        cycleSection.style.paddingBottom = prevStyles.cycle.paddingBottom;
-      }
-      if (cycleInner && prevStyles.cycleInner) {
-        cycleInner.style.padding = prevStyles.cycleInner.padding;
-        cycleInner.style.border = prevStyles.cycleInner.border;
-      }
-      if (cycleContent && prevStyles.cycleContent) {
-        cycleContent.style.padding = prevStyles.cycleContent.padding;
-      }
-      if (cycleHeader && prevStyles.cycleHeader) {
-        cycleHeader.style.padding = prevStyles.cycleHeader.padding;
-      }
-      if (trainingSection && prevStyles.training) {
-        trainingSection.style.marginBottom = prevStyles.training.marginBottom;
-        trainingSection.style.border = prevStyles.training.border;
-      }
-      if (trainingInner && prevStyles.trainingInner) {
-        trainingInner.style.padding = prevStyles.trainingInner.padding;
-        trainingInner.style.border = prevStyles.trainingInner.border;
-      }
-      if (trainingItems && prevStyles.trainingItems) {
-        trainingItems.forEach((item, index) => {
-          if (prevStyles.trainingItems[index]) {
-            item.style.gap = prevStyles.trainingItems[index].gap;
-          }
-        });
-      }
-      if (trainingCards && prevStyles.trainingCards) {
-        trainingCards.forEach((card, index) => {
-          if (prevStyles.trainingCards[index]) {
-            card.style.padding = prevStyles.trainingCards[index].padding;
-            // Restore original font size
-            const trainingText = card.querySelector('p.text-stone-200\\/90');
-            if (trainingText && prevStyles.trainingCards[index].textFontSize) {
-              trainingText.style.fontSize = prevStyles.trainingCards[index].textFontSize;
-            }
-          }
-        });
-      }
-      if (trainingHeader && prevStyles.trainingHeader) {
-        trainingHeader.style.padding = prevStyles.trainingHeader.padding;
-      }
-      if (patternDnaSection && prevStyles.patternDna) {
-        patternDnaSection.style.marginBottom = prevStyles.patternDna.marginBottom;
-        patternDnaSection.style.border = prevStyles.patternDna.border;
-      }
-      if (patternDnaInner && prevStyles.patternDnaInner) {
-        patternDnaInner.style.padding = prevStyles.patternDnaInner.padding;
-        patternDnaInner.style.border = prevStyles.patternDnaInner.border;
-      }
-      if (seeBothSidesSection && prevStyles.seeBothSides) {
-        seeBothSidesSection.style.marginBottom = prevStyles.seeBothSides.marginBottom;
-        seeBothSidesSection.style.border = prevStyles.seeBothSides.border;
-      }
-      if (patternVerifiedSection && prevStyles.patternVerified) {
-        patternVerifiedSection.style.marginTop = prevStyles.patternVerified.marginTop;
-        patternVerifiedSection.style.marginBottom = prevStyles.patternVerified.marginBottom;
-      }
-      if (sageContainer && prevStyles.sage.container) {
-        sageContainer.style.padding = prevStyles.sage.container.padding;
-        sageContainer.style.marginBottom = prevStyles.sage.container.marginBottom;
-        sageContainer.style.border = prevStyles.sage.container.border;
-      }
-      if (sageHeader && prevStyles.sage.header) {
-        sageHeader.style.marginBottom = prevStyles.sage.header.marginBottom;
-      }
-      if (sageContent && prevStyles.sage.content) {
-        sageContent.style.padding = prevStyles.sage.content.padding;
-        sageContent.style.marginBottom = prevStyles.sage.content.marginBottom;
-      }
-      if (sageText && prevStyles.sage.text) {
-        sageText.style.fontSize = prevStyles.sage.text.fontSize;
-      }
-      
-      // Remove export-mode class
-      element.classList.remove('export-mode');
-      // Restore rounded/size overrides
-      element.style.borderRadius = prevRadius;
-      element.style.overflow = prevOverflow;
-      element.style.height = prevHeight;
-      element.style.maxHeight = prevMaxHeight;
-      element.style.overflowY = prevOverflowY;
-    }
+  const handleSaveImmunity = () => {
+    // Use the new social export system for Immunity Training - direct download only
+    captureById('social-immunity-card', 'Sage-Immunity', false);
   };
   
   if (!immunityData || typeof immunityData !== 'object') {
@@ -716,7 +311,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
   // Determine risk level based on archetype
   const actualRiskLevel = archetypeName?.includes('Healthy Partner') || 
                          archetypeName?.includes('Green Flag') ||
-                         archetypeName?.toLowerCase().includes('healthy') 
+                         archetypeName?.includes('Communication Champions') ||
+                         archetypeName?.toLowerCase().includes('healthy') ||
+                         archetypeName?.toLowerCase().includes('champion')
                          ? 'low' : riskLevel;
 
   const getRiskColor = (level) => {
@@ -730,31 +327,112 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
   // Match Viral Receipt color coding: green (0-3), orange (4-6), red (7-10)
   const getHeaderArchetypeColor = () => {
-    if (actualRiskLevel === 'low') return '#34D399'; // emerald-400
+    if (actualRiskLevel === 'low') return '#4ADE80'; // green-400 (same as DeepDive)
     if (actualRiskLevel === 'high') return '#F87171'; // red-400
     return '#FB923C'; // orange-400
   };
 
-  // For free users, show blurred version
+  // For free users, show blurred version with mobile paywall overlay (matches Playbook style)
   if (!isPremium && !isCrisisSituation) {
     return (
       <div className="relative w-full max-w-2xl mx-auto px-0 pb-6">
-        <BlurredSection surface="immunity" previewHeight="400px">
-          {/* Main Immunity Card - Mobile-optimized with max-width constraints */}
-          <motion.div 
-            data-immunity-component
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-            className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
-            style={{
-              background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-              backdropFilter: 'blur(20px) saturate(200%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-              border: '2px solid rgba(212, 175, 55, 0.4)',
-              boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
-            }}
-          >
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900/40 via-slate-800/20 to-slate-900/40 border border-slate-600/30">
+          {/* Actual Content (Blurred Preview) */}
+          <div className="p-6 sm:p-8 filter blur-sm pointer-events-none">
+            {/* Header preview */}
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400/25 to-orange-400/25 border border-yellow-400/40 mb-3">
+                <span className="text-2xl">🛡️</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight">
+                Sage's Immunity Training
+              </h3>
+            </div>
+            {/* Preview blocks */}
+            <div className="space-y-4">
+              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+                <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🔁 Break The Cycle</h4>
+                <p className="text-gray-300 leading-relaxed">Spot the pattern early and stop repeating it with field-tested moves…</p>
+              </div>
+              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+                <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🎯 Micro-Lessons</h4>
+                <p className="text-gray-300 leading-relaxed">Short drills that raise your baseline and protect your peace…</p>
+              </div>
+              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+                <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🧪 Immunity Test</h4>
+                <p className="text-gray-300 leading-relaxed">A quick test to know exactly where you stand—and what to do next…</p>
+              </div>
+              {/* See Both Sides (Locked preview: headings only, blurred placeholders) */}
+              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+                <div className="grid grid-cols-2">
+                  <div className="px-2 py-2 bg-gradient-to-br from-emerald-500/10 to-green-500/5 border-r border-white/10">
+                    <h5 className="text-emerald-300 font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
+                  </div>
+                  <div className="px-2 py-2 bg-gradient-to-br from-rose-500/10 to-pink-500/5">
+                    <h5 className="text-rose-300 font-bold text-xs sm:text-sm text-center">What You Got</h5>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 divide-x divide-white/10">
+                  {/* Left placeholders */}
+                  <div className="p-3 space-y-2">
+                    <div className="h-3 rounded-md bg-white/15 blur-[1px]"></div>
+                    <div className="h-3 rounded-md bg-white/15 blur-[1px] w-5/6"></div>
+                    <div className="h-3 rounded-md bg-white/15 blur-[1px] w-4/6"></div>
+                  </div>
+                  {/* Right placeholders */}
+                  <div className="p-3 space-y-2">
+                    <div className="h-3 rounded-md bg-white/15 blur-[1px]"></div>
+                    <div className="h-3 rounded-md bg-white/15 blur-[1px] w-5/6"></div>
+                    <div className="h-3 rounded-md bg-white/15 blur-[1px] w-4/6"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Unlock Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 backdrop-blur-sm flex items-center justify-center">
+            <div className="text-center p-6 sm:p-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400/30 to-orange-400/30 border-2 border-yellow-400/50 mb-5 shadow-lg shadow-yellow-500/30">
+                <span className="text-3xl">🔒</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 leading-tight">
+                Unlock Immunity Training
+              </h3>
+              <p className="text-base sm:text-lg text-gray-300 leading-relaxed mb-5 max-w-md mx-auto">
+                Build real immunity: break the cycle, train your responses, and protect your peace
+              </p>
+              <ul className="text-sm text-gray-300/90 mb-6 space-y-2 max-w-md mx-auto">
+                <li>• Personalized drills that actually stick</li>
+                <li>• Micro-lessons for tough moments</li>
+                <li>• One quick test to know your status</li>
+              </ul>
+              <button
+                onClick={() => window.location.href = '/pricing'}
+                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                Unlock Immunity
+              </button>
+              <p className="text-sm text-gray-400 mt-3">$29.99/year • Cancel anytime</p>
+            </div>
+          </div>
+        </div>
+
+        {/* The blurred preview below retains original layout for continuity, but stays hidden to interactions */}
+        <motion.div 
+          data-immunity-component
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          className={`relative rounded-[24px] ${isCompact ? 'p-3 sm:p-3 md:p-4' : 'p-3 sm:p-4 md:p-6'} text-stone-200/90 mt-4`}
+          style={{
+            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            backdropFilter: 'blur(20px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+            border: '2px solid rgba(212, 175, 55, 0.4)',
+            boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
+          }}
+        >
         {/* Premium dot pattern background */}
         <div 
           className="absolute inset-0 opacity-[0.02] pointer-events-none"
@@ -769,20 +447,20 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8"
+          className={isCompact ? 'mb-5' : 'mb-8'}
         >
           <div className="text-center mb-1 relative z-50">
             <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
               <img
                 src={sageDarkCircle}
                 alt="Sage"
-                className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
+                className={`object-contain rounded-full border-2 border-teal-400/40 relative z-50 ${isCompact ? 'w-14 h-14 sm:w-16 sm:h-16' : 'w-16 h-16 sm:w-20 sm:h-20'}`}
             style={{ 
                   filter: 'brightness(1.2) contrast(1.1)',
                   boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
                 }}
               />
-              <span className="text-sm sm:text-lg font-bold tracking-widest relative z-50"
+              <span className={`${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-lg'} font-bold tracking-widest relative z-50`}
                 style={{
                   color: '#14B8A6',
                   textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
@@ -790,11 +468,20 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 IMMUNITY TRAINING
               </span>
             </div>
+            {/* Density toggle */}
+            <div className="mt-2 mb-2 flex justify-center">
+              <button
+                onClick={() => setIsCompact((v) => !v)}
+                className="text-[11px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition"
+              >
+                View: {isCompact ? 'Compact' : 'Standard'}
+              </button>
+            </div>
             {/* Pattern Verified subline */}
-            <div className="mt-2 mb-6" data-pattern-verified-section>
+            <div className={isCompact ? 'mt-1 mb-4' : 'mt-2 mb-6'} data-pattern-verified-section>
               <h3
-                className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
-                style={{ color: getHeaderArchetypeColor(), textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+                className={`heading-font font-semibold ${isCompact ? 'text-base sm:text-lg' : 'text-lg sm:text-xl md:text-2xl'} leading-tight`}
+                style={{ color: getHeaderArchetypeColor() + 'E6', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
               >
                 Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
             </h3>
@@ -804,23 +491,23 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
         {/* Pattern DNA Formula - Central Visual */}
         {patternDNA && (
-          <div className="mb-8" data-share-hide="true" data-pattern-dna-section>
+          <div className={isCompact ? 'mb-5' : 'mb-8'} data-share-hide="true" data-pattern-dna-section>
             <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm">
-              <div className="px-4 py-3 border-b border-transparent">
-              <div className="flex items-center gap-2">
+              <div className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} border-b border-transparent`}>
+                <div className="flex items-center gap-2">
                   <span className="text-lg">🧬</span>
-                  <h4 className="font-bold text-sm tracking-wide uppercase" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
+                  <h4 className={`font-bold ${isCompact ? 'text-xs' : 'text-sm'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>What This Looks Like</h4>
+                </div>
               </div>
-            </div>
-              <div className="p-6 text-center">
-                <div className="text-lg sm:text-xl font-medium text-stone-200/90 leading-relaxed"
+              <div className={`${isCompact ? 'p-4' : 'p-6'} text-center`}>
+                <div className={`${isCompact ? 'text-base sm:text-lg' : 'text-lg sm:text-xl'} font-medium text-stone-200/90 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}
                   style={{ 
                     textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
-                    lineHeight: '1.6'
+                    lineHeight: isCompact ? undefined : '1.6'
                   }}>
                   {patternDNA}
-                  </div>
                 </div>
+              </div>
             </div>
           </div>
         )}
@@ -828,23 +515,23 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
         {/* The Cycle - Prominent & Animated */}
         {patternLoop.length > 0 && (
-          <div className="mb-8" data-cycle-section>
+          <div className={isCompact ? 'mb-5' : 'mb-8'} data-cycle-section>
             <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
             style={{
                 border: '1px solid rgba(20, 184, 166, 0.35)',
                 boxShadow: '0 0 0 1px rgba(20, 184, 166, 0.25), 0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
                 backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
               }}>
-              <div className="px-4 py-3 border-b border-transparent">
+              <div className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} border-b border-transparent`}>
                 <div className="flex items-center justify-start gap-2">
                   <span className="text-lg animate-pulse">🔄</span>
-                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                  <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>
                     The Cycle
                   </h4>
+                </div>
               </div>
-            </div>
-            
-              <div className="p-4">
+              
+              <div className={isCompact ? 'p-3' : 'p-4'}>
                 {/* Mobile: Circular Layout with Numbers */}
                 <div className="sm:hidden" data-cycle-mobile>
                   <div className="relative flex items-center justify-center">
@@ -855,7 +542,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.1 + index * 0.1 }}
-                          className="bg-cyan-900/30 text-cyan-300 px-2 py-2 rounded-xl text-xs font-medium text-center border border-cyan-500/20 hover:bg-cyan-800/40 transition-all duration-300 relative"
+                          className={`bg-cyan-900/30 text-cyan-300 rounded-xl text-xs font-medium text-center border border-cyan-500/20 hover:bg-cyan-800/40 transition-all duration-300 relative ${isCompact ? 'px-2 py-1.5' : 'px-2 py-2'}`}
                           style={{
                             boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
                           }}
@@ -939,35 +626,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         </div>
         )}
 
-        {/* Immunity Test - Field Test */}
-        {immunityTest && (
-          <div className="mb-8" data-share-hide="true">
-            <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] cursor-pointer">
-              <div className="px-4 py-3 border-b border-white/10">
-                <div className="flex items-center justify-start gap-2">
-                  <span className="text-lg animate-pulse">🧪</span>
-                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
-                    Immunity Test
-                  </h4>
-                </div>
-              </div>
-              
-              <div className="p-6">
-                <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed text-center font-medium" 
-                  style={{ 
-                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
-                    lineHeight: '1.6'
-                  }}>
-                  {immunityTest}
-                </p>
-              </div>
-              
-              {/* Subtle hover glow */}
-              <div className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ boxShadow: 'inset 0 0 20px rgba(255,255,255,0.06)' }} />
-            </div>
-          </div>
-        )}
-
         {/* Green Flags vs This Mess */}
         <div className="mb-8" data-see-both-sides-section>
           <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm shadow-lg">
@@ -999,7 +657,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   {Array.isArray(greenFlags) && greenFlags.length > 0 ? greenFlags.slice(0, 3).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-green-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
-                      <span className="text-emerald-200 text-sm leading-relaxed">{sign}</span>
+                      <span className="text-emerald-200 text-sm leading-relaxed">{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
@@ -1016,7 +674,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? thisMessFlags.slice(0, 3).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-red-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
-                      <span className="text-rose-200 text-sm leading-relaxed">{sign}</span>
+                      <span className="text-rose-200 text-sm leading-relaxed">{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
@@ -1029,6 +687,35 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             </div>
           </div>
         </div>
+
+        {/* Immunity Test - Field Test */}
+        {immunityTest && (
+          <div className="mb-8" data-share-hide="true">
+            <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] cursor-pointer">
+              <div className="px-4 py-3 border-b border-white/10">
+                <div className="flex items-center justify-start gap-2">
+                  <span className="text-lg animate-pulse">🧪</span>
+                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                    Immunity Test
+                  </h4>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed text-center font-medium" 
+                  style={{ 
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+                    lineHeight: '1.6'
+                  }}>
+                  {immunityTest}
+                </p>
+              </div>
+              
+              {/* Subtle hover glow */}
+              <div className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ boxShadow: 'inset 0 0 20px rgba(255,255,255,0.06)' }} />
+            </div>
+          </div>
+        )}
 
         {/* Your Training - Checkpoints */}
         {immunityTraining.length > 0 && (
@@ -1073,8 +760,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </div>
         )}
 
-          </motion.div>
-        </BlurredSection>
+        </motion.div>
       </div>
     );
   }
@@ -1089,7 +775,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
+        className={`relative rounded-[24px] ${isCompact ? 'p-3 sm:p-3 md:p-4' : 'p-3 sm:p-4 md:p-6'} text-stone-200/90`}
         style={{
           background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
           backdropFilter: 'blur(20px) saturate(200%)',
@@ -1136,8 +822,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             {/* Pattern Verified subline */}
             <div className="mt-2 mb-6" data-pattern-verified-section>
               <h3
-                className="heading-font font-extrabold text-lg sm:text-xl md:text-2xl leading-tight"
-                style={{ color: getHeaderArchetypeColor(), textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+                className="heading-font font-semibold text-lg sm:text-xl md:text-2xl leading-tight"
+                style={{ color: getHeaderArchetypeColor() + 'E6', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
               >
                 Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
               </h3>
@@ -1186,6 +872,32 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 </div>
               </div>
               <div className="p-4">
+                {/* Mobile: Circular Layout with Numbers */}
+                <div className="sm:hidden" data-cycle-mobile>
+                  <div className="relative flex items-center justify-center">
+                    <div className="grid grid-cols-2 gap-3 w-full max-w-xs relative">
+                      {patternLoop.slice(0, 4).map((step, index) => (
+                        <motion.div
+                          key={step}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.1 + index * 0.1 }}
+                          className={`bg-cyan-900/30 text-cyan-300 rounded-xl text-xs font-medium text-center border border-cyan-500/20 hover:bg-cyan-800/40 transition-all duration-300 relative ${isCompact ? 'px-2 py-1.5' : 'px-2 py-2'}`}
+                          style={{
+                            boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
+                          }}
+                        >
+                          <div className="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            {index + 1}
+                          </div>
+                          {step}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Desktop: Prominent Circular Flow */}
                 <div className="hidden sm:block" data-cycle-desktop>
                   <div className="relative flex items-center justify-center">
                     <div className="flex items-center justify-center gap-3">
@@ -1215,64 +927,56 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </div>
         )}
 
-        {/* Immunity Test */}
-        {immunityTest && (
-          <div className="mb-8" data-share-hide="true">
-            <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg">
-              <div className="px-4 py-3 border-b border-white/10">
-                <div className="flex items-center justify-start gap-2">
-                  <span className="text-lg">🧪</span>
-                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
-                    Immunity Test
-                  </h4>
-                </div>
-              </div>
-              <div className="p-6">
-                <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed text-center font-medium" 
-                  style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)', lineHeight: '1.6' }}>
-                  {immunityTest}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* See Both Sides */}
-        <div className="mb-8" data-see-both-sides-section>
+        <div className={isCompact ? 'mb-5' : 'mb-8'} data-see-both-sides-section>
           <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm shadow-lg">
-            <div className="px-4 py-3 border-b border-transparent">
+            <div className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} border-b border-transparent`}>
               <div className="flex items-center justify-start gap-2">
                 <span className="text-lg">⚖️</span>
-                <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>See Both Sides</h4>
+                <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>See Both Sides</h4>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-600/20">
-              <div className="p-4 sm:p-5 bg-gradient-to-br from-emerald-500/5 to-green-500/5">
-                <ul className="space-y-3">
-                  {Array.isArray(greenFlags) && greenFlags.length > 0 ? greenFlags.slice(0, 3).map((sign, index) => (
+              <div className={`${isCompact ? 'p-3 sm:p-4' : 'p-4 sm:p-5'} bg-gradient-to-br from-emerald-500/5 to-green-500/5`}>
+                <ul className={isCompact ? 'space-y-2.5' : 'space-y-3'}>
+                  {Array.isArray(greenFlags) && greenFlags.length > 0 ? (showMoreSides ? greenFlags : greenFlags.slice(0, 3)).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-green-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
-                      <span className="text-emerald-200 text-sm leading-relaxed">{sign}</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-emerald-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
-                      <span className="text-emerald-200 text-sm leading-relaxed">No healthy signs detected</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-emerald-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>No healthy signs detected</span>
+                    </li>
+                  )}
+                  {(Array.isArray(greenFlags) && greenFlags.length > 3) && (
+                    <li className="mt-1">
+                      <button onClick={() => setShowMoreSides((v)=>!v)} className="text-xs text-emerald-300/90 underline">
+                        {showMoreSides ? 'Show less' : `Show ${greenFlags.length - 3} more`}
+                      </button>
                     </li>
                   )}
                 </ul>
               </div>
-              <div className="p-4 sm:p-5 bg-gradient-to-br from-rose-500/5 to-pink-500/5">
-                <ul className="space-y-3">
-                  {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? thisMessFlags.slice(0, 3).map((sign, index) => (
+              <div className={`${isCompact ? 'p-3 sm:p-4' : 'p-4 sm:p-5'} bg-gradient-to-br from-rose-500/5 to-pink-500/5`}>
+                <ul className={isCompact ? 'space-y-2.5' : 'space-y-3'}>
+                  {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? (showMoreSides ? thisMessFlags : thisMessFlags.slice(0, 3)).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-red-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
-                      <span className="text-rose-200 text-sm leading-relaxed">{sign}</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-rose-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
-                      <span className="text-rose-200 text-sm leading-relaxed">No red flags detected</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-rose-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>No red flags detected</span>
+                    </li>
+                  )}
+                  {(Array.isArray(thisMessFlags) && thisMessFlags.length > 3) && (
+                    <li className="mt-1">
+                      <button onClick={() => setShowMoreSides((v)=>!v)} className="text-xs text-rose-300/90 underline">
+                        {showMoreSides ? 'Show less' : `Show ${thisMessFlags.length - 3} more`}
+                      </button>
                     </li>
                   )}
                 </ul>
@@ -1281,44 +985,72 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </div>
         </div>
 
+        {/* Immunity Test */}
+        {immunityTest && (
+          <div className={isCompact ? 'mb-5' : 'mb-8'} data-share-hide="true">
+            <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg">
+              <button onClick={() => setOpenImmunityTest(v=>!v)} className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} w-full text-left border-b border-white/10 flex items-center justify-between`}>
+                <div className="flex items-center justify-start gap-2">
+                  <span className="text-lg">🧪</span>
+                  <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>
+                    Immunity Test
+                  </h4>
+                </div>
+                <span className="text-white/60 text-xs">{openImmunityTest ? 'Hide' : 'Open'}</span>
+              </button>
+              {openImmunityTest && (
+                <div className={isCompact ? 'p-4' : 'p-6'}>
+                  <p className={`${isCompact ? 'text-[13.5px]' : 'text-sm sm:text-base'} text-stone-200/90 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'} text-center font-medium`} 
+                    style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
+                    {immunityTest}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Your Training */}
         {immunityTraining.length > 0 && (
-          <div className="mb-8" data-training-section>
+          <div className={isCompact ? 'mb-5' : 'mb-8'} data-training-section>
             <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
               style={{
                 border: 'none',
                 boxShadow: '0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
                 backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
               }}>
-              <div className="px-4 py-3 border-b border-transparent">
+              <button onClick={() => setOpenTraining(v=>!v)} className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} w-full text-left border-b border-transparent flex items-center justify-between`}>
                 <div className="flex items-center justify-start gap-2">
                   <span className="text-lg">🎯</span>
-                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                  <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>
                     Your Training
                   </h4>
                 </div>
-              </div>
-              <div className="p-4">
-                <div className="space-y-3">
-                  {immunityTraining.map((checkpoint, index) => (
-                    <motion.div
-                      key={index}
-                      data-training-item={index > 0 ? "true" : undefined}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 + index * 0.1 }}
-                      className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-transparent hover:bg-white/10 transition-all duration-300"
-                    >
-                      <div className="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-transparent">
-                        <span className="text-teal-300 text-sm font-bold">✓</span>
-                      </div>
-                      <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed font-medium">
-                        {checkpoint}
-                      </p>
-                    </motion.div>
-                  ))}
+                <span className="text-white/60 text-xs">{openTraining ? 'Hide' : 'Open'}</span>
+              </button>
+              {openTraining && (
+                <div className={isCompact ? 'p-3' : 'p-4'}>
+                  <div className={isCompact ? 'space-y-2.5' : 'space-y-3'}>
+                    {immunityTraining.map((checkpoint, index) => (
+                      <motion.div
+                        key={index}
+                        data-training-item={index > 0 ? "true" : undefined}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 + index * 0.1 }}
+                        className={`flex items-start gap-3 ${isCompact ? 'p-2.5' : 'p-3'} bg-white/5 rounded-lg border border-transparent hover:bg-white/10 transition-all duration-300`}
+                      >
+                        <div className="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-transparent">
+                          <span className="text-teal-300 text-sm font-bold">✓</span>
+                        </div>
+                        <p className={`${isCompact ? 'text-[13.5px]' : 'text-sm sm:text-base'} ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'} text-stone-200/90 font-medium`}>
+                          {checkpoint}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -1326,8 +1058,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
         {/* Sage's Blessing - Premium Sunset Treatment */}
         {sageBlessing && (
-        <div className="mb-8">
-            <div className="max-w-2xl mx-auto p-6 sm:p-8 relative overflow-hidden" data-sage-blessing-container style={{
+        <div className={isCompact ? 'mb-5' : 'mb-8'}>
+            <div className={`max-w-2xl mx-auto ${isCompact ? 'p-4 sm:p-5' : 'p-6 sm:p-8'} relative overflow-hidden`} data-sage-blessing-container style={{
               background: 'rgba(0,0,0,0.35)',
             backdropFilter: 'blur(10px)',
             borderRadius: '24px',
@@ -1336,7 +1068,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           }}>
               <div className="text-center mb-6 sm:mb-8" data-sage-blessing-header>
                 <Crown className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-4" style={{ color: '#F59E0B' }} />
-              <h4 className="font-bold text-base sm:text-lg md:text-xl tracking-wide" 
+              <h4 className={`font-bold ${isCompact ? 'text-sm sm:text-base' : 'text-base sm:text-lg md:text-xl'} tracking-wide`} 
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                   WebkitBackgroundClip: 'text',
@@ -1347,14 +1079,14 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </h4>
             </div>
             
-              <div className="px-4 sm:px-6 mb-8" data-sage-blessing-content>
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl font-medium text-center leading-relaxed" data-sage-blessing-text
+              <div className={`${isCompact ? 'px-3 sm:px-4 mb-5' : 'px-4 sm:px-6 mb-8'}`} data-sage-blessing-content>
+                <p className={`${isCompact ? 'text-[13.5px] sm:text-sm' : 'text-sm sm:text-base md:text-lg lg:text-xl'} font-medium text-center ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`} data-sage-blessing-text
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
-                  lineHeight: '1.6'
+                  lineHeight: isCompact ? undefined : '1.6'
                 }}>
                   "{sageBlessing}"
               </p>

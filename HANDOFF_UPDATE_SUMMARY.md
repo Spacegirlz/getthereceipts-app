@@ -80,6 +80,25 @@ This addendum documents the exact edits made today for the reworked free tier, b
 - Immunity lock screen: added thin gold border + glow; added full‑width “Unlock Immunity Training” button; removed “Continue with Sage’s Tea.”
 - Disclaimer copy updated across receipt footers (see Copy section below).
 
+### Expert Tips Implemented (Playbook + Immunity)
+- Crisis detection hardening: `isCrisisSituation` is now a strict boolean, true only for explicit Emergency/Crisis archetypes, `mode === 'safety_override'`, or `safetyOverride.triggered === true`. Prevents false positives that bypass paywalls.
+- Single source of truth for paywalls: removed mixed/legacy panels (e.g., small “Go Premium” tiles). Replaced with one compact SaaS card (lock badge → headline → 3 bullets → gold CTA → price) to guarantee fit and conversion on mobile.
+- Headings-only locked previews: “See Both Sides” shows headings and blurred placeholders (no content leak) to preserve information scent and drive upgrades.
+- Mobile-first density: reduced paddings/typography and tightened gaps so entire paywall card fits one viewport on mobile; desktop remains full-size.
+- Consistent visual language: shared gold lock, gradient CTA, and subtle border/glow across Playbook and Immunity for brand coherence.
+- Debug affordance: optional URL flag can be added (`?forceImmunityPaywall=1`) to force the Immunity paywall during QA without changing account state (not enabled by default).
+
+### Where to edit (for future tweaks)
+- Playbook paywall card: `src/components/DeepDive.jsx` (locked preview section).
+- Immunity paywall card in tab wrapper: `src/components/TabbedReceiptInterface.jsx` (locked Immunity card block).
+- Immunity inline paywall overlay: `src/components/ImmunityTraining.jsx` (non‑premium branch with blurred preview + overlay).
+
+### Copy slots to adjust
+- Headline: “Unlock Immunity Training”/“Unlock Complete Playbook.”
+- Subcopy: one concise sentence under headline.
+- Bullets: three items under “what you’ll unlock.”
+- CTA label and price line.
+
 ### Files touched today
 - `src/components/DeepDive.jsx`
   - Added centered circular lock badge above Playbook header (matches Immunity style)

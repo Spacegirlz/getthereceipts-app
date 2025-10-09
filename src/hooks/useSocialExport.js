@@ -105,24 +105,69 @@ export function useSocialExport() {
         if (useShareAPI && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
           try {
             console.log('📱 Using Web Share API');
-            // Random viral share texts with hashtags
-            const shareTexts = [
-              'Sage AI just read my texts and I\'m not okay 💀\n#getthereceipts #sageknows',
-              'This AI called me out on my own messages and I\'m deceased ☠️\n#getthereceipts #sageknows',
-              'Sage just analyzed my texts and I need therapy now 🫠\n#getthereceipts #sageknows',
-              'This AI read my messages and absolutely destroyed me 💀\n#getthereceipts #sageknows',
-              'Sage just exposed my text game and I\'m crying 😭\n#getthereceipts #sageknows',
-              'Sage AI decoded my entire life in 30 seconds 💀\n#getthereceipts #sageknows',
-              'Sage gets it 🔥\n#getthereceipts #sageknows',
-              'I wasn\'t ready for this 💀\n#getthereceipts #sageknows',
-              'Well damn 😭\n#getthereceipts #sageknows'
-            ];
+            // Get share texts based on content type
+            const getShareTexts = (prefix) => {
+              if (prefix === 'Sage-Receipt') {
+                return [
+                  'Sage AI just read my texts and I\'m not okay 💀\n#getthereceipts #sageknows',
+                  'This AI called me out on my own messages and I\'m deceased ☠️\n#getthereceipts #sageknows',
+                  'Sage just analyzed my texts and I need therapy now 🫠\n#getthereceipts #sageknows',
+                  'This AI read my messages and absolutely destroyed me 💀\n#getthereceipts #sageknows',
+                  'Sage just exposed my text game and I\'m crying 😭\n#getthereceipts #sageknows',
+                  'Sage AI decoded my entire life in 30 seconds 💀\n#getthereceipts #sageknows',
+                  'Sage gets it 🔥\n#getthereceipts #sageknows',
+                  'I wasn\'t ready for this 💀\n#getthereceipts #sageknows',
+                  'Well damn 😭\n#getthereceipts #sageknows'
+                ];
+              } else if (prefix === 'Sage-Playbook') {
+                return [
+                  'This AI just read my entire situation and I\'m not okay 💀\n#getthereceipts #sageknows',
+                  'Sage just exposed my whole game and I\'m deceased ☠️\n#getthereceipts #sageknows',
+                  'This playbook called me out and I\'m actually crying 😭\n#getthereceipts #sageknows',
+                  'Sage just decoded my entire strategy in 30 seconds 🔥\n#getthereceipts #sageknows',
+                  'This AI read my patterns and served the tea 🫖\n#getthereceipts #sageknows',
+                  'Sage just gave me the blueprint and I\'m not mad 💀\n#getthereceipts #sageknows',
+                  'This playbook gets it 🔥\n#getthereceipts #sageknows',
+                  'I wasn\'t ready for this level of accuracy 💀\n#getthereceipts #sageknows',
+                  'Well damn, this hits different 😭\n#getthereceipts #sageknows'
+                ];
+              } else if (prefix === 'Sage-Immunity') {
+                return [
+                  'This AI just read my entire situation and I\'m not okay 💀\n#getthereceipts #sageknows',
+                  'Sage just exposed my whole game and I\'m deceased ☠️\n#getthereceipts #sageknows',
+                  'This immunity training called me out and I\'m actually crying 😭\n#getthereceipts #sageknows',
+                  'Sage just decoded my entire defense strategy in 30 seconds 🔥\n#getthereceipts #sageknows',
+                  'This AI read my patterns and served the protection tea 🫖\n#getthereceipts #sageknows',
+                  'Sage just gave me the blueprint and I\'m not mad 💀\n#getthereceipts #sageknows',
+                  'This immunity training gets it 🔥\n#getthereceipts #sageknows',
+                  'I wasn\'t ready for this level of accuracy 💀\n#getthereceipts #sageknows',
+                  'Well damn, this hits different 😭\n#getthereceipts #sageknows'
+                ];
+              } else {
+                // Default fallback
+                return [
+                  'Sage AI just read my texts and I\'m not okay 💀\n#getthereceipts #sageknows',
+                  'This AI called me out on my own messages and I\'m deceased ☠️\n#getthereceipts #sageknows',
+                  'Sage just analyzed my texts and I need therapy now 🫠\n#getthereceipts #sageknows'
+                ];
+              }
+            };
+            
+            const shareTexts = getShareTexts(safePrefix);
             
             const randomText = shareTexts[Math.floor(Math.random() * shareTexts.length)];
             
+            // Get appropriate title based on content type
+            const getShareTitle = (prefix) => {
+              if (prefix === 'Sage-Receipt') return 'My Sage Receipt';
+              if (prefix === 'Sage-Playbook') return 'My Sage Playbook';
+              if (prefix === 'Sage-Immunity') return 'My Sage Immunity Training';
+              return 'My Sage Analysis';
+            };
+            
             await navigator.share({
               files: [file],
-              title: 'My Sage Receipt',
+              title: getShareTitle(safePrefix),
               text: randomText
             });
             toast({ 

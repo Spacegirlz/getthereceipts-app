@@ -1,4 +1,4 @@
-import React, { memo, useMemo, Fragment } from 'react';
+import React, { memo, useMemo, Fragment, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Download, Share2 } from 'lucide-react';
 import TrendSticker from '@/components/TrendSticker';
@@ -26,6 +26,10 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     originalMessage,
     userQuestion
   } = results;
+
+  // Always use compact density for Receipt on mobile
+  const isCompact = true;
+  const [showAllFlags, setShowAllFlags] = useState(false);
 
   // Extract user question from originalMessage
   const extractUserQuestion = (message) => {
@@ -208,7 +212,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     return "text-red-400";                         // Red for 7-10 flags (toxic)
   };
 
-  const Metric = ({ label, value, icon, colorClass }) => {
+  const Metric = ({ label, value, icon, colorClass, compact = false }) => {
     const getProgressWidth = () => {
       if (label === 'RED FLAGS' || label === 'GREEN FLAGS') {
         return `${(value / 10) * 100}%`;
@@ -217,21 +221,21 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     };
 
     return (
-      <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-        {/* Mobile-optimized spacing and typography */}
-        <div className="text-sm sm:text-xs uppercase tracking-wider text-white/70 mb-2">
+      <div className={`bg-black/50 rounded-2xl ${compact ? 'p-3' : 'p-4 sm:p-5'} border border-white/10 shadow-lg`}>
+        {/* Premium typography and spacing */}
+        <div className={`${compact ? 'text-[10px] mb-2' : 'text-xs sm:text-sm mb-3'} uppercase tracking-wider text-white/80 font-semibold`}>
           {label}
         </div>
-        <div className={`text-2xl sm:text-3xl font-bold ${colorClass} mb-3 sm:mb-2`}>
+        <div className={`${compact ? 'text-xl' : 'text-3xl sm:text-4xl'} font-black ${colorClass} ${compact ? 'mb-2' : 'mb-4'} font-mono`}>
           {(label === 'RED FLAGS' || label === 'GREEN FLAGS') ? `${value}/10` : `${value}%`}
         </div>
-        <div className="px-1 sm:px-2">
-          <div className="w-full bg-white/20 rounded-full h-3 sm:h-2">
+        <div className="px-1.5">
+          <div className={`w-full bg-white/25 rounded-full ${compact ? 'h-2' : 'h-3'} shadow-inner`}>
             <div 
-              className={`h-3 sm:h-2 rounded-full ${
-                colorClass.includes('red') ? 'bg-red-400' : 
-                colorClass.includes('green') ? 'bg-green-400' : 
-                colorClass.includes('orange') ? 'bg-orange-400' : 'bg-teal-400'
+              className={`${compact ? 'h-2' : 'h-3'} rounded-full shadow-lg ${
+                colorClass.includes('red') ? 'bg-gradient-to-r from-red-400 to-red-500' : 
+                colorClass.includes('green') ? 'bg-gradient-to-r from-green-400 to-green-500' : 
+                colorClass.includes('orange') ? 'bg-gradient-to-r from-orange-400 to-orange-500' : 'bg-gradient-to-r from-teal-400 to-teal-500'
               }`}
               style={{ width: getProgressWidth() }}
             />
@@ -255,13 +259,13 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     >
       <div 
         id="receipt-inner-container"
-        className={`relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90`}
+        className={`relative rounded-3xl ${isCompact ? 'p-4 sm:p-5 md:p-6' : 'p-6 sm:p-8 md:p-10'} text-stone-200/90`}
         style={{
           background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-          backdropFilter: 'blur(20px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-          border: '2px solid rgba(20, 184, 166, 0.4)',
-          boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+          backdropFilter: 'blur(24px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+          border: '2px solid rgba(20, 184, 166, 0.5)',
+          boxShadow: '0 12px 40px rgba(20, 184, 166, 0.2), 0 0 100px rgba(20, 184, 166, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
         }}>
         {isSavage && (
           <div className="absolute top-4 right-4 z-20">
@@ -278,43 +282,44 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
         
 
         <div className="relative z-10">
-          {/* SAGE HEADER */}
-          <div className="text-center mb-1 relative z-50">
-            <div className="inline-flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full border border-white/10 mb-2 relative z-50">
+          {/* PREMIUM SAGE HEADER */}
+          <div className="text-center mb-6 relative z-50">
+            <div className="inline-flex items-center gap-3 bg-black/30 px-6 py-3 rounded-2xl border border-white/20 mb-4 relative z-50 shadow-lg">
               <img 
                 src={sageStandardImage}
                 alt="Sage's Truth Receipt" 
-                className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
+                className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-full border-2 border-teal-400/50 relative z-50"
                 style={{
                   filter: 'brightness(1.2) contrast(1.1)',
-                  boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
+                  boxShadow: '0 0 24px rgba(20, 184, 166, 0.4)'
                 }}
               />
-              <span className="text-sm sm:text-lg font-bold tracking-widest relative z-50"
+              <span className="text-lg sm:text-xl font-bold tracking-widest relative z-50"
                 style={{
                   color: '#14B8A6',
-                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                  textShadow: '0 2px 12px rgba(0, 0, 0, 0.6), 0 0 50px rgba(20, 184, 166, 0.5)'
                 }}>
                 SAGE'S RECEIPT
               </span>
             </div>
+            {/* Density toggle removed: Receipt always uses Compact view */}
           </div>
 
-          {/* ARCHETYPE */}
+          {/* PREMIUM ARCHETYPE */}
           {archetypeTitle && (
-            <div className="text-center mb-5">
-              <div className="flex items-center justify-center gap-4 mb-1">
-                <h2 className={`text-xl sm:text-2xl font-black ${getArchetypeColor()} leading-tight`}
-                style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 184, 166, 0.2)' }}>
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-4 mb-3">
+                <h2 className={`text-2xl sm:text-3xl font-black ${getArchetypeColor()} leading-tight`}
+                style={{ textShadow: '0 3px 12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(20, 184, 166, 0.3)' }}>
                   {archetypeTitle}
                 </h2>
-                <div className="text-4xl animate-bounce">
+                <div className="text-5xl animate-bounce">
                   {archetypeEmoji}
                 </div>
               </div>
               {/* TREND STICKER - Hide for crisis situations */}
               {!archetypeTitle?.includes('Emergency Support') && !archetypeTitle?.includes('Crisis') && (
-                <div className="flex justify-center mt-4 mb-8">
+                <div className="flex justify-center mt-6 mb-8">
                   <div className="inline-flex">
                     <TrendSticker archetype={archetypeTitle} />
                   </div>
@@ -323,96 +328,107 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           )}
 
-          {/* METRICS GRID - Mobile First */}
+          {/* PREMIUM METRICS GRID */}
           <motion.div 
-            className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2"
+            className={`grid grid-cols-3 ${isCompact ? 'gap-3 mb-5' : 'gap-4 sm:gap-6 mb-8'}`}
             initial="hidden"
             animate="visible"
             variants={{
-              visible: { transition: { staggerChildren: 0.1 } }
+              visible: { transition: { staggerChildren: 0.15 } }
             }}
           >
             <motion.div variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
-              <Metric label="WASTING TIME" value={metricsData.wastingTime} icon="⏰" colorClass="text-red-400" />
+              <Metric compact={isCompact} label="WASTING TIME" value={metricsData.wastingTime} icon="⏰" colorClass="text-red-400" />
             </motion.div>
             <motion.div variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
-              <Metric label="INTO YOU" value={metricsData.actuallyIntoYou} icon="💖" colorClass="text-green-400" />
+              <Metric compact={isCompact} label="INTO YOU" value={metricsData.actuallyIntoYou} icon="💖" colorClass="text-green-400" />
             </motion.div>
             <motion.div variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
               <Metric 
+                compact={isCompact}
                 label={isHealthy ? "GREEN FLAGS" : "RED FLAGS"} 
                 value={isHealthy ? (results?.greenFlagChips?.length || (metricsData.actuallyIntoYou / 10) || 0) : metricsData.redFlags} 
-                icon={isHealthy ? "✅" : "🚩"} 
+                icon={isHealthy ? "✓" : "🚩"} 
                 colorClass={isHealthy ? "text-green-400" : "text-orange-400"} 
               />
             </motion.div>
           </motion.div>
 
-          {/* DYNAMIC FLAGS */}
-          <div className="mb-4">
+          {/* PREMIUM DYNAMIC FLAGS */}
+          <div className={isCompact ? 'mb-5' : 'mb-8'}>
             {isHealthy ? (
-              <div className="flex flex-col items-center gap-3">
-                <h3 className="text-green-400 text-sm font-bold tracking-wider flex items-center gap-2">
-                  <span>✅</span> GREEN FLAGS
+              <div className="flex flex-col items-center gap-4">
+                <h3 className="text-green-400 text-base font-bold tracking-wider flex items-center gap-2">
+                  <span>✓</span> GREEN FLAGS
                 </h3>
-                <div className="flex flex-wrap gap-2 justify-center max-w-md mx-auto">
-                  {guaranteedFlags.map((chip, i) => (
+                <div className="flex flex-wrap gap-3 justify-center max-w-lg mx-auto">
+                  {((isCompact && !showAllFlags) ? guaranteedFlags.slice(0,6) : guaranteedFlags).map((chip, i) => (
                     <motion.span 
                       key={i} 
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-2 py-1 text-green-300 text-base font-medium whitespace-nowrap"
+                      className="inline-flex items-center justify-center px-4 py-2 text-green-300 text-base font-semibold whitespace-nowrap bg-green-500/10 rounded-xl border border-green-400/20 shadow-lg"
                     >
                       {chip}
                     </motion.span>
                   ))}
                 </div>
+                {isCompact && guaranteedFlags.length > 6 && (
+                  <button onClick={() => setShowAllFlags(v=>!v)} className="text-xs text-green-300/90 underline">
+                    {showAllFlags ? 'Show less' : `Show ${guaranteedFlags.length - 6} more`}
+                  </button>
+                )}
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-3">
-                <h3 className="text-red-400 text-sm font-bold tracking-wider flex items-center gap-2">
+              <div className="flex flex-col items-center gap-4">
+                <h3 className="text-red-400 text-base font-bold tracking-wider flex items-center gap-2">
                   <span>🚩</span> RED FLAGS
                 </h3>
-                <div className="flex flex-wrap gap-2 justify-center max-w-md mx-auto">
-                  {guaranteedFlags.map((chip, i) => (
+                <div className="flex flex-wrap gap-3 justify-center max-w-lg mx-auto">
+                  {((isCompact && !showAllFlags) ? guaranteedFlags.slice(0,6) : guaranteedFlags).map((chip, i) => (
                     <motion.span 
                       key={i} 
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-2 py-1 text-red-300 text-base font-medium whitespace-nowrap"
+                      className="inline-flex items-center justify-center px-4 py-2 text-red-300 text-base font-semibold whitespace-nowrap bg-red-500/10 rounded-xl border border-red-400/20 shadow-lg"
                     >
                       {chip}
                     </motion.span>
                   ))}
                 </div>
+                {isCompact && guaranteedFlags.length > 6 && (
+                  <button onClick={() => setShowAllFlags(v=>!v)} className="text-xs text-red-300/90 underline">
+                    {showAllFlags ? 'Show less' : `Show ${guaranteedFlags.length - 6} more`}
+                  </button>
+                )}
               </div>
             )}
           </div>
 
-          {/* THE VERDICT - Mobile Optimized */}
+          {/* PREMIUM VERDICT */}
           {verdict && (
-            <div className="bg-black/30 p-4 sm:p-4 rounded-xl border border-white/10 mb-4 sm:mb-3">
-              <h3 className="text-teal-400 font-bold text-base sm:text-sm tracking-wide mb-3 sm:mb-3"
-                style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>SAGE'S TAKE</h3>
-              <p className="text-stone-200/90 text-lg sm:text-xl italic leading-relaxed tracking-wide">
+            <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
+              <h3 className="text-teal-400 font-bold text-lg tracking-wide mb-4"
+                style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>THE BREAKDOWN</h3>
+              <p className="text-stone-200/90 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
                 {verdict}
               </p>
             </div>
           )}
 
-          {/* COMBINED REAL TEA - Mobile Optimized */}
+          {/* PREMIUM REAL TEA */}
           {(realTea || nextMove.length > 0) && (
-            <div className="bg-black/30 p-4 sm:p-4 rounded-xl border border-white/10 mb-4 sm:mb-3">
-              <h3 className="text-teal-400 font-bold text-base sm:text-sm tracking-wide mb-3 sm:mb-3"
-                style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🫖 THE REAL TEA</h3>
+            <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
+              <h3 className="text-teal-400 font-bold text-lg tracking-wide mb-4"
+                style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>🫖 THE REAL TEA</h3>
               <div className="space-y-3 sm:space-y-2">
                 {/* User's Question (if provided) */}
                 {parsedUserQuestion && (
-                  <div className="mb-4 sm:mb-3 pb-3 border-b border-white/10">
-                    <p className="text-amber-300 text-sm font-medium mb-2 sm:mb-1">Your Question:</p>
-                    <p className="text-stone-300 text-base leading-relaxed italic tracking-wide">
+                  <div className="mb-6 pb-4 border-b border-white/20">
+                    <p className="text-amber-300 text-base font-semibold mb-3">Your Question:</p>
+                    <p className="text-stone-300 text-lg leading-relaxed italic tracking-wide">
                       "{truncateToThreeLines(parsedUserQuestion)}"
                     </p>
                   </div>
@@ -420,21 +436,21 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 
                 {/* Main tea content - try realTea, then teaAndMovePlay, then nextMove */}
                 {realTea ? (
-                  <div className="text-stone-200/90 text-lg sm:text-xl leading-relaxed tracking-wide">
+                  <div className="text-stone-200/90 text-xl sm:text-2xl leading-relaxed tracking-wide">
                     {realTea}
                   </div>
                 ) : teaAndMovePlay && Array.isArray(teaAndMovePlay) ? (
-                  <div className="space-y-3 sm:space-y-2">
+                  <div className="space-y-4">
                     {teaAndMovePlay.map((line, index) => (
-                      <div key={index} className="text-stone-200/90 text-lg sm:text-xl leading-relaxed tracking-wide">
+                      <div key={index} className="text-stone-200/90 text-xl sm:text-2xl leading-relaxed tracking-wide">
                         {line}
                       </div>
                     ))}
                   </div>
                 ) : nextMove.length > 0 ? (
-                  <div className="space-y-2 sm:space-y-1">
+                  <div className="space-y-3">
                     {nextMove.slice(0, 2).map((item, index) => (
-                      <div key={index} className="text-stone-200/90 text-lg sm:text-xl leading-relaxed tracking-wide">• {item}</div>
+                      <div key={index} className="text-stone-200/90 text-xl sm:text-2xl leading-relaxed tracking-wide">• {item}</div>
                     ))}
                   </div>
                 ) : null}
@@ -442,38 +458,38 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </div>
           )}
 
-          {/* SAGE'S PROPHECY */}
+          {/* PREMIUM SAGE'S PROPHECY */}
           {prophecy && (
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10 mb-3">
-              <h3 className="text-teal-400 font-bold text-sm tracking-wide mb-3"
-                style={{ textShadow: '0 1px 3px rgba(0, 0, 0, 0.4)' }}>🔮 SAGE BETS...</h3>
-              <p className="text-stone-200/90 text-xl leading-relaxed">
+            <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
+              <h3 className="text-teal-400 font-bold text-lg tracking-wide mb-4"
+                style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>🔮 SAGE BETS...</h3>
+              <p className="text-stone-200/90 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
                 {prophecy}
               </p>
             </div>
           )}
           
-          {/* SAGE'S CONFIDENCE BAR */}
-          <div className="bg-white/5 p-4 rounded-xl border border-white/10 mb-1">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-teal-400 font-bold text-sm tracking-wide flex items-center">
-                <Brain className="w-4 h-4 mr-2 text-teal-400" />
+          {/* PREMIUM SAGE'S CONFIDENCE BAR */}
+          <div className="bg-black/40 p-6 rounded-2xl border border-white/20 mb-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-teal-400 font-bold text-lg tracking-wide flex items-center">
+                <Brain className="w-5 h-5 mr-3 text-teal-400" />
                 SAGE'S DRAMA METER
               </h3>
-              <span className="text-xs font-bold text-cyan-400">{confidenceScore}%</span>
+              <span className="text-lg font-bold text-cyan-400">{confidenceScore}%</span>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
-              <div className="bg-cyan-400 h-2 rounded-full transition-all duration-500" style={{ width: `${confidenceScore}%` }}></div>
+            <div className="w-full bg-gray-700/50 rounded-full h-3 mb-4 shadow-inner">
+              <div className="bg-gradient-to-r from-cyan-400 to-cyan-500 h-3 rounded-full transition-all duration-500 shadow-lg" style={{ width: `${confidenceScore}%` }}></div>
             </div>
             <div className="text-center">
-              <span className="text-xs font-medium text-cyan-300">{confidenceRemark}</span>
+              <span className="text-base font-semibold text-cyan-300">{confidenceRemark}</span>
             </div>
           </div>
           
           
-          {/* WATERMARK - Final element in Sage's Receipt */}
-          <div className="text-center mt-2 mb-6">
-            <p className="text-xs text-stone-200/90/40 tracking-widest">
+          {/* PREMIUM WATERMARK */}
+          <div className="text-center mt-4 mb-8">
+            <p className="text-sm text-stone-200/60 tracking-widest font-medium">
               www.getthereceipts.com
             </p>
           </div>
@@ -481,22 +497,22 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
       </div>
       </motion.div>
 
-      {/* SEPARATE SAVE/SHARE BOX - Completely outside the receipt card for screenshots */}
-      <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
+      {/* PREMIUM SAVE/SHARE BOX */}
+      <div className="w-full max-w-2xl mx-auto mt-16 mb-8">
         <div 
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
+          className="flex flex-col sm:flex-row gap-6 justify-center items-center p-8 backdrop-blur-xl rounded-3xl shadow-2xl"
           style={{
             background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-            border: '2px solid rgba(20, 184, 166, 0.4)',
-            boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
+            border: '2px solid rgba(20, 184, 166, 0.5)',
+            boxShadow: '0 12px 40px rgba(20, 184, 166, 0.2), 0 0 100px rgba(20, 184, 166, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}
         >
           <button 
             onClick={onSaveReceipt}
             disabled={isSharing}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
+            className="flex items-center gap-3 bg-white/15 hover:bg-white/25 text-stone-200 font-semibold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl disabled:opacity-50"
             style={{
-              border: '1px solid rgba(212, 175, 55, 0.6)',
+              border: '2px solid rgba(212, 175, 55, 0.7)',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
             }}
           >
@@ -508,9 +524,9 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             animate={{ 
               scale: [1, 1.02, 1],
               boxShadow: [
-                '0 0 20px rgba(212, 175, 55, 0.3)',
-                '0 0 30px rgba(212, 175, 55, 0.5)', 
-                '0 0 20px rgba(212, 175, 55, 0.3)'
+                '0 0 24px rgba(212, 175, 55, 0.4)',
+                '0 0 36px rgba(212, 175, 55, 0.6)', 
+                '0 0 24px rgba(212, 175, 55, 0.4)'
               ]
             }}
             onClick={onScreenshot}
@@ -520,11 +536,11 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50"
+            className="flex items-center gap-3 text-black font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl disabled:opacity-50"
             style={{
               background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-              border: '1px solid rgba(212, 175, 55, 0.9)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+              border: '2px solid rgba(212, 175, 55, 0.9)',
+              boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)'
             }}
           >
             <Share2 className="h-4 w-4" />
@@ -537,7 +553,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           <p className="text-xs text-gray-500 bg-gray-900/30 px-3 py-1.5 rounded-full inline-flex items-center gap-1 border border-gray-700/50">
             🔐 Private result. Original chat was deleted instantly.
           </p>
-          <p className="text-xs text-amber-200 bg-amber-900/20 px-3 py-1.5 rounded-full inline-flex items-center gap-1 border border-amber-600/30">
+          <p className="text-xs text-gray-500 bg-gray-900/30 px-3 py-1.5 rounded-full inline-flex items-center gap-1 border border-gray-700/50">
             👁️ Based only on your message. Not a full-context reading.
           </p>
         </div>

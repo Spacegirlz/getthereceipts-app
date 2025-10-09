@@ -23,13 +23,13 @@ const TabbedReceiptInterface = ({
   const { isPremium } = useAuth();
   const navigate = useNavigate();
 
-  // Check if this is a crisis situation
-  const isCrisisSituation = archetypeName?.includes('Emergency Support') || 
-                           archetypeName?.includes('Crisis') ||
-                           analysis?.archetype?.includes('Emergency Support') ||
-                           analysis?.archetype?.includes('Crisis') ||
-                           analysis?.mode === 'safety_override' ||
-                           analysis?.safetyOverride?.triggered;
+  // Check if this is a crisis situation (strict boolean)
+  const isCrisisSituation = Boolean(
+    (archetypeName && (archetypeName.includes('Emergency Support') || archetypeName.includes('Crisis'))) ||
+    (analysis?.archetype && (analysis.archetype.includes('Emergency Support') || analysis.archetype.includes('Crisis'))) ||
+    (analysis?.mode === 'safety_override') ||
+    (analysis?.safetyOverride?.triggered === true)
+  );
 
   // Debug logging for crisis detection
   if (process.env.NODE_ENV === 'development') {
@@ -111,6 +111,9 @@ const TabbedReceiptInterface = ({
     setIsTransitioning(true);
     setActiveTab(newIndex);
     
+    // Scroll to top of the tab content
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     // Reset transition state after animation
     setTimeout(() => {
       setIsTransitioning(false);
@@ -173,10 +176,10 @@ const TabbedReceiptInterface = ({
   
   return (
     <div className="w-full max-w-6xl mx-auto">
-      {/* Tab Navigation with Arrow Controls */}
-      <div className="mb-8">
-        <div className="relative max-w-lg mx-auto">
-          <div className="flex items-center justify-center bg-gradient-to-r from-slate-800/70 to-slate-900/70 rounded-2xl p-2 sm:p-3 backdrop-blur-md border-2 border-slate-500/50 shadow-xl shadow-slate-900/40">
+      {/* Tab Navigation with Premium Styling */}
+      <div className="mb-12">
+        <div className="relative max-w-2xl mx-auto">
+          <div className="flex items-center justify-center bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-slate-900/80 rounded-3xl p-3 sm:p-4 backdrop-blur-xl border border-slate-600/40 shadow-2xl shadow-black/30">
 
             {/* Tab Labels */}
             <div className="flex-1 flex justify-center">
@@ -185,16 +188,16 @@ const TabbedReceiptInterface = ({
                   const getTabColors = () => {
                     if (index === 0) { // Receipt
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/25 border border-blue-400/30' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-cyan-600/20 hover:shadow-md border border-transparent hover:border-blue-400/30';
-                    } else if (index === 1) { // Tea
+                        ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-xl shadow-teal-500/30 border border-teal-400/40 transform scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-teal-500/15 hover:to-cyan-500/15 hover:shadow-lg hover:shadow-teal-500/20 border border-transparent hover:border-teal-400/25 hover:scale-102';
+                    } else if (index === 1) { // Playbook
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25 border border-purple-400/30' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-pink-600/20 hover:shadow-md border border-transparent hover:border-purple-400/30';
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xl shadow-purple-500/30 border border-purple-400/40 transform scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:to-pink-600/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 hover:scale-102';
                     } else { // Immunity
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black shadow-lg shadow-amber-500/25 border border-[#D4AF37]/50' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-[#F5E6D3]/20 hover:shadow-md border border-transparent hover:border-[#D4AF37]/30';
+                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black shadow-xl shadow-amber-500/30 border border-[#D4AF37]/60 transform scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-[#D4AF37]/15 hover:to-[#F5E6D3]/15 hover:shadow-lg hover:shadow-amber-500/20 border border-transparent hover:border-[#D4AF37]/25 hover:scale-102';
                     }
                   };
 
@@ -212,9 +215,9 @@ const TabbedReceiptInterface = ({
                         onClick={() => handleTabClick(index)}
                         disabled={isTransitioning}
                         className={`
-                          group relative w-24 sm:w-32 px-2 sm:px-3 py-2.5 sm:py-3.5 rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 transition-all duration-300 ease-out transform hover:scale-105
+                          group relative w-28 sm:w-36 px-3 sm:px-4 py-3 sm:py-4 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 ease-out
                           ${getTabColors()}
-                          ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
+                          ${isTransitioning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                         `}
                       >
                         {tab.isPremium && !isPremium && (
@@ -223,16 +226,23 @@ const TabbedReceiptInterface = ({
                         {tab.isPremium && isPremium && (
                           <Crown className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${getLockIconColor()} absolute top-1 right-1`} />
                         )}
-                        <span className="text-base sm:text-xl flex-shrink-0">{tab.icon}</span>
-                        <span className="text-xs sm:text-base font-medium whitespace-nowrap">{tab.label}</span>
+                        <span className="text-lg sm:text-xl flex-shrink-0 relative z-10">{tab.icon}</span>
+                        <span className="text-xs sm:text-sm font-semibold whitespace-nowrap tracking-wide relative z-10" style={{
+                          textShadow: activeTab === index && index !== 2 ? '0 2px 4px rgba(0, 0, 0, 0.8)' : 'none'
+                        }}>{tab.label}</span>
                         
-                        {/* Hover effect overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                        {/* Premium hover effect overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/8 to-white/12 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-0" />
+                        
+                        {/* Active state glow */}
+                        {activeTab === index && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/15 rounded-2xl animate-pulse z-0" />
+                        )}
                       </button>
                       
-                      {/* Divider between tabs */}
+                      {/* Premium divider between tabs */}
                       {index < tabs.length - 1 && (
-                        <div className="w-px h-8 sm:h-10 bg-slate-600/50 mx-1 sm:mx-2" />
+                        <div className="w-px h-10 sm:h-12 bg-gradient-to-b from-slate-500/30 via-slate-400/50 to-slate-500/30 mx-2 sm:mx-3" />
                       )}
                     </React.Fragment>
                   );
@@ -242,16 +252,16 @@ const TabbedReceiptInterface = ({
 
           </div>
 
-          {/* Progress Indicator */}
-          <div className="flex justify-center mt-4">
-            <div className="flex gap-2">
+          {/* Premium Progress Indicator */}
+          <div className="flex justify-center mt-6">
+            <div className="flex gap-3 items-center">
               {tabs.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-1.5 rounded-full transition-all duration-300 ease-out cursor-pointer hover:scale-110 ${
+                  className={`h-2 rounded-full transition-all duration-500 ease-out cursor-pointer hover:scale-125 ${
                     index === activeTab 
-                      ? 'bg-gradient-to-r from-teal-400 to-cyan-400 w-8 shadow-sm shadow-teal-400/50' 
-                      : 'bg-slate-600 hover:bg-slate-500 w-1.5'
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-400 w-10 shadow-lg shadow-teal-400/60' 
+                      : 'bg-slate-600/60 hover:bg-slate-500/80 w-2'
                   }`}
                   onClick={() => navigateToTab(index)}
                 />
@@ -424,47 +434,33 @@ const TabbedReceiptInterface = ({
                       </div>
                     </div>
 
-                    {/* Full-width CTA - matches Playbook style */}
-                    <div className="mb-8 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-2xl p-8 border border-[#D4AF37]/20 text-center">
-                      <Lock className="w-8 h-8 text-[#D4AF37] mx-auto mb-4" />
-                      <h4 className="text-xl font-light text-stone-200/90 mb-2">Unlock Complete Analysis</h4>
-                      <p className="text-stone-300/80 mb-6">Get the full dynamics, playbook, and Sage's wisdom</p>
-                      <button
-                        onClick={handleUpgradeClick}
-                        className="px-8 py-3 text-black font-bold rounded-xl transition-all duration-300 hover:scale-105"
-                        style={{
-                          background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                          border: '1px solid rgba(212, 175, 55, 0.8)',
-                          boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
-                        }}
-                      >
-                        Go Premium
-                      </button>
-                    </div>
-
-                    {/* Upgrade CTA */}
-                    <div className="text-center">
-                      <p className="text-white/80 text-lg mb-6">
-                        Unlock the complete immunity training to become bulletproof against this pattern
-                      </p>
-                      <div className="flex flex-col gap-4">
+                    {/* Compact SaaS Paywall Card for Immunity (mobile-first, single card) */}
+                    <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900/40 via-slate-800/20 to-slate-900/40 border border-slate-600/30 mb-8">
+                      <div className="p-5 sm:p-8 text-center">
+                        <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-yellow-400/30 to-orange-400/30 border-2 border-yellow-400/50 mb-3 sm:mb-5 shadow-lg shadow-yellow-500/30">
+                          <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                        </div>
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3 leading-tight">
+                          Unlock Immunity Training
+                        </h3>
+                        <p className="text-base sm:text-lg text-gray-300 leading-relaxed mb-4 sm:mb-6 max-w-md mx-auto">
+                          Break the cycle, train your responses, and protect your peace
+                        </p>
+                        <ul className="text-sm text-gray-300/90 mb-5 sm:mb-6 space-y-2 max-w-md mx-auto">
+                          <li>• Personalized drills that actually stick</li>
+                          <li>• Exact wording for tough moments</li>
+                          <li>• One quick test to know your status</li>
+                        </ul>
                         <button
                           onClick={handleUpgradeClick}
-                          className="w-full px-8 py-4 text-black font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
-                          style={{
-                            background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                            border: '1px solid rgba(212, 175, 55, 0.8)',
-                            boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
-                          }}
+                          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                         >
-                          <Crown className="w-5 h-5" />
-                          Unlock Immunity Training
+                          Unlock Immunity
                         </button>
+                        <p className="text-xs sm:text-sm text-gray-400 mt-3">
+                          $29.99/year • Cancel anytime
+                        </p>
                       </div>
-                      
-                      <p className="text-white/60 text-sm mt-4">
-                        Premium members get unlimited access to all immunity training modules
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -476,24 +472,24 @@ const TabbedReceiptInterface = ({
               </div>
             )}
             
-            {/* Mobile Navigation - Single Set */}
-            <div className="flex justify-center items-center mt-8 sm:hidden">
-              <div className="flex items-center gap-6">
+            {/* Premium Mobile Navigation */}
+            <div className="flex justify-center items-center mt-10 sm:hidden">
+              <div className="flex items-center gap-8">
                 <button
                   onClick={() => navigateToTab(activeTab - 1)}
                   disabled={activeTab === 0}
-                  className="text-4xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-12 h-12 rounded-full bg-gradient-to-r from-slate-700/50 to-slate-800/50 border border-slate-600/40 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                   aria-label="Previous section"
                 >
                   👈
                 </button>
-                <div className="text-xs text-gray-400 text-center px-4">
-                  <div>Swipe or tap to explore</div>
+                <div className="text-xs text-gray-400 text-center px-6 py-2 bg-slate-800/30 rounded-full border border-slate-600/30">
+                  <div className="font-medium">Swipe or tap to explore</div>
                 </div>
                 <button
                   onClick={() => navigateToTab(activeTab + 1)}
                   disabled={activeTab === tabs.length - 1}
-                  className="text-4xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-12 h-12 rounded-full bg-gradient-to-r from-slate-700/50 to-slate-800/50 border border-slate-600/40 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                   aria-label="Next section"
                 >
                   👉

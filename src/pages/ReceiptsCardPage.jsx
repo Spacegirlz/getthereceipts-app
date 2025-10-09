@@ -367,10 +367,6 @@ const ReceiptsCardPage = () => {
     captureById('social-receipt-card', "Sage-Receipt", true);
   };
 
-  // Social exports (720x1280) at scale 1.0
-  const handleExportReceipt = () => captureById('social-receipt-card', "Sage-Receipt");
-  const handleExportPlaybook = () => captureById('social-playbook-card', "Sage-Playbook");
-  const handleExportImmunity = () => captureById('social-immunity-card', "Sage-Immunity");
 
   // Extract archetype name (keep full for card), and a "clean" version without a leading 'The' for Immunity Training subtitle only
   const archetypeName = analysis?.archetype?.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').trim() || 'Breadcrumber';
@@ -498,82 +494,99 @@ const ReceiptsCardPage = () => {
 
             {/* Hidden export cards are rendered at the top of the page tree */}
 
-        {/* Mobile Navigation Block */}
-        <div className="flex justify-center mt-8 mb-16 sm:hidden">
-          <div className="bg-gradient-to-r from-slate-800/60 to-slate-900/60 rounded-2xl p-2 backdrop-blur-md border border-slate-600/40 shadow-lg">
-            <div className="flex items-center gap-1">
-              <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-500/25 border border-teal-400/30">
-                <span className="text-xs">📄</span>
-                <span className="text-xs font-medium">Receipt</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-              </button>
-              <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
-                <span className="text-xs">☕</span>
-                <span className="text-xs font-medium">Tea</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-              </button>
-              <button className="group relative px-2 py-2 rounded-xl flex items-center gap-1 transition-all duration-300 ease-out transform hover:scale-105 text-slate-300 hover:text-white hover:bg-slate-700/50 hover:shadow-md border border-transparent hover:border-slate-600/40">
-                <span className="text-xs">🛡️</span>
-                <span className="text-xs font-medium">Immunity</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-              </button>
-            </div>
-          </div>
-        </div>
 
 
-        {/* Social Export Buttons */}
-        <div className="w-full max-w-2xl mx-auto mt-8">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={handleExportReceipt} className="flex-1">Save Social: Receipt</Button>
-            <Button onClick={handleExportPlaybook} className="flex-1">Save Social: Playbook</Button>
-            <Button onClick={handleExportImmunity} className="flex-1">Save Social: Immunity</Button>
-          </div>
-        </div>
 
         {/* 3. NEXT TAKE + PREMIUM CTA (redesigned) */}
-        <div className="w-full max-w-2xl mx-auto mt-12 mb-16">
+        <div className="w-full max-w-2xl mx-auto mt-8 sm:mt-12 mb-10 sm:mb-16">
           {/* Next Take - full width CTA directly below save/share */}
-          <div
-            className="rounded-2xl p-3 sm:p-4 mb-6 shadow-[0_0_30px_rgba(96,165,250,0.18)]"
-            style={{
-              background: 'linear-gradient(135deg, rgba(165,139,250,0.12) 0%, rgba(10,146,170,0.12) 50%, rgba(89,165,251,0.12) 100%)'
-            }}
-          >
+          {/* ELEGANT GOLD GRADIENT VERSION */}
+          <div className="rounded-2xl mb-6 pb-5">
             <LinkButton
               to="/luxe-chat-input"
-              className="w-full flex items-center justify-center gap-2 font-semibold px-6 py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] shadow-xl text-white"
+              className="w-full flex items-center justify-center gap-2 font-black px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] text-black"
               style={{
-                background: 'linear-gradient(90deg, #a58bfa 0%, #0a92aa 50%, #59a5fb 100%)',
-                boxShadow: '0 8px 30px rgba(96,165,250,0.25)'
+                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)'
               }}
             >
+              {/* Single line text */}
               <span className="text-lg">✨</span>
-              <span className="text-base">Decode Another Text</span>
+              <span className="text-lg font-black tracking-wide uppercase">Decode Another Text</span>
+              <span className="text-lg">✨</span>
             </LinkButton>
           </div>
 
-          {/* Premium Upsell - prominent founders copy */}
-          <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-purple-900/30 via-violet-900/20 to-slate-900/40 border border-violet-500/20 shadow-[0_0_30px_rgba(139,92,246,0.15)]">
-            <div className="text-center mb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold text-xs tracking-wide">
-                LIMITED LAUNCH • OG FOUNDERS
-              </div>
+          {/* Premium Paywall - Luxury FOMO Design */}
+          <div className="relative rounded-3xl overflow-hidden sm:min-h-[500px] bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-purple-900/40 border border-purple-500/30 shadow-2xl shadow-purple-500/20 backdrop-blur-xl">
+            {/* Animated Background Pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/10 via-transparent to-indigo-600/10"></div>
+              <div className="absolute top-1/4 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute bottom-1/4 left-0 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-full blur-2xl"></div>
             </div>
-            <h3 className="text-center text-2xl sm:text-3xl font-extrabold mb-2" style={{color:'#FDE68A'}}>Get Unlimited Premium Receipts</h3>
-            <p className="text-center text-sm text-violet-200/80 mb-4">
-              Full Playbook + Immunity Training on every receipt. Price locked for life.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button
-                onClick={handleFounderCheckout}
-                disabled={loadingCheckout}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg disabled:opacity-50"
-              >
-                <span className="text-lg">⚡</span>
-                <span>{loadingCheckout ? 'Redirecting…' : 'Go Premium – $29.99/yr'}</span>
-              </Button>
-              <div className="text-xs text-violet-200/70">Founder price • Limited spots</div>
+            
+            {/* Content */}
+            <div className="relative z-10 p-5 sm:p-12 text-center">
+              {/* Luxury Header */}
+              <div className="mb-6 sm:mb-10">
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-purple-500/30 to-indigo-500/30 border-2 border-purple-400/50 mb-3 sm:mb-6 shadow-lg shadow-purple-500/30">
+                  <span className="text-2xl sm:text-3xl">👑</span>
+                </div>
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 px-3 py-1.5 rounded-full border border-purple-400/30 mb-3 sm:mb-4">
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-300">EXCLUSIVE ACCESS</span>
+                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
+                </div>
+                <h3 className="text-2xl sm:text-4xl font-black text-white mb-2 sm:mb-4 leading-tight bg-gradient-to-r from-purple-200 to-indigo-200 bg-clip-text text-transparent">
+                  Unlock Unlimited Receipts
+                </h3>
+                <p className="text-base sm:text-xl text-purple-100/90 leading-relaxed max-w-2xl mx-auto">
+                  Join the elite circle of users who never second-guess their relationships again
+                </p>
+              </div>
+              
+              {/* FOMO Features Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-10">
+                <div className="bg-gradient-to-br from-purple-800/30 to-indigo-800/30 rounded-2xl p-4 sm:p-6 border border-purple-400/20 backdrop-blur-sm">
+                  <div className="text-xl sm:text-2xl mb-2 sm:mb-3">🔮</div>
+                  <h4 className="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2">Unlimited Analysis</h4>
+                  <p className="text-xs sm:text-sm text-purple-200/80">Decode any text, anytime, anywhere</p>
+                </div>
+                <div className="bg-gradient-to-br from-purple-800/30 to-indigo-800/30 rounded-2xl p-4 sm:p-6 border border-purple-400/20 backdrop-blur-sm">
+                  <div className="text-xl sm:text-2xl mb-2 sm:mb-3">🎯</div>
+                  <h4 className="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2">Elite Strategies</h4>
+                  <p className="text-xs sm:text-sm text-purple-200/80">Advanced playbook & immunity training</p>
+                </div>
+                <div className="bg-gradient-to-br from-purple-800/30 to-indigo-800/30 rounded-2xl p-4 sm:p-6 border border-purple-400/20 backdrop-blur-sm">
+                  <div className="text-xl sm:text-2xl mb-2 sm:mb-3">⚡</div>
+                  <h4 className="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2">Instant Access</h4>
+                  <p className="text-xs sm:text-sm text-purple-200/80">No limits, no waiting, no questions</p>
+                </div>
+              </div>
+              
+              {/* Urgency & Social Proof */}
+              <div className="mb-4 sm:mb-8">
+                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 px-4 py-2 rounded-full border border-red-400/30 mb-3 sm:mb-4">
+                  <span className="text-red-400 text-sm font-bold uppercase tracking-wider">LIMITED TIME</span>
+                  <span className="text-white/90 text-sm">Only 47 spots left at this price</span>
+                </div>
+                <p className="text-purple-200/80 text-xs sm:text-sm">
+                  Join 12,847+ users who've transformed their relationships
+                </p>
+              </div>
+              
+              {/* Premium CTA Button - Keep Blue as requested */}
+              <div className="text-center">
+                <Button
+                  onClick={handleFounderCheckout}
+                  disabled={loadingCheckout}
+                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-lg sm:text-xl rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loadingCheckout ? 'Redirecting…' : 'Claim Your Spot'}
+                </Button>
+                <p className="text-xs sm:text-sm text-purple-300/80 mt-3 sm:mt-4">
+                  Less than $2.49/month • Cancel anytime • 30-day money-back guarantee
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, memo, useMemo } from 'react';
+import React, { useState, useRef, memo, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight, Info, Crown } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -18,12 +18,25 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   }, [deepDive, analysisData, isPremium]);
   
   const { toast } = useToast();
+  // Density toggle with persistence
+  const [isCompact, setIsCompact] = useState(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? window.localStorage.getItem('gtr_density') : null;
+      return saved ? saved === 'compact' : true;
+    } catch { return true; }
+  });
+  useEffect(() => {
+    try { if (typeof window !== 'undefined') window.localStorage.setItem('gtr_density', isCompact ? 'compact' : 'standard'); } catch {}
+  }, [isCompact]);
   const { captureById } = useSocialExport();
   const [copiedText, setCopiedText] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [showAllAutopsy, setShowAllAutopsy] = useState(false);
   const [autopsyScrollPosition, setAutopsyScrollPosition] = useState(0);
   const speechRef = useRef(null);
+  const [openNext48, setOpenNext48] = useState(false);
+  const [openYourMoves, setOpenYourMoves] = useState(false);
+  useEffect(() => { if (isPremium) setOpenNext48(true); }, [isPremium]);
 
   // Dynamic Metrics Calculator (now incorporates green flags)
   const calculateMetrics = (analysis) => {
@@ -42,6 +55,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         wastingTime,
         actuallyIntoYou,
         redFlagChips,
+        greenFlagChips,
         fullAnalysis: analysis
       });
     }
@@ -89,7 +103,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     
     // Debug logging to verify calculations
     if (process.env.NODE_ENV === 'development') {
-      console.log('📊 CALCULATED METRICS:', result);
+      console.log('📊 CALCULATED METRICS:', {
+        inputs: { g, r, into, waste, effectiveRed, compatScore, commScore },
+        outputs: result
+      });
     }
     
     return result;
@@ -224,7 +241,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             <div style="width:10px;height:10px;border-radius:9999px;background:#D4AF37"></div>
             <div style="font-weight:800;letter-spacing:.18em;color:#399d96">SAGE'S RECEIPT AUTOPSY</div>
           </div>
-          <div style="font-size:40px;color:#fff;font-weight:700;line-height:1.2;margin-bottom:16px">“${bestReceipt.quote || 'No quote available'}”</div>
+          <div style="font-size:40px;color:#fff;font-weight:700;line-height:1.2;margin-bottom:16px">"${bestReceipt.quote || 'No quote available'}"</div>
           <div style="display:inline-block;padding:8px 14px;border-radius:9999px;border:1px solid rgba(212,175,55,.3);background:linear-gradient(90deg,rgba(212,175,55,.2),rgba(245,230,211,.2));color:#D4AF37;font-weight:700;margin-bottom:12px">${bestReceipt.pattern || 'Pattern'}</div>
           <div style="font-size:26px;color:rgba(255,255,255,.75)">${bestReceipt.cost || ''}</div>
         `;
@@ -245,7 +262,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           <ul style="list-style:none;padding:0;margin:0 0 28px 0">${movesHtml || '<li style=\"color:rgba(255,255,255,.6)\">No moves available</li>'}</ul>
           <div style="text-align:center;margin-top:12px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)">
             <div style="font-weight:700;letter-spacing:.3em;color:#D4AF37;margin-bottom:12px">SAGE'S SEAL</div>
-            <div style="font-size:40px;line-height:1.4;background:linear-gradient(135deg,#D4AF37,#F5E6D3,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">“${seal || 'Trust your intuition.'}”</div>
+            <div style="font-size:40px;line-height:1.4;background:linear-gradient(135deg,#D4AF37,#F5E6D3,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">"${seal || 'Trust your intuition.'}"</div>
           </div>
         `;
         container.appendChild(block);
@@ -592,7 +609,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         const isGreen = currentValence === 'green';
         return {
           level: isGreen ? 'green-flag' : 'red-flag',
-          badge: isGreen ? '✅' : '⚠️',
+          badge: isGreen ? '✓' : '⚠️',
           label: isGreen ? 'GREEN FLAG' : 'RED FLAG',
           size: 'large',
           borderColor: isGreen ? 'border-emerald-500/60' : 'border-red-500/60',
@@ -655,7 +672,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       case 'green-flag':
         return {
           level: 'green-flag',
-          badge: '✅',
+          badge: '✓',
           label: 'GREEN FLAG',
           size: 'large',
           borderColor: 'border-emerald-500/60',
@@ -699,11 +716,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           scrollbar-width: none;
         }
         .autopsy-carousel {
-          touch-action: pan-x;
-          overscroll-behavior-x: contain;
+          touch-action: manipulation;
+          overscroll-behavior: auto;
         }
         .autopsy-carousel * {
-          touch-action: pan-x;
+          touch-action: manipulation;
         }
       `}</style>
       
@@ -719,18 +736,18 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
       >
         <div 
-          className="relative rounded-[24px] p-3 sm:p-4 md:p-6 text-stone-200/90"
+          className={`relative rounded-3xl ${isCompact ? 'p-4 sm:p-5 md:p-6' : 'p-6 sm:p-8 md:p-10'} text-stone-200/90`}
           style={{
             background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-            backdropFilter: 'blur(20px) saturate(200%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-            border: '1px solid rgba(168, 85, 247, 0.65)',
-            boxShadow: '0 0 0 1px rgba(168, 85, 247, 0.30), 0 8px 32px rgba(168, 85, 247, 0.18), 0 0 60px rgba(168, 85, 247, 0.10)'
+            backdropFilter: 'blur(24px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+            border: '2px solid rgba(168, 85, 247, 0.7)',
+            boxShadow: '0 12px 40px rgba(168, 85, 247, 0.2), 0 0 100px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}>
           <div className="relative z-10">
 
             {/* Sage's Playbook Header - Horizontal Banner Style */}
-            <div className="mb-2">
+            <div className={isCompact ? 'mb-1' : 'mb-2'}>
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -746,52 +763,48 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               </div>
             </div>
           )}
-          <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50">
+          <div className="inline-flex items-center gap-3 bg-black/30 px-6 py-3 rounded-2xl border border-white/20 mb-4 relative z-50 shadow-lg">
             <img
               src={sageDarkCircle}
               alt="Sage's Playbook"
-              className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
+              className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-full border-2 border-teal-400/50 relative z-50"
               style={{
                 filter: 'brightness(1.2) contrast(1.1)',
-                boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
+                boxShadow: '0 0 24px rgba(20, 184, 166, 0.4)'
               }}
             />
-            <span className="text-sm sm:text-lg font-bold tracking-widest relative z-50"
+            <span className="text-lg sm:text-xl font-bold tracking-widest relative z-50"
               style={{
                 color: '#14B8A6',
-                textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                textShadow: '0 2px 12px rgba(0, 0, 0, 0.6), 0 0 50px rgba(20, 184, 166, 0.5)'
               }}>
               SAGE'S PLAYBOOK
             </span>
           </div>
           {/* Locked label removed per request */}
-        </div>
+                </div>
                 
               </motion.div>
             </div>
             
-            {/* Executive Summary Dashboard */}
+          {/* Executive Summary Dashboard */}
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mb-4"
+              className={isCompact ? 'mb-3' : 'mb-4'}
             >
               <div className="rounded-3xl">
-                {/* Strategic Assessment (Headline) */}
-                <div className="rounded-xl p-3 mb-2">
+                {/* Premium Strategic Assessment */}
+                <div className={`rounded-2xl ${isCompact ? 'p-4 mb-4' : 'p-6 mb-6'} bg-black/40 border border-white/20 shadow-lg`}>
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center">
-                        <span className="text-teal-300 text-xl">🎯</span>
-                      </div>
-                      <h3 className={`text-xl sm:text-2xl font-black ${getArchetypeColor()} leading-tight`}
-                        style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 184, 166, 0.2)' }}>
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <h3 className={`text-2xl sm:text-3xl font-black ${getArchetypeColor()} leading-tight`}
+                        style={{ textShadow: '0 3px 12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(20, 184, 166, 0.3)' }}>
                         {safeDeepDive.verdict?.act || analysisData?.verdict}
                       </h3>
                     </div>
-                    {/* Removed teal underline per request */}
-                    <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed">
+                    <p className="text-stone-200/90 text-lg sm:text-xl leading-relaxed">
                       {safeDeepDive.verdict?.subtext}
                     </p>
                   </div>
@@ -818,86 +831,86 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 </div>
             </div>
 
-            {/* Metrics moved into a separate card below the summary */}
-            <div className="rounded-xl p-6 border border-white/[0.12] shadow-2xl bg-black/50 backdrop-blur-sm mt-4" data-share-hide="true">
+            {/* Premium Metrics Dashboard */}
+            <div className={`rounded-2xl ${isCompact ? 'p-6' : 'p-8'} border border-white/20 shadow-2xl bg-black/50 backdrop-blur-sm ${isCompact ? 'mt-4' : 'mt-6'}`} data-share-hide="true">
 
-                {/* Key Metrics Dashboard - 1x3 horizontal layout */}
-                <div className="flex items-center justify-between mb-3">
+                {/* Premium Key Metrics Header */}
+                <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>KEY METRICS</h3>
+                    <div className="w-4 h-4 bg-[#D4AF37] rounded-full shadow-lg"></div>
+                    <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>KEY METRICS</h3>
                   </div>
-                  <div className="text-xs text-stone-400/70 font-mono">ANALYSIS DATA</div>
+                  <div className="text-sm text-stone-400/70 font-mono">ANALYSIS DATA</div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 sm:gap-2 mb-4 sm:mb-2" data-share-hide="true">
+                <div className={`grid grid-cols-3 ${isCompact ? 'gap-3 mb-4' : 'gap-4 mb-6'}`} data-share-hide="true">
                   {(() => {
                     // Ensure we have analysisData, fallback to empty object if not
                     const data = analysisData || {};
                     const metrics = calculateMetrics(data);
                     return (
                       <>
-                        {/* Risk Assessment */}
-                        <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                          <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                            RISK LEVEL
+                        {/* Compact Risk Assessment */}
+                        <div className="bg-black/40 rounded-xl p-4 border border-white/10 shadow-lg">
+                          <div className={`${isCompact ? 'text-[11px] leading-none tracking-normal whitespace-nowrap' : 'text-xs tracking-wider'} uppercase text-white/80 ${isCompact ? 'mb-1' : 'mb-2'} font-semibold`} title="Risk">
+                            RISK
                           </div>
-                          <div className={`text-sm font-bold mb-2 ${
+                          <div className={`text-xl font-black mb-2 ${
                             metrics.risk.color === 'green' ? 'text-green-400' :
                             metrics.risk.color === 'orange' ? 'text-orange-400' : 'text-red-400'
                           }`}>
                             {metrics.risk.level}
                           </div>
-                          <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                          <div className="w-full bg-white/20 rounded-full h-2 mb-2">
                             <div className={`h-2 rounded-full ${
                               metrics.risk.color === 'green' ? 'bg-green-400' :
                               metrics.risk.color === 'orange' ? 'bg-orange-400' : 'bg-red-400'
                             }`} style={{ width: metrics.risk.width }}></div>
                           </div>
-                          <div className="text-xs text-stone-300/80">
+                          <div className="text-xs text-stone-300/70 leading-tight">
                             {metrics.risk.text}
                           </div>
                         </div>
                         
-                        {/* Compatibility Score */}
-                        <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                          <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                            COMPATIBILITY
+                        {/* Compact Compatibility Score */}
+                        <div className="bg-black/40 rounded-xl p-4 border border-white/10 shadow-lg">
+                          <div className={`${isCompact ? 'text-[11px] leading-none tracking-normal whitespace-nowrap' : 'text-xs tracking-wider'} uppercase text-white/80 ${isCompact ? 'mb-1' : 'mb-2'} font-semibold`} title="Compatibility (Fit)">
+                            FIT
                           </div>
-                          <div className={`text-sm font-bold mb-2 ${
+                          <div className={`text-xl font-black mb-2 ${
                             metrics.compat.color === 'green' ? 'text-green-400' :
                             metrics.compat.color === 'yellow' ? 'text-yellow-400' : 'text-red-400'
                           }`}>
                             {metrics.compat.score}%
                           </div>
-                          <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                          <div className="w-full bg-white/20 rounded-full h-2 mb-2">
                             <div className={`h-2 rounded-full ${
                               metrics.compat.color === 'green' ? 'bg-green-400' :
                               metrics.compat.color === 'yellow' ? 'bg-yellow-400' : 'bg-red-400'
                             }`} style={{ width: metrics.compat.width }}></div>
                           </div>
-                          <div className="text-xs text-stone-300/80">
+                          <div className="text-xs text-stone-300/70 leading-tight">
                             {metrics.compat.text}
                           </div>
                         </div>
 
-                        {/* Communication Health */}
-                        <div className="bg-black/40 rounded-xl p-3 sm:p-4">
-                          <div className="text-xs uppercase tracking-wider text-white/70 mb-1">
-                            COMMUNICATION
+                        {/* Compact Communication Health */}
+                        <div className="bg-black/40 rounded-xl p-4 border border-white/10 shadow-lg">
+                          <div className={`${isCompact ? 'text-[11px] leading-none tracking-normal whitespace-nowrap' : 'text-xs tracking-wider'} uppercase text-white/80 ${isCompact ? 'mb-1' : 'mb-2'} font-semibold`} title="Communication (Comms)">
+                            COMMS
                           </div>
-                          <div className={`text-sm font-bold mb-2 ${
+                          <div className={`text-xl font-black mb-2 ${
                             metrics.comm.color === 'green' ? 'text-green-400' :
                             metrics.comm.color === 'yellow' ? 'text-yellow-400' : 'text-red-400'
                           }`}>
                             {metrics.comm.quality}
                           </div>
-                          <div className="w-1/2 bg-white/20 rounded-full h-2 mb-1">
+                          <div className="w-full bg-white/20 rounded-full h-2 mb-2">
                             <div className={`h-2 rounded-full ${
                               metrics.comm.color === 'green' ? 'bg-green-400' :
                               metrics.comm.color === 'yellow' ? 'bg-yellow-400' : 'bg-red-400'
                             }`} style={{ width: metrics.comm.width }}></div>
                           </div>
-                          <div className="text-xs text-stone-300/80">
+                          <div className="text-xs text-stone-300/70 leading-tight">
                             {metrics.comm.text}
                           </div>
                         </div>
@@ -977,12 +990,12 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                 </div>
 
                 <div 
-                  className="overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-6 px-6 autopsy-carousel"
+                  className="overflow-x-auto scrollbar-hide -mx-6 px-6 autopsy-carousel"
                   data-autopsy-scrollable
                   style={{
                     WebkitOverflowScrolling: 'touch',
-                    scrollBehavior: 'smooth',
-                    overscrollBehavior: 'contain'
+                    scrollBehavior: 'auto',
+                    overscrollBehavior: 'auto'
                   }}
                   onScroll={(e) => {
                     setAutopsyScrollPosition(e.target.scrollLeft);
@@ -1209,58 +1222,108 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               </div>
             </motion.section>
 
-            {/* Premium Content or Paywall */}
+            {/* Locked Content Preview - Journey to Premium */}
             {showPaywall ? (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mb-8 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-2xl p-8 border border-[#D4AF37]/20 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+                className="mb-8"
               >
-                {/* Centered lock at top like Immunity */}
-                <div className="flex justify-center mb-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-400/20 flex items-center justify-center border border-yellow-400/30">
-                    <Lock className="w-8 h-8 text-yellow-400" />
+                {/* Blurred Content Preview */}
+                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900/40 via-slate-800/20 to-slate-900/40 border border-slate-600/30">
+                  {/* Actual Content (Blurred) */}
+                  <div className="p-8 sm:p-10 filter blur-sm pointer-events-none">
+                    <div className="text-center mb-8">
+                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-400/30 mb-4">
+                        <span className="text-2xl">📖</span>
+                      </div>
+                      <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 leading-tight">
+                        Sage's Complete Playbook
+                      </h3>
+                    </div>
+                    
+                    {/* Preview Content Blocks */}
+                    <div className="space-y-6">
+                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                        <h4 className="text-lg font-semibold text-white mb-3">🎯 Your Strategic Action Plan</h4>
+                        <p className="text-gray-300 leading-relaxed">
+                          Based on this conversation pattern, here's your personalized 3-step strategy to handle this situation like a pro...
+                        </p>
+                      </div>
+                      
+                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                        <h4 className="text-lg font-semibold text-white mb-3">⚡ Next 48 Hours</h4>
+                        <p className="text-gray-300 leading-relaxed">
+                          Immediate actions to take, specific phrases to use, and timing strategies that actually work...
+                        </p>
+                      </div>
+                      
+                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                        <h4 className="text-lg font-semibold text-white mb-3">🛡️ Immunity Training</h4>
+                        <p className="text-gray-300 leading-relaxed">
+                          Break the cycle with these micro-lessons and field tests designed specifically for your situation...
+                        </p>
+                      </div>
+                      {/* See Both Sides Locked Preview (headings only) */}
+                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                        <div className="grid grid-cols-2">
+                          <div className="px-3 py-2 bg-gradient-to-br from-emerald-500/10 to-green-500/5 border-r border-white/10">
+                            <h5 className="text-emerald-300 font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
+                          </div>
+                          <div className="px-3 py-2 bg-gradient-to-br from-rose-500/10 to-pink-500/5">
+                            <h5 className="text-rose-300 font-bold text-xs sm:text-sm text-center">What You Got</h5>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 divide-x divide-white/10 mt-2">
+                          <div className="p-3 space-y-2">
+                            <div className="h-3 rounded-md bg-white/15 blur-[1px]"></div>
+                            <div className="h-3 rounded-md bg-white/15 blur-[1px] w-5/6"></div>
+                            <div className="h-3 rounded-md bg-white/15 blur-[1px] w-4/6"></div>
+                          </div>
+                          <div className="p-3 space-y-2">
+                            <div className="h-3 rounded-md bg-white/15 blur-[1px]"></div>
+                            <div className="h-3 rounded-md bg-white/15 blur-[1px] w-5/6"></div>
+                            <div className="h-3 rounded-md bg-white/15 blur-[1px] w-4/6"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <h4 className="text-xl font-light text-stone-200/90 mb-2">Unlock Complete Analysis</h4>
-                <p className="text-stone-300/80 mb-6">Get the full dynamics, playbook, and Sage's wisdom</p>
-                <button
-                  onClick={() => window.location.href = '/pricing'}
-                  className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all"
-                >
-                  Go Premium
-                </button>
-              </motion.div>
-            ) : null}
-
-            {showPaywall ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mb-8 bg-black/30 rounded-2xl p-8 border border-[#D4AF37]/30 text-center backdrop-blur-sm"
-                style={{
-                  boxShadow: '0 0 0 1px rgba(212, 175, 55, 0.18), 0 8px 32px rgba(212, 175, 55, 0.12), 0 0 40px rgba(212, 175, 55, 0.08)'
-                }}
-              >
-                <p className="text-white/80 text-lg mb-6">
-                  Unlock the complete immunity training to become bulletproof against this pattern
-                </p>
-                <div className="flex flex-col gap-4">
-                  <button
-                    onClick={() => window.location.href = '/pricing'}
-                    className="w-full px-8 py-4 text-black font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
-                    style={{
-                      background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                      border: '1px solid rgba(212, 175, 55, 0.8)',
-                      boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
-                    }}
-                  >
-                    <Crown className="w-5 h-5" />
-                    Unlock Immunity Training
-                  </button>
-                  <p className="text-white/60 text-sm">
-                    Premium members get unlimited access to all immunity training modules
-                  </p>
+                  
+                  {/* Unlock Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 backdrop-blur-sm flex items-center justify-center">
+                    <div className="text-center p-8">
+                      {/* Lock Icon */}
+                      <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400/30 to-orange-400/30 border-2 border-yellow-400/50 mb-6 shadow-lg shadow-yellow-500/30">
+                        <span className="text-3xl">🔒</span>
+                      </div>
+                      
+                      {/* Unlock Message */}
+                      <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
+                        Unlock Complete Playbook
+                      </h3>
+                      <p className="text-lg text-gray-300 leading-relaxed mb-6 max-w-md mx-auto">
+                        Get your personalized action plan, next 48 hours strategy, and immunity training
+                      </p>
+                      <ul className="text-sm text-gray-300/90 mb-6 space-y-2 max-w-md mx-auto">
+                        <li>• Personalized 3-step action plan</li>
+                        <li>• Exact wording for tricky moments</li>
+                        <li>• Micro-lessons that break the cycle</li>
+                      </ul>
+                      
+                      {/* Unlock Button */}
+                      <button
+                        onClick={() => window.location.href = '/pricing'}
+                        className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                      >
+                        Unlock Playbook
+                      </button>
+                      <p className="text-sm text-gray-400 mt-3">
+                        $29.99/year • Cancel anytime
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             ) : null}
@@ -1294,15 +1357,20 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       transition={{ delay: 0.5 }}
                       className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-2">
+                      <button onClick={()=>setOpenNext48(v=>!v)} className="w-full text-left flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-xl">⏰</span>
                         </div>
                         <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">NEXT 48 HOURS</div>
-                      </div>
-                      <p className="text-stone-200/90 text-base leading-relaxed font-medium">
-                        {safeDeepDive.playbook?.next_48h}
-                      </p>
+                        </div>
+                        <span className="text-white/60 text-xs">{openNext48 ? 'Hide' : 'Open'}</span>
+                      </button>
+                      {openNext48 && (
+                        <p className="text-stone-200/90 text-base leading-relaxed font-medium">
+                          {safeDeepDive.playbook?.next_48h}
+                        </p>
+                      )}
                     </motion.div>
 
                     {/* Your Moves - Enhanced */}
@@ -1312,31 +1380,36 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       transition={{ delay: 0.6 }}
                       className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3 mb-2">
+                      <button onClick={()=>setOpenYourMoves(v=>!v)} className="w-full text-left flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-xl">🎯</span>
                         </div>
                         <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">YOUR MOVES</div>
-                      </div>
-                      <ul className="space-y-3">
-                        {(safeDeepDive.playbook?.your_move?.split('. ') || [])
-                          .filter(move => move.trim())
-                          .slice(0, 3)
-                          .map((move, i) => (
-                            <motion.li 
-                              key={i} 
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.7 + (i * 0.1) }}
-                              className="flex items-start gap-3 group/item"
-                            >
-                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/20 border border-[#14B8A6]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
-                                <ChevronRight className="w-3 h-3 text-[#14B8A6]" />
-                </div>
-                              <span className="text-stone-200/90 text-base font-medium leading-relaxed">{move}</span>
-                            </motion.li>
-                          ))}
-                      </ul>
+                        </div>
+                        <span className="text-white/60 text-xs">{openYourMoves ? 'Hide' : 'Open'}</span>
+                      </button>
+                      {openYourMoves && (
+                        <ul className="space-y-3">
+                          {(safeDeepDive.playbook?.your_move?.split('. ') || [])
+                            .filter(move => move.trim())
+                            .slice(0, 3)
+                            .map((move, i) => (
+                              <motion.li 
+                                key={i} 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.7 + (i * 0.1) }}
+                                className="flex items-start gap-3 group/item"
+                              >
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#14B8A6]/20 to-[#2DD4BF]/20 border border-[#14B8A6]/30 flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                  <ChevronRight className="w-3 h-3 text-[#14B8A6]" />
+                                </div>
+                                <span className="text-stone-200/90 text-base font-medium leading-relaxed">{move}</span>
+                              </motion.li>
+                            ))}
+                        </ul>
+                      )}
                     </motion.div>
               </div>
             </motion.section>
