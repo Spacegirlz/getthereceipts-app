@@ -37,10 +37,10 @@ const LandingPage = () => {
     }
   }, [searchParams]);
 
-  // 🔐 CRITICAL FIX: Redirect authenticated users to dashboard
+  // 🔒 CRITICAL FIX: Redirect authenticated users to dashboard
   useEffect(() => {
     if (!loading && user) {
-      console.log('🔐 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
+      console.log('🔒 LandingPage: User is authenticated, redirecting to dashboard:', user.email);
       // Add a small delay to prevent hydration issues
       const redirectTimer = setTimeout(() => {
         navigate('/dashboard');
@@ -61,6 +61,46 @@ const LandingPage = () => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, 100]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
+
+  // Typing animation state
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [currentText, setCurrentText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Messages to cycle through
+  const messages = [
+    { text: '💬 "Hey you up?"', color: 'text-pink-400', archetype: '🌙💔 The 2AM Breadcrumber' },
+    { text: '💬 "Still on for Saturday?"', color: 'text-blue-400', archetype: '📅👻 The Schedule Phantom' },
+    { text: '💬 "Running 5 min late!"', color: 'text-green-400', archetype: '💚✨ The Actual Adult™' }
+  ];
+
+  // Typing animation effect
+  useEffect(() => {
+    const currentMessage = messages[currentMessageIndex];
+    let charIndex = 0;
+    setCurrentText('');
+    setIsTyping(true);
+
+    const typingInterval = setInterval(() => {
+      if (charIndex < currentMessage.text.length) {
+        setCurrentText(currentMessage.text.slice(0, charIndex + 1));
+        charIndex++;
+      } else {
+        clearInterval(typingInterval);
+        setIsTyping(false);
+        
+        // Show archetype after typing completes
+        setTimeout(() => {
+          // Move to next message
+          setTimeout(() => {
+            setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
+          }, 2000);
+        }, 1500);
+      }
+    }, 50);
+
+    return () => clearInterval(typingInterval);
+  }, [currentMessageIndex]);
 
   // Live user count effect
   useEffect(() => {
@@ -103,7 +143,7 @@ const LandingPage = () => {
 
   const demoData = {
     breadcrumb: {
-      title: '👻 The 2am "Hey"',
+      title: '💔 The 2am "Hey"',
       question: 'Maya asks: Why is my ex texting me at 2am?',
       conversation: [
         { sender: 'Dylan', text: 'Hey', type: 'dylan', time: 'Friday 2:47 AM' },
@@ -378,20 +418,57 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            {/* Live Activity Counter */}
+            {/* Live Activity Counter with Typing Animation */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3 mb-8"
+              className="mb-12"
             >
-              <div className="relative">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                <div className="absolute inset-0 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
+              {/* Live counter */}
+              <div className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3 mb-6">
+                <div className="relative">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                  <div className="absolute inset-0 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
+                </div>
+                <span className="text-sm text-emerald-300 font-medium">
+                  {liveUserCount.toLocaleString()} people getting Sage's take right now
+                </span>
               </div>
-              <span className="text-sm text-emerald-300 font-medium">
-                {liveUserCount.toLocaleString()} people getting Sage's take right now
-              </span>
+
+              {/* Typing animation */}
+              <div className="h-24 flex flex-col items-center justify-center space-y-2">
+                {!isTyping && currentText && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="text-base md:text-lg text-center"
+                  >
+                    <span className="text-teal-300 font-medium">
+                      {messages[currentMessageIndex].archetype}
+                    </span>
+                  </motion.div>
+                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-base md:text-lg text-center"
+                >
+                  <span className={`${messages[currentMessageIndex].color} tracking-wide`}>
+                    {currentText}
+                    {isTyping && (
+                      <motion.span
+                        animate={{ opacity: [1, 0] }}
+                        transition={{ duration: 0.5, repeat: Infinity }}
+                        className="inline-block ml-1"
+                      >
+                        |
+                      </motion.span>
+                    )}
+                  </span>
+                </motion.div>
+              </div>
             </motion.div>
 
             {/* Main Headline */}
@@ -623,7 +700,7 @@ const LandingPage = () => {
                 {/* Step 1 */}
                 <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-yellow-400">
                   <div className="text-2xl font-black mb-1 bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">1</div>
-                  <div className="text-2xl mb-1">🔍</div>
+                  <div className="text-2xl mb-1">📋</div>
                   <p className="text-gray-300 text-sm mb-3">Pick a scenario below</p>
                   <Button
                     onClick={() => scrollTo('demo-tabs')}
@@ -720,9 +797,9 @@ const LandingPage = () => {
                           {item.separator}
                         </div>
                       ) : (
-                        <div className={`flex ${(item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom') ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`flex ${(item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom' || item.type === 'alex' || item.type === 'sam' || item.type === 'bella') ? 'justify-end' : 'justify-start'}`}>
                           <div className={`max-w-xs px-4 py-3 rounded-2xl ${
-                            (item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom')
+                            (item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom' || item.type === 'alex' || item.type === 'sam' || item.type === 'bella')
                               ? 'bg-violet-600 text-white ml-8' 
                               : 'bg-slate-700 text-gray-200 mr-8'
                           }`}>
@@ -1021,7 +1098,7 @@ const LandingPage = () => {
                   <div className="space-y-4">
                     {[
                       { icon: '🛡️', title: 'Archetype Reader', desc: 'Deep dive into their personality patterns and motivations' },
-                      { icon: '🔍', title: 'Pattern Loop Recognition', desc: 'Learn to spot cycles before they trap you' },
+                      { icon: '🔁', title: 'Pattern Loop Recognition', desc: 'Learn to spot cycles before they trap you' },
                       { icon: '💪', title: 'Sage\'s Real Talk', desc: 'Advanced coaching on building emotional immunity' }
                     ].map((feature, index) => (
                       <div key={index} className="flex items-start space-x-3">
