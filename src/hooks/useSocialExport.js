@@ -1,12 +1,14 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
 
-// Captures a fixed-size element (720x1280) by id at scale=1.0
+// Captures a fixed-size element (1080x1920) by id at scale=1.0
 // Shows success/error toasts and downloads via file-saver
 export function useSocialExport() {
   const { toast } = useToast();
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [instructionsPlatform, setInstructionsPlatform] = useState('general');
 
   const captureById = useCallback(async (elementId, filenamePrefix = 'Sage', useShareAPI = true) => {
     try {
@@ -28,15 +30,15 @@ export function useSocialExport() {
         height: el.offsetHeight
       });
 
-      // Ensure expected size
-      const expectedWidth = 720;
-      const expectedHeight = 1280;
+      // Ensure expected size (Instagram Stories format)
+      const expectedWidth = 1080;
+      const expectedHeight = 1920;
       const width = el.offsetWidth || expectedWidth;
       const height = el.offsetHeight || expectedHeight;
 
       // Warn if element size is off; still proceed
       if (width !== expectedWidth || height !== expectedHeight) {
-        console.warn(`⚠️ Social export element size ${width}x${height} differs from expected 720x1280`);
+        console.warn(`⚠️ Social export element size ${width}x${height} differs from expected 1080x1920`);
       }
 
       // Temporarily move element to viewport for capture (html2canvas has issues with off-screen elements)
@@ -76,7 +78,7 @@ export function useSocialExport() {
 
       let outCanvas = canvas;
       if (canvas.width !== expectedWidth || canvas.height !== expectedHeight) {
-        // Resize to exact 720x1280 as a safe fallback while keeping scale=1.0 capture
+        // Resize to exact 1080x1920 as a safe fallback while keeping scale=1.0 capture
         const resized = document.createElement('canvas');
         resized.width = expectedWidth;
         resized.height = expectedHeight;
@@ -90,7 +92,11 @@ export function useSocialExport() {
       outCanvas.toBlob(async (blob) => {
         if (!blob) {
           console.error('❌ Failed to create image blob');
-          toast({ title: 'Export failed', description: 'Could not create image blob', variant: 'destructive' });
+          toast({ 
+            title: '😵 Oops!', 
+            description: 'Couldn\'t create the image. Try again?', 
+            variant: 'destructive' 
+          });
           return;
         }
         
@@ -117,7 +123,10 @@ export function useSocialExport() {
                   'Sage AI decoded my entire life in 30 seconds 💀\n#getthereceipts #sageknows',
                   'Sage gets it 🔥\n#getthereceipts #sageknows',
                   'I wasn\'t ready for this 💀\n#getthereceipts #sageknows',
-                  'Well damn 😭\n#getthereceipts #sageknows'
+                  'Well damn 😭\n#getthereceipts #sageknows',
+                  'the way this app just EXPOSED me 💀\n#getthereceipts #sageknows',
+                  'not sage calling out my entire texting strategy ☠️\n#getthereceipts #sageknows',
+                  'this app is too accurate and I\'m uncomfy 😭\n#getthereceipts #sageknows'
                 ];
               } else if (prefix === 'Sage-Playbook') {
                 return [
@@ -129,7 +138,9 @@ export function useSocialExport() {
                   'Sage just gave me the blueprint and I\'m not mad 💀\n#getthereceipts #sageknows',
                   'This playbook gets it 🔥\n#getthereceipts #sageknows',
                   'I wasn\'t ready for this level of accuracy 💀\n#getthereceipts #sageknows',
-                  'Well damn, this hits different 😭\n#getthereceipts #sageknows'
+                  'Well damn, this hits different 😭\n#getthereceipts #sageknows',
+                  'sage really said "let me read you for filth" 💀\n#getthereceipts #sageknows',
+                  'not the AI giving me a whole strategy guide ☠️\n#getthereceipts #sageknows'
                 ];
               } else if (prefix === 'Sage-Immunity') {
                 return [
@@ -141,7 +152,9 @@ export function useSocialExport() {
                   'Sage just gave me the blueprint and I\'m not mad 💀\n#getthereceipts #sageknows',
                   'This immunity training gets it 🔥\n#getthereceipts #sageknows',
                   'I wasn\'t ready for this level of accuracy 💀\n#getthereceipts #sageknows',
-                  'Well damn, this hits different 😭\n#getthereceipts #sageknows'
+                  'Well damn, this hits different 😭\n#getthereceipts #sageknows',
+                  'sage really said "bestie, you need this" 💀\n#getthereceipts #sageknows',
+                  'immunity training but make it personal 😭\n#getthereceipts #sageknows'
                 ];
               } else {
                 // Default fallback
@@ -170,9 +183,12 @@ export function useSocialExport() {
               title: getShareTitle(safePrefix),
               text: randomText
             });
+            
+            // Show helpful guidance after share menu opens
             toast({ 
-              title: '📱 Shared!', 
-              description: 'Choose "Save to Photos" from the share menu to save it.' 
+              title: '✨ Pro tip', 
+              description: 'Choose "Save to Photos" to keep your receipt, or share directly to Stories!',
+              duration: 4000 // Show for 4 seconds
             });
             return;
           } catch (shareError) {
@@ -185,22 +201,47 @@ export function useSocialExport() {
           }
         }
         
-        // Fallback: Traditional download
+        // Fallback: Download + Show Instructions
         console.log('💾 Using traditional download');
         saveAs(blob, filename);
+        
+        // Show instructions modal for desktop users (only once)
+        const hasSeenInstructions = localStorage.getItem('gtr_share_instructions_seen');
+        if (!hasSeenInstructions) {
+          setInstructionsPlatform('general');
+          setShowInstructions(true);
+          localStorage.setItem('gtr_share_instructions_seen', 'true');
+        }
+        
         toast({ 
-          title: '💾 Downloaded!', 
-          description: 'Image saved to Downloads. You can save to Photos from there.' 
+          title: '💾 Receipt Saved!', 
+          description: 'Now: Open Instagram/TikTok on your phone → Upload from Photos → Share!',
+          duration: 6000
         });
       }, 'image/png');
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Social export error:', err);
-      toast({ title: 'Export failed', description: 'Please try again.', variant: 'destructive' });
+      toast({ 
+        title: '😵 Oops!', 
+        description: 'Something went wrong. Try again?', 
+        variant: 'destructive' 
+      });
     }
   }, [toast]);
 
-  return { captureById };
+  const resetInstructions = () => {
+    localStorage.removeItem('gtr_share_instructions_seen');
+    setShowInstructions(true);
+  };
+
+  return { 
+    captureById,
+    showInstructions,
+    setShowInstructions,
+    instructionsPlatform,
+    resetInstructions
+  };
 }
 
 export default useSocialExport;

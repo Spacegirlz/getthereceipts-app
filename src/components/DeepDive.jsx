@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Copy, Lock, Share2, Zap, Eye, Clock, Play, Download, Volume2, VolumeX, Pause, ChevronRight, Info, Crown } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useSocialExport } from '@/hooks/useSocialExport';
+import { ShareInstructionsModal } from '@/components/ShareInstructionsModal';
 import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
@@ -28,7 +29,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   useEffect(() => {
     try { if (typeof window !== 'undefined') window.localStorage.setItem('gtr_density', isCompact ? 'compact' : 'standard'); } catch {}
   }, [isCompact]);
-  const { captureById } = useSocialExport();
+  const { captureById, showInstructions, setShowInstructions, instructionsPlatform } = useSocialExport();
   const [copiedText, setCopiedText] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [showAllAutopsy, setShowAllAutopsy] = useState(false);
@@ -1490,6 +1491,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             {/* Actions - Premium Buttons */}
             {isPremium && (
               <div className="flex flex-col items-center justify-center gap-4 max-w-2xl mx-auto" data-share-hide="true">
+                {/* Urgency Message - Centered Above Both Buttons */}
+                <div className="text-center mb-4">
+                  <p className="text-xs text-teal-400/90 font-medium animate-pulse">
+                    😱 Your friends need to see this
+                  </p>
+                </div>
+                
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <button
                     onClick={handleSaveClean}
@@ -1499,35 +1507,19 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     Save Playbook
                   </button>
                   
-                  {/* Share Button with Urgency Micro-copy */}
-                  <div className="flex flex-col items-center gap-2">
-                    <p className="text-xs text-rose-400/90 font-medium animate-pulse">
-                      😱 Your friends need to see this
-                    </p>
-                    <button
-                      onClick={() => {
-                        // Haptic feedback for mobile
-                        if (window.navigator.vibrate) {
-                          window.navigator.vibrate(10);
-                        }
-                        handleSharePlaybook();
-                      }}
-                      className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      🔗 Share Playbook
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Subtle Share & Earn Message */}
-                <div className="text-center">
-                  <p className="text-xs text-purple-400/80 font-medium">
-                    💰 Share & earn 30% commission
-                  </p>
-                  <p className="text-[10px] text-purple-300/60">
-                    Every share that converts = $$$
-                  </p>
+                  <button
+                    onClick={() => {
+                      // Haptic feedback for mobile
+                      if (window.navigator.vibrate) {
+                        window.navigator.vibrate(10);
+                      }
+                      handleSharePlaybook();
+                    }}
+                    className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    🔗 Share Playbook
+                  </button>
                 </div>
               </div>
             )}
@@ -1536,25 +1528,28 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             {!showPaywall && (
             <>
             <div className="text-center mt-8 mb-4 space-y-3">
-              {/* Privacy & Share Messaging */}
+              {/* Privacy & Analysis Context */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <p className="text-xs text-gray-400/80 bg-gray-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/30 backdrop-blur-sm">
+                <p className="text-xs text-purple-400/90 bg-purple-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-purple-700/30 backdrop-blur-sm font-medium">
                   🔒 Private. Chat deleted. Never stored.
                 </p>
                 <p className="text-xs text-purple-400/90 bg-purple-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-purple-700/30 backdrop-blur-sm font-medium">
-                  💰 Share & earn • 30% commission • Join 12K+ creators
+                  📍 Based on your message only
                 </p>
               </div>
               
-              {/* Analysis Context & Disclaimer */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <p className="text-xs text-gray-400/70 bg-gray-900/15 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/20 backdrop-blur-sm">
-                  📍 Based on your message only
-                </p>
-                <p className="text-xs text-stone-400/70 bg-stone-900/15 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-stone-700/20 backdrop-blur-sm italic">
-                  For entertainment purposes - Sage calls it like she sees it
-                </p>
-              </div>
+              {/* Disclaimer */}
+              <p className="text-xs text-purple-400/90 bg-purple-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-purple-700/30 backdrop-blur-sm font-medium italic">
+                For entertainment purposes - Sage calls it like she sees it
+              </p>
+              
+              {/* Prominent Clickable Share & Earn CTA */}
+              <button 
+                onClick={() => window.open('http://localhost:5173/refer', '_blank')}
+                className="text-sm text-purple-300 bg-purple-900/30 px-6 py-3 rounded-full inline-flex items-center gap-2 border-2 border-purple-600/50 backdrop-blur-sm font-bold hover:bg-purple-900/50 hover:border-purple-500/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+              >
+                💰 Share & earn • 30% commission • Join 12K+ creators
+              </button>
             </div>
             <div className="text-center mt-2 mb-6">
               <p className="text-xs text-stone-200/90/40 tracking-widest">
@@ -1566,6 +1561,13 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           </div>
         </div>
       </motion.div>
+      
+      {/* Share Instructions Modal */}
+      <ShareInstructionsModal 
+        isOpen={showInstructions}
+        onClose={() => setShowInstructions(false)}
+        platform={instructionsPlatform}
+      />
     </>
   );
 });

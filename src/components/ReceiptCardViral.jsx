@@ -5,7 +5,7 @@ import TrendSticker from '@/components/TrendSticker';
 // Standard Sage image for Truth Receipt
 import sageStandardImage from '@/assets/sage-dark-circle.png';
 
-const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing }) => {
+const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing, onShowInstructions }) => {
   if (!results) return null;
 
 
@@ -507,6 +507,13 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             boxShadow: '0 12px 40px rgba(20, 184, 166, 0.2), 0 0 100px rgba(20, 184, 166, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}
         >
+          {/* Urgency Message - Centered Above Both Buttons */}
+          <div className="text-center mb-4">
+            <p className="text-xs text-teal-400/90 font-medium animate-pulse">
+              😱 Your friends need to see this
+            </p>
+          </div>
+          
           {/* Save/Share Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <button 
@@ -522,67 +529,81 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
               {isSharing ? 'Saving...' : 'Save Receipt'}
             </button>
             
-            {/* Share Button with Urgency Micro-copy */}
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-xs text-rose-400/90 font-medium animate-pulse">
-                😱 Your friends need to see this
-              </p>
-              <motion.button 
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                  boxShadow: [
-                    '0 0 24px rgba(212, 175, 55, 0.4)',
-                    '0 0 36px rgba(212, 175, 55, 0.6)', 
-                    '0 0 24px rgba(212, 175, 55, 0.4)'
-                  ]
-                }}
-                onClick={onScreenshot}
-                disabled={isSharing}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="flex items-center gap-3 text-black font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl disabled:opacity-50"
-                style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                  border: '2px solid rgba(212, 175, 55, 0.9)',
-                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)'
-                }}
-              >
-                <Share2 className="h-4 w-4" />
-                {isSharing ? 'Sharing...' : '🔗 Share Receipt'}
-              </motion.button>
-            </div>
+            <motion.button 
+              animate={{ 
+                scale: [1, 1.02, 1],
+                boxShadow: [
+                  '0 0 24px rgba(212, 175, 55, 0.4)',
+                  '0 0 36px rgba(212, 175, 55, 0.6)', 
+                  '0 0 24px rgba(212, 175, 55, 0.4)'
+                ]
+              }}
+              onClick={(e) => {
+                console.log('🔗 Share Receipt button clicked!', { onScreenshot, isSharing });
+                if (onScreenshot) {
+                  onScreenshot(e);
+                } else {
+                  console.error('❌ onScreenshot function not provided!');
+                }
+              }}
+              disabled={isSharing}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="flex items-center gap-3 text-black font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-xl disabled:opacity-50"
+              style={{
+                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                border: '2px solid rgba(212, 175, 55, 0.9)',
+                boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              <Share2 className="h-4 w-4" />
+              {isSharing ? 'Sharing...' : '🔗 Share Receipt'}
+            </motion.button>
           </div>
           
-          {/* Subtle Share & Earn Message */}
-          <div className="text-center">
-            <p className="text-xs text-emerald-400/80 font-medium">
-              💰 Share & earn 30% commission
-            </p>
-            <p className="text-[10px] text-emerald-300/60">
-              Every share that converts = $$$
-            </p>
+          {/* Share Help Text */}
+          <div className="text-center mt-2 space-y-1">
+            <div>
+              <span 
+                className="text-xs text-gray-400 hover:text-cyan-400 underline cursor-pointer transition-colors"
+                title="📱 Mobile: Tap Share → Choose Instagram/TikTok/Photos | 💻 Desktop: Downloads folder → Transfer to phone → Upload to Stories | 🎯 Pro tip: Save to Photos first, then share to Stories for best quality!"
+                onClick={() => {
+                  if (onShowInstructions) {
+                    onShowInstructions();
+                  } else {
+                    // Fallback: show alert with instructions
+                    alert(`📱 Mobile: Tap Share → Choose Instagram/TikTok/Photos\n\n💻 Desktop: Downloads folder → Transfer to phone → Upload to Stories\n\n🎯 Pro tip: Save to Photos first, then share to Stories for best quality!`);
+                  }
+                }}
+              >
+                How does sharing work? →
+              </span>
+            </div>
           </div>
         </div>
         
         {/* High-End SaaS Bottom Messaging */}
         <div className="mt-6 text-center space-y-3">
-          {/* Privacy & Share Messaging */}
+          {/* Privacy & Analysis Context */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <p className="text-xs text-gray-400/80 bg-gray-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/30 backdrop-blur-sm">
+            <p className="text-xs text-teal-400/90 bg-teal-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-teal-700/30 backdrop-blur-sm font-medium">
               🔒 Private. Chat deleted. Never stored.
             </p>
-            <p className="text-xs text-emerald-400/90 bg-emerald-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-emerald-700/30 backdrop-blur-sm font-medium">
-              💰 Share & earn • 30% commission • Join 12K+ creators
+            <p className="text-xs text-teal-400/90 bg-teal-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-teal-700/30 backdrop-blur-sm font-medium">
+              📍 Based on your message only
             </p>
           </div>
           
-          {/* Analysis Context */}
-          <p className="text-xs text-gray-400/70 bg-gray-900/15 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/20 backdrop-blur-sm">
-            📍 Based on your message only
-          </p>
+          {/* Prominent Clickable Share & Earn CTA */}
+          <button 
+            onClick={() => window.open('http://localhost:5173/refer', '_blank')}
+            className="text-sm text-emerald-300 bg-emerald-900/30 px-6 py-3 rounded-full inline-flex items-center gap-2 border-2 border-emerald-600/50 backdrop-blur-sm font-bold hover:bg-emerald-900/50 hover:border-emerald-500/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-emerald-500/25"
+          >
+            💰 Share & earn • 30% commission • Join 12K+ creators
+          </button>
         </div>
         
       </div>

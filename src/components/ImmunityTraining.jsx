@@ -5,6 +5,7 @@ import domtoimage from 'dom-to-image-more';
 import { saveAs } from 'file-saver';
 import { useToast } from '@/components/ui/use-toast';
 import { useSocialExport } from '@/hooks/useSocialExport';
+import { ShareInstructionsModal } from '@/components/ShareInstructionsModal';
 
 // Helper function to remove bad emojis (specifically ✅)
 const cleanFlagText = (text) => {
@@ -17,7 +18,7 @@ import BlurredSection from './BlurredSection';
 
 const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter", isCrisisSituation = false, isPremium = false, originalMessage, context, analysisData }) => {
   const { toast } = useToast();
-  const { captureById } = useSocialExport();
+  const { captureById, showInstructions, setShowInstructions, instructionsPlatform } = useSocialExport();
   
   // Compact mode state with localStorage persistence
   const [isCompact, setIsCompact] = useState(() => {
@@ -1101,25 +1102,28 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
             {/* High-End SaaS Footer */}
             <div className="text-center mt-6 mb-4 space-y-3" data-share-hide="true">
-              {/* Privacy & Share Messaging */}
+              {/* Privacy & Analysis Context */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <p className="text-xs text-gray-400/80 bg-gray-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/30 backdrop-blur-sm">
+                <p className="text-xs text-yellow-400/90 bg-yellow-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-yellow-700/30 backdrop-blur-sm font-medium">
                   🔒 Private. Chat deleted. Never stored.
                 </p>
                 <p className="text-xs text-yellow-400/90 bg-yellow-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-yellow-700/30 backdrop-blur-sm font-medium">
-                  💰 Share & earn • 30% commission • Join 12K+ creators
+                  📍 Based on your message only
                 </p>
               </div>
               
-              {/* Analysis Context & Disclaimer */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <p className="text-xs text-gray-400/70 bg-gray-900/15 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-gray-700/20 backdrop-blur-sm">
-                  📍 Based on your message only
-                </p>
-                <p className="text-xs text-stone-400/70 bg-stone-900/15 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-stone-700/20 backdrop-blur-sm italic">
-                  For entertainment purposes - Sage calls it like she sees it
-                </p>
-              </div>
+              {/* Disclaimer */}
+              <p className="text-xs text-yellow-400/90 bg-yellow-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-yellow-700/30 backdrop-blur-sm font-medium italic">
+                For entertainment purposes - Sage calls it like she sees it
+              </p>
+              
+              {/* Prominent Clickable Share & Earn CTA */}
+              <button 
+                onClick={() => window.open('http://localhost:5173/refer', '_blank')}
+                className="text-sm text-yellow-300 bg-yellow-900/30 px-6 py-3 rounded-full inline-flex items-center gap-2 border-2 border-yellow-600/50 backdrop-blur-sm font-bold hover:bg-yellow-900/50 hover:border-yellow-500/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-yellow-500/25"
+              >
+                💰 Share & earn • 30% commission • Join 12K+ creators
+              </button>
             </div>
             
             {/* WATERMARK - moved below to render for all users */}
@@ -1142,6 +1146,13 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
             }}
           >
+            {/* Urgency Message - Centered Above Both Buttons */}
+            <div className="text-center mb-4">
+              <p className="text-xs text-teal-400/90 font-medium animate-pulse">
+                😱 Your friends need to see this
+              </p>
+            </div>
+            
             {/* Save/Share Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               <button 
@@ -1156,53 +1167,43 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 Save Immunity
               </button>
               
-              {/* Share Button with Urgency Micro-copy */}
-              <div className="flex flex-col items-center gap-2">
-                <p className="text-xs text-rose-400/90 font-medium animate-pulse">
-                  😱 Your friends need to see this
-                </p>
-                <motion.button 
-                  animate={{ 
-                    scale: [1, 1.02, 1],
-                    boxShadow: [
-                      '0 0 20px rgba(212, 175, 55, 0.3)',
-                      '0 0 30px rgba(212, 175, 55, 0.5)', 
-                      '0 0 20px rgba(212, 175, 55, 0.3)'
-                    ]
-                  }}
-                  onClick={handleShareTrophy}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-                  style={{
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                    border: '1px solid rgba(212, 175, 55, 0.9)',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-                  }}
-                >
-                  <Zap className="h-4 w-4" />
-                  🔗 Share Trophy
-                </motion.button>
-              </div>
-            </div>
-            
-            {/* Subtle Share & Earn Message */}
-            <div className="text-center">
-              <p className="text-xs text-yellow-400/80 font-medium">
-                💰 Share & earn 30% commission
-              </p>
-              <p className="text-[10px] text-yellow-300/60">
-                Every share that converts = $$$
-              </p>
+              <motion.button 
+                animate={{ 
+                  scale: [1, 1.02, 1],
+                  boxShadow: [
+                    '0 0 20px rgba(212, 175, 55, 0.3)',
+                    '0 0 30px rgba(212, 175, 55, 0.5)', 
+                    '0 0 20px rgba(212, 175, 55, 0.3)'
+                  ]
+                }}
+                onClick={handleShareTrophy}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.9)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <Zap className="h-4 w-4" />
+                🔗 Share Trophy
+              </motion.button>
             </div>
           </div>
           
         </div>
       )}
 
+      {/* Share Instructions Modal */}
+      <ShareInstructionsModal 
+        isOpen={showInstructions}
+        onClose={() => setShowInstructions(false)}
+        platform={instructionsPlatform}
+      />
     </div>
   );
 });

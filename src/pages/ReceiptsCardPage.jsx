@@ -8,6 +8,7 @@ import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import { SocialReceiptCard, SocialPlaybookCard, SocialImmunityCard } from '@/components/exports/SocialCards';
 import { useSocialExport } from '@/hooks/useSocialExport';
+import { ShareInstructionsModal } from '@/components/ShareInstructionsModal';
 import DetailedResults from '@/components/DetailedResults';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
@@ -33,7 +34,7 @@ import redFlag from '@/assets/red-flag.png'; // 7-10 red flags - Savage Sage
 
 
 const ReceiptsCardPage = () => {
-  const { captureById } = useSocialExport();
+  const { captureById, showInstructions, setShowInstructions, instructionsPlatform, resetInstructions } = useSocialExport();
   // Inject moving gradient styles
   React.useEffect(() => {
     injectMovingGradientStyles();
@@ -107,9 +108,16 @@ const ReceiptsCardPage = () => {
     });
   };
 
-  const handleSaveReceipt = () => {
-    // Use the new social export system for Truth Receipt - direct download only
-    captureById('social-receipt-card', "Sage-Receipt", false);
+  const handleSaveReceipt = async () => {
+    setIsSharing(true);
+    try {
+      // Use the new social export system for Truth Receipt - direct download only
+      await captureById('social-receipt-card', "Sage-Receipt", false);
+    } catch (error) {
+      console.error('❌ Save failed:', error);
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   const handleFounderCheckout = async () => {
@@ -363,8 +371,21 @@ const ReceiptsCardPage = () => {
   const archetypeTitle = analysis?.archetype || '';
 
   const handleScreenshot = async () => {
-    // Use the new social export system for Truth Receipt sharing - with share menu
-    captureById('social-receipt-card', "Sage-Receipt", true);
+    console.log('📸 handleScreenshot called!', { analysis: !!analysis });
+    
+    // Debug: Check if element exists
+    const element = document.getElementById('social-receipt-card');
+    console.log('🔍 Element check:', { element: !!element, elementId: element?.id });
+    
+    setIsSharing(true);
+    try {
+      // Use the new social export system for Truth Receipt sharing - with share menu
+      await captureById('social-receipt-card', "Sage-Receipt", true);
+    } catch (error) {
+      console.error('❌ Share failed:', error);
+    } finally {
+      setIsSharing(false);
+    }
   };
 
 
@@ -488,6 +509,9 @@ const ReceiptsCardPage = () => {
                   onSaveReceipt={handleSaveReceipt}
                   onScreenshot={handleScreenshot}
                   isSharing={isSharing}
+                  onShowInstructions={() => {
+                    resetInstructions();
+                  }}
                 />
               </ErrorBoundary>
             </motion.div>
@@ -601,6 +625,13 @@ const ReceiptsCardPage = () => {
       
       
       {/* Age Verification Modal - Removed */}
+      
+      {/* Share Instructions Modal */}
+      <ShareInstructionsModal 
+        isOpen={showInstructions}
+        onClose={() => setShowInstructions(false)}
+        platform={instructionsPlatform}
+      />
     </div>
   );
 };

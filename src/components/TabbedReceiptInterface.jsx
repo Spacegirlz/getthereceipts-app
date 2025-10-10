@@ -16,12 +16,25 @@ const TabbedReceiptInterface = ({
   archetypeNameForImmunity,
   onSaveReceipt,
   onScreenshot,
-  isSharing 
+  isSharing,
+  onShowInstructions
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { isPremium } = useAuth();
   const navigate = useNavigate();
+
+  // Ensure first tab content is immediately visible on mount
+  useEffect(() => {
+    // Force a re-render to ensure content is visible
+    const timer = setTimeout(() => {
+      if (activeTab === 0 && isTransitioning) {
+        setIsTransitioning(false);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [activeTab, isTransitioning]);
 
   // Check if this is a crisis situation (strict boolean)
   const isCrisisSituation = Boolean(
@@ -53,6 +66,7 @@ const TabbedReceiptInterface = ({
           onSaveReceipt={onSaveReceipt}
           onScreenshot={onScreenshot}
           isSharing={isSharing}
+          onShowInstructions={onShowInstructions}
         />
       ),
       isPremium: false
@@ -100,7 +114,7 @@ const TabbedReceiptInterface = ({
 
   // Navigation functions
   const navigateToTab = (newIndex) => {
-    if (newIndex === activeTab || isTransitioning) return;
+    if (newIndex === activeTab) return;
     if (newIndex < 0 || newIndex >= tabs.length) return;
     
     // Check premium access for immunity tab
@@ -114,10 +128,10 @@ const TabbedReceiptInterface = ({
     // Scroll to top of the tab content
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // Reset transition state after animation
+    // Reset transition state after animation (reduced from 300ms to 200ms)
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 300);
+    }, 200);
   };
 
   const handleTabClick = (tabIndex) => {
@@ -286,9 +300,9 @@ const TabbedReceiptInterface = ({
             exit={{ opacity: 0, x: -50 }}
             transition={{ 
               type: "spring", 
-              stiffness: 300, 
-              damping: 30,
-              opacity: { duration: 0.2 }
+              stiffness: 400, 
+              damping: 25,
+              opacity: { duration: 0.15 }
             }}
             className="w-full"
           >
