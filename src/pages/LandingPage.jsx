@@ -67,11 +67,15 @@ const LandingPage = () => {
   const [currentText, setCurrentText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  // Messages to cycle through
+  // Messages to cycle through - Gen Z nightmare scenarios
   const messages = [
-    { text: '💬 "Hey you up?"', color: 'text-pink-400', archetype: '🌙💔 The 2AM Breadcrumber' },
-    { text: '💬 "Still on for Saturday?"', color: 'text-blue-400', archetype: '📅👻 The Schedule Phantom' },
-    { text: '💬 "Running 5 min late!"', color: 'text-green-400', archetype: '💚✨ The Actual Adult™' }
+    { text: '💬 "watches my story instantly but takes 8 hours to reply... lol"', color: 'bg-gradient-to-r from-blue-400 to-indigo-500', archetype: '📱👻 The WiFi Ghoster' },
+    { text: '💬 "soft-launched me on close friends then hard-launched his ex 🤡"', color: 'bg-gradient-to-r from-indigo-400 to-purple-500', archetype: '📸🤡 The Backup Plan' },
+    { text: '💬 "bro really typed \'wyd\' at 1:47am thinking that\'s flirting 😭"', color: 'bg-gradient-to-r from-purple-400 to-violet-500', archetype: '🌙💔 The 2AM Breadcrumber' },
+    { text: '💬 "is this normal - games 10 hours straight but can\'t call for 5 min?? WTF!"', color: 'bg-gradient-to-r from-violet-400 to-pink-500', archetype: '🎮⚰️ The AFKer' },
+    { text: '💬 "he said \'I love you\' on date 2 and wants to meet my parents... help 😭"', color: 'bg-gradient-to-r from-pink-400 to-rose-500', archetype: '💣💕 The Love Bomber' },
+    { text: '💬 "date 1: life story trauma dump. date 2: complete ghost. make it make sense"', color: 'bg-gradient-to-r from-rose-400 to-pink-500', archetype: '💣👻 The Emotional Hit & Run' },
+    { text: '💬 "u plan trips we\'ll never take but can\'t plan dinner 🤨"', color: 'bg-gradient-to-r from-blue-400 to-purple-500', archetype: '✈️🎭 The Dream Seller' }
   ];
 
   // Typing animation effect
@@ -455,7 +459,7 @@ const LandingPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-base md:text-lg text-center"
                 >
-                  <span className={`${messages[currentMessageIndex].color} tracking-wide`}>
+                  <span className={`${messages[currentMessageIndex].color} bg-clip-text text-transparent tracking-wide`}>
                     {currentText}
                     {isTyping && (
                       <motion.span
