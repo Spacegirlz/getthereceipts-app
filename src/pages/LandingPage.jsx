@@ -71,11 +71,11 @@ const LandingPage = () => {
   const messages = [
     { text: '💬 "watches my story instantly but takes 8 hours to reply... lol"', color: 'bg-gradient-to-r from-blue-400 to-indigo-500', archetype: '📱👻 The WiFi Ghoster' },
     { text: '💬 "soft-launched me on close friends then hard-launched his ex 🤡"', color: 'bg-gradient-to-r from-indigo-400 to-purple-500', archetype: '📸🤡 The Backup Plan' },
-    { text: '💬 "bro really typed \'wyd\' at 1:47am thinking that\'s flirting 😭"', color: 'bg-gradient-to-r from-purple-400 to-violet-500', archetype: '🌙💔 The 2AM Breadcrumber' },
+    { text: '💬 "bro really typed \'wyd\' at 1:47am thinking that\'s flirting! how am i not confused."', color: 'bg-gradient-to-r from-purple-400 to-violet-500', archetype: '🌙💔 The 2AM Breadcrumber' },
     { text: '💬 "is this normal - games 10 hours straight but can\'t call for 5 min?? WTF!"', color: 'bg-gradient-to-r from-violet-400 to-pink-500', archetype: '🎮⚰️ The AFKer' },
     { text: '💬 "he said \'I love you\' on date 2 and wants to meet my parents... help 😭"', color: 'bg-gradient-to-r from-pink-400 to-rose-500', archetype: '💣💕 The Love Bomber' },
     { text: '💬 "date 1: life story trauma dump. date 2: complete ghost. make it make sense"', color: 'bg-gradient-to-r from-rose-400 to-pink-500', archetype: '💣👻 The Emotional Hit & Run' },
-    { text: '💬 "u plan trips we\'ll never take but can\'t plan dinner 🤨"', color: 'bg-gradient-to-r from-blue-400 to-purple-500', archetype: '✈️🎭 The Dream Seller' }
+    { text: '💬 "u plan trips we\'ll never take but can\'t plan dinner.. I don\'t get it."', color: 'bg-gradient-to-r from-blue-400 to-purple-500', archetype: '✈️🎭 The Dream Seller' }
   ];
 
   // Typing animation effect
