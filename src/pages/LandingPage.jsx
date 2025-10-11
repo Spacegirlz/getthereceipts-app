@@ -66,6 +66,53 @@ const LandingPage = () => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('breadcrumber');
+
+  // Category data for different receipt types
+  const categoryData = {
+    breadcrumber: {
+      title: '2AM Breadcrumber',
+      emoji: '🌙💔',
+      color: 'from-purple-500 to-pink-500',
+      bgColor: 'from-purple-600/20 to-pink-600/20',
+      borderColor: 'border-purple-400/30',
+      intoYou: '15%',
+      wastingTime: '85%',
+      redFlags: '4',
+      receipts: [
+        { src: '/receipts/breadcrumber-1.png', alt: '2AM Breadcrumber Analysis - Late Night Texts' },
+        { src: '/receipts/breadcrumber-2.png', alt: '2AM Breadcrumber Analysis - Vague Questions' }
+      ]
+    },
+    adult: {
+      title: 'Actual Adult',
+      emoji: '✅',
+      color: 'from-green-500 to-emerald-500',
+      bgColor: 'from-green-600/20 to-emerald-600/20',
+      borderColor: 'border-green-400/30',
+      intoYou: '85%',
+      wastingTime: '15%',
+      redFlags: '0',
+      receipts: [
+        { src: '/receipts/adult-1.png', alt: 'Actual Adult Analysis - Consistent Communication' },
+        { src: '/receipts/adult-2.png', alt: 'Actual Adult Analysis - Real Plans' }
+      ]
+    },
+    gaslighter: {
+      title: 'The Gaslighter',
+      emoji: '🎭',
+      color: 'from-orange-500 to-red-500',
+      bgColor: 'from-orange-600/20 to-red-600/20',
+      borderColor: 'border-orange-400/30',
+      intoYou: '25%',
+      wastingTime: '75%',
+      redFlags: '6',
+      receipts: [
+        { src: '/receipts/gaslighter-1.png', alt: 'Gaslighter Analysis - Manipulation Tactics' },
+        { src: '/receipts/gaslighter-2.png', alt: 'Gaslighter Analysis - Reality Distortion' }
+      ]
+    }
+  };
 
   // Messages to cycle through - Gen Z nightmare scenarios
   const messages = [
@@ -698,231 +745,203 @@ const LandingPage = () => {
               Test the Sage Demo
             </motion.h3>
 
-            {/* How it works - concise 1-2-3 instructions */}
-            <motion.div variants={fadeInUp} className="mt-6 max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* Step 1 */}
-                <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-yellow-400">
-                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">1</div>
-                  <div className="text-2xl mb-1">📋</div>
-                  <p className="text-gray-300 text-sm mb-3">Pick a scenario below</p>
-                  <Button
-                    onClick={() => scrollTo('demo-tabs')}
-                    className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-xl py-2"
-                  >
-                    Browse Scenarios
-                  </Button>
+            {/* Million-Dollar Receipt Showcase */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mt-8"
+            >
+              {/* Premium Header */}
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-violet-500/10 to-pink-500/10 px-8 py-4 rounded-full border border-white/10 mb-6">
+                  <div className="w-8 h-8 bg-gradient-to-r from-violet-400 to-pink-400 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm">👑</span>
+                  </div>
+                  <h4 className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">
+                    Sage's Truth Receipts
+                  </h4>
+                </div>
+                <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                  See exactly what you'll get - real analysis, real insights, real results
+                </p>
+              </div>
+
+              {/* Interactive Category Selector */}
+              <div className="flex justify-center mb-12">
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-2 border border-white/10">
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setActiveCategory('breadcrumber')}
+                      className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                        activeCategory === 'breadcrumber' 
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg' 
+                          : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      🌙 2AM Breadcrumber
+                    </button>
+                    <button 
+                      onClick={() => setActiveCategory('adult')}
+                      className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                        activeCategory === 'adult' 
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg' 
+                          : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      ✅ Actual Adult
+                    </button>
+                    <button 
+                      onClick={() => setActiveCategory('gaslighter')}
+                      className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                        activeCategory === 'gaslighter' 
+                          ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg' 
+                          : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      🎭 The Gaslighter
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Premium Receipt Gallery */}
+              <div className="relative">
+                {/* Desktop - Tinder-style Card Stack */}
+                <div className="hidden md:block">
+                  <div className="relative max-w-4xl mx-auto">
+                    {/* Background Cards */}
+                    <div className="absolute inset-0 flex justify-center items-center">
+                      <div className="w-80 h-[32rem] bg-gradient-to-br from-slate-700/30 to-slate-800/30 rounded-3xl border border-white/5 transform rotate-2 scale-95"></div>
+                      <div className="w-80 h-[32rem] bg-gradient-to-br from-slate-600/40 to-slate-700/40 rounded-3xl border border-white/10 transform -rotate-1 scale-98"></div>
+                    </div>
+                    
+                    {/* Main Card */}
+                    <div className="relative z-10 flex justify-center">
+                      <motion.div
+                        whileHover={{ scale: 1.02, y: -10 }}
+                        className="relative w-80 h-[32rem] bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-white/20 shadow-2xl overflow-hidden cursor-pointer"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 50%, rgba(15, 23, 42, 0.95) 100%)',
+                          backdropFilter: 'blur(20px)',
+                          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+                        }}
+                      >
+                        {/* Premium Glow Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-pink-500/10"></div>
+                        
+                        {/* Receipt Image */}
+                        <div className="relative h-full p-6">
+                          <img
+                            src={categoryData[activeCategory].receipts[0].src}
+                            alt={categoryData[activeCategory].receipts[0].alt}
+                            className="w-full h-full object-cover rounded-2xl shadow-xl"
+                          />
+                          
+                          {/* Premium Overlay */}
+                          <div className="absolute inset-6 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl"></div>
+                          
+                          {/* Bottom Info Bar */}
+                          <div className="absolute bottom-6 left-6 right-6">
+                            <div className="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h5 className="text-white font-bold text-lg">{categoryData[activeCategory].title}</h5>
+                                  <p className="text-gray-300 text-sm">Into You: {categoryData[activeCategory].intoYou} | Wasting Time: {categoryData[activeCategory].wastingTime}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className={`w-3 h-3 rounded-full ${
+                                    categoryData[activeCategory].redFlags === '0' ? 'bg-green-400' : 'bg-red-400'
+                                  }`}></div>
+                                  <span className={`text-sm font-semibold ${
+                                    categoryData[activeCategory].redFlags === '0' ? 'text-green-400' : 'text-red-400'
+                                  }`}>
+                                    {categoryData[activeCategory].redFlags === '0' ? 'Green Flags' : `${categoryData[activeCategory].redFlags} Red Flags`}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Step 2 */}
-                <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-pink-500">
-                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-pink-400 to-fuchsia-500 bg-clip-text text-transparent">2</div>
-                  <div className="text-2xl mb-1">👑</div>
-                  <p className="text-gray-300 text-sm mb-3">Click HERE to see Sage spill the Tea</p>
-                  <Button
-                    onClick={() => scrollTo('demo-interface')}
-                    className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-xl py-2 shadow-lg"
-                  >
-                    👑 Click HERE to see Sage spill the Tea
-                  </Button>
+                {/* Mobile - Instagram Story Style */}
+                <div className="md:hidden">
+                  <div className="max-w-sm mx-auto">
+                    <div className="relative">
+                      {/* Story-style Container */}
+                      <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-2 border border-white/20 shadow-2xl">
+                        <div className="relative">
+                          <img
+                            src={categoryData[activeCategory].receipts[0].src}
+                            alt={categoryData[activeCategory].receipts[0].alt}
+                            className="w-full aspect-[9/16] object-cover rounded-2xl"
+                          />
+                          
+                          {/* Story-style Top Bar */}
+                          <div className="absolute top-4 left-4 right-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className={`w-10 h-10 bg-gradient-to-r ${categoryData[activeCategory].color} rounded-full flex items-center justify-center`}>
+                                  <span className="text-white text-lg">👑</span>
+                                </div>
+                                <div>
+                                  <h5 className="text-white font-bold">Sage's Receipt</h5>
+                                  <p className="text-gray-300 text-xs">{categoryData[activeCategory].title}</p>
+                                </div>
+                              </div>
+                              <div className="bg-black/40 backdrop-blur-sm rounded-full px-3 py-1">
+                                <span className="text-white text-sm font-semibold">{categoryData[activeCategory].intoYou}</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Story-style Bottom Bar */}
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <div className="bg-black/40 backdrop-blur-sm rounded-xl p-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <div className={`w-2 h-2 rounded-full ${
+                                    categoryData[activeCategory].redFlags === '0' ? 'bg-green-400' : 'bg-red-400'
+                                  }`}></div>
+                                  <span className={`text-sm font-semibold ${
+                                    categoryData[activeCategory].redFlags === '0' ? 'text-green-400' : 'text-red-400'
+                                  }`}>
+                                    {categoryData[activeCategory].redFlags === '0' ? 'Green Flags' : `${categoryData[activeCategory].redFlags} Red Flags`}
+                                  </span>
+                                </div>
+                                <div className="text-white text-sm">{categoryData[activeCategory].wastingTime} Wasting Time</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Step 3 */}
-                <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 text-center hover:scale-[1.02] transition-transform duration-200 border-t-2 border-t-blue-500">
-                  <div className="text-2xl font-black mb-1 bg-gradient-to-r from-blue-400 to-violet-500 bg-clip-text text-transparent">3</div>
-                  <div className="text-2xl mb-1">🎁</div>
-                  <p className="text-gray-300 text-sm">🎁 3. Get Started on your FREE Receipt</p>
+                {/* Navigation Dots */}
+                <div className="flex justify-center mt-8 gap-3">
+                  <div className="w-3 h-3 bg-gradient-to-r from-violet-400 to-pink-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-gray-600 rounded-full"></div>
+                  <div className="w-3 h-3 bg-gray-600 rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Premium CTA */}
+              <div className="text-center mt-12">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-500/10 to-pink-500/10 px-6 py-3 rounded-full border border-white/10">
+                  <span className="text-violet-400">✨</span>
+                  <span className="text-gray-300 text-sm">Tap to see more examples</span>
+                  <span className="text-violet-400">✨</span>
                 </div>
               </div>
             </motion.div>
             
             
-          </motion.div>
-
-          {/* Demo Tabs */}
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="flex flex-wrap justify-center gap-4 mb-12"
-            id="demo-tabs"
-          >
-            {Object.entries(demoData).map(([key, demo]) => (
-              <motion.button
-                key={key}
-                variants={fadeInUp}
-                onClick={() => handleDemoTabChange(key)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  selectedDemo === key
-                    ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg'
-                    : 'bg-white/5 text-gray-300 hover:bg-yellow-500/20 border border-white/10 hover:border-yellow-400/30'
-                }`}
-              >
-                {demo.title}
-              </motion.button>
-            ))}
-          </motion.div>
-
-          {/* Demo Interface */}
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-            className="max-w-4xl mx-auto"
-            id="demo-interface"
-          >
-            <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-              {/* Chat Header */}
-              <div className="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 flex items-center space-x-3">
-                <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" />
-                <span className="text-white font-semibold">Sage, Online</span>
-              </div>
-
-              {/* Chat Content */}
-              <div className="p-8">
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center space-x-2 bg-violet-500/10 rounded-full px-4 py-2 mb-4">
-                    <span className="text-violet-400">💬</span>
-                    <span className="text-violet-300 text-sm">Someone just asked Sage</span>
-                  </div>
-                  <div className="bg-slate-700/50 rounded-2xl px-6 py-4 inline-block">
-                    <span className="text-white font-medium">{demoData[selectedDemo].question}</span>
-                  </div>
-                </div>
-
-                {/* Conversation */}
-                <div className="space-y-3 mb-8 max-w-md mx-auto">
-                  {demoData[selectedDemo].conversation.map((item, index) => (
-                    <div key={index}>
-                      {item.separator ? (
-                        <div className="text-center text-gray-500 text-sm py-2 italic">
-                          {item.separator}
-                        </div>
-                      ) : (
-                        <div className={`flex ${(item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom' || item.type === 'alex' || item.type === 'sam' || item.type === 'bella') ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-xs px-4 py-3 rounded-2xl ${
-                            (item.type === 'chris' || item.type === 'maya' || item.type === 'mike' || item.type === 'ava' || item.type === 'marcus' || item.type === 'emma' || item.type === 'tom' || item.type === 'alex' || item.type === 'sam' || item.type === 'bella')
-                              ? 'bg-violet-600 text-white ml-8' 
-                              : 'bg-slate-700 text-gray-200 mr-8'
-                          }`}>
-                            <div className="text-xs opacity-70 mb-1 flex justify-between items-center">
-                              <span>{item.sender}</span>
-                              {item.time && <span className="text-xs opacity-50">{item.time}</span>}
-                            </div>
-                            <div className="text-sm whitespace-pre-line">{item.text}</div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Analyze Button */}
-                <div className="text-center mb-8">
-                  <Button
-                    onClick={() => analyzeDemo(selectedDemo)}
-                    disabled={isAnalyzing}
-                    className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg transition-all duration-300 disabled:opacity-50"
-                  >
-                    {isAnalyzing ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
-                        👑 Sage is reading them...
-                      </>
-                    ) : (
-                      '👑 2. Click HERE to see Sage spill the Tea'
-                    )}
-                  </Button>
-                </div>
-
-                {/* Loading State */}
-                {isAnalyzing && (
-                  <div className="text-center py-8">
-                    <div className="text-violet-300 mb-4">👑 Sage is brewing the tea... Reading between the lines, bestie</div>
-                  </div>
-                )}
-
-                {/* Demo Result */}
-                {demoResult && !isAnalyzing && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="border-t border-gray-700 pt-8"
-                  >
-                    {/* Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                      <div className="text-center p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl">
-                        <div className="text-2xl font-bold text-yellow-400 mb-1">Into You: {demoResult.intoYou}</div>
-                        <div className="text-sm text-gray-400">Interest Level</div>
-                      </div>
-                      <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl">
-                        <div className="text-2xl font-bold text-orange-400 mb-1">Wasting Time: {demoResult.wastingTime}</div>
-                        <div className="text-sm text-gray-400">Time Waste Factor</div>
-                      </div>
-                      <div className="text-center p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
-                        <div className="text-2xl font-bold text-red-400 mb-1">Red Flags: {demoResult.redFlags}</div>
-                        <div className="text-sm text-gray-400">Warning Count</div>
-                      </div>
-                    </div>
-
-                    {/* Sage's Take Sections */}
-                    <div className="space-y-6 text-left">
-                      <div className="p-6 bg-pink-500/10 border border-pink-500/20 rounded-2xl">
-                        <h4 className="font-bold text-pink-400 mb-3 flex items-center">
-                          🎯 Sage Thinks It's: {demoResult.pattern}
-                        </h4>
-                        <p className="text-gray-300">{demoResult.verdict}</p>
-                      </div>
-                      
-                      <div className="p-6 bg-purple-500/10 border border-purple-500/20 rounded-2xl">
-                        <h4 className="font-bold text-purple-400 mb-3 flex items-center">
-                          ☕ Sage's Take:
-                        </h4>
-                        <p className="text-gray-300">{demoResult.tea}</p>
-                      </div>
-                      
-                      <div className="p-6 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl">
-                        <h4 className="font-bold text-cyan-400 mb-3 flex items-center">
-                          🔮 What Sage Bets Happens Next:
-                        </h4>
-                        <p className="text-gray-300">{demoResult.prophecy}</p>
-                      </div>
-                      
-                      <div className="p-6 bg-green-500/10 border border-green-500/20 rounded-2xl">
-                        <h4 className="font-bold text-green-400 mb-3 flex items-center">
-                          📖 Sage's Suggestions:
-                        </h4>
-                        <ul className="text-gray-300 space-y-2">
-                          {demoResult.playbook.split('\n').map((item, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="text-green-400 mr-2 mt-1">•</span>
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Confidence */}
-                      <div className="p-6 bg-violet-500/10 border border-violet-500/20 rounded-2xl text-center">
-                        <div className="text-violet-400 font-bold text-lg mb-2">⚡ Sage's Drama Meter: {demoResult.confidence}</div>
-                        <div className="w-full bg-gray-700 rounded-full h-3 mb-2">
-                          <div 
-                            className="bg-gradient-to-r from-violet-400 to-blue-500 h-3 rounded-full transition-all duration-1000" 
-                            style={{ width: demoResult.confidence }}
-                          />
-                        </div>
-                        <div className="text-violet-300 text-sm">{demoResult.confidenceText}</div>
-                      </div>
-                      
-                      
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </div>
           </motion.div>
         </div>
       </section>
