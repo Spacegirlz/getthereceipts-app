@@ -585,25 +585,52 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           </div>
         </div>
         
-        {/* High-End SaaS Bottom Messaging */}
-        <div className="mt-6 text-center space-y-3">
-          {/* Privacy & Analysis Context */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <p className="text-xs text-teal-400/90 bg-teal-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-teal-700/30 backdrop-blur-sm font-medium">
-              🔒 Private. Chat deleted. Never stored.
-            </p>
-            <p className="text-xs text-teal-400/90 bg-teal-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-teal-700/30 backdrop-blur-sm font-medium">
-              📍 Based on your message only
-            </p>
+        {/* Premium Footer Card - World-Class SaaS Design */}
+        <div className="mt-8 mb-6" data-share-hide="true">
+          <div className="bg-gradient-to-br from-slate-900/40 to-slate-800/30 rounded-3xl p-8 border border-slate-700/50 backdrop-blur-xl shadow-2xl">
+            {/* Privacy Section - Enhanced Side by Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-emerald-400 text-lg">🔒</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
+                  <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
+                </div>
+              </div>
+              
+              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-amber-400 text-lg">📍</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
+                  <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Enhanced Disclaimer */}
+            <div className="mb-8 p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
+              <p className="text-sm text-slate-300 text-center font-medium">
+                For entertainment purposes - Sage calls it like she sees it
+              </p>
+            </div>
+
+            {/* World-Class CTA Button */}
+            <button 
+              onClick={() => window.open('http://localhost:5173/refer', '_blank')}
+              className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <span className="text-xl relative z-10">💰</span>
+              <div className="relative z-10">
+                <span className="text-lg">Share & Earn</span>
+                <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
+              </div>
+            </button>
           </div>
-          
-          {/* Prominent Clickable Share & Earn CTA */}
-          <button 
-            onClick={() => window.open('http://localhost:5173/refer', '_blank')}
-            className="text-sm text-emerald-300 bg-emerald-900/30 px-6 py-3 rounded-full inline-flex items-center gap-2 border-2 border-emerald-600/50 backdrop-blur-sm font-bold hover:bg-emerald-900/50 hover:border-emerald-500/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-emerald-500/25"
-          >
-            💰 Share & earn • 30% commission • Join 12K+ creators
-          </button>
         </div>
         
       </div>

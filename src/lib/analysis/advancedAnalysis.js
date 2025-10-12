@@ -1564,9 +1564,9 @@ export const generateAlignedResults = async (message, context) => {
     }
     
     return {
-      // Single source of truth for names
-      userName: names.user,
-      otherName: names.other,
+      // Single source of truth for names - prioritize context over extraction
+      userName: context?.userName || names.user,
+      otherName: context?.otherName || names.other,
       
       // Pronouns
       userPronouns: context?.userPronouns || context?.known_pronouns?.user || 'they/them',

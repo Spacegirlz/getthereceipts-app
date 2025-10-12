@@ -7,11 +7,11 @@ import { useToast } from '@/components/ui/use-toast';
 import { useSocialExport } from '@/hooks/useSocialExport';
 import { ShareInstructionsModal } from '@/components/ShareInstructionsModal';
 
-// Helper function to remove bad emojis (specifically ✅)
+// Helper function to remove bad emojis (specifically ✅ and 🚩)
 const cleanFlagText = (text) => {
   if (!text) return '';
-  // Remove the specific ✅ emoji that's causing double flag issues
-  return text.replace(/✅/g, '').trim();
+  // Remove the specific ✅ and 🚩 emojis that are causing double flag issues
+  return text.replace(/✅|🚩/g, '').trim();
 };
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
 import BlurredSection from './BlurredSection';
@@ -42,6 +42,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
   const [showMoreSides, setShowMoreSides] = useState(false);
   const [openImmunityTest, setOpenImmunityTest] = useState(false);
   const [openTraining, setOpenTraining] = useState(false);
+  
+  // Paywall logic: Free = Basic content, Premium = Full content
+  const showPaywall = !isPremium;
   
   // Extract user names from analysis data
   const userName = analysisData?.userName || context?.userName || 'You';
@@ -768,9 +771,9 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
   // For premium users, show full content
   return (
-    <div className="relative w-full max-w-2xl mx-auto px-0 pb-6">
+    <div className="relative w-full max-w-2xl mx-auto px-0 pb-6 space-y-6">
       
-      {/* Main Immunity Card - Mobile-optimized with max-width constraints */}
+      {/* Container 1: Main Immunity Training Content */}
       <motion.div 
         data-immunity-component
         initial={{ opacity: 0, y: 40 }}
@@ -1100,103 +1103,136 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         </div>
         )}
 
-            {/* High-End SaaS Footer */}
-            <div className="text-center mt-6 mb-4 space-y-3" data-share-hide="true">
-              {/* Privacy & Analysis Context */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <p className="text-xs text-yellow-400/90 bg-yellow-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-yellow-700/30 backdrop-blur-sm font-medium">
-                  🔒 Private. Chat deleted. Never stored.
-                </p>
-                <p className="text-xs text-yellow-400/90 bg-yellow-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-yellow-700/30 backdrop-blur-sm font-medium">
-                  📍 Based on your message only
-                </p>
-              </div>
-              
-              {/* Disclaimer */}
-              <p className="text-xs text-yellow-400/90 bg-yellow-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-yellow-700/30 backdrop-blur-sm font-medium italic">
-                For entertainment purposes - Sage calls it like she sees it
-              </p>
-              
-              {/* Prominent Clickable Share & Earn CTA */}
-              <button 
-                onClick={() => window.open('http://localhost:5173/refer', '_blank')}
-                className="text-sm text-yellow-300 bg-yellow-900/30 px-6 py-3 rounded-full inline-flex items-center gap-2 border-2 border-yellow-600/50 backdrop-blur-sm font-bold hover:bg-yellow-900/50 hover:border-yellow-500/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-yellow-500/25"
-              >
-                💰 Share & earn • 30% commission • Join 12K+ creators
-              </button>
-            </div>
-            
-            {/* WATERMARK - moved below to render for all users */}
-        {/* Global WATERMARK - visible for all users and included in save/share */}
-            <div className="text-center mt-2 mb-6">
-              <p className="text-xs text-stone-200/90/40 tracking-widest">
-                www.getthereceipts.com
-              </p>
-            </div>
       </motion.div>
 
-      {/* SEPARATE SAVE/SHARE BOX - Completely outside the immunity card */}
+      {/* Container 2: Save & Share Section - Separated like Truth Receipt */}
       {isPremium && (
-        <div className="w-full max-w-2xl mx-auto mt-12 mb-4">
-          <div 
-            className="flex flex-col gap-4 justify-center items-center p-6 backdrop-blur rounded-3xl shadow-lg"
-            style={{
-              background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-              border: '2px solid rgba(20, 184, 166, 0.4)',
-              boxShadow: '0 8px 32px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.05)'
-            }}
-          >
-            {/* Urgency Message - Centered Above Both Buttons */}
-            <div className="text-center mb-4">
-              <p className="text-xs text-teal-400/90 font-medium animate-pulse">
-                😱 Your friends need to see this
-              </p>
-            </div>
-            
-            {/* Save/Share Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 items-center">
-              <button 
-                onClick={handleSaveImmunity}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-stone-200 font-medium px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-                style={{
-                  border: '1px solid rgba(20, 184, 166, 0.6)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-                }}
-              >
-                <Download className="h-4 w-4" />
-                Save Immunity
-              </button>
-              
-              <motion.button 
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                  boxShadow: [
-                    '0 0 20px rgba(212, 175, 55, 0.3)',
-                    '0 0 30px rgba(212, 175, 55, 0.5)', 
-                    '0 0 20px rgba(212, 175, 55, 0.3)'
-                  ]
-                }}
-                onClick={handleShareTrophy}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="flex items-center gap-2 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                  border: '1px solid rgba(212, 175, 55, 0.9)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
-                }}
-              >
-                <Zap className="h-4 w-4" />
-                🔗 Share Trophy
-              </motion.button>
-            </div>
+        <div 
+          className="rounded-3xl p-8 mt-16"
+          style={{
+            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            backdropFilter: 'blur(20px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+            border: '2px solid rgba(212, 175, 55, 0.4)',
+            boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
+          }}
+          data-share-hide="true"
+        >
+          {/* Urgency Message */}
+          <div className="text-center mb-6">
+            <p className="text-sm text-teal-400/90 font-medium animate-pulse flex items-center justify-center gap-2">
+              <span className="text-lg">😱</span>
+              Your friends need to see this
+            </p>
           </div>
           
+          {/* Save & Share Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <button 
+              onClick={handleSaveImmunity}
+              className="w-full sm:w-auto px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Save Immunity
+            </button>
+              
+            <motion.button 
+              animate={{ 
+                scale: [1, 1.02, 1],
+                boxShadow: [
+                  '0 0 20px rgba(212, 175, 55, 0.3)',
+                  '0 0 30px rgba(212, 175, 55, 0.5)', 
+                  '0 0 20px rgba(212, 175, 55, 0.3)'
+                ]
+              }}
+              onClick={() => {
+                // Haptic feedback for mobile
+                if (window.navigator.vibrate) {
+                  window.navigator.vibrate(10);
+                }
+                handleShareImmunity();
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            >
+              <Share2 className="w-4 h-4" />
+              🔗 Share Immunity
+            </motion.button>
+          </div>
+          
+          {/* How does sharing work link */}
+          <div className="text-center">
+            <button 
+              onClick={() => setShowInstructions(true)}
+              className="text-sm text-slate-400 hover:text-slate-300 transition-colors flex items-center justify-center gap-1 mx-auto"
+            >
+              How does sharing work? →
+            </button>
+          </div>
         </div>
       )}
+
+      {/* Container 3: Privacy & Disclaimer Section - Exact Truth Receipt Design */}
+      {!showPaywall && (
+        <div 
+          className="bg-gradient-to-br from-slate-900/40 to-slate-800/30 rounded-3xl p-8 border border-slate-700/50 backdrop-blur-xl shadow-2xl"
+          data-share-hide="true"
+        >
+          {/* Privacy Section - Enhanced Side by Side */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <span className="text-emerald-400 text-lg">🔒</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
+                <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
+              </div>
+            </div>
+            
+            <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <span className="text-amber-400 text-lg">📍</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
+                <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Disclaimer */}
+          <div className="mb-8 p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
+            <p className="text-sm text-slate-300 text-center font-medium">
+              For entertainment purposes - Sage calls it like she sees it
+            </p>
+          </div>
+
+          {/* World-Class CTA Button */}
+          <button 
+            onClick={() => window.open('http://localhost:5173/refer', '_blank')}
+            className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <span className="text-xl relative z-10">💰</span>
+            <div className="relative z-10">
+              <span className="text-lg">Share & Earn</span>
+              <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
+            </div>
+          </button>
+        </div>
+      )}
+
+      {/* Website URL */}
+      <div className="text-center">
+        <p className="text-xs text-stone-200/40 tracking-widest">
+          www.getthereceipts.com
+        </p>
+      </div>
 
       {/* Share Instructions Modal */}
       <ShareInstructionsModal 

@@ -28,6 +28,7 @@ const LuxeChatInputPage = () => {
   const [otherName, setOtherName] = useState('');
   const [userPronouns, setUserPronouns] = useState('');
   const [otherPronouns, setOtherPronouns] = useState('');
+  const [showManualNames, setShowManualNames] = useState(false);
   const [showColorHelper, setShowColorHelper] = useState(false);
   const [colorMapping, setColorMapping] = useState('');
   const [extractedTexts, setExtractedTexts] = useState([]);
@@ -62,8 +63,8 @@ const LuxeChatInputPage = () => {
       // ==================================================
       
       const obviousNonNames = new Set([
-        // Chat artifacts only
-        'Me', 'You', 'Them', 'User', 'Other', 'Person',
+        // Chat artifacts only (removed 'Me' - it's a valid user identifier)
+        'You', 'Them', 'User', 'Other', 'Person',
         'Delivered', 'Read', 'Sent', 'Edited', 'Deleted', 'Typing',
         'Today', 'Yesterday', 'Tomorrow'
       ]);
@@ -132,9 +133,18 @@ const LuxeChatInputPage = () => {
         }
       }
       
+      // Special handling for "Me" as user identifier
+      const speakerArray = Array.from(speakers);
+      
+      // If "Me" is detected, prioritize it as the user
+      if (speakerArray.includes('Me')) {
+        const otherNames = speakerArray.filter(name => name !== 'Me');
+        return ['Me', ...otherNames].slice(0, 2);
+      }
+      
       // Return up to 2 detected names
       // NOTE: AI will validate these using context
-      return Array.from(speakers).slice(0, 2);
+      return speakerArray.slice(0, 2);
       
     } catch (error) {
       console.warn('Error detecting names:', error);
@@ -559,40 +569,66 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                 
                 {detectedNames.length > 0 ? (
                   <div>
-                    <p className="text-xs text-gray-400 mb-3">
-                      I found these names: {detectedNames.join(' and ')}
-                    </p>
-                    <div className="space-y-2">
-                      <p className="text-xs text-white/80 mb-2">Which person are you?</p>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input 
-                          type="radio" 
-                          name="userRole"
-                          value={detectedNames[0]}
-                          checked={userName === detectedNames[0]}
-                          onChange={(e) => {
-                            setUserName(detectedNames[0]);
-                            setOtherName(detectedNames[1]);
-                          }}
-                          className="text-blue-500"
-                        />
-                        <span className="text-sm">I am {detectedNames[0]}</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input 
-                          type="radio" 
-                          name="userRole"
-                          value={detectedNames[1]}
-                          checked={userName === detectedNames[1]}
-                          onChange={(e) => {
-                            setUserName(detectedNames[1]);
-                            setOtherName(detectedNames[0]);
-                          }}
-                          className="text-blue-500"
-                        />
-                        <span className="text-sm">I am {detectedNames[1]}</span>
-                      </label>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-xs text-gray-400">
+                        I found these names: {detectedNames.join(' and ')}
+                      </p>
+                      <button 
+                        onClick={() => setShowManualNames(!showManualNames)}
+                        className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                      >
+                        {showManualNames ? 'Use detected names' : 'Edit names'}
+                      </button>
                     </div>
+                    
+                    {!showManualNames ? (
+                      <div className="space-y-2">
+                        <p className="text-xs text-white/80 mb-2">Which person are you?</p>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input 
+                            type="radio" 
+                            name="userRole"
+                            value={detectedNames[0]}
+                            checked={userName === detectedNames[0]}
+                            onChange={(e) => {
+                              setUserName(detectedNames[0]);
+                              setOtherName(detectedNames[1]);
+                            }}
+                            className="text-blue-500"
+                          />
+                          <span className="text-sm">I am {detectedNames[0]}</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input 
+                            type="radio" 
+                            name="userRole"
+                            value={detectedNames[1]}
+                            checked={userName === detectedNames[1]}
+                            onChange={(e) => {
+                              setUserName(detectedNames[1]);
+                              setOtherName(detectedNames[0]);
+                            }}
+                            className="text-blue-500"
+                          />
+                          <span className="text-sm">I am {detectedNames[1]}</span>
+                        </label>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          placeholder="You/Person 1"
+                          className="p-2 bg-gray-800 rounded-lg text-sm"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                        />
+                        <input
+                          placeholder="Them/Person 2"
+                          className="p-2 bg-gray-800 rounded-lg text-sm"
+                          value={otherName}
+                          onChange={(e) => setOtherName(e.target.value)}
+                        />
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">

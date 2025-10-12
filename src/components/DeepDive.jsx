@@ -35,9 +35,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
   const [showAllAutopsy, setShowAllAutopsy] = useState(false);
   const [autopsyScrollPosition, setAutopsyScrollPosition] = useState(0);
   const speechRef = useRef(null);
-  const [openNext48, setOpenNext48] = useState(false);
-  const [openYourMoves, setOpenYourMoves] = useState(false);
-  useEffect(() => { if (isPremium) setOpenNext48(true); }, [isPremium]);
 
   // Dynamic Metrics Calculator (now incorporates green flags)
   const calculateMetrics = (analysis) => {
@@ -725,10 +722,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         }
       `}</style>
       
-      {/* Main Container - Exact Copy from Sage's Receipt */}
+      {/* Main Container - Separated like Truth Receipt */}
       <motion.div
         data-deepdive-component
-        className="w-full max-w-2xl mx-auto"
+        className="w-full max-w-2xl mx-auto space-y-6"
         style={{
           background: 'transparent'
         }}
@@ -736,6 +733,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
       >
+        {/* Container 1: Main Playbook Content */}
         <div 
           className={`relative rounded-3xl ${isCompact ? 'p-4 sm:p-5 md:p-6' : 'p-6 sm:p-8 md:p-10'} text-stone-200/90`}
           style={{
@@ -1358,20 +1356,15 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       transition={{ delay: 0.5 }}
                       className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <button onClick={()=>setOpenNext48(v=>!v)} className="w-full text-left flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-xl">⏰</span>
                         </div>
                         <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">NEXT 48 HOURS</div>
-                        </div>
-                        <span className="text-white/60 text-xs">{openNext48 ? 'Hide' : 'Open'}</span>
-                      </button>
-                      {openNext48 && (
-                        <p className="text-stone-200/90 text-base leading-relaxed font-medium">
-                          {safeDeepDive.playbook?.next_48h}
-                        </p>
-                      )}
+                      </div>
+                      <p className="text-stone-200/90 text-base leading-relaxed font-medium">
+                        {safeDeepDive.playbook?.next_48h}
+                      </p>
                     </motion.div>
 
                     {/* Your Moves - Enhanced */}
@@ -1381,22 +1374,18 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       transition={{ delay: 0.6 }}
                       className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
                     >
-                      <button onClick={()=>setOpenYourMoves(v=>!v)} className="w-full text-left flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                           <span className="text-xl">🎯</span>
                         </div>
                         <div className="text-[#D4AF37] text-sm font-semibold uppercase tracking-wide">YOUR MOVES</div>
-                        </div>
-                        <span className="text-white/60 text-xs">{openYourMoves ? 'Hide' : 'Open'}</span>
-                      </button>
-                      {openYourMoves && (
-                        <ul className="space-y-3">
-                          {(safeDeepDive.playbook?.your_move?.split('. ') || [])
-                            .filter(move => move.trim())
-                            .slice(0, 3)
-                            .map((move, i) => (
-                              <motion.li 
+                      </div>
+                      <ul className="space-y-3">
+                        {(safeDeepDive.playbook?.your_move?.split('. ') || [])
+                          .filter(move => move.trim())
+                          .slice(0, 3)
+                          .map((move, i) => (
+                            <motion.li 
                                 key={i} 
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -1410,7 +1399,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                               </motion.li>
                             ))}
                         </ul>
-                      )}
                     </motion.div>
               </div>
             </motion.section>
@@ -1488,77 +1476,123 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         </motion.section>
         )}
 
-            {/* Actions - Premium Buttons */}
-            {isPremium && (
-              <div className="flex flex-col items-center justify-center gap-4 max-w-2xl mx-auto" data-share-hide="true">
-                {/* Urgency Message - Centered Above Both Buttons */}
-                <div className="text-center mb-4">
-                  <p className="text-xs text-teal-400/90 font-medium animate-pulse">
-                    😱 Your friends need to see this
-                  </p>
-                </div>
-                
-                <div className="flex flex-wrap items-center justify-center gap-4">
-                  <button
-                    onClick={handleSaveClean}
-                    className="px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center gap-2"
-                  >
-                    <Download className="w-4 h-4" />
-                    Save Playbook
-                  </button>
-                  
-                  <button
-                    onClick={() => {
-                      // Haptic feedback for mobile
-                      if (window.navigator.vibrate) {
-                        window.navigator.vibrate(10);
-                      }
-                      handleSharePlaybook();
-                    }}
-                    className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    🔗 Share Playbook
-                  </button>
-                </div>
-              </div>
-            )}
-        
-            {/* High-End SaaS Footer - visible for premium users only */}
-            {!showPaywall && (
-            <>
-            <div className="text-center mt-8 mb-4 space-y-3">
-              {/* Privacy & Analysis Context */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <p className="text-xs text-purple-400/90 bg-purple-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-purple-700/30 backdrop-blur-sm font-medium">
-                  🔒 Private. Chat deleted. Never stored.
-                </p>
-                <p className="text-xs text-purple-400/90 bg-purple-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-purple-700/30 backdrop-blur-sm font-medium">
-                  📍 Based on your message only
-                </p>
-              </div>
-              
-              {/* Disclaimer */}
-              <p className="text-xs text-purple-400/90 bg-purple-900/20 px-4 py-2 rounded-full inline-flex items-center gap-1.5 border border-purple-700/30 backdrop-blur-sm font-medium italic">
-                For entertainment purposes - Sage calls it like she sees it
+          </div>
+        </div>
+
+        {/* Container 2: Save & Share Section - Separated like Truth Receipt */}
+        {isPremium && (
+          <div 
+            className="rounded-3xl p-8 mt-16"
+            style={{
+              background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+              backdropFilter: 'blur(24px) saturate(200%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+              border: '2px solid rgba(168, 85, 247, 0.7)',
+              boxShadow: '0 12px 40px rgba(168, 85, 247, 0.2), 0 0 100px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+            }}
+            data-share-hide="true"
+          >
+            {/* Urgency Message */}
+            <div className="text-center mb-6">
+              <p className="text-sm text-teal-400/90 font-medium animate-pulse flex items-center justify-center gap-2">
+                <span className="text-lg">😱</span>
+                Your friends need to see this
               </p>
-              
-              {/* Prominent Clickable Share & Earn CTA */}
-              <button 
-                onClick={() => window.open('http://localhost:5173/refer', '_blank')}
-                className="text-sm text-purple-300 bg-purple-900/30 px-6 py-3 rounded-full inline-flex items-center gap-2 border-2 border-purple-600/50 backdrop-blur-sm font-bold hover:bg-purple-900/50 hover:border-purple-500/70 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+            </div>
+            
+            {/* Save & Share Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+              <button
+                onClick={handleSaveClean}
+                className="w-full sm:w-auto px-6 py-3 bg-white/[0.05] hover:bg-white/[0.08] text-stone-200/90 rounded-xl border border-white/[0.08] transition-all flex items-center justify-center gap-2"
               >
-                💰 Share & earn • 30% commission • Join 12K+ creators
+                <Download className="w-4 h-4" />
+                Save Playbook
+              </button>
+              
+              <button
+                onClick={() => {
+                  // Haptic feedback for mobile
+                  if (window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                  }
+                  handleSharePlaybook();
+                }}
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black font-medium rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
+              >
+                <Share2 className="w-4 h-4" />
+                🔗 Share Playbook
               </button>
             </div>
-            <div className="text-center mt-2 mb-6">
-              <p className="text-xs text-stone-200/90/40 tracking-widest">
-                www.getthereceipts.com
+            
+            {/* How does sharing work link */}
+            <div className="text-center">
+              <button 
+                onClick={() => setShowInstructions(true)}
+                className="text-sm text-slate-400 hover:text-slate-300 transition-colors flex items-center justify-center gap-1 mx-auto"
+              >
+                How does sharing work? →
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Container 3: Privacy & Disclaimer Section - Exact Truth Receipt Design */}
+        {!showPaywall && (
+          <div 
+            className="bg-gradient-to-br from-slate-900/40 to-slate-800/30 rounded-3xl p-8 border border-slate-700/50 backdrop-blur-xl shadow-2xl"
+            data-share-hide="true"
+          >
+            {/* Privacy Section - Enhanced Side by Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-emerald-400 text-lg">🔒</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
+                  <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
+                </div>
+              </div>
+              
+              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-amber-400 text-lg">📍</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
+                  <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Enhanced Disclaimer */}
+            <div className="mb-8 p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
+              <p className="text-sm text-slate-300 text-center font-medium">
+                For entertainment purposes - Sage calls it like she sees it
               </p>
             </div>
-            </>
-            )}
+
+            {/* World-Class CTA Button */}
+            <button 
+              onClick={() => window.open('http://localhost:5173/refer', '_blank')}
+              className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <span className="text-xl relative z-10">💰</span>
+              <div className="relative z-10">
+                <span className="text-lg">Share & Earn</span>
+                <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
+              </div>
+            </button>
           </div>
+        )}
+
+        {/* Website URL */}
+        <div className="text-center">
+          <p className="text-xs text-stone-200/40 tracking-widest">
+            www.getthereceipts.com
+          </p>
         </div>
       </motion.div>
       

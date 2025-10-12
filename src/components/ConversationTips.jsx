@@ -134,8 +134,8 @@ const ConversationTips = () => {
               {/* Pro Tip */}
               <div className="mt-4 p-3 bg-purple-500/10 rounded-lg border border-purple-500/30">
                 <p className="text-xs text-purple-300">
-                  <span className="font-bold">Pro Tip from Sage:</span> I work best with 2-person chats back and forth. 
-                  Add more people and you may get alphabet soup. Keep it simple, bestie! 🔮
+                        <span className="font-bold">Pro Tip from Sage:</span> I work best with 2-person chats. 
+                        Add more people and you may get alphabet soup. Keep it simple, bestie! Group chats are coming soon!🔮
                 </p>
               </div>
             </div>

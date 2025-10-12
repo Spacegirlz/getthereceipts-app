@@ -297,7 +297,7 @@ REQUIRED JSON KEYS (exactly):
       "calling_it":"[1-2 sentences. What's gonna happen NEXT based on this pattern? Make a prediction. Start with 'Calling it:' or 'Watch:' or 'I'm betting...' Example: 'She's gonna bring up that thing from March. Watch her turn this into a whole production about how you never appreciate her.']",
       "vibe_check":"[1-2 sentences. Suggest ONE simple thing to try - framed as see what happens not do this to fix it. Start with 'Vibe check:' or 'Try this:' Example: 'Text back just can't tonight without explaining why and clock the energy that comes back. If she responds normal, cool. If she guilt-spirals? There's your answer.']"
     }
-    // Generate 2-4 receipts using ONLY real quotes from THIS conversation
+    // Generate 3 receipts using ONLY real quotes from THIS conversation
     // Make each receipt tell a story: What they said → Why it matters → What to watch for → How to test it
   ],
   "physics": { 
