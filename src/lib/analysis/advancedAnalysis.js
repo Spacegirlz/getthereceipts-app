@@ -1484,6 +1484,18 @@ export const generateAlignedResults = async (message, context) => {
         }
       }
       
+      // Priority 2.5: Narrative mode detection
+      if (context?.inputFormat === 'narrative' || context?.isNarrative) {
+        // In narrative mode, "I/me/my" = user, first mentioned name or they/them = other
+        const narrativeText = text.toLowerCase();
+        const otherNameMatch = text.match(/(?:with |about |from |to )([A-Z][a-z]+)/);
+        
+        return {
+          user: context?.userName || 'You',
+          other: context?.otherName || otherNameMatch?.[1] || 'Them'
+        };
+      }
+      
       // Priority 3: Auto-detect from conversation patterns
       const lines = text.split('\n').filter(line => line.trim());
       const speakers = new Map();
@@ -1538,6 +1550,19 @@ export const generateAlignedResults = async (message, context) => {
     
     const names = extractNamesFromConversation(message, context);
     
+    // Handle narrative mode name detection
+    if (context?.inputFormat === 'narrative') {
+      // Override with narrative logic: I/me = user, they/them = other
+      if (!names.user || names.user === 'You') {
+        names.user = context?.userName || 'You';
+      }
+      if (!names.other || names.other === 'they') {
+        // Try to extract mentioned name from narrative
+        const nameMatch = message.match(/(?:about|with|from) ([A-Z][a-z]+)/);
+        names.other = context?.otherName || nameMatch?.[1] || 'Them';
+      }
+    }
+    
     return {
       // Single source of truth for names
       userName: names.user,
@@ -1554,7 +1579,12 @@ export const generateAlignedResults = async (message, context) => {
       gutFeeling: context?.gutFeel || context?.gut_feeling || '',
       
       // The actual conversation
-      conversation: message
+      conversation: message,
+      
+      // Input format tracking for narrative mode
+      inputFormat: context?.inputFormat,
+      isNarrative: context?.isNarrative,
+      narrativeDisclaimer: context?.narrativeDisclaimer
     };
   };
   

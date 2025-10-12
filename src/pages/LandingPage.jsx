@@ -931,12 +931,171 @@ const LandingPage = () => {
                 </div>
               </div>
 
-              {/* Premium CTA */}
-              <div className="text-center mt-12">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-500/10 to-pink-500/10 px-6 py-3 rounded-full border border-white/10">
-                  <span className="text-violet-400">✨</span>
-                  <span className="text-gray-300 text-sm">Tap to see more examples</span>
-                  <span className="text-violet-400">✨</span>
+              {/* Premium Tease Section */}
+              <div className="mt-12 max-w-4xl mx-auto">
+                <div className="text-center mb-8">
+                  <h5 className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent mb-2">
+                    👑 Sage's Premium Features
+                  </h5>
+                  <p className="text-gray-400 text-sm">See what premium members get access to</p>
+                </div>
+
+                {/* Premium Feature Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Playbook Tease */}
+                  <div className="relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-yellow-400/20 p-6 overflow-hidden">
+                    {/* Premium Badge */}
+                    <div className="absolute top-4 right-4">
+                      <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border border-yellow-400/30 rounded-full px-3 py-1">
+                        <span className="text-yellow-300 text-xs font-semibold">👑 PREMIUM</span>
+                      </div>
+                    </div>
+
+                    {/* Header */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xl">🎯</span>
+                      </div>
+                      <div>
+                        <h6 className="text-white font-bold text-lg">Sage's Playbook</h6>
+                        <p className="text-gray-400 text-sm">Your personalized action plan</p>
+                      </div>
+                    </div>
+
+                    {/* Preview Content */}
+                    <div className="space-y-3">
+                      {/* Step 1 - Fully Visible */}
+                      <div className="p-3 bg-green-500/10 border border-green-400/20 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-green-400 font-bold text-sm">Step 1:</span>
+                          <span className="text-green-300 font-semibold text-sm">The Power Move</span>
+                        </div>
+                        <p className="text-white text-sm">Stop responding to their 2AM texts immediately. This breaks their pattern and forces them to engage during normal hours...</p>
+                      </div>
+
+                      {/* Step 2 - Blurred Tease */}
+                      <div className="relative p-3 bg-slate-700/50 rounded-lg">
+                        <div className="blur-sm">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-gray-400 font-bold text-sm">Step 2:</span>
+                            <span className="text-gray-300 font-semibold text-sm">The Boundary Set</span>
+                          </div>
+                          <p className="text-gray-500 text-sm">When they finally text during normal hours, use this exact phrase to establish your boundaries...</p>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                            <span className="text-yellow-300 text-xs font-semibold">👑 Premium Content</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Step 3 - Blurred Tease */}
+                      <div className="relative p-3 bg-slate-700/50 rounded-lg">
+                        <div className="blur-sm">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-gray-400 font-bold text-sm">Step 3:</span>
+                            <span className="text-gray-300 font-semibold text-sm">The Follow-Through</span>
+                          </div>
+                          <p className="text-gray-500 text-sm">Maintain your position with these specific responses that show you're not playing games...</p>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                            <span className="text-yellow-300 text-xs font-semibold">👑 Premium Content</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold py-3 rounded-xl transition-all duration-300 hover:scale-105">
+                        Unlock Full Playbook
+                      </button>
+                      <p className="text-gray-400 text-xs mt-2 text-center">$29.99/year • Join 10,000+ users</p>
+                    </div>
+                  </div>
+
+                  {/* Immunity Tease */}
+                  <div className="relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-yellow-400/20 p-6 overflow-hidden">
+                    {/* Premium Badge */}
+                    <div className="absolute top-4 right-4">
+                      <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border border-yellow-400/30 rounded-full px-3 py-1">
+                        <span className="text-yellow-300 text-xs font-semibold">👑 PREMIUM</span>
+                      </div>
+                    </div>
+
+                    {/* Header */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xl">🛡️</span>
+                      </div>
+                      <div>
+                        <h6 className="text-white font-bold text-lg">Immunity Training</h6>
+                        <p className="text-gray-400 text-sm">Break the cycle permanently</p>
+                      </div>
+                    </div>
+
+                    {/* Preview Content */}
+                    <div className="space-y-3">
+                      {/* Checkpoint 1 - Fully Visible */}
+                      <div className="p-3 bg-green-500/10 border border-green-400/20 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-green-400 font-bold text-sm">Checkpoint 1:</span>
+                          <span className="text-green-300 font-semibold text-sm">Pattern Recognition</span>
+                        </div>
+                        <p className="text-white text-sm">Identify the exact moment they start their manipulation cycle. Look for these 3 specific triggers...</p>
+                      </div>
+
+                      {/* Checkpoint 2 - Blurred Tease */}
+                      <div className="relative p-3 bg-slate-700/50 rounded-lg">
+                        <div className="blur-sm">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-gray-400 font-bold text-sm">Checkpoint 2:</span>
+                            <span className="text-gray-300 font-semibold text-sm">Response Training</span>
+                          </div>
+                          <p className="text-gray-500 text-sm">Practice these exact responses that shut down their manipulation attempts without escalating...</p>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                            <span className="text-yellow-300 text-xs font-semibold">👑 Premium Content</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Checkpoint 3 - Blurred Tease */}
+                      <div className="relative p-3 bg-slate-700/50 rounded-lg">
+                        <div className="blur-sm">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-gray-400 font-bold text-sm">Checkpoint 3:</span>
+                            <span className="text-gray-300 font-semibold text-sm">Protection Protocol</span>
+                          </div>
+                          <p className="text-gray-500 text-sm">Implement these daily practices that build permanent immunity to their tactics...</p>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                            <span className="text-yellow-300 text-xs font-semibold">👑 Premium Content</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold py-3 rounded-xl transition-all duration-300 hover:scale-105">
+                        Unlock Full Training
+                      </button>
+                      <p className="text-gray-400 text-xs mt-2 text-center">$29.99/year • 4.9/5 stars</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Proof */}
+                <div className="text-center mt-8">
+                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-500/10 to-pink-500/10 px-6 py-3 rounded-full border border-white/10">
+                    <span className="text-violet-400">⭐</span>
+                    <span className="text-gray-300 text-sm">Join 10,000+ users with premium access</span>
+                    <span className="text-violet-400">⭐</span>
+                  </div>
                 </div>
               </div>
             </motion.div>

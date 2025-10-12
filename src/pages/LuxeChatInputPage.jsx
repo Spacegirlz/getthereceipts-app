@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle } from 'lucide-react';
+import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare } from 'lucide-react';
 import InputTabs from '@/components/InputTabs';
 import SmartCharacterCounter from '@/components/SmartCharacterCounter';
 import ColorMappingHelper from '@/components/ColorMappingHelper';
 import PronounSelector from '@/components/PronounSelector';
 import ImageUpload from '@/components/ImageUpload';
+import ConversationTips from '@/components/ConversationTips';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
@@ -51,63 +52,90 @@ const LuxeChatInputPage = () => {
   // Auto-detect names from conversation
   const detectNames = (text) => {
     try {
-      // Handle edge cases
       if (!text || typeof text !== 'string') {
         return [];
       }
       
-      // Limit text length to prevent performance issues
+      // ==================================================
+      // MINIMAL FILTERING: Only block OBVIOUS non-names
+      // Let the AI handle ambiguous cases using context
+      // ==================================================
+      
+      const obviousNonNames = new Set([
+        // Chat artifacts only
+        'Me', 'You', 'Them', 'User', 'Other', 'Person',
+        'Delivered', 'Read', 'Sent', 'Edited', 'Deleted', 'Typing',
+        'Today', 'Yesterday', 'Tomorrow'
+      ]);
+      
+      // Helper: Very basic validation
+      const isObviouslyNotAName = (str) => {
+        // Check obvious non-names
+        if (obviousNonNames.has(str)) return true;
+        
+        // Pure numbers (definitely not names)
+        if (/^\d+$/.test(str)) return true;
+        
+        // Contains time separators like 10:30 or 14-23
+        if (/^\d+[:.-]\d+/.test(str)) return true;
+        
+        // Too short or too long
+        if (str.length < 2 || str.length > 30) return true;
+        
+        return false;
+      };
+      
       const limitedText = text.length > 10000 ? text.substring(0, 10000) : text;
       const speakers = new Set();
-      
-      // Handle both line-break separated and single-line conversations
       const hasLineBreaks = limitedText.includes('\n');
       
       if (hasLineBreaks) {
-        // Original logic for line-break separated messages
         const lines = limitedText.split('\n');
         
         lines.forEach(line => {
           const trimmedLine = line.trim();
-          // More robust name detection pattern - handles various formats
+          
+          // Flexible patterns - capture almost anything before a colon (including Unicode)
           const patterns = [
-            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/,  // "Jess:", "Tom:"
-            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*\([^)]+\):/,  // "Jess (10:30 PM):"
-            /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*:/  // "Jess :" (with spaces)
+            /^([\p{L}][\p{L}\s'-]+):/u,                    // Name: or Name with spaces: (Unicode support)
+            /^([\p{L}][\p{L}\s'-]+)\s*\([^)]+\):/u,       // Name (timestamp): (Unicode support)
           ];
           
           for (const pattern of patterns) {
             const match = trimmedLine.match(pattern);
             if (match) {
-              const name = match[1].trim();
-              // Filter out common false positives
-              if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
-                speakers.add(name);
+              const candidateName = match[1].trim();
+              
+              // Only filter OBVIOUS non-names
+              if (!isObviouslyNotAName(candidateName)) {
+                speakers.add(candidateName);
               }
-              break; // Stop after first match
+              break;
             }
           }
         });
       } else {
-        // NEW: Handle single-line conversations like "Jess: text Tom: text Jess: text"
+        // Single-line format (Unicode support)
         const patterns = [
-          /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*):/g,  // Global match for all "Name:" patterns
-          /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*\([^)]+\):/g,  // "Name (time):" patterns
+          /([\p{L}][\p{L}\s'-]+):/gu,
+          /([\p{L}][\p{L}\s'-]+)\s*\([^)]+\):/gu,
         ];
         
         for (const pattern of patterns) {
           let match;
           while ((match = pattern.exec(limitedText)) !== null) {
-            const name = match[1].trim();
-            // Filter out common false positives
-            if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
-              speakers.add(name);
+            const candidateName = match[1].trim();
+            if (!isObviouslyNotAName(candidateName)) {
+              speakers.add(candidateName);
             }
           }
         }
       }
       
+      // Return up to 2 detected names
+      // NOTE: AI will validate these using context
       return Array.from(speakers).slice(0, 2);
+      
     } catch (error) {
       console.warn('Error detecting names:', error);
       return [];
@@ -286,6 +314,22 @@ const LuxeChatInputPage = () => {
         // Input method - PROPERLY TAGGED
         inputMethod: activeTab,
         
+        // Input format for AI routing
+        inputFormat: activeTab === 'story' ? 'narrative' : 
+                     activeTab === 'screenshot' ? 'screenshot' : 
+                     'conversation',
+        isNarrative: activeTab === 'story',
+        narrativeDisclaimer: activeTab === 'story' ? 'Based on your story:' : null,
+        
+        // NEW: Detection hints for AI
+        detectionHints: {
+          frontendDetectedNames: detectedNames, // What frontend thinks
+          userConfirmedNames: userName && otherName, // Did user confirm?
+          hasTimestamps: /\d+:\d+/.test(message), // Message has times?
+          hasDates: /(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i.test(message),
+          conversationFormat: message.includes('\n') ? 'multi-line' : 'single-line'
+        },
+        
         // Debugging and validation
         _debug: {
           hasUserName: !!userName,
@@ -347,7 +391,8 @@ const LuxeChatInputPage = () => {
   };
 
   const tabs = [
-    { id: 'text', label: 'Text Input', icon: Type },
+    { id: 'text', label: 'Paste Texts', icon: Type },
+    { id: 'story', label: 'Tell Your Story', icon: MessageSquare }, // New
     { id: 'screenshot', label: 'Screenshot', icon: Camera }
   ];
 
@@ -407,7 +452,22 @@ const LuxeChatInputPage = () => {
           )}
 
           {/* Input Tabs */}
-          <InputTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="flex gap-2 mb-6">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ${
+                  activeTab === tab.id 
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' 
+                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 border border-gray-700'
+                }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                <span className="text-sm font-medium">{tab.label}</span>
+              </button>
+            ))}
+          </div>
 
           {/* Dynamic Input Area */}
           <div className="mb-6">
@@ -417,6 +477,21 @@ const LuxeChatInputPage = () => {
                   value={texts}
                   onChange={handleTextChange}
                   placeholder="Paste your conversation here..."
+                  className="w-full h-48 p-4 text-sm bg-gray-800/50 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors resize-none"
+                />
+                <SmartCharacterCounter count={texts.length} limit={5000} />
+                <ConversationTips />
+              </div>
+            )}
+            
+            {activeTab === 'story' && (
+              <div>
+                <textarea
+                  value={texts}
+                  onChange={handleTextChange}
+                  placeholder="Tell your story in your own words..  Use 'I' for yourself and their name or 'they/them' for the other person.
+
+Example: I've been seeing Alex for 3 months. Last week they said they wanted to be exclusive, but yesterday I saw them active on dating apps at 2am. When I asked about it, they said I was 'being paranoid'..."
                   className="w-full h-48 p-4 text-sm bg-gray-800/50 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors resize-none"
                 />
                 <SmartCharacterCounter count={texts.length} limit={5000} />
@@ -430,7 +505,7 @@ const LuxeChatInputPage = () => {
                     setExtractedTexts(prev => [...prev, text]);
                     setShowColorHelper(true);
                   }}
-                  maxFiles={3}
+                  maxFiles={5}
                 />
                 
                 <AnimatePresence>
