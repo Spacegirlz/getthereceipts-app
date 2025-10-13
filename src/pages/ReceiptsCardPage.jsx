@@ -525,7 +525,7 @@ const ReceiptsCardPage = () => {
         <div className="w-full max-w-2xl mx-auto mt-8 sm:mt-12 mb-10 sm:mb-16">
           {/* Next Take - full width CTA directly below save/share */}
           {/* ELEGANT GOLD GRADIENT VERSION */}
-          <div className="rounded-2xl mb-6 pb-5">
+          <div className="rounded-2xl mb-10 pb-5 mt-10 sm:mt-12">
             <LinkButton
               to="/luxe-chat-input"
               className="w-full flex items-center justify-center gap-2 font-black px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] text-black"
@@ -541,7 +541,7 @@ const ReceiptsCardPage = () => {
           </div>
 
           {/* Premium Paywall - Luxury FOMO Design */}
-          <div className="relative rounded-3xl overflow-hidden sm:min-h-[500px] bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-purple-900/40 border border-purple-500/30 shadow-2xl shadow-purple-500/20 backdrop-blur-xl">
+          <div className="relative rounded-3xl overflow-hidden sm:min-h-[500px] bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-purple-900/40 border border-purple-500/30 shadow-2xl shadow-purple-500/20 backdrop-blur-xl mt-8 sm:mt-10">
             {/* Animated Background Pattern */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/10 via-transparent to-indigo-600/10"></div>

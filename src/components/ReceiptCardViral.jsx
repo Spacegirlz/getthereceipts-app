@@ -6,6 +6,7 @@ import TrendSticker from '@/components/TrendSticker';
 import sageStandardImage from '@/assets/sage-dark-circle.png';
 
 const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing, onShowInstructions }) => {
+  
   if (!results) return null;
 
 
@@ -614,7 +615,10 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             {/* Enhanced Disclaimer */}
             <div className="mb-8 p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
               <p className="text-sm text-slate-300 text-center font-medium">
-                For entertainment purposes - Sage calls it like she sees it
+                🔮 Sage reads patterns for entertainment only - not therapy, not advice.
+                I'm AI with opinions, not a licensed professional. I can be wrong. I only see texts, not your story.
+
+                You make your choices, bestie. I'm here for the tea, not the trauma. By using this, you agree you're responsible for your decisions. 💜
               </p>
             </div>
 
@@ -634,6 +638,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
         </div>
         
       </div>
+
     </>
   );
 });

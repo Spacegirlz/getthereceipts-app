@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, Lock, Brain, Shield, Sparkles, ChevronLeft, ChevronRight, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import ReceiptCardViral from '@/components/ReceiptCardViral';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
+import { AskSageChat } from '@/components/AskSageSimple';
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
 
 const TabbedReceiptInterface = ({ 
@@ -23,6 +24,7 @@ const TabbedReceiptInterface = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { isPremium } = useAuth();
   const navigate = useNavigate();
+  const sageTabRef = useRef(null);
 
   // Ensure first tab content is immediately visible on mount
   useEffect(() => {
@@ -109,6 +111,17 @@ const TabbedReceiptInterface = ({
         />
       ),
       isPremium: !isCrisisSituation // Make crisis safety guidance free
+    },
+    {
+      id: 'sage',
+      label: 'Sage',
+      icon: '🔮',
+      component: (
+        <div ref={sageTabRef} className="w-full max-w-2xl mx-auto">
+          <AskSageChat receiptData={analysis} isPremium={isPremium} />
+        </div>
+      ),
+      isPremium: false // Sage chat is free for all users
     }
   ];
 
@@ -126,7 +139,19 @@ const TabbedReceiptInterface = ({
     setActiveTab(newIndex);
     
     // Scroll to top of the tab content
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // For Sage tab, scroll to the chat interface
+    if (newIndex === 3) { // Sage tab (4th tab, index 3)
+      // Scroll to the Sage chat interface
+      setTimeout(() => {
+        if (sageTabRef.current) {
+          sageTabRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     
     // Reset transition state after animation (reduced from 300ms to 200ms)
     setTimeout(() => {
@@ -208,10 +233,14 @@ const TabbedReceiptInterface = ({
                       return activeTab === index 
                         ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xl shadow-purple-500/30 border border-purple-400/40 transform scale-105' 
                         : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:to-pink-600/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 hover:scale-102';
-                    } else { // Immunity
+                    } else if (index === 2) { // Immunity
                       return activeTab === index 
                         ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black shadow-xl shadow-amber-500/30 border border-[#D4AF37]/60 transform scale-105' 
                         : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-[#D4AF37]/15 hover:to-[#F5E6D3]/15 hover:shadow-lg hover:shadow-amber-500/20 border border-transparent hover:border-[#D4AF37]/25 hover:scale-102';
+                    } else { // Sage
+                      return activeTab === index 
+                        ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 text-white shadow-xl shadow-purple-500/30 border border-purple-400/40 transform scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:via-blue-600/15 hover:to-indigo-700/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 hover:scale-102';
                     }
                   };
 
@@ -483,6 +512,58 @@ const TabbedReceiptInterface = ({
               // Regular Tab Content
               <div className="w-full">
                 {tabs[activeTab]?.component}
+
+                {/* Additional Sagebot page sections - only for Sage tab */}
+                {tabs[activeTab]?.id === 'sage' && (
+                  <div className="w-full max-w-2xl mx-auto mt-16 sm:mt-20 space-y-6" data-sage-sections>
+                    {/* Privacy & Analysis cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-emerald-400 text-lg">🔒</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
+                          <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
+                        </div>
+                      </div>
+                      <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-amber-400 text-lg">📍</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
+                          <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Disclaimer */}
+                    <div className="p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
+                      <p className="text-sm text-slate-300 text-center font-medium">
+                        🔮 Sage reads patterns for entertainment only - not therapy, not advice. I'm AI with opinions, not a licensed professional. I can be wrong. I only see texts, not your story.
+                        <br/>You make your choices, bestie. I'm here for the tea, not the trauma. By using this, you agree you're responsible for your decisions. 💜
+                      </p>
+                    </div>
+
+                    {/* Share & Earn */}
+                    <button 
+                      onClick={() => window.open('http://localhost:5173/refer', '_blank')}
+                      className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <span className="text-xl relative z-10">💰</span>
+                      <div className="relative z-10">
+                        <span className="text-lg">Share & Earn</span>
+                        <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
+                      </div>
+                    </button>
+
+                    {/* space below the Share & Earn and before any following CTAs */}
+                    <div className="h-8" />
+                    {/* Decode Another Text CTA and upsell are already present on Receipts page; avoid duplicating here */}
+                  </div>
+                )}
               </div>
             )}
             
@@ -514,6 +595,7 @@ const TabbedReceiptInterface = ({
           </motion.div>
         </AnimatePresence>
       </div>
+      {/* Footer disclaimer removed to avoid duplication; containerized versions remain in each receipt */}
     </div>
   );
 };
