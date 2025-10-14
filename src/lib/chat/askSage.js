@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { askSagePrompt } from './askSagePrompt';
+import { FreeUsageService } from '@/lib/services/freeUsageService';
 
 // Initialize OpenAI with browser compatibility for local development
 const openai = new OpenAI({
@@ -59,15 +60,22 @@ const cleanupSageResponse = (text) => {
   return clean;
 };
 
-export async function askSage(question, receiptData, previousMessages = []) {
+export async function askSage(question, receiptData, previousMessages = [], opts = {}) {
   try {
+    // Client-side daily chat cap for Free users (5/day, UTC)
+    if (opts?.userId && !opts?.isPremium) {
+      const chatCheck = FreeUsageService.checkAndIncrementDailyChat(opts.userId);
+      if (!chatCheck.allowed) {
+        return 'Daily chat limit reached for Free accounts. Upgrade to continue, or try again after midnight (UTC).';
+      }
+    }
     // Try API endpoint first (for production)
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
       try {
         const response = await fetch('/api/sage-chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question, receiptData, previousMessages })
+          body: JSON.stringify({ question, receiptData, previousMessages, userId: opts.userId, deviceId: opts.deviceId, receiptId: receiptData?.id })
         });
         
         if (response.ok) {

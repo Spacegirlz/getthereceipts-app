@@ -154,9 +154,11 @@ module.exports = async function handler(req, res) {
     let creditsToAdd = 0;
     let subscriptionType = 'free';
     
-    if (amountPaid === 1.99) {
-      creditsToAdd = 5; // Emergency Pack
-      subscriptionType = 'free'; // Stays free, just adds credits
+    if (amountPaid === 4.99) {
+      // Launch Early Bird Monthly ($4.99) → premium unlimited
+      console.log('🆕 Mapping $4.99 monthly to premium');
+      creditsToAdd = -1;
+      subscriptionType = 'premium';
     } else if (amountPaid === 6.99) {
       creditsToAdd = -1; // Unlimited for monthly premium
       subscriptionType = 'premium'; // Monthly subscription
@@ -164,9 +166,9 @@ module.exports = async function handler(req, res) {
       creditsToAdd = -1; // Unlimited for yearly
       subscriptionType = 'yearly'; // Yearly subscription
     } else {
-      console.log(`⚠️ Unknown payment amount: $${amountPaid} - treating as emergency pack`);
-      creditsToAdd = 5;
-      subscriptionType = 'free';
+      console.log(`⚠️ Unknown one-time payment amount: $${amountPaid} - no plan change applied`);
+      creditsToAdd = 0;
+      subscriptionType = currentUser?.subscription_status || 'free';
     }
     
     console.log(`🎯 Processing ${userEmail}: ${creditsToAdd === -1 ? 'unlimited' : creditsToAdd} credits, subscription: ${subscriptionType}`);

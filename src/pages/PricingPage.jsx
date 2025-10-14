@@ -210,7 +210,7 @@ const PricingPage = () => {
     {
       id: 'premium',
       name: 'Unlimited Monthly Clarity',
-      price: '$6.99',
+      price: '$4.99',
       priceSub: '/month',
       originalPrice: '$9.99',
       subtitle: 'For the ones who spiral in silence',
@@ -223,7 +223,7 @@ const PricingPage = () => {
       ],
       tag: 'Never spiral alone again.',
       buttonText: 'Unlock Unlimited Monthly Clarity',
-      priceId: 'price_1RzgEZG71EqeOEZejcCAFxQs',
+      priceId: 'price_1SI49tG71EqeOEZe0p9LNpbP',
       buttonClass: 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold shadow-lg shadow-purple-500/25',
       icon: '🔥',
       microcopy: 'For the ones who spiral in silence',
@@ -932,12 +932,12 @@ const PricingPage = () => {
             <div className="relative bg-gradient-to-br from-slate-900/40 via-orange-900/10 to-slate-900/40 backdrop-blur-xl rounded-3xl border border-orange-500/20 overflow-hidden">
               
               <div className="grid grid-cols-1 lg:grid-cols-2 divide-x divide-gray-600">
-                {/* What $6.99 gets you elsewhere */}
+                {/* What $4.99 gets you elsewhere */}
                 <div className="p-8 md:p-12">
-                  <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-6">
                     <div className="text-3xl">🍸</div>
                     <h3 className="text-xl font-bold text-red-400">
-                      What $6.99 gets you elsewhere
+                      What $4.99 gets you elsewhere
                     </h3>
                   </div>
                   <div className="space-y-4">
@@ -956,12 +956,12 @@ const PricingPage = () => {
                   </div>
                 </div>
 
-                {/* What $6.99 gets you here */}
+                {/* What $4.99 gets you here */}
                 <div className="p-8 md:p-12">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="text-3xl">🧾</div>
                     <h3 className="text-xl font-bold text-green-400">
-                      What $6.99 gets you here
+                      What $4.99 gets you here
                     </h3>
                   </div>
                   <div className="space-y-4">
@@ -1023,7 +1023,7 @@ const PricingPage = () => {
                 </Button>
                 <Button
                   className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-xl shadow-blue-500/30 transform hover:scale-105"
-                  onClick={() => handleCheckout('price_1RzgEZG71EqeOEZejcCAFxQs', 'Premium')}
+                  onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium')}
                 >
                   Go Unlimited Monthly
                 </Button>

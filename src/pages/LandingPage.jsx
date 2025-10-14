@@ -1569,7 +1569,7 @@ const LandingPage = () => {
             >
               <h3 className="text-2xl font-bold text-white mb-2">Premium Monthly</h3>
               <div className="text-4xl font-bold text-white mb-2">
-                <span className="text-lg text-gray-400 line-through">$9.99</span> $6.99<span className="text-lg text-gray-400">/month</span>
+                <span className="text-lg text-gray-400 line-through">$9.99</span> $4.99<span className="text-lg text-gray-400">/month</span>
               </div>
               <p className="text-gray-400 mb-6">Save 30% - For serial overthinkers</p>
               <ul className="space-y-3 mb-8 flex-grow">

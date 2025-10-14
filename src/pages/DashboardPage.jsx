@@ -381,7 +381,7 @@ const DashboardPage = () => {
                 className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-0 text-sm font-semibold"
                 onClick={() => navigate('/pricing')}
               >
-                Monthly Premium - $6.99
+                Monthly Premium - $4.99
               </Button>
               <Button 
                 size="sm" 

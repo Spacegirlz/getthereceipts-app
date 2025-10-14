@@ -118,7 +118,13 @@ const TabbedReceiptInterface = ({
       icon: '🔮',
       component: (
         <div ref={sageTabRef} className="w-full max-w-2xl mx-auto">
-          <AskSageChat receiptData={analysis} isPremium={isPremium} />
+          <AskSageChat
+            receiptData={analysis}
+            isPremium={isPremium}
+            userId={analysis?.userId}
+            // For anonymous users, limit chats per receipt to 3. Free users keep 5/day via other checks.
+            maxExchangesOverride={!isPremium && !analysis?.userId ? 3 : undefined}
+          />
         </div>
       ),
       isPremium: false // Sage chat is free for all users

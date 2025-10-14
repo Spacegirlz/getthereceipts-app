@@ -785,7 +785,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8">
             <div className="meme-card p-8 rounded-2xl">
               <h3 className="font-bold text-xl mb-6 text-red-400 flex items-center">
-                ❌ What $6.99 Gets You Elsewhere
+                ❌ What $4.99 Gets You Elsewhere
               </h3>
               <ul className="space-y-4 text-gray-300">
                 <li className="flex items-start">
@@ -809,7 +809,7 @@ const LandingPage = () => {
             
             <div className="meme-card p-8 rounded-2xl border-2 border-green-500/30">
               <h3 className="font-bold text-xl mb-6 text-green-400 flex items-center">
-                ✅ What $6.99 Gets You Here
+                ✅ What $4.99 Gets You Here
               </h3>
               <ul className="space-y-4 text-gray-300">
                 <li className="flex items-start">
@@ -844,7 +844,7 @@ const LandingPage = () => {
           <div className="text-center mb-10">
             <p className="text-xl text-gray-300 mb-4">Want more?</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-lg text-gray-300">
-              <div>• Unlimited monthly: <span className="text-teal-400 font-semibold">$6.99</span></div>
+              <div>• Unlimited monthly: <span className="text-teal-400 font-semibold">$4.99</span></div>
               <div>• Founders Pass: <span className="text-purple-400 font-semibold">$29.99 / year</span></div>
             </div>
           </div>
@@ -879,7 +879,7 @@ const LandingPage = () => {
               <div>
                 <div className="text-center mb-6">
                   <h3 className="font-bold text-2xl mb-3 text-teal-400">Premium Monthly</h3>
-                  <div className="text-4xl font-black text-white mb-2">$6.99</div>
+                  <div className="text-4xl font-black text-white mb-2">$4.99</div>
                   <p className="text-gray-400 text-sm">per month</p>
                 </div>
                 <div className="space-y-3 text-sm text-gray-300 text-left">
@@ -964,7 +964,7 @@ const LandingPage = () => {
                           <div className="inline-block">
                             <div className="bg-gradient-to-br from-teal-900/40 to-teal-800/40 rounded-2xl p-4 border border-teal-500/30">
                               <div className="text-lg font-bold text-teal-400 mb-1">Premium</div>
-                              <div className="text-2xl font-black text-white">$6.99</div>
+                              <div className="text-2xl font-black text-white">$4.99</div>
                               <div className="text-xs text-gray-300">per month</div>
                             </div>
                           </div>

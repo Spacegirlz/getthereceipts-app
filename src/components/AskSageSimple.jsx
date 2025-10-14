@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { askSage } from '@/lib/chat/askSage';
 import { Send, Loader2, Copy, Check, MoreVertical, Heart, ThumbsUp } from 'lucide-react';
 
-export function AskSageChat({ receiptData, isPremium = false }) {
+export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverride, userId }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,8 +13,10 @@ export function AskSageChat({ receiptData, isPremium = false }) {
   const [maxChatHeight, setMaxChatHeight] = useState(null);
   const introShownRef = useRef(false);
   
-  // Set exchange limits based on premium status
-  const maxExchanges = isPremium ? 40 : 5;
+  // Set exchange limits based on tier, with optional explicit override (e.g., anonymous = 3)
+  const maxExchanges = typeof maxExchangesOverride === 'number'
+    ? maxExchangesOverride
+    : (isPremium ? 40 : 5);
   const maxMessages = maxExchanges * 2; // 2 messages per exchange
 
   // Auto-scroll to bottom when new messages arrive
@@ -91,7 +93,7 @@ export function AskSageChat({ receiptData, isPremium = false }) {
     // Simulate typing delay for more natural feel
     setTimeout(async () => {
       try {
-        const response = await askSage(input, receiptData, messages);
+        const response = await askSage(input, receiptData, messages, { userId, isPremium });
         const assistantMsg = { 
           role: 'sage', 
           content: response, 

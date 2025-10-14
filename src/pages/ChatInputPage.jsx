@@ -215,6 +215,7 @@ const ChatInputPage = () => {
       perf.mark('credit_check');
       // 🔐 CREDIT CHECK: Verify user can perform analysis
       const { AnonymousUserService } = await import('@/lib/services/anonymousUserService');
+      const { FreeUsageService } = await import('@/lib/services/freeUsageService');
       const { getUserCredits, deductCredits } = await import('@/lib/services/creditsSystem');
       
       let canProceed = false;
@@ -222,26 +223,25 @@ const ChatInputPage = () => {
       let creditCheckResult = null;
       
       if (user) {
-        // Logged-in user: Check their credits
+        // Logged-in user: enforce Free caps (starter then daily) unless premium/yearly
         const userCredits = await getUserCredits(user.id);
-        console.log('🔐 User credits check:', userCredits);
-        
-        if (userCredits.subscription === 'premium' || 
-            userCredits.subscription === 'yearly' || 
-            userCredits.subscription === 'founder') {
+        const isPaid = (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder' || userCredits.subscription === 'lifetime');
+        if (isPaid) {
           canProceed = true;
           creditMessage = 'Premium user - unlimited analysis';
-        } else if (userCredits.subscription === 'free' && userCredits.credits === -1) {
-          // Free users with unlimited credits (new system)
-          canProceed = true;
-          creditMessage = 'Free user - unlimited analysis';
-        } else if (userCredits.credits > 0) {
-          // Legacy users with limited credits
-          canProceed = true;
-          creditMessage = `Free user - ${userCredits.credits} credits remaining`;
         } else {
-          canProceed = false;
-          creditMessage = 'No credits remaining. Please upgrade or wait for daily reset.';
+          // Starter bank first (3 total)
+          const starterUsed = FreeUsageService.getStarterUsed(user.id);
+          if (starterUsed < 3) {
+            const r = FreeUsageService.checkAndIncrementStarterReceipt(user.id);
+            canProceed = r.allowed;
+            creditMessage = r.allowed ? `Free starter receipt used (${3 - starterUsed - 1} left)` : 'Starter receipts exhausted';
+          } else {
+            // Daily limit: 1 per UTC day
+            const r = FreeUsageService.checkAndIncrementDailyReceipt(user.id);
+            canProceed = r.allowed;
+            creditMessage = r.allowed ? 'Free daily receipt granted' : 'Daily limit reached. Come back after midnight (UTC).';
+          }
         }
       } else {
         // Anonymous user: Use atomic operation to prevent race conditions
