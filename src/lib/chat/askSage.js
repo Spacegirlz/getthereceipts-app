@@ -97,7 +97,7 @@ export async function askSage(question, receiptData, previousMessages = [], opts
 
     // Add conversation history
     const fullPrompt = systemPrompt + '\n\nRECENT CONVERSATION:\n' + 
-      previousMessages.slice(-3).map(m => `${m.role}: ${m.content}`).join('\n');
+      previousMessages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\n');
 
     // Call OpenAI via proxy
     const response = await fetch('/api/chat/completions', {
