@@ -32,13 +32,13 @@ const cleanupSageResponse = (text) => {
   }
   
   // 4. Ensure proper spacing (Problem 1)
-  // Add line breaks every 2 sentences if none exist. Split on ., !, ?
+  // Add line breaks every 2-3 sentences for better readability
   const sentences = clean.split(/(?<=[.!?])\s+/).filter(s => s.trim());
-  if (sentences.length >= 2 && !clean.includes('\n\n')) {
-    // Add line break every 2 sentences for readability
+  if (sentences.length >= 3 && !clean.includes('\n')) {
+    // Add line break every 2-3 sentences for readability
     clean = sentences.map((s, i) => {
-      const needsBreak = (i + 1) % 2 === 0 && i < sentences.length - 1;
-      return s + '.' + (needsBreak ? '\n\n' : ' ');
+      const needsBreak = (i + 1) % 3 === 0 && i < sentences.length - 1;
+      return s + (needsBreak ? '\n\n' : ' ');
     }).join('').trim();
   }
   
@@ -46,8 +46,8 @@ const cleanupSageResponse = (text) => {
   clean = clean
     .replace(/\s{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
-    // normalize single newlines to double to keep paragraphs readable
-    .replace(/\n(?!\n)/g, '\n\n')
+    // Only convert single newlines to double if they're clearly meant to be paragraph breaks
+    .replace(/([.!?])\s*\n(?!\n)/g, '$1\n\n')
     .trim();
   
   return clean;
