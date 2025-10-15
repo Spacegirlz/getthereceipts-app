@@ -6,6 +6,7 @@ import { FreeUsageService } from '@/lib/services/freeUsageService';
  * Handles the 8 formatting problems with minimal processing
  */
 const cleanupSageResponse = (text) => {
+  console.log('🔍 Cleanup input:', text);
   let clean = text;
   
   // 1. Replace em dashes with hyphens (Problem 7)
@@ -48,6 +49,7 @@ const cleanupSageResponse = (text) => {
     .replace(/\n{3,}/g, '\n\n')
     .trim();
   
+  console.log('🔍 Cleanup output:', clean);
   return clean;
 };
 
@@ -128,7 +130,9 @@ export async function askSage(question, receiptData, previousMessages = [], opts
 
     const data = await response.json();
     const rawResponse = data.choices[0]?.message?.content || 'Sorry, I need a moment to think about that.';
+    console.log('🔍 Raw Sage response:', rawResponse);
     const cleanedResponse = cleanupSageResponse(rawResponse);
+    console.log('🔍 Cleaned Sage response:', cleanedResponse);
     return cleanedResponse;
   } catch (error) {
     console.error('Ask Sage error:', error);
