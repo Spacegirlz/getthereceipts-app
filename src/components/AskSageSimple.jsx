@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { askSage } from '@/lib/chat/askSage';
 import { Send, Loader2, Copy, Check, MoreVertical, Heart, ThumbsUp } from 'lucide-react';
+import { getUserCredits } from '@/lib/services/creditsSystem';
 
 export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverride, userId }) {
   const [messages, setMessages] = useState([]);
@@ -12,11 +13,28 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
   const messagesContainerRef = useRef(null);
   const [maxChatHeight, setMaxChatHeight] = useState(null);
   const introShownRef = useRef(false);
+  const [isTrial, setIsTrial] = useState(false);
+  
+  // Check trial status for logged-in users
+  useEffect(() => {
+    async function checkTrialStatus() {
+      if (userId && !isPremium) {
+        try {
+          const userCredits = await getUserCredits(userId);
+          const trialActive = userCredits.subscription === 'premium_trial' && userCredits.is_trial_active;
+          setIsTrial(trialActive);
+        } catch (error) {
+          console.error('Error checking trial status:', error);
+        }
+      }
+    }
+    checkTrialStatus();
+  }, [userId, isPremium]);
   
   // Set exchange limits based on tier, with optional explicit override (e.g., anonymous = 3)
   const maxExchanges = typeof maxExchangesOverride === 'number'
     ? maxExchangesOverride
-    : (isPremium ? 40 : 5);
+    : (isPremium || isTrial ? 40 : 5);
   const maxMessages = maxExchanges * 2; // 2 messages per exchange
 
   // Auto-scroll to bottom when new messages arrive
@@ -93,7 +111,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
     // Simulate typing delay for more natural feel
     setTimeout(async () => {
       try {
-        const response = await askSage(input, receiptData, messages, { userId, isPremium });
+        const response = await askSage(input, receiptData, messages, { userId, isPremium, isTrial });
         const assistantMsg = { 
           role: 'sage', 
           content: response, 

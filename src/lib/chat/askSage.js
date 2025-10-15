@@ -63,7 +63,7 @@ const cleanupSageResponse = (text) => {
 export async function askSage(question, receiptData, previousMessages = [], opts = {}) {
   try {
     // Client-side daily chat cap for Free users (5/day, UTC)
-    if (opts?.userId && !opts?.isPremium) {
+    if (opts?.userId && !opts?.isPremium && !opts?.isTrial) {
       const chatCheck = FreeUsageService.checkAndIncrementDailyChat(opts.userId);
       if (!chatCheck.allowed) {
         return 'Daily chat limit reached for Free accounts. Upgrade to continue, or try again after midnight (UTC).';

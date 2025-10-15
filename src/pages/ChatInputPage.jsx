@@ -224,14 +224,21 @@ const ChatInputPage = () => {
       let creditCheckResult = null;
       
       if (user) {
-        // Logged-in user: enforce Free caps (starter then daily) unless premium/yearly
+        // Logged-in user: check subscription status
         const userCredits = await getUserCredits(user.id);
         const isPaid = (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder' || userCredits.subscription === 'lifetime');
-        if (isPaid) {
+        const isTrial = userCredits.subscription === 'premium_trial' && userCredits.is_trial_active;
+        
+        if (isPaid || isTrial) {
           canProceed = true;
-          creditMessage = 'Premium user - unlimited analysis';
+          if (isTrial) {
+            const daysLeft = Math.ceil((new Date(userCredits.trial_end) - new Date()) / (1000 * 60 * 60 * 24));
+            creditMessage = `Premium trial - ${daysLeft} days left`;
+          } else {
+            creditMessage = 'Premium user - unlimited analysis';
+          }
         } else {
-          // Starter bank first (3 total)
+          // Free user: enforce caps using client-side service
           const starterUsed = FreeUsageService.getStarterUsed(user.id);
           if (starterUsed < 3) {
             const r = FreeUsageService.checkAndIncrementStarterReceipt(user.id);
@@ -360,12 +367,16 @@ const ChatInputPage = () => {
       // 🔐 DEDUCT CREDITS: After successful analysis
       perf.mark('deduct');
       if (user) {
-        // Logged-in user: Deduct credit
-        const deductResult = await deductCredits(user.id, 1);
-        if (deductResult.success) {
-          console.log('✅ Credit deducted for logged-in user');
+        // Check if user is on trial or paid (no deduction needed)
+        const userCredits = await getUserCredits(user.id);
+        const isPaid = (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder' || userCredits.subscription === 'lifetime');
+        const isTrial = userCredits.subscription === 'premium_trial' && userCredits.is_trial_active;
+        
+        if (isPaid || isTrial) {
+          console.log('✅ Premium/Trial user - no credit deduction needed');
         } else {
-          console.warn('⚠️ Failed to deduct credit for logged-in user:', deductResult.error);
+          // Free user: Credit already deducted in client-side service
+          console.log('✅ Free user credit already deducted in client-side service');
         }
       } else {
         // Anonymous user: Credit already deducted in atomic operation
