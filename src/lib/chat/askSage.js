@@ -46,8 +46,6 @@ const cleanupSageResponse = (text) => {
   clean = clean
     .replace(/\s{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
-    // Only convert single newlines to double if they're clearly meant to be paragraph breaks
-    .replace(/([.!?])\s*\n(?!\n)/g, '$1\n\n')
     .trim();
   
   return clean;
