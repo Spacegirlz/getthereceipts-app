@@ -1,12 +1,5 @@
-import OpenAI from 'openai';
 import { askSagePrompt } from './askSagePrompt';
 import { FreeUsageService } from '@/lib/services/freeUsageService';
-
-// Initialize OpenAI with browser compatibility for local development
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true // Only for development - will use API endpoint in production
-});
 
 /**
  * Lightweight formatting cleanup for Sage responses
@@ -106,20 +99,32 @@ export async function askSage(question, receiptData, previousMessages = [], opts
     const fullPrompt = systemPrompt + '\n\nRECENT CONVERSATION:\n' + 
       previousMessages.slice(-3).map(m => `${m.role}: ${m.content}`).join('\n');
 
-    // Call OpenAI
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: fullPrompt },
-        { role: 'user', content: question }
-      ],
-      max_tokens: 250, // Slightly higher for better responses
-      temperature: 0.88, // Higher for more personality
-      presence_penalty: 0.5, // Encourages varied language
-      frequency_penalty: 0.3 // Reduces repetitive phrases
+    // Call OpenAI via proxy
+    const response = await fetch('/api/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: fullPrompt },
+          { role: 'user', content: question }
+        ],
+        max_tokens: 250, // Slightly higher for better responses
+        temperature: 0.88, // Higher for more personality
+        presence_penalty: 0.5, // Encourages varied language
+        frequency_penalty: 0.3 // Reduces repetitive phrases
+      })
     });
 
-    const rawResponse = completion.choices[0].message.content;
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const rawResponse = data.choices[0]?.message?.content || 'Sorry, I need a moment to think about that.';
     const cleanedResponse = cleanupSageResponse(rawResponse);
     return cleanedResponse;
   } catch (error) {
