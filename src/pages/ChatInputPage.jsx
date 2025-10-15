@@ -354,13 +354,25 @@ const ChatInputPage = () => {
       
       console.log('🚀 Submitting analysis with full context:', analysisContext);
       
-      // Import the actual analysis function
-      perf.mark('import_analysis');
-      const { generateAlignedResults } = await import('@/lib/analysis/advancedAnalysis');
-      perf.end('import_analysis');
+      // Call the backend API route for analysis
+      perf.mark('api_analysis');
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: message,
+          context: analysisContext
+        })
+      });
       
-      // Call the real analysis API with all inputs
-      const analysisResult = await perf.measure('api_analysis', () => generateAlignedResults(message, analysisContext));
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      const analysisResult = await response.json();
+      perf.end('api_analysis');
       
       console.log('✅ Analysis complete:', analysisResult);
       
