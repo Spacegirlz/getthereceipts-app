@@ -8,6 +8,8 @@ import { FreeUsageService } from '@/lib/services/freeUsageService';
 const cleanupSageResponse = (text) => {
   console.log('🔍 Cleanup input:', text);
   let clean = text;
+  // Normalize CRLF to LF to keep newline handling consistent across platforms
+  clean = clean.replace(/\r\n?/g, '\n');
   
   // 1. Replace em dashes with hyphens (Problem 7)
   clean = clean.replace(/\u2014/g, ' - '); // use unicode escape for reliability
@@ -43,9 +45,11 @@ const cleanupSageResponse = (text) => {
     }).join('').trim();
   }
   
-  // 5. Clean up multiple spaces and excessive line breaks
+  // 5. Clean up multiple spaces (but never collapse newlines) and excessive line breaks
   clean = clean
-    .replace(/\s{2,}/g, ' ')
+    // Collapse multiple spaces/tabs only; preserve \n
+    .replace(/[^\S\n]{2,}/g, ' ')
+    // Normalize 3+ consecutive newlines down to exactly 2 for readable paragraphs
     .replace(/\n{3,}/g, '\n\n')
     .trim();
   
