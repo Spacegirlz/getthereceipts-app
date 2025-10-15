@@ -95,16 +95,22 @@ export async function askSage(question, receiptData, previousMessages = [], opts
 
     // Build compact, personality-first prompt (+ keep legacy as fallback)
     const useLite = true; // core switch per user request
-    const namesLine = `${receiptData?.userName ? `User: ${receiptData.userName}. ` : ''}${receiptData?.otherName ? `Other: ${receiptData.otherName}. ` : ''}`.trim();
-    const receiptLine = `Archetype: ${receiptData?.archetype || 'Unknown'}. Red flags: ${receiptData?.redFlags ?? 0}/10. Pattern: ${(receiptData?.verdict || '').slice(0, 140)}`;
-    const recentChat = previousMessages.slice(-5).map(m => `${m.role === 'user' ? 'Them' : 'You'}: ${m.content}`).join('\n');
-    const contextPrompt = `${namesLine}\n${receiptLine}\n\nRecent chat:\n${recentChat}\n\nCurrent question: ${question}`.trim();
-
-    const systemPrompt = useLite ? askSagePromptLite : askSagePrompt
+    const otherName = receiptData?.otherName || 'them';
+    const systemPromptFilled = (useLite ? askSagePromptLite : askSagePrompt)
+      .replace('{otherName}', otherName)
       .replace('{archetype}', receiptData.archetype || 'Unknown')
       .replace('{redFlags}', receiptData.redFlags || 0)
-      .replace('{verdictSummary}', receiptData.verdict?.substring(0, 150) || '')
-      .replace('{flagNumber}', '1');
+      .replace('{verdictSummary}', (receiptData.verdict || '').substring(0, 120));
+
+    const recentChat = previousMessages.slice(-6).map(m => {
+      const role = m.role === 'user' ? 'Them' : 'You';
+      return `${role}: ${m.content}`;
+    }).join('\n');
+
+    const contextualQuestion = recentChat
+      ? `Recent conversation:\n${recentChat}\n\nThem: ${question}\n\nRespond as Sage (1-4 sentences, match energy).`
+      : `Them: ${question}\n\nRespond as Sage (1-4 sentences).`;
+    const systemPrompt = systemPromptFilled;
 
     // Add the original analyzed conversation and chat history
     const originalConversation = receiptData.conversation ? 
@@ -126,7 +132,7 @@ export async function askSage(question, receiptData, previousMessages = [], opts
         model: 'gpt-4o-mini',
         messages: useLite ? [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: contextPrompt }
+          { role: 'user', content: contextualQuestion }
         ] : [
           { role: 'system', content: fullPrompt },
           { role: 'user', content: question }
