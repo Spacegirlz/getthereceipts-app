@@ -1,6 +1,7 @@
 import { askSagePrompt } from './askSagePrompt';
 import { askSagePromptLite } from './askSagePromptLite';
 import { FreeUsageService } from '@/lib/services/freeUsageService';
+import { SAGE_SAFETY_LAYER, collectSafetyText } from './sageSafety';
 
 /**
  * Lightweight formatting cleanup for Sage responses
@@ -86,12 +87,17 @@ export async function askSage(question, receiptData, previousMessages = [], opts
       }
     }
 
-    // Fallback to direct OpenAI call (for local development)
-    // Emergency check
-    const emergencyWords = ['kill myself', 'hurt myself', 'end it'];
-    if (emergencyWords.some(word => question.toLowerCase().includes(word))) {
-      return "Bestie, this is beyond my pay grade. Please call 988 (Crisis Lifeline) right now. I'm here for drama, not emergencies.";
+  // Fallback to direct OpenAI call (for local development)
+  // Layered safety checks
+  const safetyText = collectSafetyText(question, previousMessages);
+  const allowed = SAGE_SAFETY_LAYER.EXPLICIT_ALLOWS.some(rx => rx.test(safetyText));
+  if (!allowed) {
+    for (const rule of SAGE_SAFETY_LAYER.HARD_BLOCKS) {
+      if (rule.trigger(safetyText)) {
+        return rule.response;
+      }
     }
+  }
 
     // Build compact, personality-first prompt (+ keep legacy as fallback)
     const useLite = true; // core switch per user request
@@ -151,7 +157,13 @@ export async function askSage(question, receiptData, previousMessages = [], opts
     const data = await response.json();
     const rawResponse = data.choices[0]?.message?.content || 'Sorry, I need a moment to think about that.';
     console.log('🔍 Raw Sage response:', rawResponse);
-    const cleanedResponse = cleanupSageResponse(rawResponse);
+    let cleanedResponse = cleanupSageResponse(rawResponse);
+    // Soft redirects (prepend without blocking)
+    if (!allowed) {
+      for (const rule of SAGE_SAFETY_LAYER.SOFT_REDIRECTS) {
+        if (rule.trigger(safetyText)) { cleanedResponse = rule.prefix + cleanedResponse; break; }
+      }
+    }
     console.log('🔍 Cleaned Sage response:', cleanedResponse);
     return cleanedResponse;
   } catch (error) {
