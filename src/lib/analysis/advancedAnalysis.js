@@ -1094,7 +1094,7 @@ IMPORTANT:
     let rawContent = '';
     if (provider === 'openai') {
       // Use Chat Completions API for all models
-      const endpoint = 'https://api.openai.com/v1/chat/completions';
+      const endpoint = '/api/chat/completions';
       const messages = [
         { role: 'system', content: brutalPrompt },
         { role: 'system', content: SAFETY_CHECK_PROMPT },
@@ -1618,7 +1618,7 @@ export const generateAlignedResults = async (message, context) => {
       const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
       let rawContent = '';
       if (provider === 'openai') {
-        const endpoint = 'https://api.openai.com/v1/chat/completions';
+        const endpoint = '/api/chat/completions';
         const body = { model: openAIModel, messages: [ { role: 'system', content: deepDiveSystemPrompt }, { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${processedMessage}` } ], temperature: 0.8, max_completion_tokens: 1200, response_format: { type: 'json_object' } };
         console.log('🔧 OpenAI Deep Dive request:', { endpoint, model: openAIModel });
         const data = await Promise.race([ makeApiCallWithBackup(endpoint, body), deepDiveTimeout ]);
@@ -1705,7 +1705,7 @@ export const generateAlignedResults = async (message, context) => {
       const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
       let rawContent = '';
       if (provider === 'openai') {
-        const endpoint = 'https://api.openai.com/v1/chat/completions';
+        const endpoint = '/api/chat/completions';
         const body = { model: openAIModel, messages: [ { role: 'system', content: immunitySystemPrompt }, { role: 'user', content: `TEXTS:\n${processedMessage}` } ], temperature: 0.7, max_completion_tokens: 1000, response_format: { type: 'json_object' } };
         const data = await makeApiCallWithBackup(endpoint, body);
         rawContent = data.choices?.[0]?.message?.content || '';
