@@ -461,7 +461,7 @@ const LandingPage = () => {
       {/* Navigation is handled globally by App.jsx MainHeader */}
 
       {/* Hero Section */}
-      <section id="home" className="relative px-6 lg:px-8 pt-32 pb-32">
+      <section id="home" className="relative px-6 lg:px-8 pt-32 pb-16">
         <div className="mx-auto max-w-7xl">
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
@@ -573,14 +573,6 @@ const LandingPage = () => {
                 Get Your Free Receipts
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button
-                onClick={handleGoPremium}
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-2xl text-lg font-semibold transition-all duration-300"
-              >
-                See Pricing
-              </Button>
             </motion.div>
 
             {/* Trust Indicators */}
@@ -631,7 +623,7 @@ const LandingPage = () => {
       
 
       {/* Meet Sage Section */}
-      <section id="about" className="relative px-6 lg:px-8 py-32">
+      <section id="about" className="relative px-6 lg:px-8 pt-16 pb-32">
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial="initial"
@@ -650,18 +642,23 @@ const LandingPage = () => {
                 Your AI bestie with opinions
               </h2>
               
-              <div className="space-y-4 text-lg text-gray-300 mb-8">
-                <p>She's seen every pattern: breadcrumbing, ghosting, love bombing, and the rest of the emotional circus.</p>
-                <p>Not a therapist. Not your mom. Not even real.</p>
-                <p>Just that friend who's had enough of your spiral and loves you too much to watch it continue. Created for your entertainment (and maybe some perspective).</p>
-                <p>Every relationship. Every vibe. Every pattern.</p>
-                <p className="text-violet-300 font-medium">Because sometimes you just want someone else's take - whether you're spiraling, celebrating, or just bored.</p>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-violet-500/10 to-blue-500/10 rounded-2xl border border-violet-500/20">
+                  <span className="text-2xl">🔍</span>
+                  <span className="text-violet-300 font-medium">She's seen every pattern: breadcrumbing, ghosting, love bombing.</span>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-violet-500/10 to-blue-500/10 rounded-2xl border border-violet-500/20">
+                  <span className="text-2xl">🤝</span>
+                  <span className="text-violet-300 font-medium">Not a therapist. Not your mom. Just that friend who's had enough of your spiral.</span>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-violet-500/10 to-blue-500/10 rounded-2xl border border-violet-500/20">
+                  <span className="text-2xl">🪄</span>
+                  <span className="text-violet-300 font-medium">Savage takes. Zero filter. Made with love.</span>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-violet-500/10 to-blue-500/10 rounded-2xl border border-violet-500/20 mb-8">
-                <span className="text-2xl">🪄</span>
-                <span className="text-violet-300 font-medium">Savage takes. Zero filter. Made with love.</span>
-              </div>
 
               <Button
                 onClick={handleGetStarted}
@@ -676,8 +673,8 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="relative"
             >
-              <div className="relative z-10 bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 rounded-3xl p-8">
-                <div className="w-full aspect-square bg-gradient-to-br from-violet-400 to-blue-500 rounded-2xl flex items-center justify-center overflow-hidden">
+              <div className="relative z-10 bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 rounded-3xl p-6">
+                <div className="w-full max-w-sm mx-auto aspect-square bg-gradient-to-br from-violet-400 to-blue-500 rounded-2xl flex items-center justify-center overflow-hidden">
                   <img 
                     src={sagePurpleSwirl} 
                     alt="Sage - Your AI bestie with opinions" 
@@ -691,17 +688,6 @@ const LandingPage = () => {
 
       </section>
 
-      {/* Persistent CTA directly below demo */}
-      <section className="relative px-6 lg:px-8 py-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <Button
-            onClick={handleGetStarted}
-            className="w-full bg-gradient-to-r from-violet-500 to-blue-600 hover:from-violet-600 hover:to-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-extrabold shadow-2xl transition-all duration-300"
-          >
-            Get Your Free Receipts NOW
-          </Button>
-        </div>
-      </section>
 
       {/* Interactive Demo Section */}
       <section id="demo" className="relative px-6 lg:px-8 py-32">
@@ -1188,118 +1174,93 @@ const LandingPage = () => {
               variants={fadeInUp}
               className="text-xl text-gray-300 mb-4"
             >
-              Every Receipt Includes Sage's 3-Part Read
+              Six powerful tools to decode any conversation
             </motion.p>
             <motion.p 
               variants={fadeInUp}
               className="text-lg text-violet-300"
             >
-              More than just her take - it's a complete breakdown
+              From red flags to relationship patterns - everything you need to know
             </motion.p>
           </motion.div>
 
-          {/* 3 Stages */}
+          {/* 6 Feature Grid */}
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
             variants={staggerChildren}
-            className="space-y-12"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {/* Level 1: Free */}
-            <motion.div variants={fadeInUp} className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-3xl p-8">
-              <div className="grid lg:grid-cols-2 gap-8 items-center">
-                <div>
-                  <h3 className="text-3xl font-bold text-emerald-400 mb-4">Level 1: Sage's Receipt Card (Free)</h3>
-                  <p className="text-gray-300 text-lg mb-4">The foundation - Sage's take on what's happening</p>
-                  <p className="text-violet-300 text-lg mb-6 italic">Works on everything from marriage proposals to breadcrumbing, from healthy check-ins to hot mess express, from your boss to your ex to that person you met once and can't forget.</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { icon: '🎯', title: 'Pattern Detection', desc: 'The Breadcrumber, Ghoster, Love Bomber - we name it' },
-                      { icon: '📊', title: 'Real Metrics', desc: 'Into You %, Wasting Time %, Red Flag count' },
-                      { icon: '⚖️', title: 'The Verdict', desc: 'Clear explanation of what\'s actually happening' }
-                    ].map((feature, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <span className="text-2xl">{feature.icon}</span>
-                        <div>
-                          <h4 className="font-semibold text-white">{feature.title}</h4>
-                          <p className="text-sm text-gray-400">{feature.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            {[
+              {
+                icon: '🚩',
+                title: 'Red Flag Detection',
+                description: 'Spot breadcrumbing, gaslighting, and mixed signals you might be missing. Sage catches what your heart won\'t let you see.',
+                gradient: 'from-red-500/10 to-pink-500/10',
+                border: 'border-red-500/20',
+                iconBg: 'bg-red-500/20'
+              },
+              {
+                icon: '🧠',
+                title: 'Behavior Patterns',
+                description: 'Decode their texting style and understand what it reveals about their true intentions. Every message tells a story.',
+                gradient: 'from-blue-500/10 to-cyan-500/10',
+                border: 'border-blue-500/20',
+                iconBg: 'bg-blue-500/20'
+              },
+              {
+                icon: '💬',
+                title: 'Ask Sage',
+                description: 'Chat with your AI relationship advisor. Get context, clarity, and advice tailored to your specific situation.',
+                gradient: 'from-purple-500/10 to-violet-500/10',
+                border: 'border-purple-500/20',
+                iconBg: 'bg-purple-500/20'
+              },
+              {
+                icon: '📚',
+                title: 'The Playbook',
+                description: 'Learn how to respond to common patterns and take back control. Your strategic guide to better relationships.',
+                gradient: 'from-emerald-500/10 to-teal-500/10',
+                border: 'border-emerald-500/20',
+                iconBg: 'bg-emerald-500/20'
+              },
+              {
+                icon: '🛡️',
+                title: 'Immunity Training',
+                description: 'Build resistance to manipulation tactics and recognize them faster next time. Protect your emotional wellbeing.',
+                gradient: 'from-orange-500/10 to-yellow-500/10',
+                border: 'border-orange-500/20',
+                iconBg: 'bg-orange-500/20'
+              },
+              {
+                icon: '🔒',
+                title: 'Privacy First',
+                description: 'We don\'t store your receipts. What happens here, stays here. Your secrets are safe with us.',
+                gradient: 'from-slate-500/10 to-gray-500/10',
+                border: 'border-slate-500/20',
+                iconBg: 'bg-slate-500/20'
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className={`group relative bg-gradient-to-br ${feature.gradient} backdrop-blur-sm border ${feature.border} rounded-2xl p-6 hover:shadow-2xl hover:shadow-violet-500/10 transition-all duration-300 hover:-translate-y-1`}
+              >
+                <div className={`inline-flex items-center justify-center w-12 h-12 ${feature.iconBg} rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <span className="text-2xl">{feature.icon}</span>
                 </div>
-                <div className="text-center">
-                  <div className="text-6xl mb-4">🧾</div>
-                  <div className="text-3xl font-bold text-emerald-400">FREE</div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Level 2: Free */}
-            <motion.div variants={fadeInUp} className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-3xl p-8">
-              <div className="grid lg:grid-cols-2 gap-8 items-center">
-                <div>
-                  <h3 className="text-3xl font-bold text-blue-400 mb-4">Level 2: Sage's Tea (Free)</h3>
-                  <p className="text-gray-300 text-lg mb-6">The real talk - no filter, just truth</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { icon: '☕', title: 'Sage\'s Tea', desc: 'The real talk your friends are too nice to say' },
-                      { icon: '🔮', title: 'The Prophecy', desc: 'What they\'ll do next (we\'re usually right)' },
-                      { icon: '📖', title: 'The Playbook', desc: 'Your next moves to protect your energy' }
-                    ].map((feature, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <span className="text-2xl">{feature.icon}</span>
-                        <div>
-                          <h4 className="font-semibold text-white">{feature.title}</h4>
-                          <p className="text-sm text-gray-400">{feature.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-6xl mb-4">☕</div>
-                  <div className="text-3xl font-bold text-blue-400">FREE</div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Level 3: Premium */}
-            <motion.div variants={fadeInUp} className="bg-gradient-to-br from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-3xl p-8 relative overflow-hidden">
-              <div className="absolute top-4 right-4">
-                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full text-sm font-bold flex items-center">
-                  <Crown className="h-4 w-4 mr-1" />
-                  PREMIUM
-                </div>
-              </div>
-              <div className="grid lg:grid-cols-2 gap-8 items-center">
-                <div>
-                  <h3 className="text-3xl font-bold text-yellow-400 mb-4">Level 3: Sage's Immunity Training 👑</h3>
-                  <p className="text-gray-300 text-lg mb-6">Premium: Build your own pattern recognition superpowers</p>
-                  <div className="space-y-4">
-                    {[
-                      { icon: '🛡️', title: 'Archetype Reader', desc: 'Deep dive into their personality patterns and motivations' },
-                      { icon: '🔁', title: 'Pattern Loop Recognition', desc: 'Learn to spot cycles before they trap you' },
-                      { icon: '💪', title: 'Sage\'s Real Talk', desc: 'Advanced coaching on building emotional immunity' }
-                    ].map((feature, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <span className="text-2xl">{feature.icon}</span>
-                        <div>
-                          <h4 className="font-semibold text-white">{feature.title}</h4>
-                          <p className="text-sm text-gray-400">{feature.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-6xl mb-4">🛡️</div>
-                  <div className="text-3xl font-bold text-yellow-400">PREMIUM</div>
-                </div>
-              </div>
-            </motion.div>
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-violet-300 transition-colors duration-300">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-300 leading-relaxed">
+                  {feature.description}
+                </p>
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.div>
+            ))}
           </motion.div>
+
         </div>
       </section>
 
@@ -1599,7 +1560,7 @@ const LandingPage = () => {
             {/* Premium Monthly - HERO PLAN - Center */}
             <motion.div
               variants={fadeInUp}
-              className="p-8 bg-gradient-to-br from-violet-500/30 to-blue-500/30 backdrop-blur-sm border-2 border-violet-500/60 rounded-3xl flex flex-col relative transform scale-105"
+              className="p-8 bg-gradient-to-br from-violet-500/40 to-blue-500/40 backdrop-blur-sm border-2 border-violet-400/80 rounded-3xl flex flex-col relative transform scale-105 shadow-2xl shadow-violet-500/20"
             >
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-gradient-to-r from-violet-500 to-purple-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
@@ -1610,19 +1571,18 @@ const LandingPage = () => {
               <div className="text-4xl font-bold text-white mb-3">
                 <span className="text-lg text-gray-400 line-through">$6.99</span> $4.99<span className="text-lg text-gray-400">/month</span>
               </div>
-              <p className="text-gray-400 mb-6">For serial overthinkers</p>
-              <ul className="space-y-3 mb-8 flex-grow">
+              <p className="text-gray-400 mb-8">For serial overthinkers</p>
+              <ul className="space-y-4 mb-8 flex-grow">
                 {[
-                  'Unlimited receipts',
-                  'Unlimited Sage chatbot',
+                  'Unlimited Truth Receipts',
+                  'Unlimited Sage Companion',
                   'Sage\'s Immunity Training',
-                  'Vibe Check™ read',
-                  'Priority processing',
-                  'Advanced pattern detection'
+                  'Vibe Check™ real-time detection',
+                  'Cancel anytime'
                 ].map((feature, index) => (
                   <li key={index} className="flex items-center space-x-3">
                     <Check className="h-5 w-5 text-violet-400" />
-                    <span className="text-gray-300">{feature}</span>
+                    <span className="text-gray-300 font-medium">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -1637,31 +1597,36 @@ const LandingPage = () => {
             {/* Founder's Club - Right */}
             <motion.div
               variants={fadeInUp}
-              className="p-6 bg-gradient-to-br from-violet-500/10 to-purple-500/10 backdrop-blur-sm border border-violet-500/30 rounded-3xl flex flex-col"
+              className="p-8 bg-gradient-to-br from-violet-500/20 to-purple-500/20 backdrop-blur-sm border-2 border-violet-500/50 rounded-3xl flex flex-col relative shadow-xl shadow-violet-500/10"
             >
-              <h3 className="text-xl font-bold text-white mb-2">OG Founder's Club</h3>
-              <div className="text-3xl font-bold text-white mb-2">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-gradient-to-r from-violet-500 to-purple-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                  Sage's Pick
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">OG Founder's Club</h3>
+              <div className="text-4xl font-bold text-white mb-3">
                 <span className="text-lg text-gray-400 line-through">$49.99</span> $29.99<span className="text-lg text-gray-400">/year</span>
               </div>
-              <p className="text-gray-400 mb-4 text-sm">Save 40% - Limited time</p>
-              <ul className="space-y-2 mb-6 flex-grow">
+                <p className="text-gray-400 mb-8">For the ones ready to trust their gut</p>
+              <ul className="space-y-4 mb-8 flex-grow">
                 {[
-                  'Everything in Premium',
-                  'Unlimited Sage chatbot',
-                  'Price locked forever',
-                  'Beta features first',
-                  'Direct feedback channel',
-                  'Founder badge on receipts'
+                  'Everything in Premium +',
+                  'Founder\'s Circle membership',
+                  'Lifetime price lock',
+                  'Exclusive beta access',
+                  'Group features coming soon',
+                  'Save 40% - Limited time'
                 ].map((feature, index) => (
-                  <li key={index} className="flex items-center space-x-2">
-                    <Check className="h-4 w-4 text-violet-400" />
-                    <span className="text-gray-300 text-sm">{feature}</span>
+                  <li key={index} className="flex items-center space-x-3">
+                    <Check className="h-5 w-5 text-violet-400" />
+                    <span className="text-gray-300 font-medium">{feature}</span>
                   </li>
                 ))}
               </ul>
               <Button
                 onClick={handleGoPremium}
-                className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white py-2 rounded-xl text-sm"
+                className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white py-3 rounded-xl text-lg font-semibold shadow-lg"
               >
                 Lock in Founder Price
               </Button>
@@ -1671,7 +1636,7 @@ const LandingPage = () => {
       </section>
 
       {/* How Founder Pricing Works Section */}
-      <section className="relative px-6 lg:px-8 py-3">
+      <section className="relative px-6 lg:px-8 py-12">
         <div className="mx-auto max-w-4xl">
           <motion.div 
             className="max-w-4xl mx-auto"
@@ -1696,17 +1661,17 @@ const LandingPage = () => {
                 {/* Tiered Pricing List */}
                 <div className="max-w-2xl mx-auto mb-4">
                   <div className="space-y-3 text-left">
-                    <div className="flex items-center gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                      <span className="text-red-400 text-2xl">✅</span>
-                      <span className="text-red-400 text-lg">First 200 users: <span className="text-red-400 font-semibold">$19/year</span> <span className="text-red-400">(SOLD OUT)</span></span>
+                    <div className="flex items-center gap-3 p-3 bg-violet-500/10 border border-violet-500/20 rounded-lg">
+                      <span className="text-violet-400 text-2xl">✅</span>
+                      <span className="text-violet-400 text-lg">First 200 users: <span className="text-violet-400 font-semibold">$19/year</span> <span className="text-violet-400">(SOLD OUT)</span></span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                      <span className="text-yellow-400 text-2xl">🔥</span>
-                      <span className="text-yellow-300 text-lg">Users 201-500: <span className="text-yellow-300 font-semibold">$29.99/year</span> <span className="text-yellow-300">(Only 73 spots left!)</span></span>
+                    <div className="flex items-center gap-3 p-3 bg-violet-500/20 border border-violet-500/30 rounded-lg">
+                      <span className="text-violet-300 text-2xl">🔥</span>
+                      <span className="text-violet-300 text-lg">Users 201-500: <span className="text-violet-300 font-semibold">$29.99/year</span> <span className="text-violet-300">(Only 73 spots left!)</span></span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-gray-500/10 border border-gray-500/20 rounded-lg">
-                      <span className="text-gray-400 text-2xl">📈</span>
-                      <span className="text-gray-400 text-lg">Users 501+: <span className="text-gray-400 font-semibold">$49.99/year</span> <span className="text-gray-400">(Regular price)</span></span>
+                    <div className="flex items-center gap-3 p-3 bg-slate-500/10 border border-slate-500/20 rounded-lg">
+                      <span className="text-slate-400 text-2xl">📈</span>
+                      <span className="text-slate-400 text-lg">Users 501+: <span className="text-slate-400 font-semibold">$49.99/year</span> <span className="text-slate-400">(Regular price)</span></span>
                     </div>
                   </div>
                 </div>
@@ -1715,22 +1680,22 @@ const LandingPage = () => {
                   The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.99.
                 </p>
 
-                <p className="text-lg text-yellow-400 mb-4 max-w-2xl mx-auto sm:whitespace-nowrap break-words">
-                  Once you lock in a founder price, it <strong>never changes</strong> - even when <strong>everyone else pays more</strong>.
+                <p className="text-lg text-violet-300 mb-4 max-w-2xl mx-auto sm:whitespace-nowrap break-words">
+                  Once you lock in a founder price, it <strong className="text-violet-200">never changes</strong> - even when <strong className="text-violet-200">everyone else pays more</strong>.
                 </p>
 
                 {/* Call-to-Action Block - Compact Horizontal Design */}
                 <div className="max-w-2xl mx-auto mb-6">
-                  <div className="relative bg-gradient-to-br from-slate-800/80 via-purple-900/30 to-slate-800/80 backdrop-blur-xl rounded-2xl border border-purple-500/30 p-4 text-center">
+                  <div className="relative bg-gradient-to-br from-slate-800/80 via-violet-900/30 to-slate-800/80 backdrop-blur-xl rounded-2xl border border-violet-500/30 p-4 text-center">
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-2xl font-bold text-white">$29.99/year</div>
                       <div className="text-white">73 spots left at this price</div>
                     </div>
                     
                     {/* Progress Bar */}
-                    <div className="w-full bg-gray-600 rounded-full h-3 mb-3">
+                    <div className="w-full bg-slate-600 rounded-full h-3 mb-3">
                       <div 
-                        className="bg-gradient-to-r from-purple-400 to-violet-500 h-3 rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-violet-400 to-violet-500 h-3 rounded-full transition-all duration-500"
                         style={{ width: `${(100 - spotsLeft)}%` }}
                       ></div>
                     </div>
@@ -1742,7 +1707,7 @@ const LandingPage = () => {
                 </div>
 
                 <Button
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-pink-500/30 transform hover:scale-105"
+                  className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-violet-500/30 transform hover:scale-105"
                   onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founder')}
                 >
                   👑 Claim OG Founder Status

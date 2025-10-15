@@ -215,12 +215,12 @@ const PricingPage = () => {
       originalPrice: '$6.99',
       subtitle: 'For the ones who spiral in silence',
       features: [
-        'UNLIMITED Receipts from Sage',
-        'Unlimited Sage chatbot conversations',
-        'Sage\'s Pattern Masterclass™ (she\'ll teach you her tricks)',
+        'Unlimited Truth Receipts',
+        'Unlimited Sage Companion',
+        'Sage\'s Immunity Training',
         'Vibe Check™ real-time detection',
-        'Cancel anytime',
-        '🔒 Zero storage. Never used for training. Privacy-first'
+        'Privacy First - Zero storage',
+        'Cancel anytime'
       ],
       tag: 'Never spiral alone again.',
       buttonText: 'Go Premium Monthly',
@@ -239,13 +239,12 @@ const PricingPage = () => {
       subtitle: 'For the ones ready to trust their gut',
       monthlyEquivalent: 'Less than $2.50/month',
       features: [
-        'Everything in Monthly plan',
-        'Unlimited Sage chatbot conversations',
-        'Price locked forever',
-        'First access to new features',
-        'Direct input to improve Sage',
-        'Group Chat Receipts COMING SOON',
-        '🔒 Zero storage. Never used for training. Privacy-first'
+        'Everything in Premium +',
+        'Founder\'s Circle membership',
+        'Lifetime price lock',
+        'Privacy First - Zero storage',
+        'Exclusive beta access',
+        'Group features coming soon'
       ],
       get tag() { return `Next ${spotsLeft} members pay $49.99/year`; },
       buttonText: 'Lock in OG Founders Price',
