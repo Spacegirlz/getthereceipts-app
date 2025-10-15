@@ -34,10 +34,10 @@ const cleanupSageResponse = (text) => {
   // 4. Ensure proper spacing (Problem 1)
   // Add line breaks every 2-3 sentences for better readability
   const sentences = clean.split(/(?<=[.!?])\s+/).filter(s => s.trim());
-  if (sentences.length >= 3 && !clean.includes('\n')) {
+  if (sentences.length >= 4) {
     // Add line break every 2-3 sentences for readability
     clean = sentences.map((s, i) => {
-      const needsBreak = (i + 1) % 3 === 0 && i < sentences.length - 1;
+      const needsBreak = (i + 1) % 2 === 0 && i < sentences.length - 1;
       return s + (needsBreak ? '\n\n' : ' ');
     }).join('').trim();
   }
