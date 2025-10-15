@@ -95,9 +95,14 @@ export async function askSage(question, receiptData, previousMessages = [], opts
       .replace('{verdictSummary}', receiptData.verdict?.substring(0, 150) || '')
       .replace('{flagNumber}', '1'); // Just use first flag for now
 
-    // Add conversation history
-    const fullPrompt = systemPrompt + '\n\nRECENT CONVERSATION:\n' + 
-      previousMessages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\n');
+    // Add the original analyzed conversation and chat history
+    const originalConversation = receiptData.conversation ? 
+      `\n\nORIGINAL ANALYZED CONVERSATION:\n${receiptData.conversation}` : '';
+    
+    const chatHistory = previousMessages.length > 0 ? 
+      `\n\nRECENT CHAT WITH USER:\n${previousMessages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\n')}` : '';
+    
+    const fullPrompt = systemPrompt + originalConversation + chatHistory;
 
     // Call OpenAI via proxy
     const response = await fetch('/api/chat/completions', {
