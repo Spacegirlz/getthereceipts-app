@@ -14,7 +14,7 @@ import { injectMovingGradientStyles } from '@/utils/gradientUtils';
 // Helper function to get price value for Rewardful tracking
 const getPriceValue = (priceId) => {
   const priceMap = {
-    'price_1QZ8Xj2eZvKYlo2C1234567890': 9.99, // Monthly
+    'price_1QZ8Xj2eZvKYlo2C1234567890': 6.99, // Monthly
     'price_1QZ8Xj2eZvKYlo2C0987654321': 29.99, // OG Founder
     'price_1QZ8Xj2eZvKYlo2C1122334455': 99.99, // Yearly
   };
@@ -209,20 +209,21 @@ const PricingPage = () => {
     },
     {
       id: 'premium',
-      name: 'Unlimited Monthly Clarity',
+      name: 'Premium Monthly',
       price: '$4.99',
       priceSub: '/month',
-      originalPrice: '$9.99',
+      originalPrice: '$6.99',
       subtitle: 'For the ones who spiral in silence',
       features: [
         'UNLIMITED Receipts from Sage',
+        'Unlimited Sage chatbot conversations',
         'Sage\'s Pattern Masterclass™ (she\'ll teach you her tricks)',
         'Vibe Check™ real-time detection',
         'Cancel anytime',
         '🔒 Zero storage. Never used for training. Privacy-first'
       ],
       tag: 'Never spiral alone again.',
-      buttonText: 'Unlock Unlimited Monthly Clarity',
+      buttonText: 'Go Premium Monthly',
       priceId: 'price_1SI49tG71EqeOEZe0p9LNpbP',
       buttonClass: 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold shadow-lg shadow-purple-500/25',
       icon: '🔥',
@@ -234,24 +235,25 @@ const PricingPage = () => {
       name: 'OG Founder\'s Club',
       price: '$29.99',
       priceSub: '/year',
-      originalPrice: '$99.99',
+      originalPrice: '$49.99',
       subtitle: 'For the ones ready to trust their gut',
       monthlyEquivalent: 'Less than $2.50/month',
       features: [
         'Everything in Monthly plan',
+        'Unlimited Sage chatbot conversations',
         'Price locked forever',
         'First access to new features',
         'Direct input to improve Sage',
         'Group Chat Receipts COMING SOON',
         '🔒 Zero storage. Never used for training. Privacy-first'
       ],
-      get tag() { return `Next ${spotsLeft} members pay $49/month`; },
+      get tag() { return `Next ${spotsLeft} members pay $49.99/year`; },
       buttonText: 'Lock in OG Founders Price',
       priceId: 'price_1RzgBYG71EqeOEZer7ojcw0R',
       buttonClass: 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 hover:scale-105 transition-all duration-300 relative overflow-hidden',
       icon: '👑',
       founder: true,
-      discount: '70% OFF',
+      discount: '40% OFF',
       microcopy: 'For the ones ready to trust their gut',
       sagePick: true,
       spotsLeft: 73
@@ -821,32 +823,24 @@ const PricingPage = () => {
 
               {/* Tiered Pricing List */}
               <div className="max-w-2xl mx-auto mb-8">
-                <div className="space-y-4 text-left">
-                  <div className="flex items-center gap-3">
+                <div className="space-y-3 text-left">
+                  <div className="flex items-center gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
                     <span className="text-red-400 text-2xl">✅</span>
                     <span className="text-red-400 text-lg">First 200 users: <span className="text-red-400 font-semibold">$19/year</span> <span className="text-red-400">(SOLD OUT)</span></span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-orange-400 text-2xl">🔥</span>
-                    <span className="text-yellow-300 text-lg">Users 201-500: <span className="text-yellow-300 font-semibold">$29.99/year</span> <span className="text-yellow-300">(73 spots left)</span></span>
+                  <div className="flex items-center gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                    <span className="text-yellow-400 text-2xl">🔥</span>
+                    <span className="text-yellow-300 text-lg">Users 201-500: <span className="text-yellow-300 font-semibold">$29.99/year</span> <span className="text-yellow-300">(Only 73 spots left!)</span></span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-red-400 text-2xl">📈</span>
-                    <span className="text-gray-500 text-lg">Users 501-1,000: <span className="text-gray-400">$49/year</span></span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-red-400 text-2xl">📈</span>
-                    <span className="text-gray-500 text-lg">Users 1,001-2,000: <span className="text-gray-400">$69/year</span></span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-red-400 text-2xl">📈</span>
-                    <span className="text-gray-500 text-lg">Users 2,000+: <span className="text-gray-400">$99/year +</span></span>
+                  <div className="flex items-center gap-3 p-3 bg-gray-500/10 border border-gray-500/20 rounded-lg">
+                    <span className="text-gray-400 text-2xl">📈</span>
+                    <span className="text-gray-400 text-lg">Users 501+: <span className="text-gray-400 font-semibold">$49.99/year</span> <span className="text-gray-400">(Regular price)</span></span>
                   </div>
                 </div>
               </div>
 
               <p className="text-sm text-gray-300 mb-8 max-w-2xl mx-auto">
-                The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.
+                The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.99.
               </p>
 
               {/* Progress Bar - Matches the ticker counter */}
@@ -862,7 +856,7 @@ const PricingPage = () => {
                     </div>
                     
                     <div className="text-sm text-purple-300 sm:whitespace-nowrap break-words">
-                      Price jumps to $49 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
+                      Price jumps to $49.99 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
                     </div>
                   </div>
                 </div>

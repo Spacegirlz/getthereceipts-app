@@ -1112,7 +1112,7 @@ const LandingPage = () => {
             onClick={handleGetStarted}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-10 py-5 rounded-2xl text-xl font-extrabold shadow-2xl transition-all duration-300"
           >
-            🎁 3. Get Started on your FREE Receipt
+            🎁 3. Get Started on your FREE Receipt (No Login Required!)
           </Button>
         </div>
       </section>
@@ -1533,89 +1533,92 @@ const LandingPage = () => {
             variants={staggerChildren}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            {/* Free Plan */}
+            {/* Free Plans Stack - Left Column */}
             <motion.div
               variants={fadeInUp}
-              className="p-8 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl flex flex-col"
+              className="flex flex-col gap-4"
             >
-              <h3 className="text-2xl font-bold text-white mb-2">Free Daily Plan</h3>
-              <div className="text-4xl font-bold text-emerald-400 mb-2">$0<span className="text-lg text-gray-400">/month</span></div>
-              <p className="text-gray-400 mb-6">Perfect for occasional perspective</p>
-              <ul className="space-y-3 mb-8 flex-grow">
-                {[
-                  '3 free receipts to start',
-                  'Then 1 receipt per day',
-                  'Full read & insights',
-                  'Shareable receipt cards'
-                ].map((feature, index) => (
-                  <li key={index} className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-emerald-400" />
-                    <span className="text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                onClick={handleGetStarted}
-                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-3 rounded-xl"
-              >
-                Start Free
-              </Button>
+              {/* Free Anonymous */}
+              <div className="p-4 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl flex flex-col">
+                <h3 className="text-lg font-bold text-white mb-2">Free No Login Required!</h3>
+                <div className="text-2xl font-bold text-emerald-400 mb-2">$0<span className="text-sm text-gray-400">/month</span></div>
+                <p className="text-gray-400 mb-3 text-xs">Perfect for occasional perspective</p>
+                <ul className="space-y-1 mb-4 flex-grow">
+                  {[
+                    '3 receipts (lifetime)',
+                    '3 Sage chats per receipt',
+                    'Full read & insights',
+                    'Shareable receipt cards'
+                  ].map((feature, index) => (
+                    <li key={index} className="flex items-center space-x-2">
+                      <Check className="h-3 w-3 text-emerald-400" />
+                      <span className="text-gray-300 text-xs">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  onClick={handleGetStarted}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-2 rounded-lg text-xs"
+                >
+                  Start Free
+                </Button>
+              </div>
+
+              {/* Free Trial */}
+              <div className="p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-sm border border-blue-500/20 rounded-2xl flex flex-col relative">
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-2 py-1 rounded-full text-xs font-bold">
+                    🎉 FREE Trial
+                  </div>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">3-Day Premium Trial</h3>
+                <div className="text-2xl font-bold text-blue-400 mb-2">FREE</div>
+                <p className="text-gray-400 mb-3 text-xs"><span className="text-green-400 font-semibold">No credit card needed.</span></p>
+                <ul className="space-y-1 mb-4 flex-grow">
+                  {[
+                    '3-day unlimited access',
+                    'Unlimited receipts & Sage chat',
+                    'All premium features',
+                    'No payment required'
+                  ].map((feature, index) => (
+                    <li key={index} className="flex items-center space-x-2">
+                      <Check className="h-3 w-3 text-blue-400" />
+                      <span className="text-gray-300 text-xs">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  onClick={handleGoPremium}
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-2 rounded-lg text-xs"
+                >
+                  Start FREE Trial
+                </Button>
+              </div>
             </motion.div>
 
-            {/* Premium Plan */}
+            {/* Premium Monthly - HERO PLAN - Center */}
             <motion.div
               variants={fadeInUp}
-              className="p-8 bg-gradient-to-br from-violet-500/20 to-blue-500/20 backdrop-blur-sm border border-violet-500/20 rounded-3xl flex flex-col"
+              className="p-8 bg-gradient-to-br from-violet-500/30 to-blue-500/30 backdrop-blur-sm border-2 border-violet-500/60 rounded-3xl flex flex-col relative transform scale-105"
             >
-              <h3 className="text-2xl font-bold text-white mb-2">Premium Monthly</h3>
-              <div className="text-4xl font-bold text-white mb-2">
-                <span className="text-lg text-gray-400 line-through">$9.99</span> $4.99<span className="text-lg text-gray-400">/month</span>
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-gradient-to-r from-violet-500 to-purple-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                  MOST POPULAR
+                </div>
               </div>
-              <p className="text-gray-400 mb-6">Save 30% - For serial overthinkers</p>
+              <h3 className="text-2xl font-bold text-white mb-3">Premium Monthly</h3>
+              <div className="text-4xl font-bold text-white mb-3">
+                <span className="text-lg text-gray-400 line-through">$6.99</span> $4.99<span className="text-lg text-gray-400">/month</span>
+              </div>
+              <p className="text-gray-400 mb-6">For serial overthinkers</p>
               <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   'Unlimited receipts',
+                  'Unlimited Sage chatbot',
                   'Sage\'s Immunity Training',
                   'Vibe Check™ read',
                   'Priority processing',
                   'Advanced pattern detection'
-                ].map((feature, index) => (
-                  <li key={index} className="flex items-center space-x-3">
-                    <Check className="h-5 w-5 text-blue-400" />
-                    <span className="text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                onClick={handleGoPremium}
-                className="w-full bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white py-3 rounded-xl"
-              >
-                Go Premium
-              </Button>
-            </motion.div>
-
-            {/* Founder's Club */}
-            <motion.div
-              variants={fadeInUp}
-              className="p-8 bg-gradient-to-br from-violet-500/10 to-purple-500/10 backdrop-blur-sm border-2 border-violet-500/50 rounded-3xl relative flex flex-col"
-            >
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-violet-500 to-purple-500 text-white px-6 py-2 rounded-full text-sm font-bold">
-                  MOST POPULAR
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">OG Founder's Club</h3>
-              <div className="text-4xl font-bold text-white mb-2">
-                <span className="text-lg text-gray-400 line-through">$99.99</span> $29.99<span className="text-lg text-gray-400">/year</span>
-              </div>
-              <p className="text-gray-400 mb-6">Save 70% - Limited time</p>
-              <ul className="space-y-3 mb-8 flex-grow">
-                {[
-                  'Everything in Premium',
-                  'Price locked forever',
-                  'Beta features first',
-                  'Direct feedback channel',
-                  'Founder badge on receipts'
                 ].map((feature, index) => (
                   <li key={index} className="flex items-center space-x-3">
                     <Check className="h-5 w-5 text-violet-400" />
@@ -1625,7 +1628,40 @@ const LandingPage = () => {
               </ul>
               <Button
                 onClick={handleGoPremium}
-                className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white py-3 rounded-xl"
+                className="w-full bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white py-3 rounded-xl text-lg font-semibold shadow-lg"
+              >
+                Go Premium Monthly
+              </Button>
+            </motion.div>
+
+            {/* Founder's Club - Right */}
+            <motion.div
+              variants={fadeInUp}
+              className="p-6 bg-gradient-to-br from-violet-500/10 to-purple-500/10 backdrop-blur-sm border border-violet-500/30 rounded-3xl flex flex-col"
+            >
+              <h3 className="text-xl font-bold text-white mb-2">OG Founder's Club</h3>
+              <div className="text-3xl font-bold text-white mb-2">
+                <span className="text-lg text-gray-400 line-through">$49.99</span> $29.99<span className="text-lg text-gray-400">/year</span>
+              </div>
+              <p className="text-gray-400 mb-4 text-sm">Save 40% - Limited time</p>
+              <ul className="space-y-2 mb-6 flex-grow">
+                {[
+                  'Everything in Premium',
+                  'Unlimited Sage chatbot',
+                  'Price locked forever',
+                  'Beta features first',
+                  'Direct feedback channel',
+                  'Founder badge on receipts'
+                ].map((feature, index) => (
+                  <li key={index} className="flex items-center space-x-2">
+                    <Check className="h-4 w-4 text-violet-400" />
+                    <span className="text-gray-300 text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={handleGoPremium}
+                className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white py-2 rounded-xl text-sm"
               >
                 Lock in Founder Price
               </Button>
@@ -1659,32 +1695,24 @@ const LandingPage = () => {
 
                 {/* Tiered Pricing List */}
                 <div className="max-w-2xl mx-auto mb-4">
-                  <div className="space-y-2 text-left">
-                    <div className="flex items-center gap-3">
+                  <div className="space-y-3 text-left">
+                    <div className="flex items-center gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
                       <span className="text-red-400 text-2xl">✅</span>
                       <span className="text-red-400 text-lg">First 200 users: <span className="text-red-400 font-semibold">$19/year</span> <span className="text-red-400">(SOLD OUT)</span></span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-orange-400 text-2xl">🔥</span>
-                      <span className="text-yellow-300 text-lg">Users 201-500: <span className="text-yellow-300 font-semibold">$29.99/year</span> <span className="text-yellow-300">(73 spots left)</span></span>
+                    <div className="flex items-center gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                      <span className="text-yellow-400 text-2xl">🔥</span>
+                      <span className="text-yellow-300 text-lg">Users 201-500: <span className="text-yellow-300 font-semibold">$29.99/year</span> <span className="text-yellow-300">(Only 73 spots left!)</span></span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400 text-2xl">📈</span>
-                      <span className="text-gray-500 text-lg">Users 501-1,000: <span className="text-gray-400">$49/year</span></span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400 text-2xl">📈</span>
-                      <span className="text-gray-500 text-lg">Users 1,001-2,000: <span className="text-gray-400">$69/year</span></span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-400 text-2xl">📈</span>
-                      <span className="text-gray-500 text-lg">Users 2,000+: <span className="text-gray-400">$99/year +</span></span>
+                    <div className="flex items-center gap-3 p-3 bg-gray-500/10 border border-gray-500/20 rounded-lg">
+                      <span className="text-gray-400 text-2xl">📈</span>
+                      <span className="text-gray-400 text-lg">Users 501+: <span className="text-gray-400 font-semibold">$49.99/year</span> <span className="text-gray-400">(Regular price)</span></span>
                     </div>
                   </div>
                 </div>
 
                 <p className="text-sm text-gray-300 mb-3 max-w-2xl mx-auto">
-                  The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.
+                  The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.99.
                 </p>
 
                 <p className="text-lg text-yellow-400 mb-4 max-w-2xl mx-auto sm:whitespace-nowrap break-words">
@@ -1708,7 +1736,7 @@ const LandingPage = () => {
                     </div>
                     
                     <div className="text-sm text-white">
-                      Price jumps to $49 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
+                      Price jumps to $49.99 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
                     </div>
                   </div>
                 </div>
