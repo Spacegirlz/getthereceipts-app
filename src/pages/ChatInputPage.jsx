@@ -64,13 +64,6 @@ const ChatInputPage = () => {
       const limitedText = text.length > 10000 ? text.substring(0, 10000) : text;
       const speakers = new Set();
       
-      // Filter out common false positives and system messages
-      const falsePositives = [
-        'Me', 'You', 'Them', 'User', 'Other', 'Person', 'Auth state changed',
-        'Loading', 'Error', 'Success', 'Warning', 'Info', 'Debug', 'Console',
-        'System', 'Admin', 'Guest', 'Anonymous', 'Unknown', 'Test'
-      ];
-      
       // Handle both line-break separated and single-line conversations
       const hasLineBreaks = limitedText.includes('\n');
       
@@ -92,8 +85,8 @@ const ChatInputPage = () => {
             const match = line.match(pattern);
             if (match) {
               const name = match[1].trim();
-              // Filter out common false positives and system messages
-              if (!falsePositives.includes(name)) {
+              // Filter out common false positives
+              if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
                 speakers.add(name);
               }
               break; // Stop after first match
@@ -113,7 +106,7 @@ const ChatInputPage = () => {
             let match;
             while ((match = pattern.exec(limitedText)) !== null) {
               const name = match[1].trim();
-              if (!falsePositives.includes(name)) {
+              if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
                 if (!speakers.has(name)) {  // Only add if not already present
                   speakers.add(name);
                   console.log('✅ Added name from fallback:', name);
@@ -135,8 +128,8 @@ const ChatInputPage = () => {
           while ((match = pattern.exec(limitedText)) !== null) {
             const name = match[1].trim();
             console.log('🔍 Found potential name:', name);
-            // Filter out common false positives and system messages
-            if (!falsePositives.includes(name)) {
+            // Filter out common false positives
+            if (!['Me', 'You', 'Them', 'User', 'Other', 'Person'].includes(name)) {
               if (!speakers.has(name)) {  // Only add if not already present
                 speakers.add(name);
                 console.log('✅ Added name to speakers:', name);
@@ -166,17 +159,8 @@ const ChatInputPage = () => {
       inputText: newText.substring(0, 200),
       detectedNames: names,
       hasLineBreaks: newText.includes('\n'),
-      textLength: newText.length,
-      fullText: newText // Debug: show full text to identify source of "Auth state changed"
+      textLength: newText.length
     });
-    
-    // Additional debugging for "Auth state changed" issue
-    if (names.includes('Auth state changed')) {
-      console.error('🚨 FOUND "Auth state changed" in detected names!');
-      console.error('Full input text:', newText);
-      console.error('Detected names:', names);
-    }
-    
     if (names.length > 0) {
       setDetectedNames(names);
       // Don't auto-populate - let user review and choose in the "Who's who?" section
