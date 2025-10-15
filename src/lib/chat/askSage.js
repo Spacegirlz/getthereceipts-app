@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { askSagePrompt } from './askSagePrompt';
-import { FreeUsageService } from '@/lib/services/freeUsageService';
+import { supabase } from '@/lib/database/customSupabaseClient';
 
 // Initialize OpenAI with browser compatibility for local development
 const openai = new OpenAI({
@@ -62,11 +62,19 @@ const cleanupSageResponse = (text) => {
 
 export async function askSage(question, receiptData, previousMessages = [], opts = {}) {
   try {
-    // Client-side daily chat cap for Free users (5/day, UTC)
+    // Database daily chat cap for Free users (5/day, UTC)
     if (opts?.userId && !opts?.isPremium) {
-      const chatCheck = FreeUsageService.checkAndIncrementDailyChat(opts.userId);
-      if (!chatCheck.allowed) {
-        return 'Daily chat limit reached for Free accounts. Upgrade to continue, or try again after midnight (UTC).';
+      const { data: canChat, error } = await supabase.rpc('consume_daily_chat', {
+        user_uuid: opts.userId
+      });
+      
+      if (error) {
+        console.error('Error checking daily chat limit:', error);
+        return 'Error checking chat limit. Please try again.';
+      }
+      
+      if (!canChat) {
+        return 'Daily chat limit reached for Free accounts. Upgrade for unlimited chat.';
       }
     }
     // Try API endpoint first (for production)

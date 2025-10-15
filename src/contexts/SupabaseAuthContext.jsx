@@ -314,17 +314,59 @@ export const AuthProvider = ({ children }) => {
         // User created but needs email confirmation
         toast({
           title: "Check your email!",
-          description: "We've sent a confirmation link to your email address.",
+          description: "We've sent a confirmation link. You'll get a 3-day premium trial after confirming!",
         });
+        
+        // Activate 3-day trial for email confirmation users
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 3);
+        
+        const { error: trialError } = await supabase
+          .from('users')
+          .update({
+            tier: 'premium_trial',
+            trial_start: new Date().toISOString(),
+            trial_end: trialEnd.toISOString(),
+            trial_used: true
+          })
+          .eq('id', data.user.id);
+        
+        if (trialError) {
+          console.error('Trial activation failed for email confirmation user:', trialError);
+          // Don't block signup - user can still use free tier
+        } else {
+          console.log('✅ 3-day trial activated for email confirmation user');
+        }
       } else if (data?.session) {
         // User is immediately signed in (development mode or OAuth)
         toast({
           title: "Account Created!",
-          description: "You're now signed in and ready to go!",
+          description: "You're now signed in with a 3-day premium trial!",
         });
         
         // Award referral bonus for immediate sessions
         await awardReferralBonus(referralCode, data.user, 'immediate session');
+        
+        // Activate 3-day trial for new users
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 3);
+        
+        const { error: trialError } = await supabase
+          .from('users')
+          .update({
+            tier: 'premium_trial',
+            trial_start: new Date().toISOString(),
+            trial_end: trialEnd.toISOString(),
+            trial_used: true
+          })
+          .eq('id', data.user.id);
+        
+        if (trialError) {
+          console.error('Trial activation failed:', trialError);
+          // Don't block signup - user can still use free tier
+        } else {
+          console.log('✅ 3-day trial activated for new user');
+        }
       } else if (data?.user && !data?.session) {
         // User created but needs email confirmation
         console.log('🎯 Auth: User created, will process referral after email confirmation');

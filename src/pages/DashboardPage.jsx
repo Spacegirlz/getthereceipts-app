@@ -13,6 +13,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
 import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits } from '@/lib/services/creditsSystem';
 import ReferralProgressCard from '@/components/ReferralProgressCard';
+import TrialBanner from '@/components/TrialBanner';
 
 const DashboardPage = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -308,6 +309,9 @@ const DashboardPage = () => {
         <title>Your Dashboard - Get The Receipts</title>
         <meta name="description" content="Manage your account, view your past receipts, and access premium features." />
       </Helmet>
+      
+      <TrialBanner userId={user?.id} />
+      
       <div className="container mx-auto px-4 py-8 text-white">
         <motion.header 
           initial={{ opacity: 0, y: -20 }}

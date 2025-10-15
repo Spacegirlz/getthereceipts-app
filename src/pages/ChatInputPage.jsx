@@ -12,6 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { usePerfTimer } from '@/hooks/usePerfTimer';
+import { supabase } from '@/lib/database/customSupabaseClient';
 
 const ChatInputPage = () => {
   const navigate = useNavigate();
@@ -215,7 +216,6 @@ const ChatInputPage = () => {
       perf.mark('credit_check');
       // 🔐 CREDIT CHECK: Verify user can perform analysis
       const { AnonymousUserService } = await import('@/lib/services/anonymousUserService');
-      const { FreeUsageService } = await import('@/lib/services/freeUsageService');
       const { getUserCredits, deductCredits } = await import('@/lib/services/creditsSystem');
       
       let canProceed = false;
@@ -230,17 +230,25 @@ const ChatInputPage = () => {
           canProceed = true;
           creditMessage = 'Premium user - unlimited analysis';
         } else {
-          // Starter bank first (3 total)
-          const starterUsed = FreeUsageService.getStarterUsed(user.id);
-          if (starterUsed < 3) {
-            const r = FreeUsageService.checkAndIncrementStarterReceipt(user.id);
-            canProceed = r.allowed;
-            creditMessage = r.allowed ? `Free starter receipt used (${3 - starterUsed - 1} left)` : 'Starter receipts exhausted';
+          // Check user's current status from database
+          const { data: userStatus, error: statusError } = await supabase.rpc('get_user_credits', {
+            user_uuid: user.id
+          });
+          
+          if (statusError) {
+            console.error('Error getting user status:', statusError);
+            creditMessage = 'Error checking usage limits. Please try again.';
+          } else if (userStatus && userStatus.length > 0) {
+            const status = userStatus[0];
+            canProceed = status.can_generate_receipt;
+            
+            if (status.starter_receipts_used < 3) {
+              creditMessage = `Free starter receipt (${3 - status.starter_receipts_used} left)`;
+            } else {
+              creditMessage = status.can_generate_receipt ? 'Free daily receipt granted' : 'Daily limit reached. Come back after midnight (UTC).';
+            }
           } else {
-            // Daily limit: 1 per UTC day
-            const r = FreeUsageService.checkAndIncrementDailyReceipt(user.id);
-            canProceed = r.allowed;
-            creditMessage = r.allowed ? 'Free daily receipt granted' : 'Daily limit reached. Come back after midnight (UTC).';
+            creditMessage = 'Error checking usage limits. Please try again.';
           }
         }
       } else {
@@ -356,15 +364,18 @@ const ChatInputPage = () => {
       
       console.log('✅ Analysis complete:', analysisResult);
       
-      // 🔐 DEDUCT CREDITS: After successful analysis
+      // 🔐 CONSUME CREDITS: After successful analysis
       perf.mark('deduct');
       if (user) {
-        // Logged-in user: Deduct credit
-        const deductResult = await deductCredits(user.id, 1);
-        if (deductResult.success) {
-          console.log('✅ Credit deducted for logged-in user');
+        // Logged-in user: Consume credit using database function
+        const { data: creditConsumed, error: consumeError } = await supabase.rpc('consume_credit', {
+          user_uuid: user.id
+        });
+        
+        if (consumeError) {
+          console.warn('⚠️ Failed to consume credit for logged-in user:', consumeError);
         } else {
-          console.warn('⚠️ Failed to deduct credit for logged-in user:', deductResult.error);
+          console.log('✅ Credit consumed for logged-in user');
         }
       } else {
         // Anonymous user: Credit already deducted in atomic operation
