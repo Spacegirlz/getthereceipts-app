@@ -1,4 +1,5 @@
 import { askSagePrompt } from './askSagePrompt';
+import { askSagePromptLite } from './askSagePromptLite';
 import { FreeUsageService } from '@/lib/services/freeUsageService';
 
 /**
@@ -92,12 +93,18 @@ export async function askSage(question, receiptData, previousMessages = [], opts
       return "Bestie, this is beyond my pay grade. Please call 988 (Crisis Lifeline) right now. I'm here for drama, not emergencies.";
     }
 
-    // Use the professional prompt with dynamic values
-    const systemPrompt = askSagePrompt
+    // Build compact, personality-first prompt (+ keep legacy as fallback)
+    const useLite = true; // core switch per user request
+    const namesLine = `${receiptData?.userName ? `User: ${receiptData.userName}. ` : ''}${receiptData?.otherName ? `Other: ${receiptData.otherName}. ` : ''}`.trim();
+    const receiptLine = `Archetype: ${receiptData?.archetype || 'Unknown'}. Red flags: ${receiptData?.redFlags ?? 0}/10. Pattern: ${(receiptData?.verdict || '').slice(0, 140)}`;
+    const recentChat = previousMessages.slice(-5).map(m => `${m.role === 'user' ? 'Them' : 'You'}: ${m.content}`).join('\n');
+    const contextPrompt = `${namesLine}\n${receiptLine}\n\nRecent chat:\n${recentChat}\n\nCurrent question: ${question}`.trim();
+
+    const systemPrompt = useLite ? askSagePromptLite : askSagePrompt
       .replace('{archetype}', receiptData.archetype || 'Unknown')
       .replace('{redFlags}', receiptData.redFlags || 0)
       .replace('{verdictSummary}', receiptData.verdict?.substring(0, 150) || '')
-      .replace('{flagNumber}', '1'); // Just use first flag for now
+      .replace('{flagNumber}', '1');
 
     // Add the original analyzed conversation and chat history
     const originalConversation = receiptData.conversation ? 
@@ -117,14 +124,17 @@ export async function askSage(question, receiptData, previousMessages = [], opts
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
-        messages: [
+        messages: useLite ? [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: contextPrompt }
+        ] : [
           { role: 'system', content: fullPrompt },
           { role: 'user', content: question }
         ],
-        max_tokens: 250, // Slightly higher for better responses
-        temperature: 0.88, // Higher for more personality
-        presence_penalty: 0.5, // Encourages varied language
-        frequency_penalty: 0.3 // Reduces repetitive phrases
+        max_tokens: useLite ? 150 : 250,
+        temperature: 0.85,
+        presence_penalty: useLite ? 0.6 : 0.5,
+        frequency_penalty: useLite ? 0.5 : 0.3
       })
     });
 
