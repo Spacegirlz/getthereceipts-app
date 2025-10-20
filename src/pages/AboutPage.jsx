@@ -14,7 +14,13 @@ const AboutPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden px-4 py-8 relative">
+      {/* Glossy Black Background Elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(255,255,255,0.02),transparent)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(255,255,255,0.01),transparent)] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-gray-800/5 to-transparent pointer-events-none" />
+      
+      <div className="relative z-10">
       {/* Header */}
       <div className="max-w-4xl mx-auto mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -311,6 +317,7 @@ const AboutPage = () => {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 };

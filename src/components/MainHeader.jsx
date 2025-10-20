@@ -49,7 +49,7 @@ const MainHeader = () => {
         >
           <span
             style={{
-              background: 'linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%)', // purple → blue
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #14b8a6 100%)', // purple → teal
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',

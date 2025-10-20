@@ -11,6 +11,7 @@ import { supabase } from '@/lib/database/customSupabaseClient';
 
 const AuthModal = () => {
     const { isOpen, closeModal, view, setView } = useAuthModal();
+    const debugModal = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debugModal') === '1';
     const { signUp, signIn, signInWithGoogle, user } = useAuth();
     const { toast } = useToast();
 
@@ -223,8 +224,8 @@ const AuthModal = () => {
 
     return (
         <>
-            <Dialog open={isOpen} onOpenChange={closeModal}>
-                <DialogContent className="sm:max-w-md meme-card text-white z-[110]">
+            <Dialog open={isOpen} onOpenChange={(open) => { if (!open) closeModal(); }}>
+                <DialogContent className={`sm:max-w-md w-full max-h-[90vh] overflow-auto meme-card text-white ${debugModal ? 'ring-4 ring-red-500' : ''}`}>
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-center gradient-text">
                         {view === 'sign_in' ? 'Welcome Back!' : 'Create Your Account'}
@@ -233,6 +234,9 @@ const AuthModal = () => {
                         {view === 'sign_in' ? 'Welcome back! Ready to decode some texts?' : 'Join us and start decoding the tea.'}
                     </DialogDescription>
                 </DialogHeader>
+                {debugModal && (
+                    <div className="text-xs text-red-400 mb-2">AuthModal mounted · view: {view}</div>
+                )}
 
                 <div className="flex flex-col gap-4 py-4">
                      <Button
@@ -362,8 +366,8 @@ const AuthModal = () => {
         </Dialog>
 
         {/* Forgot Password Modal */}
-        <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
-            <DialogContent className="sm:max-w-md meme-card text-white z-[110]">
+        <Dialog open={showForgotPassword} onOpenChange={(open) => setShowForgotPassword(!!open)}>
+            <DialogContent className="sm:max-w-md w-full max-h-[90vh] overflow-auto meme-card text-white">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-center gradient-text">
                         Reset Your Password
@@ -409,8 +413,8 @@ const AuthModal = () => {
         </Dialog>
 
         {/* Resend Confirmation Modal */}
-        <Dialog open={showResendConfirmation} onOpenChange={setShowResendConfirmation}>
-            <DialogContent className="sm:max-w-md meme-card text-white z-[110]">
+        <Dialog open={showResendConfirmation} onOpenChange={(open) => setShowResendConfirmation(!!open)}>
+            <DialogContent className="sm:max-w-md w-full max-h-[90vh] overflow-auto meme-card text-white">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-center gradient-text">
                         Resend Confirmation Email

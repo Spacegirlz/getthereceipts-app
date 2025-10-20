@@ -259,8 +259,23 @@ const PricingPage = () => {
     }
   ];
 
+  // Handler functions for pricing buttons
+  const handleGetStarted = () => navigate('/chat-input');
+  const handleGoPremium = () => {
+    // For now, just show a toast - you can implement actual premium logic here
+    toast({
+      title: 'Premium Coming Soon!',
+      description: 'Premium features are being finalized. Stay tuned!'
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 text-white overflow-hidden px-4 py-8 relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 text-white overflow-hidden px-4 py-8 relative">
+      {/* Glossy Black Background Elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(255,255,255,0.02),transparent)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(255,255,255,0.01),transparent)] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-gray-800/5 to-transparent pointer-events-none" />
+      
       <Helmet>
         <title>Pricing - Get The Receipts</title>
         <meta name="description" content="Choose your truth level. From free daily receipts to unlimited chaos decoded." />
@@ -572,9 +587,12 @@ const PricingPage = () => {
 
       {/* Navigation removed in favor of global MainHeader */}
 
-      <div className="max-w-6xl mx-auto pt-32">
+      <div className="relative z-10">
+        <div className="max-w-6xl mx-auto pt-20">
         {/* Hero Section */}
         <div className="text-center mb-24">
+          <div className="text-6xl mb-6 floating-emoji">🎁</div>
+          
           <motion.h1 
             id="pricing_1"
             className="text-5xl md:text-7xl font-black mb-6 text-white"
@@ -582,8 +600,11 @@ const PricingPage = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             Your gut already knew.<br />
-            <span className="moving-gradient-text">Sage just gives her take.</span>
+            <span className="gradient-text">Sage just gives her take.</span>
           </motion.h1>
+          
+          {/* Colored line accent */}
+          <div className="w-24 h-1 bg-gradient-to-r from-teal-400 to-purple-500 mx-auto mb-6 rounded-full"></div>
           
           <motion.p 
             className="text-xl text-gray-300 max-w-2xl mx-auto mb-8"
@@ -617,178 +638,445 @@ const PricingPage = () => {
 
         </div>
 
-
-        {/* Pricing Grid - Enhanced Spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4 mb-8">
-          {pricingTiers.map((tier, index) => (
-            <motion.div
-              key={tier.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className={`relative flex flex-col h-full p-8 transition-all duration-300 ${
-                tier.founder 
-                  ? 'founder-card' 
-                  : tier.id === 'premium'
-                    ? 'premium-card'
-                    : 'free-card'
-              }`}
-            >
-              {/* Badges */}
-              {tier.sagePick && (
-                <div className="absolute -top-4 -left-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-4 py-2 rounded-full text-base font-bold shadow-lg" style={{zIndex: 50}}>
-                  SAGE'S PICK
-                </div>
-              )}
-              {tier.discount && (
-                <div className={`absolute -top-4 ${tier.sagePick ? '-right-4' : 'left-1/2 transform -translate-x-1/2'} bg-purple-500 text-white px-4 py-2 rounded-full text-base font-bold`} style={{zIndex: 50}}>
-                  {tier.discount}
-                </div>
-              )}
-
-              {/* SECTION 1: Header - Icon & Name (Fixed Height) */}
-              <div className="text-center h-32 flex flex-col justify-center mb-2">
-                <div className="text-4xl mb-3">
-                  {tier.icon}
-                </div>
-                <h3 
-                  className={`text-xl font-semibold leading-tight tracking-tight ${tier.founder ? '' : 'text-white'}`}
-                  style={tier.founder ? {
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  } : {}}
-                >
-                  {tier.name}
-                </h3>
-              </div>
-
-              {/* SECTION 2: Price & Subtitle (Fixed Height) */}
-              <div className="text-center h-44 flex flex-col justify-start mb-4">
-                {/* Main Price - This will align perfectly */}
-                <div className="h-12 flex items-center justify-center">
-                  <div className="flex items-center justify-center gap-3">
-                    {tier.originalPrice && (
-                      <span className="text-lg text-gray-500 line-through font-medium">
-                        {tier.originalPrice}
-                      </span>
-                    )}
-                    <span 
-                      className={`text-4xl font-light tracking-tight ${tier.founder ? 'gradient-text' : 'text-white'}`}
-                    >
-                      {tier.price}
-                    </span>
-                    {tier.priceSub && (
-                      <span 
-                        className={`text-lg font-light ${tier.founder ? 'gradient-text' : 'text-gray-300'}`}
-                      >
-                        {tier.priceSub}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                
-                {/* Monthly Equivalent - Consistent spacing for all cards */}
-                <div className="h-5 mb-2 flex items-center justify-center">
-                  {tier.monthlyEquivalent ? (
-                    <p 
-                      className={`text-sm font-medium tracking-wide ${tier.founder ? 'gradient-text' : 'text-gray-400'}`}
-                    >
-                      {tier.monthlyEquivalent}
-                    </p>
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
-                
-                <p className="text-sm text-gray-200 font-light italic tracking-wide">
-                  "{tier.subtitle}"
+        {/* The Truth, Served Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="w-full max-w-4xl mx-auto mb-20 md:mb-32 mt-20 md:mt-32"
+        >
+          <div className="meme-card p-8 rounded-3xl text-center">
+            <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-6">The Truth, Served.</h2>
+            
+            <div className="space-y-6 text-gray-300 text-left">
+              <p className="text-lg md:text-xl leading-relaxed">
+                <span className="text-white font-medium">Real talk.</span> We know you've spent 20 minutes drafting a reply just to delete it. We know you check if they watched your story even though they haven't texted back.
+              </p>
+              
+              <p className="text-base md:text-lg leading-relaxed">
+                We built Sage to be the friend who grabs your phone and says, 
+                <span className="text-white font-bold italic"> "No. They're not 'busy,' they're breadcrumbing you."</span>
+              </p>
+              
+              <div className="pt-4 text-center">
+                <p className="text-lg md:text-xl font-bold text-white mb-2">
+                  Stop spiraling alone. It's time to see what's <em>really</em> going on.
                 </p>
-                
-                {/* Spots Left Box - Inside pricing section */}
-                {tier.founder && (
-                  <div className="relative bg-transparent border border-purple-400/50 rounded-lg p-3 pt-4 mt-3 w-full mx-auto">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-violet-500/5 rounded-lg"></div>
-                    <div className="relative z-10">
-                      <div className="w-full bg-gray-600 rounded-full h-3 mb-2">
-                        <div 
-                          className="bg-gradient-to-r from-purple-400 to-violet-500 h-3 rounded-full transition-all duration-500"
-                          style={{ width: `${(100 - spotsLeft)}%` }}
-                        ></div>
-                      </div>
-                      
-                      <div className="text-xs text-purple-300 sm:whitespace-nowrap break-words">
-                        Price jumps to $49 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
-                      </div>
-                    </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.8 }}
+          className="w-full max-w-3xl mx-auto mb-20 md:mb-32 mt-20 md:mt-32"
+        >
+          <div className="meme-card p-8 rounded-3xl" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h2 className="text-3xl md:text-4xl font-bold gradient-text text-center mb-8">FAQ</h2>
+            
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">Is this actually private?</h3>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  Yes. We use bank-level encryption and your texts are deleted immediately after analysis. We don't store, train on, or share your data. Ever.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">How accurate is Sage?</h3>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  Sage is trained on millions of text patterns and relationship dynamics. She's not perfect, but she's pretty damn good at spotting the patterns you might miss.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">What if I don't agree with her take?</h3>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  That's totally fine! Sage gives you perspective, not gospel. Use her insights as a starting point for your own analysis.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">Can I cancel anytime?</h3>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  Absolutely. No contracts, no commitments. Cancel whenever you want, but we think you'll want to keep Sage around.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* The Math is Mathing, Bestie Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.95, duration: 0.8 }}
+          className="w-full max-w-4xl mx-auto mb-20 md:mb-32 mt-20 md:mt-32"
+          style={{
+            background: 'linear-gradient(180deg, rgba(94, 234, 212, 0.03) 0%, transparent 100%)',
+            borderTop: '1px solid rgba(94, 234, 212, 0.1)',
+            borderBottom: '1px solid rgba(94, 234, 212, 0.1)',
+            padding: '60px 0'
+          }}
+        >
+          <h2 className="text-3xl md:text-4xl font-bold gradient-text text-center mb-10">
+            The Math is Mathing, Bestie
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8">
+            <div className="meme-card p-8 rounded-2xl">
+              <h3 className="font-bold text-xl mb-6 text-red-400 flex items-center">
+                ❌ What $4.99 Gets You Elsewhere
+              </h3>
+              <ul className="space-y-4 text-gray-300">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>One regrettable cocktail you'll stress-drink</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Another month on that dating app that's failing you</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>A fancy coffee that just makes you more anxious</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Half a therapy session where you'll talk about this anyway</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="meme-card p-8 rounded-2xl border-2 border-green-500/30">
+              <h3 className="font-bold text-xl mb-6 text-green-400 flex items-center">
+                ✅ What $4.99 Gets You Here
+              </h3>
+              <ul className="space-y-4 text-gray-300">
+                <li className="flex items-start">
+                  <span className="text-green-400 mr-2">✓</span>
+                  <span>Unlimited receipts on every situationship</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-400 mr-2">✓</span>
+                  <span>Proof for your group chat when they doubt you</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-400 mr-2">✓</span>
+                  <span>Finally knowing if you're being gaslit</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-400 mr-2">✓</span>
+                  <span>Your sanity back (priceless, tbh)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Beautiful Pricing Section from Landing Page */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0, duration: 0.8 }}
+          className="w-full max-w-5xl mx-auto mb-20 md:mb-32 mt-20 md:mt-32 text-center"
+        >
+          <h2 className="text-4xl font-bold gradient-text mb-6">🎁 You get 3 Receipts free. Then it's one a day.</h2>
+          
+          <div className="text-center mb-10">
+            <p className="text-xl text-gray-300 mb-4">Want more?</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-lg text-gray-300">
+              <div>• Unlimited monthly: <span className="text-teal-400 font-semibold">$4.99</span></div>
+              <div>• Founders Pass: <span className="text-purple-400 font-semibold">$29.99 / year</span></div>
+            </div>
+          </div>
+          
+          {/* Netflix-Style Clean Cards - All Same Size */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Free Daily Receipt Card */}
+            <div className="meme-card p-8 rounded-2xl flex flex-col justify-between" style={{ minHeight: '420px' }}>
+              <div>
+                <div className="text-center mb-6">
+                  <h3 className="font-bold text-2xl mb-3 text-teal-400">Start Free</h3>
+                  <div className="text-4xl font-black text-white mb-2">$0</div>
+                  <p className="text-gray-400 text-sm">3 free Receipts, then 1/day</p>
+                </div>
+                <div className="space-y-3 text-sm text-gray-300 text-left">
+                  <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🧠</span><span><strong className="text-white">3 Truth Receipts to try</strong> then 1 daily</span></div>
+                  <div className="pl-6 space-y-1">
+                    <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Pattern analysis (Breadcrumber, Ghoster, etc.)</div>
+                    <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Sage's Tea included (verdict breakdown)</div>
+                    <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Shareable receipt card</div>
                   </div>
-                )}
-              </div>
-
-              {/* SECTION 3: Features (Fixed Height) */}
-              <div className="h-64 mb-4 mt-2">
-                <div className="space-y-3">
-                  {tier.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-4">
-                      <Check className="w-4 h-4 text-emerald-400 mt-1 flex-shrink-0" />
-                      <span className="text-gray-100 text-sm leading-relaxed font-medium tracking-wide">{feature}</span>
-                    </div>
-                  ))}
+                  <div className="pt-2 text-xs text-teal-400 font-medium">Perfect for: Curious but cautious</div>
                 </div>
               </div>
-
-              {/* SECTION 4: Bottom - Button and Tag line (Fixed Height) */}
-              <div className="h-32 flex flex-col justify-between">
-                {/* Button */}
-                <Button
-                  className={`w-full py-3 rounded-xl transition-all duration-500 mb-2 font-semibold tracking-wide ${tier.buttonClass}`}
-                  onClick={() => {
-                    if (tier.buttonAction) {
-                      tier.buttonAction();
-                    } else if (tier.priceId) {
-                      handleCheckout(tier.priceId, tier.name);
-                    }
-                  }}
-                  disabled={loadingPriceId === tier.priceId}
-                >
-                  {loadingPriceId === tier.priceId ? (
-                    'Redirecting...'
-                  ) : (
-                    tier.buttonText
-                  )}
-                </Button>
-                
-                {/* Clean Social Proof */}
-                <div className="text-center">
-                  {tier.founder ? (
-                    <div className="text-xs text-gray-300">
-                      <span className="font-bold text-white">{founderCount}</span> founders joined • Only <span className={`ticker-counter font-bold text-yellow-300 ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> spots left
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-200 leading-relaxed text-center font-light tracking-wide">
-                      {tier.tag}
-                    </p>
-                  )}
+              <Button onClick={handleGetStarted} variant="outline" className="border-teal-400 text-white hover:bg-teal-500/20 w-full mt-6">
+                Start Free →
+              </Button>
+            </div>
+            
+            {/* Premium Monthly Card */}
+            <div className="meme-card p-8 rounded-2xl flex flex-col justify-between border-2 border-teal-500/50" style={{ minHeight: '420px' }}>
+              <div>
+                <div className="text-center mb-6">
+                  <h3 className="font-bold text-2xl mb-3 text-teal-400">Premium Monthly</h3>
+                  <div className="text-4xl font-black text-white mb-2">$4.99</div>
+                  <p className="text-gray-400 text-sm">per month</p>
                 </div>
-                
-                {/* Instant Access for Founder's Club */}
-                {tier.founder && (
-                  <p className="text-xs text-center mt-1 text-yellow-300 font-bold tracking-wider uppercase">
-                    ⚡ INSTANT ACCESS
-                  </p>
-                )}
+                <div className="space-y-3 text-sm text-gray-300 text-left">
+                  <div className="text-xs text-gray-400 mb-2">Everything in Free, plus:</div>
+                  <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🧠</span><span><strong className="text-white">UNLIMITED Truth Receipts</strong></span></div>
+                  <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🛡️</span><span><strong className="text-white">Sage's Immunity Training</strong> (NEW!)</span></div>
+                  <div className="pl-6 space-y-1">
+                    <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Learn their manipulation tactics</div>
+                    <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Build emotional defense strategies</div>
+                  </div>
+                  <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">⚡</span><span><strong className="text-white">Vibe Check™</strong> real-time analysis</span></div>
+                  <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🚀</span><span><strong className="text-white">Priority processing</strong></span></div>
+                  <div className="pt-2 text-xs text-teal-400 font-medium">Perfect for: Done with the drama</div>
+                </div>
               </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Emotional Anchor Tagline */}
-        <div className="text-center mt-12 mb-8">
-          <p className="text-xl font-medium text-gray-300">
-            ✨ <span className="text-white">Start free. Upgrade when you're ready.</span>
-          </p>
-        </div>
+              <Button onClick={handleGoPremium} className="viral-button-popular text-white w-full mt-6">
+                Go Premium
+              </Button>
+            </div>
+            
+            {/* OG Founder's Club Card */}
+            <div className="relative p-8 rounded-2xl flex flex-col justify-between border-2 border-purple-400/60" style={{ minHeight: '420px', background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1624 100%)' }}>
+              {/* BEST VALUE Badge */}
+              <div className="absolute -top-3 -right-3 z-10">
+                <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                  BEST VALUE
+                </div>
+              </div>
+              
+              <div>
+                <div className="text-center mb-6">
+                  <h3 className="font-bold text-2xl mb-3 text-purple-400">OG Founder's Club</h3>
+                  <div className="text-4xl font-black text-white mb-1">$29.99 / year</div>
+                  <p className="text-gray-400 text-sm">($2.49/month) <span className="text-green-400 font-semibold">70% OFF</span></p>
+                </div>
+                <div className="space-y-3 text-sm text-gray-300 text-left">
+                  <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
+                  <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🔒</span><span><strong className="text-white">Price locked FOREVER</strong></span></div>
+                  <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🏆</span><span><strong className="text-white">Beta features first</strong></span></div>
+                  <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">💬</span><span><strong className="text-white">Direct feedback channel</strong></span></div>
+                  <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🎖️</span><span><strong className="text-white">Founder badge</strong> on receipts</span></div>
+                  <div className="pt-2 text-xs text-purple-400 font-medium">Perfect for: First 500 who get it</div>
+                </div>
+              </div>
+              <Button onClick={handleGoPremium} className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white w-full font-bold mt-6 py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-purple-500/25">
+                Lock In Founder's Price
+              </Button>
+            </div>
+          </div>
+          
+          {/* Premium Feature Comparison Table */}
+          <div className="max-w-5xl mx-auto mb-8">
+            <div 
+              className="relative p-8 rounded-3xl overflow-hidden"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 50%, rgba(15, 23, 42, 0.8) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(148, 163, 184, 0.1)'
+              }}
+            >
+              {/* Subtle animated background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-600/5 to-transparent animate-pulse" style={{ animationDuration: '6s' }}></div>
+              
+              <div className="relative z-10">
+                <h3 className="text-2xl font-bold text-center mb-8 gradient-text">Compare Plans</h3>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr>
+                        <th className="text-left py-6 px-4"></th>
+                        <th className="text-center py-6 px-4">
+                          <div className="inline-block">
+                            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-4 border border-gray-700/50">
+                              <div className="text-lg font-bold text-teal-400 mb-1">Free</div>
+                              <div className="text-2xl font-black text-white">$0</div>
+                              <div className="text-xs text-gray-400">per month</div>
+                            </div>
+                          </div>
+                        </th>
+                        <th className="text-center py-6 px-4">
+                          <div className="inline-block">
+                            <div className="bg-gradient-to-br from-teal-900/40 to-teal-800/40 rounded-2xl p-4 border border-teal-500/30">
+                              <div className="text-lg font-bold text-teal-400 mb-1">Premium</div>
+                              <div className="text-2xl font-black text-white">$4.99</div>
+                              <div className="text-xs text-gray-300">per month</div>
+                            </div>
+                          </div>
+                        </th>
+                        <th className="text-center py-6 px-4">
+                          <div className="inline-block relative">
+                            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-400 to-emerald-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+                              BEST
+                            </div>
+                            <div 
+                              className="rounded-2xl p-4 border border-purple-400/50"
+                              style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1624 100%)' }}
+                            >
+                              <div className="text-lg font-bold text-purple-400 mb-1">OG Founder's</div>
+                              <div className="text-2xl font-black text-white">$29.99</div>
+                              <div className="text-xs text-gray-300">per year</div>
+                            </div>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-t border-gray-700/30">
+                        <td className="py-4 px-4 text-left">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">🧾</span>
+                            <span className="font-medium text-white">Truth Receipts</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="bg-gray-800/50 rounded-lg px-3 py-2 text-gray-300 font-medium">
+                            1/day
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="bg-teal-900/30 rounded-lg px-3 py-2 text-teal-300 font-medium border border-teal-500/20">
+                            Unlimited
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="bg-purple-900/30 rounded-lg px-3 py-2 text-purple-300 font-medium border border-purple-500/20">
+                            Unlimited
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="border-t border-gray-700/20">
+                        <td className="py-4 px-4 text-left">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">☕</span>
+                            <span className="font-medium text-white">Sage's Tea</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="border-t border-gray-700/20">
+                        <td className="py-4 px-4 text-left">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">🛡️</span>
+                            <span className="font-medium text-white">Immunity Training</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center mx-auto">
+                            <span className="text-gray-400 text-sm">–</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="border-t border-gray-700/20">
+                        <td className="py-4 px-4 text-left">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">⚡</span>
+                            <span className="font-medium text-white">Vibe Check™</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center mx-auto">
+                            <span className="text-gray-400 text-sm">–</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="border-t border-gray-700/20">
+                        <td className="py-4 px-4 text-left">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">🔒</span>
+                            <span className="font-medium text-white">Price Lock</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center mx-auto">
+                            <span className="text-gray-400 text-sm">–</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center mx-auto">
+                            <span className="text-gray-400 text-sm">–</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="border-t border-gray-700/20">
+                        <td className="py-4 px-4 text-left">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">🏆</span>
+                            <span className="font-medium text-white">Beta Access</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center mx-auto">
+                            <span className="text-gray-400 text-sm">–</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center mx-auto">
+                            <span className="text-gray-400 text-sm">–</span>
+                          </div>
+                        </td>
+                        <td className="text-center py-4 px-4">
+                          <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mx-auto">
+                            <span className="text-white text-sm font-bold">✓</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* How OG Founder Pricing Works Section */}
         <motion.div 
@@ -808,15 +1096,10 @@ const PricingPage = () => {
               <div className="text-lg text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed space-y-4">
                 <p>
                   <span className="text-white font-semibold">Let's be real: OGs get the best perks.</span>
+                  When you lock in your Founder's price, you're not just getting a discount - you're getting a lifetime deal that gets better as we grow.
                 </p>
-                <p className="font-medium">
-                  This price is for you → the ones getting in on the ground floor before this thing blows up.
-                </p>
-                <p className="text-sm font-light">
-                  Here's the deal: As we add more game-changing features and the community grows, the value will go up. And so will the price. Your reward for believing in Sage first is locking in this price for life. It will never increase for you. Ever.
-                </p>
-                <p className="text-yellow-400">
-                  As our community grows, Sage's annual price increases:
+                <p>
+                  <span className="text-yellow-400">As our community grows, Sage's annual price increases:</span>
                 </p>
               </div>
 
@@ -827,223 +1110,24 @@ const PricingPage = () => {
                     <span className="text-red-400 text-2xl">✅</span>
                     <span className="text-red-400 text-lg">First 200 users: <span className="text-red-400 font-semibold">$19/year</span> <span className="text-red-400">(SOLD OUT)</span></span>
                   </div>
+                  <div className="flex items-center gap-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                    <span className="text-orange-400 text-2xl">✅</span>
+                    <span className="text-orange-400 text-lg">Next 300 users: <span className="text-orange-400 font-semibold">$29/year</span> <span className="text-orange-400">(CURRENT)</span></span>
+                  </div>
                   <div className="flex items-center gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                    <span className="text-yellow-400 text-2xl">🔥</span>
-                    <span className="text-yellow-300 text-lg">Users 201-500: <span className="text-yellow-300 font-semibold">$29.99/year</span> <span className="text-yellow-300">(Only 73 spots left!)</span></span>
+                    <span className="text-yellow-400 text-2xl">⏳</span>
+                    <span className="text-yellow-400 text-lg">Next 500 users: <span className="text-yellow-400 font-semibold">$49/year</span> <span className="text-yellow-400">(COMING SOON)</span></span>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-gray-500/10 border border-gray-500/20 rounded-lg">
-                    <span className="text-gray-400 text-2xl">📈</span>
-                    <span className="text-gray-400 text-lg">Users 501+: <span className="text-gray-400 font-semibold">$49.99/year</span> <span className="text-gray-400">(Regular price)</span></span>
+                    <span className="text-gray-400 text-2xl">🔮</span>
+                    <span className="text-gray-400 text-lg">Future users: <span className="text-gray-400 font-semibold">$99/year</span> <span className="text-gray-400">(REGULAR PRICE)</span></span>
                   </div>
                 </div>
               </div>
 
-              <p className="text-sm text-gray-300 mb-8 max-w-2xl mx-auto">
-                The $19 price is gone forever, but you can still lock in $29.99 before it jumps to $49.99.
-              </p>
-
-              {/* Progress Bar - Matches the ticker counter */}
-              <div className="max-w-2xl mx-auto mb-8">
-                <div className="relative bg-transparent border border-purple-400/50 rounded-lg p-3 pt-4">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-violet-500/5 rounded-lg"></div>
-                  <div className="relative z-10">
-                    <div className="w-full bg-gray-600 rounded-full h-3 mb-2">
-                      <div 
-                        className="bg-gradient-to-r from-purple-400 to-violet-500 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${(100 - spotsLeft)}%` }}
-                      ></div>
-                    </div>
-                    
-                    <div className="text-sm text-purple-300 sm:whitespace-nowrap break-words">
-                      Price jumps to $49.99 in <span className={`ticker-counter font-bold ${isChanging ? 'changing' : ''}`}>{spotsLeft}</span> signups
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-lg text-yellow-400 mb-8 max-w-2xl mx-auto sm:whitespace-nowrap break-words">
-                Once you lock in a founder price, it never changes - even when everyone else pays more.
-              </p>
-
-              <Button
-                className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-xl shadow-pink-500/30 transform hover:scale-105"
-                onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founder')}
-              >
-                👑 Claim OG Founder Status
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Privacy Trust Block */}
-        <motion.div 
-          className="mt-8 max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-        >
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/10 to-transparent blur-3xl"></div>
-            <div className="relative bg-gradient-to-br from-slate-900/60 via-green-900/10 to-slate-900/60 backdrop-blur-xl rounded-3xl border border-green-500/20 p-8 md:p-12 text-center">
               <div className="text-center">
-                <div className="text-5xl mb-4">🔒</div>
-                <p className="text-lg text-gray-300 font-medium tracking-wide leading-relaxed">
-                  Sage doesn't keep tabs on your receipts. Your texts vanish the second she's done reading them. No storage, no training, no judgment.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-
-
-        {/* Animated Testimonials */}
-        <motion.div 
-          className="mt-16"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-        >
-          <SocialProofTicker />
-        </motion.div>
-
-        {/* Enhanced Comparison Section */}
-        <motion.div 
-          className="mt-20 max-w-5xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.4 }}
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Still thinking? Let's compare.
-            </h2>
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500/10 to-transparent blur-3xl"></div>
-            <div className="relative bg-gradient-to-br from-slate-900/40 via-orange-900/10 to-slate-900/40 backdrop-blur-xl rounded-3xl border border-orange-500/20 overflow-hidden">
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 divide-x divide-gray-600">
-                {/* What $4.99 gets you elsewhere */}
-                <div className="p-8 md:p-12">
-              <div className="flex items-center gap-3 mb-6">
-                    <div className="text-3xl">🍸</div>
-                    <h3 className="text-xl font-bold text-red-400">
-                      What $4.99 gets you elsewhere
-                    </h3>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <span className="text-red-400 mt-1">❌</span>
-                      <span className="text-gray-300">One overpriced latte you'll Instagram</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-red-400 mt-1">❌</span>
-                      <span className="text-gray-300">Half a therapy session you'll cancel</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-red-400 mt-1">❌</span>
-                      <span className="text-gray-300">3 minutes with a psychic who'll lie</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* What $4.99 gets you here */}
-                <div className="p-8 md:p-12">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="text-3xl">🧾</div>
-                    <h3 className="text-xl font-bold text-green-400">
-                      What $4.99 gets you here
-                    </h3>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <span className="text-green-400 mt-1">✅</span>
-                      <span className="text-gray-300">Unlimited receipts from someone who gets it</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-green-400 mt-1">✅</span>
-                      <span className="text-gray-300">Screenshots that'll vindicate you in the group chat</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-green-400 mt-1">✅</span>
-                      <span className="text-gray-300">Finally knowing if 'k' was aggressive or just lazy</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Quote */}
-              <div className="p-6 text-center bg-gradient-to-r from-purple-900/20 to-blue-900/20 border-t border-gray-600">
-                <p className="text-xl font-bold text-white">The math is mathing, bestie.</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Final CTA Block */}
-        <motion.div 
-          className="mt-20 max-w-4xl mx-auto"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.6 }}
-        >
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/10 to-transparent blur-3xl"></div>
-            <div className="relative bg-gradient-to-br from-slate-900/60 via-green-900/20 to-slate-900/60 backdrop-blur-xl rounded-3xl border border-green-500/20 p-12 md:p-16 text-center">
-              
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text animate-gradient">Ready for Sage's Take?</h2>
-              <p className="text-xl md:text-2xl text-gray-300 mb-4">
-                Drop the chat. Get Sage's take. <span className="italic text-violet-300">She's already rolling her eyes at their text.</span>
-              </p>
-              <p className="text-lg text-gray-400 italic mb-12">
-                One click. No judgment. Just perspective.
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-center max-w-4xl mx-auto">
-                <Button
-                  onClick={() => navigate('/chat-input')}
-                  className="bg-white/10 border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-bold py-3 px-6 rounded-xl transition-all duration-300 backdrop-blur-sm shadow-lg"
-                >
-                  Start Free
-                </Button>
-                <Button
-                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-xl shadow-orange-500/30 transform hover:scale-105"
-                  onClick={() => handleCheckout('price_1S0Po4G71EqeOEZeSqdB1Qfa', 'Emergency Pack')}
-                >
-                  🚨 Emergency Pack
-                </Button>
-                <Button
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-xl shadow-blue-500/30 transform hover:scale-105"
-                  onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium')}
-                >
-                  Go Unlimited Monthly
-                </Button>
-                <Button
-                  className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-xl shadow-purple-500/30 transform hover:scale-105"
-                  onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founder')}
-                >
-                  Claim OG Founder Status
-                </Button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Privacy & Trust Footnote */}
-        <motion.div 
-          className="text-center mt-16 pb-12 max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.8 }}
-        >
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/15 to-transparent blur-3xl"></div>
-            <div className="relative bg-gradient-to-br from-slate-800/80 via-purple-900/30 to-slate-800/80 backdrop-blur-xl rounded-3xl border-2 border-purple-500/30 p-10 md:p-12 shadow-2xl shadow-purple-500/10">
-              <div className="text-center">
-                <p className="text-gray-300 text-base mb-6 font-medium">
-                  For 16+ Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.
+                <p className="text-gray-300 text-base mb-4">
+                  <span className="text-white font-semibold">Your price never changes.</span> Once you're in, you're locked in forever.
                 </p>
                 <p className="text-gray-400 text-sm">
                   By using this site, you agree to our <a href="/terms-of-service" className="text-purple-400 hover:text-purple-300 underline font-medium">Terms</a> & <a href="/privacy-policy" className="text-purple-400 hover:text-purple-300 underline font-medium">Privacy Policy</a>.
@@ -1053,6 +1137,49 @@ const PricingPage = () => {
           </div>
         </motion.div>
 
+        {/* Final CTA Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.6 }}
+          className="w-full max-w-4xl mx-auto meme-card p-8 rounded-3xl text-center mt-20 md:mt-32"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+            One Bad Date Costs More Than a Year of Clarity.
+          </h2>
+          <p className="text-gray-300 mb-8 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
+            That feeling of confusion is costing you more than just your peace of mind - it's costing you time. Our OG Founder's Deal gives you unlimited access to Sage's wisdom for just <strong className="text-green-400">$2.49/month</strong> (billed annually at $29.99). Lock in your 70% discount before this one-time offer disappears forever.
+          </p>
+          <div className="text-center mb-6">
+            <p className="text-white font-semibold text-lg mb-2">
+              This is the last time you'll get Sage for less than $3/month.
+            </p>
+            <p className="text-gray-300 text-base">
+              Secure your clarity - before it disappears.
+            </p>
+          </div>
+          <div className="flex flex-col gap-4 justify-center mb-4">
+            <Button onClick={handleGoPremium} className="bg-gradient-to-r from-teal-400 to-blue-500 hover:from-teal-500 hover:to-blue-600 text-black font-bold py-4 text-xl px-12 shadow-2xl transition-all duration-300 hover:scale-105">
+              Lock In My Founder's Price
+            </Button>
+          </div>
+          <div className="text-center mb-4">
+            <p className="text-xs text-gray-500 bg-gray-900/30 px-4 py-2 rounded-full inline-flex items-center gap-2 border border-gray-700/50 mb-4">
+              🛡️ Never stored. Never used for training. Deleted instantly.
+            </p>
+          </div>
+          <p className="text-gray-400 text-sm">
+            Not ready to commit?{' '}
+            <button 
+              onClick={handleGetStarted}
+              className="text-teal-400 hover:text-teal-300 underline transition-colors cursor-pointer"
+            >
+              Get your free daily receipt first.
+            </button>
+          </p>
+        </motion.div>
+
+        </div>
       </div>
 
       {/* Footer */}
@@ -1064,12 +1191,10 @@ const PricingPage = () => {
                 <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
                   <span className="text-xl">🔮</span>
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
-                  Get The Receipts
-                </span>
+                <h3 className="text-xl font-bold text-white">Get The Receipts</h3>
               </div>
-              <p className="text-gray-400 max-w-md">
-                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
+              <p className="text-gray-400 mb-6 max-w-md">
+                Decode the chaos of modern communication. Get clarity, not confusion.
               </p>
             </div>
             <div>
@@ -1088,17 +1213,17 @@ const PricingPage = () => {
                 <a href="/refund-policy" className="block text-gray-400 hover:text-white transition-colors">Refund Policy</a>
               </div>
             </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Support</h4>
+              <div className="space-y-2">
+                <a href="mailto:support@getthereceipts.com" className="block text-gray-400 hover:text-white transition-colors">Contact Us</a>
+                <a href="/affiliate" className="block text-gray-400 hover:text-white transition-colors">Affiliate Program</a>
+              </div>
+            </div>
           </div>
-          
-          <div className="border-t border-white/10 pt-8 text-center">
-            <p className="text-gray-400 text-sm mb-3">
-              © 2025 Get The Receipts. All rights reserved.
-            </p>
-            <p className="text-gray-500 text-sm mb-3">
-              16+ only • For Entertainment Purposes Only • Not therapy, legal, or medical advice • Sage is an AI character with opinions, not facts
-            </p>
-            <p className="text-gray-600 text-sm">
-              Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>
+          <div className="border-t border-gray-800 pt-8 text-center">
+            <p className="text-gray-400 text-sm">
+              © 2024 Get The Receipts. All rights reserved.
             </p>
           </div>
         </div>

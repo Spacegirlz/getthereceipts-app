@@ -418,8 +418,13 @@ const ChatInputPage = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 text-white flex flex-col">
-        <div className="flex-1 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex flex-col relative overflow-hidden">
+        {/* Glossy Black Background Elements */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(255,255,255,0.02),transparent)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(255,255,255,0.01),transparent)] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-gray-800/5 to-transparent pointer-events-none" />
+        
+        <div className="flex-1 flex items-center justify-center p-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -767,7 +772,7 @@ const ChatInputPage = () => {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl font-bold text-white mb-4">
+                <h2 className="text-2xl font-bold gradient-text mb-4">
                   🎉 You've Used Your Free Analysis!
                 </h2>
 
