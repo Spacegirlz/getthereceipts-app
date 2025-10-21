@@ -4,12 +4,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye } from 'lucide-react';
 import { useAuthModal } from '@/contexts/AuthModalContext';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { loadStripe } from '@stripe/stripe-js';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageLanding from '@/assets/sage-landing.png';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { openModal } = useAuthModal();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [openFAQ, setOpenFAQ] = useState(null);
   const [selectedDemo, setSelectedDemo] = useState(null);
   const [showDemoResult, setShowDemoResult] = useState(false);
@@ -23,17 +28,88 @@ const LandingPage = () => {
   // Messages to cycle through - Gen Z nightmare scenarios
   const messages = [
     { text: '💬 "watches my story instantly but takes 8 hours to reply... lol"', color: 'bg-gradient-to-r from-blue-400 to-indigo-500', archetype: '📱👻 The WiFi Ghoster' },
-    { text: '💬 "soft-launched me on close friends then hard-launched his ex 🤡"', color: 'bg-gradient-to-r from-indigo-400 to-purple-500', archetype: '📸🤡 The Backup Plan' },
-    { text: '💬 "bro really typed \'wyd\' at 1:47am thinking that\'s flirting! how am i not confused."', color: 'bg-gradient-to-r from-purple-400 to-violet-500', archetype: '🌙💔 The 2AM Breadcrumber' },
+    { text: '💬 "soft-launched me on close friends then hard-launched their ex 🤡"', color: 'bg-gradient-to-r from-indigo-400 to-purple-500', archetype: '📸🤡 The Backup Plan' },
+    { text: '💬 "they really typed \'wyd\' at 1:47am thinking that\'s flirting! how am i not confused."', color: 'bg-gradient-to-r from-purple-400 to-violet-500', archetype: '🌙💔 The 2AM Breadcrumber' },
     { text: '💬 "is this normal - games 10 hours straight but can\'t call for 5 min?? WTF!"', color: 'bg-gradient-to-r from-violet-400 to-pink-500', archetype: '🎮⚰️ The AFKer' },
-    { text: '💬 "he said \'I love you\' on date 2 and wants to meet my parents... help 😭"', color: 'bg-gradient-to-r from-pink-400 to-rose-500', archetype: '💣💕 The Love Bomber' },
+    { text: '💬 "they said \'I love you\' on date 2 and wants to meet my parents... help 😭"', color: 'bg-gradient-to-r from-pink-400 to-rose-500', archetype: '💣💕 The Love Bomber' },
     { text: '💬 "date 1: life story trauma dump. date 2: complete ghost. make it make sense"', color: 'bg-gradient-to-r from-rose-400 to-pink-500', archetype: '💣👻 The Emotional Hit & Run' },
     { text: '💬 "u plan trips we\'ll never take but can\'t plan dinner.. I don\'t get it."', color: 'bg-gradient-to-r from-blue-400 to-purple-500', archetype: '✈️🎭 The Dream Seller' }
   ];
 
   const handleGetStarted = () => navigate('/chat-input');
-  const handleGoPremium = () => navigate('/pricing');
   const handleRefer = () => navigate('/refer');
+  
+  const handleGoPremium = async () => {
+    if (!user) {
+      openModal('sign_up');
+      toast({ 
+        title: 'Create an account to upgrade!', 
+        description: 'Sign up to unlock premium features and get receipts.'
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: 'price_1SI49tG71EqeOEZe0p9LNpbP', // Premium Monthly $4.99
+          userId: user.email,
+        }),
+      });
+
+      const { sessionId } = await response.json();
+      
+      // Redirect to Stripe Checkout
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      
+      if (error) {
+        console.error('Stripe checkout error:', error);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+    }
+  };
+  
+  const handleFounderPurchase = async () => {
+    if (!user) {
+      openModal('sign_up');
+      toast({ 
+        title: 'Create an account to upgrade!', 
+        description: 'Sign up to unlock premium features and get receipts.'
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: 'price_1RzgBYG71EqeOEZer7ojcw0R', // OG Founders Club $29.99
+          userId: user.email,
+        }),
+      });
+
+      const { sessionId } = await response.json();
+      
+      // Redirect to Stripe Checkout
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      
+      if (error) {
+        console.error('Stripe checkout error:', error);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+    }
+  };
 
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index);
@@ -54,15 +130,15 @@ const LandingPage = () => {
     },
     {
       question: "Is this actual advice or just for fun?",
-      answer: "Sage is an AI character created for entertainment. She\'s that friend who sees patterns and has opinions — lots of them. While many users say her takes are eerily accurate (94% relate), she\'s not a therapist or counselor. Think of her like your horoscope: somehow relevant, technically entertainment, and screen-shot worthy when it hits."
+      answer: "Sage is an AI character created for entertainment. Sage is that friend who sees patterns and has opinions — lots of them. While many users say Sage's takes are eerily accurate (94% relate), Sage is not a therapist or counselor. Think of Sage like your horoscope: somehow relevant, technically entertainment, and screen-shot worthy when it hits."
     },
     {
       question: "Why does Sage sound so sure when it\'s just for entertainment?",
-      answer: "That\'s her character — the friend who\'s so done watching you spiral that everything sounds like fact. It\'s not. She\'s an AI with opinions, not a mind reader. But that confidence can help calm an overthinking brain. Take what resonates, leave what doesn\'t."
+      answer: "That\'s Sage's character — the friend who\'s so done watching you spiral that everything sounds like fact. It\'s not. Sage is an AI with opinions, not a mind reader. But that confidence can help calm an overthinking brain. Take what resonates, leave what doesn\'t."
     },
     {
       question: "Does Sage only work on toxic situations?",
-      answer: "Hell no. Sage reads everything. Bring your healthy relationship and she\'ll validate why it\'s working. Bring your ex from 2009 for laughs. Bring your mom\'s guilt-trip texts. Bring that Love Island chat you\'re obsessed with. Sage has takes on all of it — the good, the bad, and the \"what even is this?\""
+      answer: "Hell no. Sage reads everything. Bring your healthy relationship and Sage will validate why it\'s working. Bring your ex from 2009 for laughs. Bring your mom\'s guilt-trip texts. Bring that Love Island chat you\'re obsessed with. Sage has takes on all of it — the good, the bad, and the \"what even is this?\""
     },
     {
       question: "Why is Privacy First such a big deal here?",
@@ -70,7 +146,7 @@ const LandingPage = () => {
     },
     {
       question: "Data: What do you keep, and what do you delete?",
-      answer: "We keep only what\'s needed to run your account and instantly delete everything else. We keep: email (for login), encrypted password, and payment info (if paid). We delete: all receipts and messages after Sage\'s read (gone in ~3 seconds), your receipt results, and any record of what you pasted in. We never track your behavior, message history, or usage for training or marketing. We use zero-storage architecture plus real-time processing with contractual no-training AI services. Sage doesn\'t learn from you — she helps you learn from your own patterns."
+      answer: "We keep only what\'s needed to run your account and instantly delete everything else. We keep: email (for login), encrypted password, and payment info (if paid). We delete: all receipts and messages after Sage processes it (gone in ~3 seconds), your receipt results, and any record of what you pasted in. We never track your behavior, message history, or usage for training or marketing. We use zero-storage architecture plus real-time processing with contractual no-training AI services. Sage doesn\'t learn from you — Sage helps you learn from your own patterns."
     }
   ];
 
@@ -167,10 +243,15 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950">
-      {/* Premium Background Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.15),rgba(255,255,255,0))] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(59,130,246,0.08),rgba(255,255,255,0))] pointer-events-none" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Clean Black Background for Maximum Readability */}
+      <div className="absolute inset-0 bg-black" />
+      
+      {/* Subtle Depth - No Blur for Performance */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-black/20" />
+      
+      {/* Minimal Accent - Just for Visual Interest */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.03),rgba(255,255,255,0))] pointer-events-none" />
       
       <div className="relative z-10">
         {/* Hero Section - World-Class SaaS Design */}
@@ -190,7 +271,7 @@ const LandingPage = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mb-8"
         >
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 max-w-3xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4 max-w-3xl mx-auto shadow-2xl shadow-purple-500/10">
             <div className="relative overflow-hidden h-24 flex items-center justify-center">
               <motion.div
                 key={currentMessageIndex}
@@ -200,7 +281,7 @@ const LandingPage = () => {
                 transition={{ duration: 0.5 }}
                 className="text-center"
               >
-                <div className={`text-lg font-medium ${messages[currentMessageIndex].color} bg-clip-text text-transparent`}>
+                <div className={`text-xl sm:text-2xl font-medium ${messages[currentMessageIndex].color} bg-clip-text text-transparent`}>
                   {currentText}
                   {isTyping && <span className="animate-pulse">|</span>}
                 </div>
@@ -209,7 +290,7 @@ const LandingPage = () => {
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-lg text-gray-400 mt-1"
+                    className="text-xl sm:text-2xl text-gray-400 mt-1"
                   >
                     {messages[currentMessageIndex].archetype}
                   </motion.div>
@@ -250,7 +331,7 @@ const LandingPage = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="text-xs sm:text-sm md:text-base text-gray-400 font-light mb-12 max-w-2xl mx-auto"
         >
-          Sage decodes the chat you can't stop replaying. From crushes to coworkers, breakups to besties. She doesn't read minds. She reads patterns. And she's seen it all.
+          Sage decodes the chat you can't stop replaying. From crushes to coworkers, breakups to besties. Sage doesn't read minds... she reads patterns. And she's seen it all...
         </motion.p>
 
 
@@ -321,7 +402,7 @@ const LandingPage = () => {
               </h2>
               {/* Body paragraph */}
               <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                She's seen every pattern: breadcrumbing, ghosting, love bombing—no judgment, just clarity.
+                Sage has seen every pattern: breadcrumbing, ghosting, love bombing—no judgment, just clarity.
               </p>
             </motion.div>
 
@@ -498,7 +579,31 @@ const LandingPage = () => {
                 </p>
               </motion.div>
             </div>
-            </div>
+
+            {/* Key Features Highlight */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0, duration: 0.6 }}
+              className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
+            >
+              <div className="text-center p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
+                <div className="text-3xl mb-3">📱</div>
+                <h4 className="text-lg font-bold text-white mb-2">Truth Receipts</h4>
+                <p className="text-gray-300 text-sm">9:16 format perfect for sharing on social media</p>
+              </div>
+              <div className="text-center p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
+                <div className="text-3xl mb-3">🛡️</div>
+                <h4 className="text-lg font-bold text-white mb-2">Sage's Playbook</h4>
+                <p className="text-gray-300 text-sm">Immunity training to spot patterns before they hurt</p>
+              </div>
+              <div className="text-center p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
+                <div className="text-3xl mb-3">⚡</div>
+                <h4 className="text-lg font-bold text-white mb-2">Vibe Check™</h4>
+                <p className="text-gray-300 text-sm">Real-time analysis as conversations happen</p>
+              </div>
+            </motion.div>
+          </div>
         </section>
 
         {/* Interactive Demo Section */}
@@ -641,19 +746,6 @@ const LandingPage = () => {
                   <span className="text-cyan-400 font-normal ml-2">(it's embarrassingly simple)</span>
                 </h3>
                 
-                {/* Social Proof Counter */}
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm text-gray-300 mt-4 shadow-lg shadow-black/10"
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-                  </span>
-                  <span className="font-medium">{liveUserCount.toLocaleString()}</span> people getting clarity right now
-                </motion.div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -732,9 +824,9 @@ const LandingPage = () => {
                 className="text-center"
               >
                 <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
-                  50K+
+                  5K+
               </div>
-                <div className="text-sm text-gray-400">People Getting Real</div>
+                <div className="text-sm text-gray-400">Early Adopters</div>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -743,7 +835,7 @@ const LandingPage = () => {
                 className="text-center"
               >
                 <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-lime-400 to-yellow-500 bg-clip-text text-transparent mb-2">
-                  2.3M+
+                  50K+
             </div>
                 <div className="text-sm text-gray-400">Receipts That Hit Different</div>
               </motion.div>
@@ -789,7 +881,7 @@ const LandingPage = () => {
                   </div>
                 </div>
                   <p className="text-gray-300 text-sm leading-relaxed">
-                    "FINALLY proof that he was breadcrumbing me. My friends kept saying I was overthinking, but Sage confirmed what I already knew. I was RIGHT."
+                    "FINALLY proof that they were breadcrumbing me. My friends kept saying I was overthinking, but Sage confirmed what I already knew. I was RIGHT."
                   </p>
               </motion.div>
 
@@ -836,141 +928,122 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Simplified Pricing Section */}
+        {/* Premium Pricing Section */}
         <section className="py-24 px-4 bg-white/5">
           <div className="max-w-7xl mx-auto">
-        <motion.div
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center mb-16"
-          >
+            >
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
                 Simple pricing. No surprises.
-            </h2>
+              </h2>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                 Start free, upgrade when you're ready for unlimited clarity
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {/* Free Plan */}
+            {/* Netflix-Style Clean Cards - All Same Size */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {/* Free Daily Receipt Card */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-lg shadow-black/10 transition-all duration-300 hover:shadow-xl hover:shadow-black/20"
+                className="meme-card p-8 rounded-2xl flex flex-col justify-between" 
+                style={{ minHeight: '420px' }}
               >
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-semibold text-white mb-2">Free</h3>
-                  <div className="text-4xl font-bold text-white mb-2">$0</div>
-                  <p className="text-gray-400 text-sm">3 free receipts, then 1/day</p>
+                <div>
+                  <div className="text-center mb-6">
+                    <h3 className="font-bold text-2xl mb-3 text-teal-400">Start Free</h3>
+                    <div className="text-4xl font-black text-white mb-2">$0</div>
+                    <p className="text-gray-400 text-sm">3 free Receipts, then 1/day</p>
+                  </div>
+                  <div className="space-y-3 text-sm text-gray-300 text-left">
+                    <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🧠</span><span><strong className="text-white">3 Truth Receipts to try</strong> then 1 daily</span></div>
+                    <div className="pl-6 space-y-1">
+                      <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Pattern analysis (Breadcrumber, Ghoster, etc.)</div>
+                      <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Sage's Tea included (verdict breakdown)</div>
+                      <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Shareable receipt card</div>
+                    </div>
+                    <div className="pt-2 text-xs text-teal-400 font-medium">Perfect for: Curious but cautious</div>
+                  </div>
                 </div>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Pattern analysis & verdict
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Shareable receipt card
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    No login required
-                  </li>
-                </ul>
-              <Button
-                onClick={handleGetStarted}
-                  variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/5"
-              >
-                  Start Free
-              </Button>
-          </motion.div>
-
-              {/* Premium Plan */}
-          <motion.div
-                initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="bg-white/10 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-8 relative"
-              >
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    Most Popular
-                  </span>
-              </div>
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-semibold text-white mb-2">Premium</h3>
-                  <div className="text-4xl font-bold text-white mb-2">$4.99</div>
-                  <p className="text-gray-400 text-sm">per month</p>
-            </div>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Unlimited receipts
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Immunity Training
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Vibe Check™ real-time
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Priority processing
-                  </li>
-                </ul>
-            <Button
-                  onClick={handleGoPremium}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
-            >
-                  Go Premium
-            </Button>
-          </motion.div>
-
-              {/* Founder Plan */}
-          <motion.div
-                initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="bg-white/10 backdrop-blur-xl border border-purple-400/40 rounded-2xl p-8 shadow-lg shadow-purple-500/20 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/30"
-              >
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-semibold text-white mb-2">OG Founder</h3>
-                  <div className="text-4xl font-bold text-white mb-2">$29.99</div>
-                  <p className="text-gray-400 text-sm">per year (70% off)</p>
-          </div>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Everything in Premium
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Price locked forever
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Beta features first
-                  </li>
-                  <li className="flex items-center text-gray-300 text-sm">
-                    <span className="text-purple-400 mr-2">✓</span>
-                    Founder badge
-                  </li>
-                </ul>
-                <Button
-                  onClick={handleGoPremium}
-                  className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white"
-                >
-                  Lock In Price
+                <Button onClick={handleGetStarted} variant="outline" className="border-teal-400 text-white hover:bg-teal-500/20 w-full mt-6">
+                  Start Free →
                 </Button>
-        </motion.div>
-              </div>
-              </div>
+              </motion.div>
+              
+              {/* Premium Monthly Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="meme-card p-8 rounded-2xl flex flex-col justify-between border-2 border-teal-500/50" 
+                style={{ minHeight: '420px' }}
+              >
+                <div>
+                  <div className="text-center mb-6">
+                    <h3 className="font-bold text-2xl mb-3 text-teal-400">Premium Monthly</h3>
+                    <div className="text-4xl font-black text-white mb-2">$4.99</div>
+                    <p className="text-gray-400 text-sm">per month</p>
+                  </div>
+                  <div className="space-y-3 text-sm text-gray-300 text-left">
+                    <div className="text-xs text-gray-400 mb-2">Everything in Free, plus:</div>
+                    <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🧠</span><span><strong className="text-white">UNLIMITED Truth Receipts</strong></span></div>
+                    <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🛡️</span><span><strong className="text-white">Sage's Immunity Training</strong> (NEW!)</span></div>
+                    <div className="pl-6 space-y-1">
+                      <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Learn their manipulation tactics</div>
+                      <div className="flex items-center text-xs text-gray-400"><span className="mr-2">└─</span>Build emotional defense strategies</div>
+                    </div>
+                    <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">⚡</span><span><strong className="text-white">Vibe Check™</strong> real-time analysis</span></div>
+                    <div className="flex items-start"><span className="text-teal-400 mr-2 mt-0.5">🚀</span><span><strong className="text-white">Priority processing</strong></span></div>
+                    <div className="pt-2 text-xs text-teal-400 font-medium">Perfect for: Done with the drama</div>
+                  </div>
+                </div>
+                <Button onClick={handleGoPremium} className="viral-button-popular text-white w-full mt-6">
+                  Go Premium
+                </Button>
+              </motion.div>
+              
+              {/* OG Founder's Club Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="relative p-8 rounded-2xl flex flex-col justify-between border-2 border-purple-400/60" 
+                style={{ minHeight: '420px', background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1624 100%)' }}
+              >
+                {/* BEST VALUE Badge */}
+                <div className="absolute -top-3 -right-3 z-10">
+                  <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                    BEST VALUE
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="text-center mb-6">
+                    <h3 className="font-bold text-2xl mb-3 text-purple-400">OG Founder's Club</h3>
+                    <div className="text-4xl font-black text-white mb-1">$29.99 / year</div>
+                    <p className="text-gray-400 text-sm">($2.49/month) <span className="text-green-400 font-semibold">40% OFF</span></p>
+                  </div>
+                  <div className="space-y-3 text-sm text-gray-300 text-left">
+                    <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
+                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🔒</span><span><strong className="text-white">Price locked FOREVER</strong></span></div>
+                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🏆</span><span><strong className="text-white">Beta features first</strong></span></div>
+                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">💬</span><span><strong className="text-white">Direct feedback channel</strong></span></div>
+                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🎖️</span><span><strong className="text-white">Founder badge</strong> on receipts</span></div>
+                    <div className="pt-2 text-xs text-purple-400 font-medium">Perfect for: First 500 who get it</div>
+                  </div>
+                </div>
+                <Button onClick={handleGoPremium} className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white w-full font-bold mt-6 py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-purple-500/25">
+                  Lock In Founder's Price
+                </Button>
+              </motion.div>
+            </div>
+          </div>
         </section>
 
 
@@ -1052,10 +1125,24 @@ const LandingPage = () => {
                 </span>
           </h2>
           
-              <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Join thousands who are finally getting the truth about their conversations. 
+              <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
+                Join 5K+ early adopters getting the truth about their chats. 
                 <span className="text-white font-semibold italic"> No more mixed signals.</span>
               </p>
+              
+              {/* Live Social Proof Counter */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm text-gray-300 mb-8 shadow-lg shadow-black/10"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                </span>
+                <span className="font-medium">{liveUserCount.toLocaleString()}</span> people getting Sage's take right now
+              </motion.div>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                 <Button
@@ -1066,11 +1153,11 @@ const LandingPage = () => {
               </Button>
                 
                 <Button
-                  onClick={handleGoPremium}
+                  onClick={handleGetStarted}
                   variant="outline"
-                  className="border-white/20 text-white hover:bg-white/5 hover:border-white/30 font-medium px-6 py-4 rounded-xl transition-all duration-300 min-h-[56px]"
+                  className="border-cyan-400/60 text-white hover:bg-cyan-500/10 hover:border-cyan-400/80 font-medium px-6 py-4 rounded-xl transition-all duration-300 min-h-[56px] shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30"
                 >
-                  View Pricing
+                  Try Anonymous (No Signup)
               </Button>
             </div>
             
@@ -1092,53 +1179,28 @@ const LandingPage = () => {
                           </div>
         </section>
 
-        {/* Balanced Professional Footer */}
-        <footer className="relative px-6 lg:px-8 py-16 bg-gradient-to-b from-slate-900/30 via-slate-800/20 to-slate-900/30 border-t border-white/10">
-          <div className="mx-auto max-w-6xl">
-            {/* Centered Content for Perfect Balance */}
-            <div className="text-center mb-12">
-              {/* Brand */}
-              <div className="flex items-center justify-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
-                  <span className="text-xl">🔮</span>
-              </div>
-                <h3 className="text-2xl font-bold text-white">Get The Receipts</h3>
-            </div>
-              <p className="text-gray-400 text-sm max-w-lg mx-auto mb-8">
-                AI-powered text analysis that tells you what's really happening in your conversations.
-              </p>
-              
-              {/* Symmetrical Link Layout */}
-              <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
-                <div className="text-center">
-                  <h4 className="text-white font-semibold text-sm mb-3">Product</h4>
-                  <div className="space-y-2">
-                    <Link to="/about" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">About</Link>
-                    <Link to="/pricing" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">Pricing</Link>
-                    <Link to="/refer" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">Earn & Refer</Link>
-      </div>
-        </div>
-
-          <div className="text-center">
-                  <h4 className="text-white font-semibold text-sm mb-3">Legal</h4>
-                  <div className="space-y-2">
-                    <Link to="/privacy-policy" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">Privacy Policy</Link>
-                    <Link to="/terms-of-service" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">Terms of Service</Link>
-                    <Link to="/refund-policy" className="block text-gray-400 hover:text-cyan-400 transition-colors text-sm">Refund Policy</Link>
-      </div>
-        </div>
-              </div>
+        {/* Simple Clean Footer */}
+        <footer className="px-6 py-8 bg-black border-t border-white/10">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Navigation Links */}
+            <div className="flex flex-wrap justify-center gap-6 mb-4">
+              <Link to="/about" className="text-gray-400 hover:text-white transition-colors text-sm">About</Link>
+              <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</Link>
+              <Link to="/refer" className="text-gray-400 hover:text-white transition-colors text-sm">Earn & Refer</Link>
+              <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</Link>
             </div>
             
-            {/* Bottom - Perfectly Centered */}
-            <div className="pt-8 border-t border-white/10 text-center">
-              <p className="text-gray-500 text-xs mb-2">
-                © 2025 Get The Receipts. All rights reserved.
-              </p>
-              <p className="text-gray-500 text-xs">
-                Entertainment & Insight Purposes Only
-              </p>
-            </div>
+            {/* Disclaimer */}
+            <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+            
+            {/* Copyright */}
+            <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>
+            
+            {/* Support */}
+            <p className="text-gray-500 text-xs">
+              Support: <a href="mailto:support@getthereceipts.com" className="text-gray-400 hover:text-white transition-colors">support@getthereceipts.com</a>
+            </p>
           </div>
         </footer>
       </div>

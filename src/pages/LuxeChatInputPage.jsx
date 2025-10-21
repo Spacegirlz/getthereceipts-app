@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare } from 'lucide-react';
 import InputTabs from '@/components/InputTabs';
@@ -409,13 +409,18 @@ const LuxeChatInputPage = () => {
   const relationshipTypes = ['Dating', 'Situationship', 'Marriage', 'Friend', 'Work', 'Family'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex flex-col relative overflow-hidden">
-      {/* Glossy Black Background Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(255,255,255,0.02),transparent)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(255,255,255,0.01),transparent)] pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-gray-800/5 to-transparent pointer-events-none" />
+    <div className="min-h-screen relative overflow-hidden text-white flex flex-col">
+      {/* Clean Black Background for Maximum Readability */}
+      <div className="absolute inset-0 bg-black" />
       
-      <div className="flex-1 flex items-center justify-center p-4 relative z-10">
+      {/* Subtle Depth - No Blur for Performance */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-black/20" />
+      
+      {/* Minimal Accent - Just for Visual Interest */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.03),rgba(255,255,255,0))] pointer-events-none" />
+      
+      <div className="relative z-10 flex flex-col flex-1">
+      <div className="flex-1 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -771,12 +776,28 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
         </motion.div>
       </div>
 
-      {/* Footer with Important Disclaimers - High-end SaaS Style */}
-      <footer className="w-full border-t border-white/5 bg-black/10 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <div className="space-y-6">
-            
+      {/* Simple Clean Footer */}
+      <footer className="px-6 py-8 bg-black border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Navigation Links */}
+          <div className="flex flex-wrap justify-center gap-6 mb-4">
+            <Link to="/about" className="text-gray-400 hover:text-white transition-colors text-sm">About</Link>
+            <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</Link>
+            <Link to="/refer" className="text-gray-400 hover:text-white transition-colors text-sm">Earn & Refer</Link>
+            <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</Link>
           </div>
+          
+          {/* Disclaimer */}
+          <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+          
+          {/* Copyright */}
+          <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>
+          
+          {/* Support */}
+          <p className="text-gray-500 text-xs">
+            Support: <a href="mailto:support@getthereceipts.com" className="text-gray-400 hover:text-white transition-colors">support@getthereceipts.com</a>
+          </p>
         </div>
       </footer>
 
@@ -873,7 +894,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
           </motion.div>
         )}
       </AnimatePresence>
-      
+      </div>
     </div>
   );
 };

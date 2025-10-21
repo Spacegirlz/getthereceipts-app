@@ -14,11 +14,15 @@ const AboutPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden px-4 py-8 relative">
-      {/* Glossy Black Background Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(255,255,255,0.02),transparent)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_80%,rgba(255,255,255,0.01),transparent)] pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-gray-800/5 to-transparent pointer-events-none" />
+    <div className="min-h-screen relative overflow-hidden text-white px-4 py-8">
+      {/* Clean Black Background for Maximum Readability */}
+      <div className="absolute inset-0 bg-black" />
+      
+      {/* Subtle Depth - No Blur for Performance */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-black/20" />
+      
+      {/* Minimal Accent - Just for Visual Interest */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.03),rgba(255,255,255,0))] pointer-events-none" />
       
       <div className="relative z-10">
       {/* Header */}
@@ -268,55 +272,31 @@ const AboutPage = () => {
         </Button>
       </motion.div>
 
-      {/* Footer */}
-      <footer className="relative px-6 lg:px-8 py-16 border-t border-white/10">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-blue-500 rounded-xl flex items-center justify-center">
-                  <span className="text-xl">🔮</span>
-                </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
-                  Get The Receipts
-                </span>
-              </div>
-              <p className="text-gray-400 max-w-md">
-                Stop second-guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Product</h4>
-              <div className="space-y-2">
-                <Link to="/about" className="block text-gray-400 hover:text-white transition-colors">About</Link>
-                <Link to="/pricing" className="block text-gray-400 hover:text-white transition-colors">Pricing</Link>
-                <Link to="/refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Legal</h4>
-              <div className="space-y-2">
-                <Link to="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
-                <Link to="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
-                <Link to="/refund-policy" className="block text-gray-400 hover:text-white transition-colors">Refund Policy</Link>
-              </div>
-            </div>
+      {/* Simple Clean Footer */}
+      <footer className="px-6 py-8 bg-black border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Navigation Links */}
+          <div className="flex flex-wrap justify-center gap-6 mb-4">
+            <Link to="/about" className="text-gray-400 hover:text-white transition-colors text-sm">About</Link>
+            <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</Link>
+            <Link to="/refer" className="text-gray-400 hover:text-white transition-colors text-sm">Earn & Refer</Link>
+            <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</Link>
           </div>
           
-          <div className="border-t border-white/10 pt-8 text-center">
-            <p className="text-gray-400 text-sm mb-3">
-              © 2025 Get The Receipts. All rights reserved.
-            </p>
-            <p className="text-gray-500 text-sm mb-3">
-              For Entertainment & Insight Purposes Only.<br />
-              16+ • Not therapy, legal, or medical advice • Use at your own risk
-            </p>
-            <p className="text-gray-600 text-sm">
-              Support: <a href="mailto:support@getthereceipts.com" className="text-violet-400 hover:text-violet-300 transition-colors">support@getthereceipts.com</a>
-            </p>
-          </div>
+          {/* Disclaimer */}
+          <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+          
+          {/* Copyright */}
+          <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>
+          
+          {/* Support */}
+          <p className="text-gray-500 text-xs">
+            Support: <a href="mailto:support@getthereceipts.com" className="text-gray-400 hover:text-white transition-colors">support@getthereceipts.com</a>
+          </p>
         </div>
       </footer>
+      </div>
       </div>
     </div>
   );

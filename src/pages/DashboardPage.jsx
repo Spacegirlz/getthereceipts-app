@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { PlusCircle, Gift, Settings, Receipt, Loader2, Frown, CreditCard, Zap, LogIn, LogOut, User, Trash2, Crown } from 'lucide-react';
 import LinkButton from '@/components/LinkButton';
 import CouponModal from '@/components/CouponModal';
@@ -557,58 +557,28 @@ const DashboardPage = () => {
         isOpen={isCouponModalOpen} 
         onClose={() => setIsCouponModalOpen(false)} 
       />
-      {/* Footer */}
-      <footer className="relative px-6 lg:px-8 py-16 border-t border-white/10">
-        <div className="mx-auto max-w-7xl">
-          {/* CTA */}
-          <div className="flex justify-center mb-10">
-            <a
-              href="/chat-input"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 text-white font-semibold shadow-lg hover:shadow-xl hover:from-violet-600 hover:to-blue-600 transition"
-            >
-              Start Getting Receipts 📄
-            </a>
+      {/* Simple Clean Footer */}
+      <footer className="px-6 py-8 bg-black border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Navigation Links */}
+          <div className="flex flex-wrap justify-center gap-6 mb-4">
+            <Link to="/about" className="text-gray-400 hover:text-white transition-colors text-sm">About</Link>
+            <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</Link>
+            <Link to="/refer" className="text-gray-400 hover:text-white transition-colors text-sm">Earn & Refer</Link>
+            <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</Link>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {/* Brand */}
-            <div>
-              <div className="text-2xl font-black gradient-text mb-3">Get The Receipts</div>
-              <p className="text-gray-400 max-w-md">
-                Stop second‑guessing their texts. Get clarity in 60 seconds with Sage, your AI bestie with opinions.
-              </p>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h4 className="font-semibold text-white mb-4">Product</h4>
-              <div className="space-y-2">
-                <a href="/about" className="block text-gray-400 hover:text-white transition-colors">About</a>
-                <a href="/pricing" className="block text-gray-400 hover:text-white transition-colors">Pricing</a>
-                <a href="/refer" className="block text-gray-400 hover:text-white transition-colors">Earn & Refer</a>
-              </div>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="font-semibold text-white mb-4">Legal</h4>
-              <div className="space-y-2">
-                <a href="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-                <a href="/terms-of-service" className="block text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-                <a href="/refund-policy" className="block text-gray-400 hover:text-white transition-colors">Refund Policy</a>
-              </div>
-            </div>
-          </div>
-
-          {/* Fine print */}
-          <div className="border-t border-white/10 pt-6 text-center text-gray-400 space-y-2">
-            <div>© 2025 Get The Receipts. All rights reserved.</div>
-            <div>For Entertainment & Insight Purposes Only.</div>
-            <div>16+ · Not therapy, legal, or medical advice · Use at your own risk</div>
-            <div>
-              Support: <a href="mailto:support@getthereceipts.com" className="text-purple-300 hover:text-purple-200">support@getthereceipts.com</a>
-            </div>
-          </div>
+          
+          {/* Disclaimer */}
+          <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+          
+          {/* Copyright */}
+          <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>
+          
+          {/* Support */}
+          <p className="text-gray-500 text-xs">
+            Support: <a href="mailto:support@getthereceipts.com" className="text-gray-400 hover:text-white transition-colors">support@getthereceipts.com</a>
+          </p>
         </div>
       </footer>
     </>

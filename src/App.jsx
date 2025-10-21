@@ -26,8 +26,10 @@ const TestReceipt = lazy(() => import('@/pages/TestReceipt'));
 const TestReceiptPage = lazy(() => import('@/pages/TestReceiptPage'));
 const MobileTestPage = lazy(() => import('@/pages/MobileTestPage'));
 const Success = lazy(() => import('@/pages/Success'));
+const CheckoutPage = lazy(() => import('@/pages/CheckoutPage'));
 import { Helmet } from 'react-helmet';
 import AuthModal from '@/components/AuthModal';
+import PurchasePopup from '@/components/PurchasePopup';
 import PrivateRoute from '@/components/PrivateRoute';
 import MainHeader from '@/components/MainHeader';
 import MobileBottomNav from '@/components/MobileBottomNav';
@@ -78,6 +80,7 @@ function App() {
               <Route path="/refund-policy" element={<RefundPolicyPage />} />
               <Route path="/affiliate-terms" element={<AffiliateTermsPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/success" element={<Success />} />
               <Route path="/test-metrics" element={<TestMetrics />} />
               <Route path="/test-receipt-flow" element={<TestReceiptPage />} />
@@ -93,6 +96,7 @@ function App() {
         </main>
         <MobileBottomNav />
         <AuthModal />
+        <PurchasePopup />
       </div>
     </>
   );

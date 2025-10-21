@@ -258,51 +258,28 @@ export default function AffiliateTermsPage() {
         </motion.div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-black/20 backdrop-blur-sm border-t border-purple-500/20 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <span className="text-2xl">🔮</span>
-                <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent font-bold text-xl">
-                  Get The Receipts
-                </span>
-              </div>
-              <p className="text-gray-400 mb-4">
-                Your AI bestie with opinions. Decode any text message instantly and get the receipts on what they really meant.
-              </p>
-              <p className="text-gray-500 text-sm">
-                For 16+ Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="text-white font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
-                <li><Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">About</Link></li>
-                <li><Link to="/refer" className="text-gray-400 hover:text-white transition-colors">Earn & Refer</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-white font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li><Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
-                <li><Link to="/refund-policy" className="text-gray-400 hover:text-white transition-colors">Refund Policy</Link></li>
-                <li><Link to="/affiliate-terms" className="text-gray-400 hover:text-white transition-colors">Affiliate Terms</Link></li>
-              </ul>
-            </div>
+      {/* Simple Clean Footer */}
+      <footer className="px-6 py-8 bg-black border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Navigation Links */}
+          <div className="flex flex-wrap justify-center gap-6 mb-4">
+            <Link to="/about" className="text-gray-400 hover:text-white transition-colors text-sm">About</Link>
+            <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</Link>
+            <Link to="/refer" className="text-gray-400 hover:text-white transition-colors text-sm">Earn & Refer</Link>
+            <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</Link>
           </div>
           
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-            <p className="text-gray-500 text-sm">
-              © 2025 Get The Receipts. All rights reserved.
-            </p>
-          </div>
+          {/* Disclaimer */}
+          <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+          
+          {/* Copyright */}
+          <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>
+          
+          {/* Support */}
+          <p className="text-gray-500 text-xs">
+            Support: <a href="mailto:support@getthereceipts.com" className="text-gray-400 hover:text-white transition-colors">support@getthereceipts.com</a>
+          </p>
         </div>
       </footer>
     </div>
