@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Check, Shield, Zap } from 'lucide-react';
-import { loadStripe } from '@stripe/stripe-js';
+import { useStripe } from '@stripe/react-stripe-js';
 import HorizontalTicker from '../components/HorizontalTicker';
 import { useAuth } from '../contexts/SupabaseAuthContext';
 import { useAuthModal } from '../contexts/AuthModalContext';
@@ -12,11 +12,20 @@ import { useToast } from '../components/ui/use-toast';
 
 const PricingPage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { openModal } = useAuthModal();
   const { toast } = useToast();
+  const { user, isPremium, loading } = useAuth();
+  const { openModal } = useAuthModal();
+  const stripe = useStripe();
+  const [loadingPriceId, setLoadingPriceId] = useState(null);
+  const [referralId, setReferralId] = useState(null);
 
-  const handlePremiumPurchase = async () => {
+  // Scroll to top on page load to ensure consistent landing position
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleCheckout = async (priceId, tierName) => {
+    if (loading) return; // wait for auth to settle
     if (!user) {
       openModal('sign_up');
       toast({ 
@@ -26,91 +35,59 @@ const PricingPage = () => {
       return;
     }
 
-    try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          priceId: 'price_1SI49tG71EqeOEZe0p9LNpbP', // Premium Monthly $4.99
-          userId: user.email,
-          referralId: null
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const { sessionId } = await response.json();
-      
-      // Redirect to Stripe Checkout
-      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      
-      if (error) {
-        console.error('Stripe checkout error:', error);
-        toast({
-          title: 'Payment Error',
-          description: 'There was an issue processing your payment. Please try again.'
-        });
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
+    if (!stripe) {
       toast({
-        title: 'Payment Error',
-        description: 'Unable to process payment. Please try again later.'
-      });
-    }
-  };
-
-  const handleFounderPurchase = async () => {
-    if (!user) {
-      openModal('sign_up');
-      toast({ 
-        title: 'Create an account to upgrade!', 
-        description: 'Sign up to unlock premium features and get receipts.'
+        variant: "destructive",
+        title: "Stripe Error",
+        description: "Stripe is not configured correctly. Please check the console.",
       });
       return;
     }
 
+    setLoadingPriceId(priceId);
+
     try {
+      // Create checkout session via our API
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          priceId: 'price_1RzgBYG71EqeOEZer7ojcw0R', // OG Founders Club $29.99
+          priceId: priceId,
           userId: user.email,
-          referralId: null
-        }),
+          referralId: referralId
+        })
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error('Failed to create checkout session');
       }
 
       const { sessionId } = await response.json();
-      
+
       // Redirect to Stripe Checkout
-      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionId
+      });
+
       if (error) {
-        console.error('Stripe checkout error:', error);
+        console.error("Stripe redirect error:", error);
         toast({
-          title: 'Payment Error',
-          description: 'There was an issue processing your payment. Please try again.'
+          variant: "destructive",
+          title: "Payment Error",
+          description: error.message || "Could not redirect to checkout.",
         });
+        setLoadingPriceId(null);
       }
     } catch (error) {
-      console.error('Checkout error:', error);
+      console.error("Checkout session error:", error);
       toast({
-        title: 'Payment Error',
-        description: 'Unable to process payment. Please try again later.'
+        variant: "destructive",
+        title: "Payment Error",
+        description: error.message || "Could not create checkout session.",
       });
+      setLoadingPriceId(null);
     }
   };
 
@@ -255,7 +232,7 @@ const PricingPage = () => {
                 </div>
                 <div className="mt-auto">
                   <div className="pt-2 text-xs text-orange-400 font-medium mb-4">Perfect for: Done with the drama</div>
-                  <Button onClick={handlePremiumPurchase} className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-orange-500/25">
+                  <Button onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly')} className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-orange-500/25">
                     Go Premium
                   </Button>
                 </div>
@@ -287,7 +264,7 @@ const PricingPage = () => {
                 </div>
                 <div className="mt-auto">
                   <div className="pt-2 text-xs text-purple-400 font-medium mb-4">Perfect for: First 500 who get it</div>
-                  <Button onClick={handleFounderPurchase} className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white w-full font-bold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-purple-500/25">
+                  <Button onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')} className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white w-full font-bold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-purple-500/25">
                     Lock In Founder's Price
                   </Button>
                 </div>
@@ -427,7 +404,7 @@ const PricingPage = () => {
                   </div>
 
                   <Button 
-                    onClick={handleFounderPurchase}
+                    onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')}
                     className="w-full bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 hover:from-blue-500 hover:via-cyan-500 hover:to-teal-500 text-white font-bold py-4 text-lg rounded-xl shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105"
                   >
                     <span className="mr-2">🔒</span>
@@ -562,14 +539,14 @@ const PricingPage = () => {
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                 <Button
-                  onClick={handleFounderPurchase}
+                  onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')}
                   className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold text-lg px-8 py-4 rounded-xl shadow-2xl shadow-cyan-500/25 transition-all duration-300 hover:scale-105 min-h-[56px] min-w-[200px]"
                 >
                   Lock In Founder's Price
                 </Button>
                 
                 <Button
-                  onClick={handlePremiumPurchase}
+                  onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly')}
                   variant="outline"
                   className="border-cyan-400/60 text-white hover:bg-cyan-500/10 hover:border-cyan-400/80 font-medium px-6 py-4 rounded-xl transition-all duration-300 min-h-[56px] shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30"
                 >
