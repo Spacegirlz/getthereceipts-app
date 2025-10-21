@@ -20,6 +20,7 @@ const LandingPage = () => {
   const [showDemoResult, setShowDemoResult] = useState(false);
   const [liveUserCount, setLiveUserCount] = useState(1247);
 
+
   // Typing animation state
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
@@ -39,41 +40,7 @@ const LandingPage = () => {
   const handleGetStarted = () => navigate('/chat-input');
   const handleRefer = () => navigate('/refer');
   
-  const handleGoPremium = async () => {
-    if (!user) {
-      openModal('sign_up');
-      toast({ 
-        title: 'Create an account to upgrade!', 
-        description: 'Sign up to unlock premium features and get receipts.'
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          priceId: 'price_1SI49tG71EqeOEZe0p9LNpbP', // Premium Monthly $4.99
-          userId: user.email,
-        }),
-      });
-
-      const { sessionId } = await response.json();
-      
-      // Redirect to Stripe Checkout
-      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      
-      if (error) {
-        console.error('Stripe checkout error:', error);
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-    }
-  };
+  const handleGoPremium = () => navigate('/pricing');
   
   const handleFounderPurchase = async () => {
     if (!user) {
