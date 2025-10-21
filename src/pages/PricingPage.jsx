@@ -35,6 +35,7 @@ const PricingPage = () => {
         body: JSON.stringify({
           priceId: 'price_1SI49tG71EqeOEZe0p9LNpbP', // Premium Monthly $4.99
           userId: user.email,
+          referralId: null
         }),
       });
 
@@ -83,6 +84,7 @@ const PricingPage = () => {
         body: JSON.stringify({
           priceId: 'price_1RzgBYG71EqeOEZer7ojcw0R', // OG Founders Club $29.99
           userId: user.email,
+          referralId: null
         }),
       });
 
