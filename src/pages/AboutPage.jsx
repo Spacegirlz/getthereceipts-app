@@ -297,7 +297,6 @@ const AboutPage = () => {
         </div>
       </footer>
       </div>
-      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import HorizontalTicker from '../components/HorizontalTicker';
 import { useAuth } from '../contexts/SupabaseAuthContext';
 import { useAuthModal } from '../contexts/AuthModalContext';
-import { useToast } from '../hooks/use-toast';
+import { useToast } from '../components/ui/use-toast';
 
 const PricingPage = () => {
   const navigate = useNavigate();

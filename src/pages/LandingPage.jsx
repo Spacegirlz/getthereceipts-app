@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye } from 'lucide-react';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { loadStripe } from '@stripe/stripe-js';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageLanding from '@/assets/sage-landing.png';
