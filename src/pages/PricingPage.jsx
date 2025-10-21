@@ -38,6 +38,10 @@ const PricingPage = () => {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const { sessionId } = await response.json();
       
       // Redirect to Stripe Checkout
@@ -46,9 +50,17 @@ const PricingPage = () => {
       
       if (error) {
         console.error('Stripe checkout error:', error);
+        toast({
+          title: 'Payment Error',
+          description: 'There was an issue processing your payment. Please try again.'
+        });
       }
     } catch (error) {
       console.error('Checkout error:', error);
+      toast({
+        title: 'Payment Error',
+        description: 'Unable to process payment. Please try again later.'
+      });
     }
   };
 
@@ -74,6 +86,10 @@ const PricingPage = () => {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const { sessionId } = await response.json();
       
       // Redirect to Stripe Checkout
@@ -82,9 +98,17 @@ const PricingPage = () => {
       
       if (error) {
         console.error('Stripe checkout error:', error);
+        toast({
+          title: 'Payment Error',
+          description: 'There was an issue processing your payment. Please try again.'
+        });
       }
     } catch (error) {
       console.error('Checkout error:', error);
+      toast({
+        title: 'Payment Error',
+        description: 'Unable to process payment. Please try again later.'
+      });
     }
   };
 
