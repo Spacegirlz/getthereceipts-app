@@ -336,23 +336,6 @@ const LandingPage = () => {
 
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="mb-8"
-        >
-            <Button
-              onClick={handleGetStarted}
-            className="group relative bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold text-xl px-12 py-6 rounded-xl shadow-2xl shadow-orange-500/30 transition-all duration-300 hover:scale-110 hover:shadow-orange-500/50"
-            >
-            <span className="relative z-10">Get Your First Receipt Free</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-            </Button>
-          <p className="text-sm text-gray-400 mt-2">
-            Free • No Login Required
-          </p>
-        </motion.div>
 
         {/* Trust Badges */}
           <motion.div
@@ -1144,22 +1127,6 @@ const LandingPage = () => {
                 <span className="font-medium">{liveUserCount.toLocaleString()}</span> people getting Sage's take right now
               </motion.div>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-                <Button
-                  onClick={handleGetStarted}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold text-lg px-8 py-4 rounded-xl shadow-2xl shadow-cyan-500/25 transition-all duration-300 hover:scale-105 min-h-[56px] min-w-[200px]"
-                >
-                  Get Your First Receipt Free
-              </Button>
-                
-                <Button
-                  onClick={handleGetStarted}
-                  variant="outline"
-                  className="border-cyan-400/60 text-white hover:bg-cyan-500/10 hover:border-cyan-400/80 font-medium px-6 py-4 rounded-xl transition-all duration-300 min-h-[56px] shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30"
-                >
-                  Try Anonymous (No Signup)
-              </Button>
-            </div>
             
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-gray-400">
                           <div className="flex items-center gap-2">
@@ -1174,6 +1141,16 @@ const LandingPage = () => {
                   <Zap className="h-4 w-4 text-cyan-400" />
                   <span>Results in 60 seconds</span>
                           </div>
+                          </div>
+                          
+                          {/* Try Anonymous Link */}
+                          <div className="text-center mt-4">
+                            <button
+                              onClick={handleGetStarted}
+                              className="text-cyan-400 hover:text-cyan-300 text-sm font-medium underline transition-colors duration-200"
+                            >
+                              Try Anonymous (No Signup)
+                            </button>
                           </div>
         </motion.div>
                           </div>
