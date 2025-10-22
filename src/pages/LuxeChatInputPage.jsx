@@ -852,6 +852,14 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                   <button
                     onClick={() => {
                       setShowLimitModal(false);
+                      // Store payment intent before navigating
+                      if (!user) {
+                        localStorage.setItem('pendingCheckout', JSON.stringify({
+                          priceId: null,
+                          tierName: 'General Pricing',
+                          timestamp: Date.now()
+                        }));
+                      }
                       navigate('/pricing');
                     }}
                     className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"

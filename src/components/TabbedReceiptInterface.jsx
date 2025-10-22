@@ -25,6 +25,7 @@ const TabbedReceiptInterface = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { isPremium } = useAuth();
   const navigate = useNavigate();
+  const { navigateToPricing } = usePaymentIntent();
   const sageTabRef = useRef(null);
 
   // Ensure first tab content is immediately visible on mount
@@ -171,7 +172,7 @@ const TabbedReceiptInterface = ({
   };
 
   const handleUpgradeClick = () => {
-    navigate('/pricing');
+    navigateToPricing();
   };
 
   // Keyboard navigation
