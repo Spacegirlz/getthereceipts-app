@@ -39,7 +39,7 @@ export function SocialReceiptCard({ analysis, archetype }) {
   const teaAndMovePlay = analysis.teaAndMovePlay || [];
   const userQuestion = analysis.userQuestion || '';
   const originalMessage = analysis.originalMessage || '';
-  const gotThisPercentToday = analysis.gotThisPercentToday || Math.floor(Math.random() * 30) + 10;
+  const gotThisPercentToday = analysis.gotThisPercentToday || Math.floor(Math.random() * 14) + 4;
   
   // Extract archetype emoji and clean text dynamically
   const extractEmojiAndText = (text) => {
@@ -1059,7 +1059,7 @@ export function SocialImmunityCard({ immunityData, archetype, analysis }) {
   const immunityTraining = immunityData.immunityTraining || [];
   const sageBlessing = immunityData.sageBlessing || '';
   
-  // Get dynamic archetype color based on red flags (matching desktop logic)
+  // Get dynamic archetype color based on original analysis red flags (not immunity analysis)
   const redFlags = analysis?.redFlags || 0;
   const archetypeColor = redFlags >= 8 ? '#F87171' : redFlags >= 4 ? '#FB923C' : '#34D399';
 

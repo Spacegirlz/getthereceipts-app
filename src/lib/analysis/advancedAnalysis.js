@@ -302,7 +302,29 @@ const detectContextMathematically = (message) => {
     'breadcrumb': 30,
     'maybe': 20,
     'soon': 20,
-    'later': 15
+    'later': 15,
+    // Positive/neutral balance keywords
+    'excited': 25,
+    'can\'t wait': 30,
+    'looking forward': 25,
+    'sounds good': 20,
+    'yes': 20,
+    'definitely': 25,
+    'absolutely': 25,
+    'sure': 15,
+    'okay': 10,
+    'ok': 10,
+    'great': 20,
+    'awesome': 20,
+    'perfect': 25,
+    'love': 30,
+    'like': 15,
+    'enjoy': 20,
+    'fun': 15,
+    'amazing': 25,
+    'wonderful': 25,
+    'happy': 20,
+    'glad': 20
   };
   
   // FAMILY INDICATORS
@@ -1297,7 +1319,7 @@ IMPORTANT:
       redFlagTags: truthReceipt.redFlagTags || result.redFlagChips || [],
       accuracyEstimate: Math.max(0, Math.min(100, truthReceipt.accuracyEstimate || 85)),
       gotThisCountToday: truthReceipt.gotThisCountToday || Math.floor(Math.random() * 5000) + 1000,
-      gotThisPercentToday: Math.max(0, Math.min(100, truthReceipt.gotThisPercentToday || 25)),
+      gotThisPercentToday: Math.max(0, Math.min(100, truthReceipt.gotThisPercentToday || Math.floor(Math.random() * 14) + 4)),
       trendWeekDelta: Math.max(-100, Math.min(100, truthReceipt.trendWeekDelta || 0)),
       jokeDetection: truthReceipt.jokeDetection || { isWeaponizedHumor: false, type: '', example: '', risk: 0 },
       
@@ -1389,11 +1411,15 @@ export const generateAdvancedResults = (message, context) => {
     if (lowerCaseMessage.includes(word)) manipulation += 15;
   });
 
-  // Basic profile detection
-  let profileKey = 'breadcrumber';
+  // Basic profile detection - more diverse fallbacks
+  let profileKey = 'breadcrumber'; // default
   if (interest > 80) profileKey = 'genuine_gem';
   if (manipulation > 70) profileKey = 'player';
-  if (interest < 30) profileKey = 'ghoster';
+  if (interest < 30) {
+    // More diverse low-interest archetypes
+    const lowInterestProfiles = ['ghoster', 'avoider', 'hot_cold', 'future_faker'];
+    profileKey = lowInterestProfiles[Math.floor(Math.random() * lowInterestProfiles.length)];
+  }
   
   const profile = profiles[profileKey];
 

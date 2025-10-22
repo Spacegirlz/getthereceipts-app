@@ -12,6 +12,7 @@ import CouponModal from '@/components/CouponModal';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
 import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits } from '@/lib/services/creditsSystem';
+import { FreeUsageService } from '@/lib/services/freeUsageService';
 import ReferralProgressCard from '@/components/ReferralProgressCard';
 import TrialBanner from '@/components/TrialBanner';
 
@@ -37,6 +38,11 @@ const DashboardPage = () => {
   const [saveReceipts, setSaveReceipts] = useState(false); // Default OFF - privacy first
   const [loading, setLoading] = useState(true);
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
+  const [usageData, setUsageData] = useState({
+    starterUsed: 0,
+    todayReceipts: 0,
+    todayChats: 0
+  });
 
   const fetchData = useCallback(async (userId) => {
     setLoading(true);
@@ -85,6 +91,14 @@ const DashboardPage = () => {
       const statsData = await getReferralStats(userId);
       setReferralStats(statsData);
 
+      // Get actual usage data from FreeUsageService
+      const actualUsage = {
+        starterUsed: FreeUsageService.getStarterUsed(userId),
+        todayReceipts: FreeUsageService.getTodayReceiptCount(userId),
+        todayChats: FreeUsageService.getTodayChatCount(userId)
+      };
+      setUsageData(actualUsage);
+
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({ title: "Error fetching data", description: error.message, variant: "destructive" });
@@ -129,29 +143,60 @@ const DashboardPage = () => {
 
 
   const getPlanName = (subscription) => {
-    if (!subscription) return 'Free Unlimited Sage Receipts';
+    if (!subscription) return 'Free Forever Plan';
     if (subscription === 'premium') return 'Unlimited Monthly';
     if (subscription === 'yearly') return 'OG Founder Yearly';
     if (subscription === 'founder') return 'OG Founder Yearly';
-    return 'Free Unlimited Sage Receipts';
+    return 'Free Forever Plan';
   };
 
   const getPlanDescription = (subscription) => {
     if (!subscription || subscription === 'free') {
-      return 'Unlimited Free Sage Receipts + Playbook & Immunity previews';
+      return '1 Daily Free Receipt + 3 Ask Sage Anything chats';
     }
     if (subscription === 'premium' || subscription === 'yearly' || subscription === 'founder') {
       return 'Full access to all features';
     }
-    return 'Unlimited Free Sage Receipts + Playbook & Immunity previews';
+    return '1 Daily Free Receipt + 3 Ask Sage Anything chats';
   };
 
   const getCreditsDisplay = () => {
     if (!userCredits) return '0';
-    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder' || userCredits.subscription === 'free') {
+    if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') {
       return 'Unlimited';
     }
+    if (userCredits.subscription === 'free') {
+      // For free users, show actual usage from FreeUsageService
+      if (usageData.starterUsed < 3) {
+        return `${3 - usageData.starterUsed} starter left`;
+      } else if (usageData.todayReceipts < 1) {
+        return '1 daily left';
+      } else {
+        return '0 left (resets at midnight UTC)';
+      }
+    }
     return String(userCredits.credits || 0);
+  };
+
+  const getUsageProgress = () => {
+    if (userCredits.subscription === 'free') {
+      if (usageData.starterUsed < 3) {
+        // Show starter progress
+        return {
+          current: usageData.starterUsed,
+          total: 3,
+          type: 'starter'
+        };
+      } else {
+        // Show daily progress
+        return {
+          current: usageData.todayReceipts,
+          total: 1,
+          type: 'daily'
+        };
+      }
+    }
+    return null;
   };
 
   const handleSaveReceiptsToggle = async (checked) => {
@@ -255,7 +300,7 @@ const DashboardPage = () => {
     return (
       <motion.div
         whileHover={{ scale: 1.05, y: -5 }}
-        className="rounded-2xl p-4 text-white cursor-pointer h-full flex flex-col justify-between bg-gray-800/50 relative group"
+        className="rounded-2xl p-4 text-white cursor-pointer h-full flex flex-col justify-between bg-white/8 backdrop-blur-sm border border-cyan-400/20 relative group"
         onClick={() => navigate(`/receipts/${receipt.id}`, { state: { ...receipt, analysis: analysisResult } })}
       >
         <div>
@@ -281,11 +326,11 @@ const DashboardPage = () => {
   
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex justify-center items-center p-4">
+      <div className="min-h-screen bg-[#0F0F0F] text-white flex justify-center items-center p-4">
         <div className="text-center">
-          <Loader2 className="h-16 w-16 animate-spin text-purple-400 mx-auto mb-4" />
+          <Loader2 className="h-16 w-16 animate-spin text-cyan-400 mx-auto mb-4" />
           <h1 className="text-2xl mb-2">Loading your dashboard...</h1>
-          <p className="text-purple-200">Getting your credits and receipts ready</p>
+          <p className="text-cyan-200">Getting your credits and receipts ready</p>
         </div>
       </div>
     );
@@ -294,10 +339,10 @@ const DashboardPage = () => {
   // Add additional safety check
   if (!user) {
     return (
-      <div className="min-h-screen bg-black text-white flex justify-center items-center p-4">
+      <div className="min-h-screen bg-[#0F0F0F] text-white flex justify-center items-center p-4">
         <div className="text-center">
           <h1 className="text-2xl mb-2">Please sign in</h1>
-          <p className="text-purple-200">You need to be logged in to view your dashboard</p>
+          <p className="text-cyan-200">You need to be logged in to view your dashboard</p>
         </div>
       </div>
     );
@@ -312,124 +357,326 @@ const DashboardPage = () => {
       
       <TrialBanner userId={user?.id} />
       
-      <div className="container mx-auto px-4 py-8 text-white">
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Deep Charcoal Background - Glassmorphism Optimized */}
+        <div className="absolute inset-0 bg-[#0F0F0F]" />
+        
+        {/* Subtle Depth with Cyan Accent */}
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5" />
+        
+        {/* Glassmorphism Glow Effect */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
+        
+        <div className="relative z-10 container mx-auto px-4 py-8 text-white">
+        {/* Hero Header Section */}
         <motion.header 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
+          className="text-center mb-12"
         >
-          <div>
-            <h1 className="text-4xl font-black">Your Dashboard</h1>
-            <p className="text-gray-400">Welcome back, {user?.email || 'User'}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full md:w-auto">
-            <LinkButton 
-              to="/chat-input" 
-              className="w-full sm:w-auto text-center bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="mb-8"
             >
-              <PlusCircle className="mr-2 h-4 w-4" /> New Receipt
-            </LinkButton>
-            <LinkButton to="/refer" variant="outline" className="w-full sm:w-auto text-center text-white border-purple-400 hover:bg-purple-500/20">
-              Earn Rewards
-            </LinkButton>
-            {/* Only show coupon button for free users */}
-            {userCredits.subscription === 'free' && (
-              <Button 
-                variant="outline" 
-                className="w-full sm:w-auto text-white border-yellow-400 hover:bg-yellow-500/20"
-                onClick={() => setIsCouponModalOpen(true)}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] mb-4">
+                <span className="text-white">Welcome back,</span>
+                <br />
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                  {user?.email?.split('@')[0] || 'Sage User'}
+                </span>
+              </h1>
+              <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+                Your personal command center for decoding conversations and managing your Sage experience
+              </p>
+            </motion.div>
+
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
+            >
+              <LinkButton 
+                to="/chat-input" 
+                className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-semibold text-lg px-8 py-4 rounded-xl shadow-2xl shadow-cyan-500/40 transition-all duration-300 hover:scale-105 min-h-[56px] min-w-[200px]"
               >
-                <Gift className="mr-2 h-4 w-4" /> Have a Coupon?
-              </Button>
-            )}
-            {user ? (
-              <Button variant="outline" className="w-full sm:w-auto text-white border-red-400 hover:bg-red-500/20" onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" /> Sign Out
-              </Button>
-            ) : (
-              <Button variant="outline" className="w-full sm:w-auto text-white border-green-400 hover:bg-green-500/20" onClick={handleLogin}>
-                <LogIn className="mr-2 h-4 w-4" /> Sign In
-              </Button>
-            )}
+                <PlusCircle className="mr-2 h-5 w-5" /> New Receipt
+              </LinkButton>
+              
+              <LinkButton 
+                to="/refer" 
+                variant="outline" 
+                className="border-purple-400/60 text-white hover:bg-purple-500/10 hover:border-purple-400/80 font-medium px-6 py-4 rounded-xl transition-all duration-300 min-h-[56px] shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30"
+              >
+                <Gift className="mr-2 h-5 w-5" /> Earn Rewards
+              </LinkButton>
+            </motion.div>
+
+            {/* Secondary Actions */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-3"
+            >
+              {/* Only show coupon button for free users */}
+              {userCredits.subscription === 'free' && (
+                <Button 
+                  variant="outline" 
+                  className="text-white border-cyan-400/60 hover:bg-cyan-500/10 hover:border-cyan-400/80 font-medium px-4 py-2 rounded-lg transition-all duration-300"
+                  onClick={() => setIsCouponModalOpen(true)}
+                >
+                  <Gift className="mr-2 h-4 w-4" /> Have a Coupon?
+                </Button>
+              )}
+              
+              {user ? (
+                <Button 
+                  variant="outline" 
+                  className="text-white border-cyan-400/60 hover:bg-cyan-500/10 hover:border-cyan-400/80 font-medium px-4 py-2 rounded-lg transition-all duration-300" 
+                  onClick={handleLogout}
+                >
+                  <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                </Button>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  className="text-white border-cyan-400/60 hover:bg-cyan-500/10 hover:border-cyan-400/80 font-medium px-4 py-2 rounded-lg transition-all duration-300" 
+                  onClick={handleLogin}
+                >
+                  <LogIn className="mr-2 h-4 w-4" /> Sign In
+                </Button>
+              )}
+            </motion.div>
           </div>
         </motion.header>
 
 
+        {/* Main Dashboard Cards */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12"
         >
-          <div className="meme-card p-6 rounded-2xl">
-            <h2 className="font-bold text-xl mb-2 flex items-center">
-              <Zap className="mr-2 h-5 w-5 text-yellow-400" />
-              Plan Status
-            </h2>
-            <p className="text-2xl font-bold gradient-text">{getPlanName(userCredits.subscription)}</p>
-          </div>
-          
-
-           
-          <div className="meme-card p-6 rounded-2xl">
-            <h2 className="font-bold text-xl mb-4 flex items-center">
-              <CreditCard className="mr-2 h-5 w-5 text-blue-400" />
-              Upgrade to Premium
-            </h2>
-            <p className="text-sm text-gray-300 mb-4 text-center">
-              Ready to level up? Get unlimited Sage Receipts, Playbook insights, and Immunity training.
-            </p>
-            <div className="space-y-3">
-              <Button 
-                size="sm" 
-                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-0 text-sm font-semibold"
-                onClick={() => navigate('/pricing')}
-              >
-                Monthly Premium - $4.99
-              </Button>
-              <Button 
-                size="sm" 
-                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 text-sm font-semibold"
-                onClick={() => navigate('/pricing')}
-              >
-                OG Founders Yearly Premium $29.99
-              </Button>
-            </div>
-          </div>
-
-          <div className="meme-card p-6 rounded-2xl">
-            <h2 className="font-bold text-xl mb-2 flex items-center">
-              <Settings className="mr-2 h-5 w-5 text-cyan-400" />
-              Account Settings
-            </h2>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400 text-sm">Email:</span>
-                <span className="text-white text-sm truncate">{user?.email}</span>
+          {/* Plan Status Card */}
+          <motion.div 
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/20 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-2xl flex items-center justify-center mr-4">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Current Plan</h2>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400 text-sm">Plan:</span>
-                <span className="text-white text-sm">{getPlanName(userCredits.subscription)}</span>
-              </div>
-              <div className="text-xs text-gray-400 mt-2">
+              <p className="text-2xl font-bold bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent mb-2">
+                {getPlanName(userCredits.subscription)}
+              </p>
+              <p className="text-sm text-gray-300 mb-4">
                 {getPlanDescription(userCredits.subscription)}
+              </p>
+              
+              {/* Additional Plan Info */}
+              <div className="space-y-2 text-xs text-gray-400">
+                {userCredits.subscription === 'free' && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                      <span>3 starter receipts (lifetime)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                      <span>1 daily receipt (resets at midnight UTC)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                      <span>5 Ask Sage Anything chats per day</span>
+                    </div>
+                  </>
+                )}
+                {(userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <span>Unlimited Truth Receipts</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <span>Unlimited Ask Sage Anything chats</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <span>Sage's Playbook & Immunity Training</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <span>Vibe Check™ real-time analysis</span>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              {/* Usage Counter */}
+              {userCredits.subscription === 'free' && (() => {
+                const progress = getUsageProgress();
+                if (!progress) return null;
+                
+                const percentage = (progress.current / progress.total) * 100;
+                const remaining = progress.total - progress.current;
+                const isUsedUp = remaining === 0;
+                
+                return (
+                  <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-gray-300">
+                        {progress.type === 'starter' ? 'Starter Receipts' : 'Daily Usage'}
+                      </span>
+                      <span className={`text-sm font-semibold ${isUsedUp ? 'text-amber-400' : 'text-emerald-400'}`}>
+                        {remaining > 0 ? `${remaining} left` : 'Used up'}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          isUsedUp 
+                            ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
+                            : 'bg-gradient-to-r from-cyan-500 to-emerald-500'
+                        }`}
+                        style={{ width: `${Math.min(100, percentage)}%` }}
+                      ></div>
+                    </div>
+                    
+                    {isUsedUp ? (
+                      <div className="mt-4 space-y-3">
+                        <p className="text-sm text-orange-300 text-center">
+                          {progress.type === 'starter' 
+                            ? "You've used all 3 starter receipts! 🎉" 
+                            : "You've used today's free receipt! Come back tomorrow or upgrade for unlimited access."
+                          }
+                        </p>
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 text-sm font-semibold shadow-lg shadow-cyan-500/25"
+                          onClick={() => navigate('/pricing')}
+                        >
+                          <Zap className="mr-2 h-4 w-4" />
+                          {progress.type === 'starter' 
+                            ? 'Upgrade for Unlimited Receipts' 
+                            : 'Get Unlimited Access'
+                          }
+                        </Button>
+                        {progress.type === 'daily' && (
+                          <p className="text-xs text-gray-400 text-center">
+                            Or wait until midnight UTC for your next free receipt
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-400 mt-2">
+                        {progress.type === 'starter' 
+                          ? `${progress.current}/3 starter receipts used` 
+                          : '1 free receipt per day'
+                        }
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
+            </div>
+          </motion.div>
+
+          {/* Upgrade Card */}
+          <motion.div 
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="bg-white/8 backdrop-blur-xl border border-purple-400/30 rounded-3xl p-8 shadow-2xl shadow-purple-500/20 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-cyan-500/10"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-2xl flex items-center justify-center mr-4">
+                  <CreditCard className="h-6 w-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Upgrade</h2>
+              </div>
+              <p className="text-sm text-gray-300 mb-6">
+                Ready to level up? Get unlimited Sage Receipts, Playbook insights, and Immunity training.
+              </p>
+              <div className="space-y-3">
+                <Button 
+                  size="sm" 
+                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 text-sm font-semibold shadow-lg shadow-cyan-500/25"
+                  onClick={() => navigate('/pricing')}
+                >
+                  Monthly Premium - $4.99
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="w-full bg-gradient-to-r from-purple-500 to-emerald-500 hover:from-purple-600 hover:to-emerald-600 text-white border-0 text-sm font-semibold shadow-lg shadow-purple-500/25"
+                  onClick={() => navigate('/pricing')}
+                >
+                  OG Founders Yearly - $29.99
+                </Button>
               </div>
             </div>
-            <div className="mt-4 space-y-2">
+          </motion.div>
+
+          {/* Account Settings Card */}
+          <motion.div 
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="bg-white/8 backdrop-blur-xl border border-emerald-400/30 rounded-3xl p-8 shadow-2xl shadow-emerald-500/20 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-cyan-500/10"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
+            <div className="relative z-10">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center mr-4">
+                  <Settings className="h-6 w-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-white">Account</h2>
+              </div>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-sm">Email:</span>
+                  <span className="text-white text-sm truncate">{user?.email}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-sm">Plan:</span>
+                  <span className="text-white text-sm">{getPlanName(userCredits.subscription)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-sm">Member since:</span>
+                  <span className="text-white text-sm">
+                    {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Recently'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-sm">Status:</span>
+                  <span className="text-green-400 text-sm font-medium">Active</span>
+                </div>
+              </div>
               <Button 
                 size="sm" 
                 variant="outline"
-                className="w-full border-purple-400 text-white hover:bg-purple-500/20 text-xs"
+                className="w-full border-emerald-400/60 text-white hover:bg-emerald-500/10 hover:border-emerald-400/80 text-sm font-medium shadow-lg shadow-emerald-500/20"
                 onClick={() => navigate('/pricing')}
               >
                 <CreditCard className="mr-2 h-4 w-4" />
                 Manage Plan
               </Button>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
-        {/* Receipts & Riches Program Section */}
+        {/* Receipts & Riches Program Section - Compact */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -438,76 +685,57 @@ const DashboardPage = () => {
         >
           <div className="max-w-4xl mx-auto">
             <motion.div 
-              className="rounded-3xl p-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 backdrop-blur-sm"
-              whileHover={{ scale: 1.02 }}
+              className="bg-white/8 backdrop-blur-xl border border-amber-400/30 rounded-2xl p-6 shadow-lg shadow-amber-500/20 relative overflow-hidden"
+              whileHover={{ scale: 1.01 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="text-center mb-8">
-                <Crown className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                  <span className="gradient-text">Receipts & Riches</span>
-                </h2>
-                <p className="text-xl text-blue-200 mb-6 max-w-2xl mx-auto">
-                  Our affiliate program for creators and connectors. Earn real cash.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div className="space-y-4">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-500/10"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">✓</span>
+                    <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/25">
+                      <Crown className="h-5 w-5 text-white" />
                     </div>
-                    <span className="text-white font-semibold">30% commission on subscriptions</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">✓</span>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">
+                        <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                          Receipts & Riches
+                        </span>
+                      </h2>
+                      <p className="text-sm text-gray-300">Earn 30% commission on referrals</p>
                     </div>
-                    <span className="text-white font-semibold">Monthly payouts via PayPal</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">✓</span>
-                    </div>
-                    <span className="text-white font-semibold">$1000+ earning potential</span>
-                  </div>
+                  
+                  <Button 
+                    size="sm" 
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-4 py-2 rounded-lg border-0 shadow-lg shadow-amber-500/25 transition-all duration-300 hover:scale-105"
+                    onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
+                  >
+                    <Crown className="mr-2 h-4 w-4" />
+                    Apply
+                  </Button>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">🎯</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-xs">✓</span>
                     </div>
-                    <span className="text-blue-200">Perfect for content creators</span>
+                    <span className="text-sm text-gray-300">30% commission</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">📱</span>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-xs">✓</span>
                     </div>
-                    <span className="text-blue-200">Social media influencers</span>
+                    <span className="text-sm text-gray-300">Monthly payouts</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">👥</span>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-xs">✓</span>
                     </div>
-                    <span className="text-blue-200">Connectors with friend networks</span>
+                    <span className="text-sm text-gray-300">$1000+ potential</span>
                   </div>
                 </div>
-              </div>
-              
-              <div className="text-center">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-4"
-                  onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
-                >
-                  <Crown className="mr-2 h-5 w-5" />
-                  Apply to Receipts & Riches
-                </Button>
-                <p className="text-sm text-gray-400">
-                  Join our exclusive creator program and start earning today
-                </p>
               </div>
             </motion.div>
           </div>
@@ -550,6 +778,7 @@ const DashboardPage = () => {
             </div>
           )}
         </motion.section> */}
+        </div>
       </div>
       
       {/* Coupon Modal */}

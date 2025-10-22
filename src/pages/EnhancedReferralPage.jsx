@@ -202,9 +202,9 @@ const EnhancedReferralPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
+      <div className="min-h-screen flex items-center justify-center text-white bg-[#0F0F0F]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
           <p className="text-lg">Loading your referral dashboard...</p>
         </div>
       </div>
@@ -212,7 +212,17 @@ const EnhancedReferralPage = () => {
   }
 
   return (
-    <div className="min-h-screen text-white px-4 py-8 overflow-hidden">
+    <div className="min-h-screen text-white px-4 py-8 overflow-hidden relative">
+      {/* Deep Charcoal Background - Glassmorphism Optimized */}
+      <div className="absolute inset-0 bg-[#0F0F0F]" />
+      
+      {/* Subtle Depth with Cyan Accent */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5" />
+      
+      {/* Glassmorphism Glow Effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
+      
+      <div className="relative z-10">
       <Helmet>
         <title>Refer & Earn - Get The Receipts</title>
         <meta name="description" content="Share your unique referral link and earn credits for every friend who joins! Unlock milestone rewards and become an OG Founder." />
@@ -221,7 +231,7 @@ const EnhancedReferralPage = () => {
       </Helmet>
       
       <header className="max-w-4xl mx-auto mb-8 text-center relative">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="absolute top-0 left-0 text-white hover:bg-white/10">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="absolute top-0 left-0 text-white hover:bg-cyan-500/10 border border-cyan-400/20">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back Home
         </Button>
         
@@ -231,7 +241,7 @@ const EnhancedReferralPage = () => {
             size="sm" 
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="text-white hover:bg-white/10"
+            className="text-white hover:bg-cyan-500/10 border border-cyan-400/20"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
             Refresh
@@ -255,83 +265,116 @@ const EnhancedReferralPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
             >
-              <Crown className="h-24 w-24 text-yellow-400 mx-auto mb-6" />
+              <Crown className="h-24 w-24 text-cyan-400 mx-auto mb-6" />
               <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
-                <span className="gradient-text">Receipts & Riches Program</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Receipts & Riches Program</span>
               </h1>
-                  <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl mx-auto">
-                    Share your link and earn cash for every friend who joins! 🚀
+                  <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-3xl mx-auto">
+                    The <span className="text-cyan-400 font-semibold">highest-paying</span> affiliate program for <span className="text-white font-semibold">nano influencers</span>, <span className="text-white font-semibold">content creators</span>, and <span className="text-white font-semibold">community builders</span> 🚀
                   </p>
-              <p className="text-lg font-semibold text-yellow-400 mb-8">
-                30% commission • Monthly payments • $1000+ earning potential
-              </p>
+              <div className="bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/30 rounded-2xl p-8 mb-12 max-w-4xl mx-auto">
+                <p className="text-2xl font-bold text-cyan-300 mb-2">
+                  💰 30% Commission • 💳 Rewardful Payments • 🎯 $1000+ Earning Potential
+                </p>
+                <p className="text-base text-gray-300">
+                  Join our <span className="font-semibold text-white">exclusive launch program</span> - limited spots for early creators
+                </p>
+              </div>
               
-              <div className="max-w-4xl mx-auto mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">✓</span>
+              <div className="max-w-5xl mx-auto mb-12 ml-8 md:ml-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 text-center md:text-left">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white font-bold text-sm">💰</span>
                       </div>
-                      <span className="text-white font-semibold">30% commission on subscriptions</span>
+                      <span className="text-white font-semibold leading-relaxed">30% commission on ALL subscriptions (industry-leading rate)</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">✓</span>
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white font-bold text-sm">💳</span>
                       </div>
-                      <span className="text-white font-semibold">Monthly payouts via PayPal</span>
+                      <span className="text-white font-semibold leading-relaxed">Monthly payouts via Rewardful (no waiting)</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">✓</span>
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white font-bold text-sm">🎯</span>
                       </div>
-                      <span className="text-white font-semibold">$1000+ earning potential</span>
+                      <span className="text-white font-semibold leading-relaxed">$1000+ monthly earning potential</span>
+                    </div>
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white font-bold text-sm">🔥</span>
+                      </div>
+                      <span className="text-white font-semibold leading-relaxed">Exclusive creator resources & support</span>
                     </div>
                   </div>
                   
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">🎯</span>
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white font-bold text-sm">📺</span>
                       </div>
-                      <span className="text-blue-200">Perfect for content creators</span>
+                      <span className="text-blue-200 leading-relaxed">YouTube creators & nano influencers</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                         <span className="text-white font-bold text-sm">📱</span>
                       </div>
-                      <span className="text-blue-200">Social media influencers</span>
+                      <span className="text-blue-200 leading-relaxed">TikTok/Instagram micro & nano influencers</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                         <span className="text-white font-bold text-sm">👥</span>
                       </div>
-                      <span className="text-blue-200">Community builders</span>
+                      <span className="text-blue-200 leading-relaxed">Friends networks & community builders</span>
+                    </div>
+                    <div className="flex items-start gap-3 justify-center md:justify-start">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white font-bold text-sm">🎙️</span>
+                      </div>
+                      <span className="text-blue-200 leading-relaxed">Podcasters & relationship coaches</span>
                     </div>
                   </div>
                 </div>
               </div>
               
               <div className="text-center">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-6"
-                  onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
+                <motion.div
+                  animate={{
+                    scale: [1, 1.02, 1],
+                    boxShadow: [
+                      "0 25px 50px -12px rgba(0, 229, 255, 0.4)",
+                      "0 25px 50px -12px rgba(0, 229, 255, 0.6)",
+                      "0 25px 50px -12px rgba(0, 229, 255, 0.4)"
+                    ]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 >
-                  <Crown className="mr-2 h-5 w-5" />
-                  Apply to Receipts & Riches
-                </Button>
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-cyan-500/40 transition-all duration-300 hover:scale-105 hover:shadow-cyan-500/50 mb-6"
+                    onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
+                  >
+                    <Crown className="mr-2 h-5 w-5" />
+                    Apply to Receipts & Riches
+                  </Button>
+                </motion.div>
                 <p className="text-sm text-gray-400 mb-4">
                   Join our exclusive creator program and start earning today
                 </p>
-              </div>
-              <div className="text-center">
-                <button
-                  onClick={() => openModal('sign_up')}
-                  className="text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4"
-                >
-                  Sign up first to get started →
-                </button>
+                <div className="text-center">
+                  <button
+                    onClick={() => openModal('sign_up')}
+                    className="text-cyan-400 hover:text-cyan-300 transition-colors underline underline-offset-4"
+                  >
+                    Sign up first to get started →
+                  </button>
+                </div>
               </div>
             </motion.div>
 
@@ -342,14 +385,14 @@ const EnhancedReferralPage = () => {
               transition={{ delay: 0.5, duration: 0.7 }}
               className="mt-16 w-full"
             >
-              <h2 className="text-2xl font-bold text-white mb-8">How It Works</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <h2 className="text-2xl font-bold text-white mb-12">How It Works</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <motion.div 
-                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  className="text-center p-6 bg-white/8 backdrop-blur-sm border border-cyan-400/20 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-xl">1</span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Apply & Get Approved</h3>
@@ -358,11 +401,11 @@ const EnhancedReferralPage = () => {
                   </p>
                 </motion.div>
                 <motion.div 
-                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  className="text-center p-6 bg-white/8 backdrop-blur-sm border border-cyan-400/20 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-xl">2</span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Promote & Earn</h3>
@@ -371,11 +414,11 @@ const EnhancedReferralPage = () => {
                   </p>
                 </motion.div>
                 <motion.div 
-                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  className="text-center p-6 bg-white/8 backdrop-blur-sm border border-cyan-400/20 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-xl">3</span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Earn Riches</h3>
@@ -395,84 +438,100 @@ const EnhancedReferralPage = () => {
               transition={{ duration: 0.7 }}
               className="text-center mb-12"
             >
-              <Gift className="h-32 w-32 text-yellow-400 mx-auto mb-6" />
+              <Gift className="h-32 w-32 text-cyan-400 mx-auto mb-6" />
               <h1 className="text-5xl md:text-7xl font-black text-white mb-4">
-                <span className="gradient-text">Refer & Earn</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Refer & Earn</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 Share your link and earn cash for every friend who joins! 🚀
               </p>
 
               {/* Receipts & Riches CTA (logged-in) */}
-              <div className="max-w-4xl mx-auto">
+              <div className="max-w-5xl mx-auto ml-8 md:ml-16">
                 <motion.div 
-                  className="rounded-3xl p-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 backdrop-blur-sm"
+                  className="rounded-3xl p-8 bg-white/8 backdrop-blur-xl border border-cyan-400/30 shadow-2xl shadow-cyan-500/20"
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="text-center mb-8">
-                    <Crown className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
+                    <Crown className="h-16 w-16 text-cyan-400 mx-auto mb-4" />
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                      <span className="gradient-text">Receipts & Riches</span>
+                      <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Receipts & Riches</span>
                     </h2>
                     <p className="text-xl text-blue-200 mb-6 max-w-2xl mx-auto">
                       Our affiliate program for creators and connectors. Earn real cash.
                     </p>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-12 text-center md:text-left">
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-3 justify-center md:justify-start">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-white font-bold text-sm">✓</span>
                         </div>
-                        <span className="text-white font-semibold">30% commission on subscriptions</span>
+                        <span className="text-white font-semibold leading-relaxed">30% commission on subscriptions</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <div className="flex items-start gap-3 justify-center md:justify-start">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-white font-bold text-sm">✓</span>
                         </div>
-                        <span className="text-white font-semibold">Monthly payouts via PayPal</span>
+                        <span className="text-white font-semibold leading-relaxed">Monthly payouts via Rewardful</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <div className="flex items-start gap-3 justify-center md:justify-start">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-white font-bold text-sm">✓</span>
                         </div>
-                        <span className="text-white font-semibold">$1000+ earning potential</span>
+                        <span className="text-white font-semibold leading-relaxed">$1000+ earning potential</span>
                       </div>
                     </div>
                     
                     <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="flex items-start gap-3 justify-center md:justify-start">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-white font-bold text-sm">🎯</span>
                         </div>
-                        <span className="text-blue-200">Perfect for content creators</span>
+                        <span className="text-blue-200 leading-relaxed">Nano & micro influencers</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="flex items-start gap-3 justify-center md:justify-start">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-white font-bold text-sm">📱</span>
                         </div>
-                        <span className="text-blue-200">Social media influencers</span>
+                        <span className="text-blue-200 leading-relaxed">Content creators & social media</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="flex items-start gap-3 justify-center md:justify-start">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-white font-bold text-sm">👥</span>
                         </div>
-                        <span className="text-blue-200">Connectors with friend networks</span>
+                        <span className="text-blue-200 leading-relaxed">Friends networks & community builders</span>
                       </div>
                     </div>
                   </div>
                   
                   <div className="text-center">
-                    <Button 
-                      size="lg"
-                      className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-violet-500/25 transition-all duration-300 hover:scale-105 hover:shadow-violet-500/40 mb-4"
-                      onClick={() => navigate('/refer/apply')}
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.02, 1],
+                        boxShadow: [
+                          "0 25px 50px -12px rgba(0, 229, 255, 0.4)",
+                          "0 25px 50px -12px rgba(0, 229, 255, 0.6)",
+                          "0 25px 50px -12px rgba(0, 229, 255, 0.4)"
+                        ]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
                     >
-                      <Crown className="mr-2 h-5 w-5" />
-                      Apply to Receipts & Riches
-                    </Button>
+                      <Button 
+                        size="lg"
+                        className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-cyan-500/25 transition-all duration-300 hover:scale-105 hover:shadow-cyan-500/40 mb-4"
+                        onClick={() => navigate('/refer/apply')}
+                      >
+                        <Crown className="mr-2 h-5 w-5" />
+                        Apply to Receipts & Riches
+                      </Button>
+                    </motion.div>
                     <p className="text-sm text-gray-400">
                       Join our exclusive creator program and start earning today
                     </p>
@@ -488,14 +547,14 @@ const EnhancedReferralPage = () => {
               transition={{ delay: 0.5, duration: 0.7 }}
               className="mt-16 w-full"
             >
-              <h2 className="text-2xl font-bold text-white mb-8">How It Works</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <h2 className="text-2xl font-bold text-white mb-12">How It Works</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <motion.div 
-                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  className="text-center p-6 bg-white/8 backdrop-blur-sm border border-cyan-400/20 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-xl">1</span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Apply & Get Approved</h3>
@@ -504,11 +563,11 @@ const EnhancedReferralPage = () => {
                   </p>
                 </motion.div>
                 <motion.div 
-                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  className="text-center p-6 bg-white/8 backdrop-blur-sm border border-cyan-400/20 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-xl">2</span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Promote & Earn</h3>
@@ -517,11 +576,11 @@ const EnhancedReferralPage = () => {
                   </p>
                 </motion.div>
                 <motion.div 
-                  className="text-center p-6 bg-gray-800/30 rounded-xl"
+                  className="text-center p-6 bg-white/8 backdrop-blur-sm border border-cyan-400/20 rounded-xl"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-xl">3</span>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Earn Riches</h3>
@@ -547,7 +606,7 @@ const EnhancedReferralPage = () => {
                   </p>
                   <Button 
                     size="lg"
-                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-green-500/25 transition-all duration-300 hover:scale-105 hover:shadow-green-500/40 mb-8"
+                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-8 py-4 rounded-2xl border-0 shadow-2xl shadow-emerald-500/25 transition-all duration-300 hover:scale-105 hover:shadow-emerald-500/40 mb-8"
                     onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
                   >
                     Apply Now
@@ -617,7 +676,7 @@ const EnhancedReferralPage = () => {
           </p>
         </div>
       </footer>
-
+      </div>
     </div>
   );
 };

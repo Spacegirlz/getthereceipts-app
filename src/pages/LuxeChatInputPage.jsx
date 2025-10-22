@@ -410,14 +410,14 @@ const LuxeChatInputPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden text-white flex flex-col">
-      {/* Clean Black Background for Maximum Readability */}
-      <div className="absolute inset-0 bg-black" />
+      {/* Deep Charcoal Background - Glassmorphism Optimized */}
+      <div className="absolute inset-0 bg-[#0F0F0F]" />
       
-      {/* Subtle Depth - No Blur for Performance */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-black/20" />
+      {/* Subtle Depth with Cyan Accent */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5" />
       
-      {/* Minimal Accent - Just for Visual Interest */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.03),rgba(255,255,255,0))] pointer-events-none" />
+      {/* Glassmorphism Glow Effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
       
       <div className="relative z-10 flex flex-col flex-1">
       <div className="flex-1 flex items-center justify-center p-4">
@@ -427,13 +427,13 @@ const LuxeChatInputPage = () => {
           className="w-full max-w-2xl"
         >
         {/* Main Card */}
-        <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/10">
+        <div className="bg-white/8 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-cyan-400/30 shadow-2xl shadow-cyan-500/20">
           {/* Header */}
           <div className="text-center mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 gradient-text">
-              Decode Your Conversation
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-white">
+              Decode Your <span className="text-cyan-400">Conversation</span>
             </h1>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-300 text-sm">
               Paste your texts. Get clarity in seconds.
             </p>
           </div>
@@ -441,18 +441,18 @@ const LuxeChatInputPage = () => {
 
           {/* Anonymous User Status */}
           {!user && anonymousStatus && (
-            <div className="mb-6 p-4 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl">
+            <div className="mb-6 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm border border-cyan-400/30 rounded-xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-blue-400" />
+                  <User className="w-5 h-5 text-cyan-400" />
                   <div>
-                    <p className="text-sm font-medium text-blue-300">
+                    <p className="text-sm font-medium text-cyan-300">
                       {anonymousStatus.remainingAnalyses > 0 
                         ? `Free Analysis: ${anonymousStatus.remainingAnalyses} remaining`
                         : 'Free analysis used up'
                       }
                     </p>
-                    <p className="text-xs text-blue-400/80">
+                    <p className="text-xs text-cyan-400/80">
                       {anonymousStatus.remainingAnalyses > 0 
                         ? 'Sign up for unlimited analysis + daily credits'
                         : 'Sign up now for unlimited analysis'
@@ -462,7 +462,7 @@ const LuxeChatInputPage = () => {
                 </div>
                 <button
                   onClick={() => openModal()}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center gap-2"
+                  className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-500 text-white text-sm font-medium rounded-lg hover:from-cyan-600 hover:to-purple-600 transition-all duration-200 flex items-center gap-2"
                 >
                   <Crown className="w-4 h-4" />
                   Sign Up
@@ -479,8 +479,8 @@ const LuxeChatInputPage = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ${
                   activeTab === tab.id 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' 
-                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 border border-gray-700'
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30' 
+                    : 'bg-white/5 backdrop-blur-sm text-gray-300 hover:bg-white/10 border border-cyan-400/20'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -497,7 +497,7 @@ const LuxeChatInputPage = () => {
                   value={texts}
                   onChange={handleTextChange}
                   placeholder="Paste your conversation here..."
-                  className="w-full h-48 p-4 text-sm bg-gray-800/50 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors resize-none"
+                  className="w-full h-48 p-4 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400"
                 />
                 <SmartCharacterCounter count={texts.length} limit={5000} />
                 <ConversationTips />
@@ -512,7 +512,7 @@ const LuxeChatInputPage = () => {
                   placeholder="Tell your story in your own words..  Use 'I' for yourself and their name or 'they/them' for the other person.
 
 Example: I've been seeing Alex for 3 months. Last week they said they wanted to be exclusive, but yesterday I saw them active on dating apps at 2am. When I asked about it, they said I was 'being paranoid'..."
-                  className="w-full h-48 p-4 text-sm bg-gray-800/50 border border-gray-700 rounded-xl focus:border-purple-500 transition-colors resize-none"
+                  className="w-full h-48 p-4 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400"
                 />
                 <SmartCharacterCounter count={texts.length} limit={5000} />
               </div>
@@ -552,8 +552,8 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                   onClick={() => setContextType(type.toLowerCase())}
                   className={`p-2 sm:p-3 rounded-lg transition-all duration-300 text-xs sm:text-sm font-medium ${
                     contextType === type.toLowerCase()
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                      : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
+                      ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30'
+                      : 'bg-white/5 backdrop-blur-sm text-gray-300 hover:bg-white/10 border border-cyan-400/20'
                   }`}
                   disabled={isLoading}
                 >
@@ -570,7 +570,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mb-6 p-4 bg-purple-900/20 rounded-xl border border-purple-500/30"
+                className="mb-6 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30"
               >
                 <p className="text-sm font-medium mb-3 flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
@@ -627,13 +627,13 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                       <div className="grid grid-cols-2 gap-3">
                         <input
                           placeholder="You/Person 1"
-                          className="p-2 bg-gray-800 rounded-lg text-sm"
+                          className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
                           value={userName}
                           onChange={(e) => setUserName(e.target.value)}
                         />
                         <input
                           placeholder="Them/Person 2"
-                          className="p-2 bg-gray-800 rounded-lg text-sm"
+                          className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
                           value={otherName}
                           onChange={(e) => setOtherName(e.target.value)}
                         />
@@ -644,13 +644,13 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                   <div className="grid grid-cols-2 gap-3">
                     <input
                       placeholder="You/Person 1"
-                      className="p-2 bg-gray-800 rounded-lg text-sm"
+                      className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
                     />
                     <input
                       placeholder="Them/Person 2"
-                      className="p-2 bg-gray-800 rounded-lg text-sm"
+                      className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
                       value={otherName}
                       onChange={(e) => setOtherName(e.target.value)}
                     />
@@ -702,7 +702,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                     value={context}
                     onChange={(e) => setContext(e.target.value)}
                     placeholder="e.g., 'We've been dating 3 months' or 'My ex from last year'"
-                    className="w-full px-3 py-2 bg-white/5 rounded-lg text-sm text-white placeholder-white/40 border border-white/10 focus:border-yellow-400/50 focus:outline-none transition-all duration-300"
+                    className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm rounded-lg text-sm text-white placeholder-gray-400 border border-cyan-400/20 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
                   />
                 </div>
               </div>
@@ -713,7 +713,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
           <button
             onClick={handleAnalyze}
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-2xl shadow-cyan-500/40 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
@@ -730,13 +730,13 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-6 p-6 bg-gradient-to-br from-violet-500/10 via-pink-500/5 to-blue-500/10 rounded-2xl border border-white/10 backdrop-blur-sm"
+              className="mt-6 p-6 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-emerald-500/10 rounded-2xl border border-cyan-400/30 backdrop-blur-sm"
             >
               <div className="text-center">
                 {/* Animated Progress Bar */}
                 <div className="w-full bg-gray-700/50 rounded-full h-2 mb-4 overflow-hidden">
                   <motion.div
-                    className="bg-gradient-to-r from-violet-500 to-pink-500 h-2 rounded-full"
+                    className="bg-gradient-to-r from-cyan-400 to-purple-500 h-2 rounded-full"
                     initial={{ x: "-100%" }}
                     animate={{ x: "0%" }}
                     transition={{
@@ -753,20 +753,20 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                   key={isLoading}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-violet-200 font-medium mb-2"
+                  className="text-cyan-200 font-medium mb-2"
                 >
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <div className="animate-bounce text-2xl">🧾</div>
                     <span className="text-lg">Sage is brewing the tea...</span>
                   </div>
-                  <div className="text-sm text-violet-300 space-y-1">
+                  <div className="text-sm text-cyan-300 space-y-1">
                     <div className="animate-pulse">📊 Analyzing conversation patterns...</div>
                     <div className="animate-pulse delay-100">🔍 Deep diving into the subtext...</div>
                     <div className="animate-pulse delay-200">🛡️ Building your immunity training...</div>
                   </div>
                 </motion.div>
                 
-                <div className="text-xs text-violet-400 mt-3">
+                <div className="text-xs text-cyan-400 mt-3">
                   This usually takes 30-60 seconds ⏱️
                 </div>
               </div>
@@ -815,7 +815,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-gradient-to-br from-violet-900/90 to-blue-900/90 backdrop-blur-xl border border-white/20 rounded-3xl p-8 max-w-md w-full mx-4"
+              className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-cyan-500/20"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center">
@@ -832,7 +832,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                 </h2>
 
                 {/* Description */}
-                <p className="text-violet-200 mb-6 leading-relaxed">
+                <p className="text-cyan-200 mb-6 leading-relaxed">
                   Great job! You've completed your free analysis. Ready for unlimited insights? 
                   Choose your path to continue getting the tea! ☕️
                 </p>
@@ -844,7 +844,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                       setShowLimitModal(false);
                       openModal('signup');
                     }}
-                    className="w-full bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                   >
                     🆓 Sign Up for Free Credits
                   </button>
@@ -854,14 +854,14 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                       setShowLimitModal(false);
                       navigate('/pricing');
                     }}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                   >
                     👑 Go Premium - Unlimited
                   </button>
                   
                   <button
                     onClick={() => setShowLimitModal(false)}
-                    className="w-full text-violet-300 hover:text-white transition-colors duration-300 py-2"
+                    className="w-full text-cyan-300 hover:text-white transition-colors duration-300 py-2"
                   >
                     Maybe Later
                   </button>
@@ -869,8 +869,8 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
 
                 {/* Benefits */}
                 <div className="mt-6 pt-6 border-t border-white/10">
-                  <p className="text-xs text-violet-400 mb-3">What you get with an account:</p>
-                  <div className="grid grid-cols-2 gap-2 text-xs text-violet-300">
+                  <p className="text-xs text-cyan-400 mb-3">What you get with an account:</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-cyan-300">
                     <div className="flex items-center gap-1">
                       <span>✅</span>
                       <span>Daily free credits</span>

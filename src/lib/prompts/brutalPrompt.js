@@ -278,6 +278,11 @@ SASS FORMULAS THAT WORK (STRUCTURE ONLY, INSERT REAL NAMES):
 • Pop culture roast: "This person's treating you like a Netflix show they might get around to"
 • Reality vs expectation: "Says 'thinking of you' but can't think of a single free evening"
 
+CRITICAL NAME SUBSTITUTION RULES:
+- When using templates, substitute names CLEANLY: "[NAME]'s treating you like a text that got lost" NOT "[NAME]'s treating you like a text [NAME] that got lost"
+- Keep the structure intact when inserting real names
+- Avoid awkward name repetition in the middle of phrases
+
 # ANALYZE THE MESSAGE & CALCULATE METRICS
 Look for red flags:
 - Late night texts (11pm-3am) = +2 flags

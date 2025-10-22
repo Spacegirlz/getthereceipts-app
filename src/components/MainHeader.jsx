@@ -32,8 +32,8 @@ const MainHeader = () => {
     <motion.header 
       className="py-4 px-4 md:px-8 sticky top-0 z-50 transition-all duration-300"
       animate={{ 
-        backgroundColor: scrolled ? 'rgba(16, 24, 36, 0.8)' : 'rgba(16, 24, 36, 0)',
-        backdropFilter: scrolled ? 'blur(10px)' : 'blur(0px)',
+        backgroundColor: scrolled ? 'rgba(15, 15, 15, 0.8)' : 'rgba(15, 15, 15, 0)',
+        backdropFilter: scrolled ? 'blur(20px)' : 'blur(0px)',
       }}
     >
       <div className="container mx-auto flex justify-between items-center">
@@ -47,15 +47,7 @@ const MainHeader = () => {
             }
           }}
         >
-          <span
-            style={{
-              background: 'linear-gradient(135deg, #8b5cf6 0%, #14b8a6 100%)', // purple → teal
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              color: 'transparent'
-            }}
-          >
+          <span className="text-cyan-400 font-black">
             GetTheReceipts
           </span>
         </Link>

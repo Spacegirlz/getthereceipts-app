@@ -93,14 +93,14 @@ const PricingPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden text-white px-4 py-8">
-      {/* Clean Black Background for Maximum Readability */}
-      <div className="absolute inset-0 bg-black" />
+      {/* Deep Charcoal Background - Glassmorphism Optimized */}
+      <div className="absolute inset-0 bg-[#0F0F0F]" />
       
-      {/* Subtle Depth - No Blur for Performance */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-black/20" />
+      {/* Subtle Depth with Cyan Accent */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5" />
       
-      {/* Minimal Accent - Just for Visual Interest */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.03),rgba(255,255,255,0))] pointer-events-none" />
+      {/* Glassmorphism Glow Effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
       
       <div className="relative z-10">
       <Helmet>
@@ -117,7 +117,7 @@ const PricingPage = () => {
               className="text-4xl md:text-6xl font-bold mb-6"
             >
               Simple pricing.{" "}
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-lime-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
             No surprises.
           </span>
           </motion.h1>
@@ -131,6 +131,17 @@ const PricingPage = () => {
             Receipts in 60 seconds. No shame. No storage. Just Sage's take.
           </motion.p>
           
+          {/* Urgency Banner */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 rounded-full text-sm text-amber-300 font-medium mb-8"
+          >
+            <span className="animate-pulse">🔥</span>
+            <span>Limited: First 500 get OG Founder pricing forever</span>
+          </motion.div>
+          
           
           {/* Privacy First Badge */}
           <motion.div
@@ -139,7 +150,7 @@ const PricingPage = () => {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
           >
-            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-400/30 rounded-full text-sm text-green-300 font-medium">
+            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-400/30 rounded-full text-sm text-emerald-300 font-medium">
               <Shield className="h-4 w-4" />
               <span>Bank-level encryption</span>
             </div>
@@ -151,13 +162,17 @@ const PricingPage = () => {
               <Zap className="h-4 w-4" />
               <span>Anonymous</span>
             </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-400/30 rounded-full text-sm text-green-300 font-medium">
+              <span>💯</span>
+              <span>7-day money-back guarantee</span>
+            </div>
           </motion.div>
 
           {/* Netflix-Style Clean Cards - All Same Size */}
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-12">
               {/* MOST POPULAR Badge for Premium Card */}
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
-                <div className="bg-gradient-to-r from-orange-400 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
                   MOST POPULAR
                 </div>
               </div>
@@ -174,22 +189,22 @@ const PricingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                className="meme-card p-8 rounded-2xl flex flex-col border-2 border-lime-400/60 bg-lime-500/5 shadow-lg shadow-lime-500/20" 
+                className="bg-white/8 backdrop-blur-xl p-8 rounded-2xl flex flex-col border-2 border-emerald-400/40 shadow-xl shadow-emerald-500/20" 
                 style={{ minHeight: '420px' }}
               >
                 <div className="flex-grow">
                     <div className="text-center mb-6">
-                      <h3 className="font-semibold text-xl mb-3 text-lime-400">Start Free</h3>
+                      <h3 className="font-semibold text-xl mb-3 text-emerald-400">Start Free</h3>
                       <div className="text-3xl font-bold text-white mb-2">$0</div>
-                      <p className="text-gray-400 text-sm mb-1">Join 5K+ Getting Clarity</p>
+                      <p className="text-gray-400 text-sm mb-1">Join 2.1K+ Getting Clarity</p>
                       <p className="text-blue-400 text-xs">No Login Needed</p>
                     </div>
                     
                   <div className="space-y-4 text-sm text-gray-300 text-left">
-                    <div className="flex items-start"><span className="text-lime-400 mr-2 mt-0.5">🧠</span><span>3 Truth Receipts to try</span></div>
-                    <div className="flex items-start"><span className="text-lime-400 mr-2 mt-0.5">💬</span><span>3 Ask Sage Anything chats</span></div>
-                    <div className="flex items-start"><span className="text-lime-400 mr-2 mt-0.5">👀</span><span>See why everyone's obsessed</span></div>
-                    <div className="flex items-start"><span className="text-lime-400 mr-2 mt-0.5">🆓</span><span>No commitment required</span></div>
+                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">🧠</span><span>3 Truth Receipts to try</span></div>
+                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">💬</span><span>3 Ask Sage Anything chats</span></div>
+                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">👀</span><span>See why everyone's obsessed</span></div>
+                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">🆓</span><span>No commitment required</span></div>
                     
                     <div className="mt-4 pt-3 border-t border-gray-700">
                       <div className="flex items-center text-cyan-400 text-xs">
@@ -200,8 +215,8 @@ const PricingPage = () => {
                   </div>
                 </div>
                 <div className="mt-auto">
-                  <div className="pt-2 text-xs text-lime-400 font-medium mb-4">Perfect for: Curious but cautious</div>
-                  <Button onClick={() => navigate('/chat-input')} variant="outline" className="border-lime-400 text-white hover:bg-lime-500/20 w-full">
+                  <div className="pt-2 text-xs text-emerald-400 font-medium mb-4">Perfect for: Curious but cautious</div>
+                  <Button onClick={() => navigate('/chat-input')} variant="outline" className="border-emerald-400 text-white hover:bg-emerald-500/20 w-full">
                     Start Free →
                   </Button>
                 </div>
@@ -212,26 +227,26 @@ const PricingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="meme-card p-8 rounded-2xl flex flex-col border-2 border-orange-500/60 bg-orange-500/5 shadow-lg shadow-orange-500/20" 
+                className="bg-white/8 backdrop-blur-xl p-8 rounded-2xl flex flex-col border-2 border-cyan-400/40 shadow-xl shadow-cyan-500/20" 
                 style={{ minHeight: '420px' }}
               >
                 <div className="flex-grow">
                   <div className="text-center mb-6">
-                    <h3 className="font-semibold text-xl mb-3 text-orange-400">Premium Monthly</h3>
+                    <h3 className="font-semibold text-xl mb-3 text-cyan-400">Premium Monthly</h3>
                     <div className="text-4xl font-black text-white mb-2">$4.99</div>
                     <p className="text-gray-400 text-sm">per month</p>
                   </div>
                   <div className="space-y-4 text-sm text-gray-300 text-left">
                     <div className="text-xs text-gray-400 mb-2">Everything in Free, plus:</div>
-                    <div className="flex items-start"><span className="text-orange-400 mr-2 mt-0.5">🧠</span><span>UNLIMITED Truth Receipts</span></div>
-                    <div className="flex items-start"><span className="text-orange-400 mr-2 mt-0.5">💬</span><span>UNLIMITED Ask Sage Anything</span></div>
-                    <div className="flex items-start"><span className="text-orange-400 mr-2 mt-0.5">🛡️</span><span>Sage's Immunity Training (NEW!)</span></div>
-                    <div className="flex items-start"><span className="text-orange-400 mr-2 mt-0.5">⚡</span><span>Vibe Check™ real-time analysis</span></div>
-                    <div className="flex items-start"><span className="text-orange-400 mr-2 mt-0.5">🚀</span><span>Priority processing</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">🧠</span><span>UNLIMITED Truth Receipts</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">💬</span><span>UNLIMITED Ask Sage Anything</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">🛡️</span><span>Sage's Immunity Training (NEW!)</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">⚡</span><span>Vibe Check™ real-time analysis</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">🚀</span><span>Priority processing</span></div>
                   </div>
                 </div>
                 <div className="mt-auto">
-                  <div className="pt-2 text-xs text-orange-400 font-medium mb-4">Perfect for: Done with the drama</div>
+                  <div className="pt-2 text-xs text-cyan-400 font-medium mb-4">Perfect for: Done with the drama</div>
                   <Button onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly')} className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-orange-500/25">
                     Go Premium
                   </Button>
@@ -243,7 +258,7 @@ const PricingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="p-8 rounded-2xl flex flex-col border-2 border-purple-400/60 bg-purple-500/5 shadow-lg shadow-purple-500/20" 
+                className="bg-white/8 backdrop-blur-xl p-8 rounded-2xl flex flex-col border-2 border-purple-400/40 shadow-xl shadow-purple-500/20" 
                 style={{ minHeight: '420px' }}
               >
                 
@@ -303,7 +318,7 @@ const PricingPage = () => {
                 How OG Founder Pricing Works
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Let's be real: <span className="text-yellow-400 font-semibold">OG Founders and Early Birds get the best perks.</span>
+                Let's be real: <span className="text-cyan-400 font-semibold">OG Founders and Early Birds get the best perks.</span>
               </p>
             </motion.div>
 
@@ -509,11 +524,11 @@ const PricingPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-12 shadow-2xl shadow-black/20"
+              className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-12 shadow-2xl shadow-cyan-500/20"
             >
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
                 Ready to stop guessing?<br />
-                <span className="bg-gradient-to-r from-cyan-400 via-lime-400 to-pink-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
                   Start knowing. 💅
                 </span>
               </h2>
@@ -528,11 +543,11 @@ const PricingPage = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm text-gray-300 mb-8 shadow-lg shadow-black/10"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-full text-sm text-gray-300 mb-8 shadow-lg shadow-cyan-500/20"
               >
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
                 </span>
                 <span className="font-medium">1,247</span> people getting Sage's take right now
               </motion.div>
@@ -569,8 +584,23 @@ const PricingPage = () => {
                 </div>
               </div>
               
+              {/* Terms & Privacy Policy */}
+          <div className="mt-6 mb-4">
+            <p className="text-xs text-gray-500 text-center">
+              For 16+ Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice. By using this site, you agree to our{" "}
+              <Link to="/terms-of-service" className="text-cyan-400 hover:text-cyan-300 underline">
+                Terms
+              </Link>
+              {" "}&{" "}
+              <Link to="/privacy-policy" className="text-cyan-400 hover:text-cyan-300 underline">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          </div>
+              
               {/* Tiny Badge - Clickable Link */}
-              <div className="mt-6">
+              <div className="mt-2">
                 <button
                   onClick={() => navigate('/chat-input')}
                   className="inline-flex items-center px-3 py-1 bg-cyan-500/10 border border-cyan-400/30 rounded-full text-xs text-cyan-300 font-medium hover:bg-cyan-500/20 hover:border-cyan-400/50 hover:text-cyan-200 transition-all duration-300 hover:scale-105 cursor-pointer"

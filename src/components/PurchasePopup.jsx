@@ -1,35 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 const PurchasePopup = () => {
+  const location = useLocation();
   const [currentPopup, setCurrentPopup] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Only show popup on landing page and pricing page
+  const shouldShowPopup = location.pathname === '/' || location.pathname === '/pricing';
+
   const purchaseMessages = [
-    // Emergency Pack (most frequent)
-    { emoji: '🔥', name: 'Sarah', city: 'Brooklyn', action: 'just got Emergency Pack', time: '2 minutes ago' },
-    { emoji: '💬', name: 'Mike', city: 'Dallas', action: 'just got Emergency Pack', time: 'Just now' },
-    { emoji: '🚨', name: 'Ashley', city: 'Phoenix', action: 'just got Emergency Pack', time: '5 minutes ago' },
-    { emoji: '🔥', name: 'Mia', city: 'LA', action: 'just got Emergency Pack', time: '1 minute ago' },
-    { emoji: '🚨', name: 'Tyler', city: 'Austin', action: 'just got Emergency Pack', time: '3 minutes ago' },
-    { emoji: '💬', name: 'Logan', city: 'Miami', action: 'just got Emergency Pack', time: 'Just now' },
-    
-    // Premium Monthly (moderate frequency)
-    { emoji: '⚡', name: 'Emma', city: 'Seattle', action: 'just went Premium', time: '1 minute ago' },
+    // Premium Monthly (most frequent)
+    { emoji: '⚡', name: 'Sarah', city: 'Brooklyn', action: 'just went Premium Monthly', time: '2 minutes ago' },
+    { emoji: '✨', name: 'Mike', city: 'Dallas', action: 'just upgraded to Premium', time: 'Just now' },
+    { emoji: '🎯', name: 'Ashley', city: 'Phoenix', action: 'just got unlimited receipts', time: '5 minutes ago' },
+    { emoji: '⚡', name: 'Mia', city: 'LA', action: 'just went Premium Monthly', time: '1 minute ago' },
+    { emoji: '✨', name: 'Tyler', city: 'Austin', action: 'just upgraded to Premium', time: '3 minutes ago' },
+    { emoji: '🎯', name: 'Logan', city: 'Miami', action: 'just got unlimited receipts', time: 'Just now' },
+    { emoji: '⚡', name: 'Emma', city: 'Seattle', action: 'just went Premium Monthly', time: '1 minute ago' },
     { emoji: '✨', name: 'Carlos', city: 'Miami', action: 'just upgraded to Premium', time: '3 minutes ago' },
     { emoji: '🎯', name: 'Priya', city: 'Chicago', action: 'just got unlimited receipts', time: 'Just now' },
-    { emoji: '⚡', name: 'Maya', city: 'Denver', action: 'just went Premium', time: '2 minutes ago' },
+    { emoji: '⚡', name: 'Maya', city: 'Denver', action: 'just went Premium Monthly', time: '2 minutes ago' },
     
     // OG Founder's Club (less frequent, high impact)
-    { emoji: '👑', name: 'Alex', city: 'Portland', action: 'locked in Founder pricing', time: 'Just now' },
+    { emoji: '👑', name: 'Alex', city: 'Portland', action: 'locked in OG Founder pricing', time: 'Just now' },
     { emoji: '🏆', name: 'Jordan', city: 'Austin', action: 'joined OG Founder\'s Club', time: '2 minutes ago' },
-    { emoji: '⭐', name: 'Sam', city: 'Denver', action: 'joined Founder\'s Club', time: '4 minutes ago' },
-    { emoji: '👑', name: 'Chris', city: 'Boston', action: 'locked in Founder pricing', time: '1 minute ago' },
-    { emoji: '⭐', name: 'Jamie', city: 'Brooklyn', action: 'joined Founder\'s Club', time: '3 minutes ago' }
+    { emoji: '⭐', name: 'Sam', city: 'Denver', action: 'joined OG Founder\'s Club', time: '4 minutes ago' },
+    { emoji: '👑', name: 'Chris', city: 'Boston', action: 'locked in OG Founder pricing', time: '1 minute ago' },
+    { emoji: '⭐', name: 'Jamie', city: 'Brooklyn', action: 'joined OG Founder\'s Club', time: '3 minutes ago' }
   ];
 
   useEffect(() => {
-    // Don't show popups during checkout or if user is on pricing page
+    // Only show popups on landing page and pricing page
+    if (!shouldShowPopup) {
+      return;
+    }
+
+    // Don't show popups during checkout or success pages
     if (window.location.pathname.includes('checkout') || window.location.pathname.includes('success')) {
       return;
     }
@@ -60,7 +68,7 @@ const PurchasePopup = () => {
       clearTimeout(initialTimeout);
       clearInterval(interval);
     };
-  }, []);
+  }, [shouldShowPopup]);
 
   if (!currentPopup) return null;
 
