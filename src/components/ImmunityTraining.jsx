@@ -75,7 +75,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
   // Crisis-specific content
   if (isCrisisSituation) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 text-white p-4 sm:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 text-stone-200 p-4 sm:p-6">
         <div className="max-w-4xl mx-auto">
           {/* Crisis Safety Header */}
           <div className="text-center mb-8">
@@ -348,22 +348,22 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400/25 to-orange-400/25 border border-yellow-400/40 mb-3">
                 <span className="text-2xl">🛡️</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight">
+              <h3 className="text-2xl sm:text-3xl font-bold text-stone-200 mb-2 leading-tight">
                 Sage's Immunity Training
               </h3>
             </div>
             {/* Preview blocks */}
             <div className="space-y-4">
               <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
-                <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🔁 Break The Cycle</h4>
+                <h4 className="text-base sm:text-lg font-semibold text-stone-200 mb-2">🔁 Break The Cycle</h4>
                 <p className="text-gray-300 leading-relaxed">Spot the pattern early and stop repeating it with field-tested moves…</p>
               </div>
               <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
-                <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🎯 Micro-Lessons</h4>
+                <h4 className="text-base sm:text-lg font-semibold text-stone-200 mb-2">🎯 Micro-Lessons</h4>
                 <p className="text-gray-300 leading-relaxed">Short drills that raise your baseline and protect your peace…</p>
               </div>
               <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
-                <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🧪 Immunity Test</h4>
+                <h4 className="text-base sm:text-lg font-semibold text-stone-200 mb-2">🧪 Immunity Test</h4>
                 <p className="text-gray-300 leading-relaxed">A quick test to know exactly where you stand—and what to do next…</p>
               </div>
               {/* See Both Sides (Locked preview: headings only, blurred placeholders) */}
@@ -400,7 +400,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400/30 to-orange-400/30 border-2 border-yellow-400/50 mb-5 shadow-lg shadow-yellow-500/30">
                 <span className="text-3xl">🔒</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 leading-tight">
+              <h3 className="text-2xl sm:text-3xl font-bold text-stone-200 mb-3 leading-tight">
                 Unlock Unlimited Receipts + Premium Features
               </h3>
               <p className="text-base sm:text-lg text-gray-300 leading-relaxed mb-5 max-w-md mx-auto">
@@ -415,7 +415,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </ul>
               <button
                 onClick={() => window.location.href = '/pricing'}
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-stone-200 font-bold text-lg rounded-2xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 ✨ Upgrade to Premium
               </button>
@@ -478,7 +478,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             <div className="mt-2 mb-2 flex justify-center">
               <button
                 onClick={() => setIsCompact((v) => !v)}
-                className="text-[11px] px-3 py-1 rounded-full bg-black/40 border border-white/20 text-white/80 hover:bg-black/50 transition"
+                className="text-[11px] px-3 py-1 rounded-full bg-black/40 border border-white/20 text-stone-200/80 hover:bg-black/50 transition"
               >
                 View: {isCompact ? 'Compact' : 'Standard'}
               </button>
@@ -553,7 +553,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                             boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
                           }}
                         >
-                          <div className="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          <div className="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-stone-200 text-xs font-bold">
                             {index + 1}
                   </div>
                           {step}
@@ -663,12 +663,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   {Array.isArray(greenFlags) && greenFlags.length > 0 ? greenFlags.slice(0, 3).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-green-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
-                      <span className="text-emerald-200 text-sm leading-relaxed">{cleanFlagText(sign)}</span>
+                      <span className="text-stone-200 text-sm leading-relaxed">{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
-                      <span className="text-emerald-200 text-sm leading-relaxed">No healthy signs detected</span>
+                      <span className="text-stone-200 text-sm leading-relaxed">No healthy signs detected</span>
                     </li>
                   )}
                 </ul>
@@ -680,12 +680,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? thisMessFlags.slice(0, 3).map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-red-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
-                      <span className="text-rose-200 text-sm leading-relaxed">{cleanFlagText(sign)}</span>
+                      <span className="text-stone-200 text-sm leading-relaxed">{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
-                      <span className="text-rose-200 text-sm leading-relaxed">No red flags detected</span>
+                      <span className="text-stone-200 text-sm leading-relaxed">No red flags detected</span>
                     </li>
                   )}
                 </ul>
@@ -835,7 +835,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <h3 className="text-white font-bold text-lg uppercase tracking-wider flex items-center">
+                <h3 className="text-stone-200 font-bold text-lg uppercase tracking-wider flex items-center">
                   <Shield className="w-5 h-5 mr-3 text-yellow-400" />
                   IMMUNITY SCORE
                 </h3>
@@ -994,10 +994,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               >
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-white/20 flex-shrink-0 mt-0.5">
-                    <span className="text-white text-xs font-bold">i</span>
+                    <span className="text-stone-200 text-xs font-bold">i</span>
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-white mb-2 text-sm">Your Protection Level</div>
+                    <div className="font-semibold text-stone-200 mb-2 text-sm">Your Protection Level</div>
                     <div className="text-gray-300 text-xs leading-relaxed">
                       Sage's proprietary analysis of your unique situation. 
                       Higher scores indicate stronger resistance to manipulation patterns.
@@ -1074,7 +1074,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                             boxShadow: '0 4px 12px rgba(6, 182, 212, 0.15)'
                           }}
                         >
-                          <div className="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          <div className="absolute -top-2 -left-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-stone-200 text-xs font-bold">
                             {index + 1}
                           </div>
                           {step}
@@ -1122,7 +1122,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 <div className={`w-4 h-4 border-r-2 border-t-2 border-[#D4AF37] transform transition-all duration-300 ${showMoreSides ? 'rotate-135' : 'rotate-45'}`}></div>
                 <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>See Both Sides</h4>
               </div>
-              <span className="text-white/60 text-xs">{showMoreSides ? 'Hide' : 'Open'}</span>
+              <span className="text-stone-200/60 text-xs">{showMoreSides ? 'Hide' : 'Open'}</span>
             </button>
             {showMoreSides && (
             <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-600/20">
@@ -1131,12 +1131,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   {Array.isArray(greenFlags) && greenFlags.length > 0 ? greenFlags.map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-green-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
-                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-emerald-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-stone-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
-                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-emerald-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>No healthy signs detected</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-stone-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>No healthy signs detected</span>
                     </li>
                   )}
                   {(Array.isArray(greenFlags) && greenFlags.length > 3) && (
@@ -1153,12 +1153,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? thisMessFlags.map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-red-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
-                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-rose-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-stone-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
                     </li>
                   )) : (
                     <li className="flex items-start gap-3">
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
-                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-rose-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>No red flags detected</span>
+                      <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-stone-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>No red flags detected</span>
                     </li>
                   )}
                 </ul>
@@ -1179,7 +1179,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                     Immunity Test
                   </h4>
                 </div>
-                <span className="text-white/60 text-xs">{openImmunityTest ? 'Hide' : 'Open'}</span>
+                <span className="text-stone-200/60 text-xs">{openImmunityTest ? 'Hide' : 'Open'}</span>
               </button>
               {openImmunityTest && (
                 <div className={isCompact ? 'p-4' : 'p-6'}>
@@ -1204,7 +1204,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                     Your Training
                   </h4>
                 </div>
-                <span className="text-white/60 text-xs">{openTraining ? 'Hide' : 'Open'}</span>
+                <span className="text-stone-200/60 text-xs">{openTraining ? 'Hide' : 'Open'}</span>
               </button>
               {openTraining && (
                 <div className={isCompact ? 'p-4' : 'p-6'}>

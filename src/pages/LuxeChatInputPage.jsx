@@ -216,6 +216,7 @@ const LuxeChatInputPage = () => {
       
       let canProceed = false;
       let creditMessage = '';
+      let creditCheckResult = null; // Initialize for both user types
       
       if (user) {
         // Logged-in user: Check their credits
@@ -238,10 +239,12 @@ const LuxeChatInputPage = () => {
         } else {
           canProceed = false;
           creditMessage = 'No credits remaining. Please upgrade or wait for daily reset.';
+          // Set creditCheckResult for logged-in users with no credits
+          creditCheckResult = { reason: 'limit_reached' };
         }
       } else {
         // Anonymous user: Use atomic operation to prevent race conditions
-        const creditCheckResult = AnonymousUserService.checkAndIncrementAnalysis();
+        creditCheckResult = AnonymousUserService.checkAndIncrementAnalysis();
         console.log('🔐 Anonymous user atomic check:', creditCheckResult);
         
         if (creditCheckResult.success) {
@@ -265,11 +268,15 @@ const LuxeChatInputPage = () => {
       if (!canProceed) {
         setIsLoading(false);
         
-        // For anonymous users, show a modal instead of toast
-        if (!user && creditCheckResult.reason === 'limit_reached') {
+        // Show upgrade modal for both anonymous and logged-in users when limit is reached
+        const shouldShowUpgradeModal = 
+          (!user && creditCheckResult?.reason === 'limit_reached') || 
+          (user && creditMessage.includes('No credits remaining'));
+          
+        if (shouldShowUpgradeModal) {
           setShowLimitModal(true);
         } else {
-          // For logged-in users, show simple toast
+          // For other errors, show simple toast
           toast({
             variant: 'destructive',
             title: 'Analysis Limit Reached',

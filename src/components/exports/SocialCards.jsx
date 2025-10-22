@@ -1060,7 +1060,7 @@ export function SocialImmunityCard({ immunityData, archetype, analysis }) {
   
   // Get dynamic archetype color based on original analysis red flags (not immunity analysis)
   const redFlags = analysis?.redFlags || 0;
-  const archetypeColor = redFlags >= 8 ? '#F87171' : redFlags >= 4 ? '#FB923C' : '#34D399';
+  const archetypeColor = '#A855F7'; // Purple for all archetypes
 
   return (
     <div 
@@ -1120,7 +1120,7 @@ export function SocialImmunityCard({ immunityData, archetype, analysis }) {
             }}
           />
           <span style={{
-            color: '#F4A623',
+            color: '#A855F7',
             fontWeight: '800',
             fontSize: '27px',
             letterSpacing: '0.12em'
@@ -1340,7 +1340,7 @@ export function SocialImmunityCard({ immunityData, archetype, analysis }) {
         <div style={{ fontSize: '42px', marginBottom: '15px' }}>👑</div>
         <div style={{
           fontSize: '26px',
-          color: 'rgba(244, 166, 35, 0.9)',
+          color: '#A855F7',
           fontWeight: '600',
           marginBottom: '20px',
           letterSpacing: '0.08em',
@@ -1353,7 +1353,7 @@ export function SocialImmunityCard({ immunityData, archetype, analysis }) {
           lineHeight: '1.5',
           margin: '0 0 30px 0',
           padding: '0 30px',
-          color: 'rgba(255, 215, 0, 0.75)',
+          color: '#A855F7',
           fontStyle: 'italic',
           fontWeight: '100',
           textShadow: '0 2px 5px rgba(0, 0, 0, 0.3)'
