@@ -138,37 +138,12 @@ const PricingPage = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 rounded-full text-sm text-amber-300 font-medium mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-400/30 rounded-full text-sm text-purple-300 font-medium mb-8"
           >
-            <span className="animate-pulse">🔥</span>
+            <span className="animate-pulse text-purple-400">🔥</span>
             <span>Limited: First 500 get OG Founder pricing forever</span>
           </motion.div>
           
-          
-          {/* Privacy First Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
-          >
-            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-400/30 rounded-full text-sm text-emerald-300 font-medium">
-              <Shield className="h-4 w-4" />
-              <span>Bank-level encryption</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-400/30 rounded-full text-sm text-cyan-300 font-medium">
-              <Check className="h-4 w-4" />
-              <span>Privacy First</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-400/30 rounded-full text-sm text-purple-300 font-medium">
-              <Zap className="h-4 w-4" />
-              <span>Anonymous</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-400/30 rounded-full text-sm text-green-300 font-medium">
-              <span>💯</span>
-              <span>7-day money-back guarantee</span>
-            </div>
-          </motion.div>
 
           {/* Netflix-Style Clean Cards - All Same Size */}
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-12">
@@ -297,6 +272,31 @@ const PricingPage = () => {
             >
               Start free, upgrade when you're ready for unlimited clarity
             </motion.p>
+            
+            {/* Security Badges - Moved from top for cleaner UX */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8"
+            >
+              <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-400/30 rounded-full text-sm text-emerald-300 font-medium">
+                <Shield className="h-4 w-4" />
+                <span>Bank-level encryption</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-400/30 rounded-full text-sm text-cyan-300 font-medium">
+                <Check className="h-4 w-4" />
+                <span>Privacy First</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-400/30 rounded-full text-sm text-purple-300 font-medium">
+                <Zap className="h-4 w-4" />
+                <span>Anonymous</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-400/30 rounded-full text-sm text-green-300 font-medium">
+                <span>💯</span>
+                <span>7-day money-back guarantee</span>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -512,7 +512,7 @@ const PricingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.8 }}
-              className="text-xl font-bold mt-8 text-cyan-400"
+              className="text-2xl md:text-3xl font-bold mt-8 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
             >
               The math is mathing, bestie.
             </motion.p>
