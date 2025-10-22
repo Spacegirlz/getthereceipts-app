@@ -144,7 +144,6 @@ export function SocialReceiptCard({ analysis, archetype }) {
         overflow: 'hidden',
         border: '5px solid rgba(26, 26, 26, 0.6)',
         borderRadius: '36px',
-        position: 'relative',
         display: 'flex',
         flexDirection: 'column'
       }}
