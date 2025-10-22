@@ -12,19 +12,19 @@ import sageLanding from '@/assets/sage-landing.png';
 
 // Demo receipt images  -  All receipt types
 // Truth Receipts
-import ghostingChampionTruth from '@/assets/GTR Demo Assets/Truth Receipts/Ghosting Champion  -  Sage-Receipt-1761066312906.png';
-import maybeMerchantTruth from '@/assets/GTR Demo Assets/Truth Receipts/Maybe Merchant  -  Sage-Receipt-1761067025449.png';
-import reassuringPartnerTruth from '@/assets/GTR Demo Assets/Truth Receipts/Reassuring Partner  -  Sage-Receipt-1761068554637.png';
+import ghostingChampionTruth from '@/assets/GTR Demo Assets/Truth Receipts/ghosting-champion-sage-receipt-1761066312906.png';
+import maybeMerchantTruth from '@/assets/GTR Demo Assets/Truth Receipts/maybe-merchant-sage-receipt-1761067025449.png';
+import reassuringPartnerTruth from '@/assets/GTR Demo Assets/Truth Receipts/reassuring-partner-sage-receipt-1761068554637.png';
 
 // Playbook Receipts
-import ghostingChampionPlaybook from '@/assets/GTR Demo Assets/Ghosting Champion  -  Sage-Playbook-1761066320799.png';
-import maybeMerchantPlaybook from '@/assets/GTR Demo Assets/Maybe Merchant  -  Sage-Playbook-1761067383678.png';
-import reassuringPartnerPlaybook from '@/assets/GTR Demo Assets/Reassuring Partner  -  Sage-Playbook-1761068561011.png';
+import ghostingChampionPlaybook from '@/assets/GTR Demo Assets/ghosting-champion-sage-playbook-1761066320799.png';
+import maybeMerchantPlaybook from '@/assets/GTR Demo Assets/maybe-merchant-sage-playbook-1761067383678.png';
+import reassuringPartnerPlaybook from '@/assets/GTR Demo Assets/reassuring-partner-sage-playbook-1761068561011.png';
 
 // Immunity Receipts
-import ghostingChampionImmunity from '@/assets/GTR Demo Assets/Ghosting Champion  -  Sage-Immunity-1761067753743.png';
-import maybeMerchantImmunity from '@/assets/GTR Demo Assets/Maybe Merchant  -  Sage-Immunity-1761067388991.png';
-import reassuringPartnerImmunity from '@/assets/GTR Demo Assets/Reassuring Partner  -  Sage-Immunity-1761068566579.png';
+import ghostingChampionImmunity from '@/assets/GTR Demo Assets/ghosting-champion-sage-immunity-1761067753743.png';
+import maybeMerchantImmunity from '@/assets/GTR Demo Assets/maybe-merchant-sage-immunity-1761067388991.png';
+import reassuringPartnerImmunity from '@/assets/GTR Demo Assets/reassuring-partner-sage-immunity-1761068566579.png';
 
 const LandingPage = () => {
   const navigate = useNavigate();

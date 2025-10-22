@@ -126,25 +126,15 @@ export async function askSage(question, receiptData, previousMessages = [], opts
     const fullPrompt = systemPrompt + originalConversation + chatHistory;
 
     // Call OpenAI via proxy
-    const response = await fetch('/api/chat/completions', {
+    const response = await fetch('/api/sage-chat', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: useLite ? [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: contextualQuestion }
-        ] : [
-          { role: 'system', content: fullPrompt },
-          { role: 'user', content: question }
-        ],
-        max_tokens: useLite ? 150 : 250,
-        temperature: 0.85,
-        presence_penalty: useLite ? 0.6 : 0.5,
-        frequency_penalty: useLite ? 0.5 : 0.3
+        question: useLite ? contextualQuestion : question,
+        receiptData: { conversation: receiptData?.conversation || '' },
+        previousMessages: previousMessages
       })
     });
 
