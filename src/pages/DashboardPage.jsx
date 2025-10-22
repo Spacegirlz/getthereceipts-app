@@ -11,6 +11,7 @@ import LinkButton from '@/components/LinkButton';
 import CouponModal from '@/components/CouponModal';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet';
+import { usePaymentIntent } from '@/hooks/usePaymentIntent';
 import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCredits } from '@/lib/services/creditsSystem';
 import { FreeUsageService } from '@/lib/services/freeUsageService';
 import ReferralProgressCard from '@/components/ReferralProgressCard';
@@ -21,6 +22,7 @@ const DashboardPage = () => {
   const { openModal } = useAuthModal();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { navigateToSpecificCheckout, navigateToPricing } = usePaymentIntent();
   
   const [receipts, setReceipts] = useState([]);
   const [userCredits, setUserCredits] = useState({ 
@@ -565,7 +567,7 @@ const DashboardPage = () => {
                         <Button 
                           size="sm" 
                           className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 text-sm font-semibold shadow-lg shadow-cyan-500/25"
-                          onClick={() => navigate('/pricing')}
+                          onClick={() => navigateToSpecificCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly')}
                         >
                           <Zap className="mr-2 h-4 w-4" />
                           {progress.type === 'starter' 
@@ -614,14 +616,14 @@ const DashboardPage = () => {
                 <Button 
                   size="sm" 
                   className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 text-sm font-semibold shadow-lg shadow-cyan-500/25"
-                  onClick={() => navigate('/pricing')}
+                  onClick={() => navigateToSpecificCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')}
                 >
                   Monthly Premium - $4.99
                 </Button>
                 <Button 
                   size="sm" 
                   className="w-full bg-gradient-to-r from-purple-500 to-emerald-500 hover:from-purple-600 hover:to-emerald-600 text-white border-0 text-sm font-semibold shadow-lg shadow-purple-500/25"
-                  onClick={() => navigate('/pricing')}
+                  onClick={() => navigateToSpecificCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')}
                 >
                   OG Founders Yearly - $29.99
                 </Button>
@@ -667,7 +669,7 @@ const DashboardPage = () => {
                 size="sm" 
                 variant="outline"
                 className="w-full border-emerald-400/60 text-white hover:bg-emerald-500/10 hover:border-emerald-400/80 text-sm font-medium shadow-lg shadow-emerald-500/20"
-                onClick={() => navigate('/pricing')}
+                onClick={() => navigateToPricing()}
               >
                 <CreditCard className="mr-2 h-4 w-4" />
                 Manage Plan

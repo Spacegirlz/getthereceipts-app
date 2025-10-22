@@ -7,6 +7,7 @@ import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { loadStripe } from '@stripe/stripe-js';
+import { usePaymentIntent } from '@/hooks/usePaymentIntent';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageLanding from '@/assets/sage-landing.png';
 
@@ -31,6 +32,7 @@ const LandingPage = () => {
   const { openModal } = useAuthModal();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { navigateToPricing } = usePaymentIntent();
   const [openFAQ, setOpenFAQ] = useState(null);
   const [selectedDemo, setSelectedDemo] = useState(null);
   const [showDemoResult, setShowDemoResult] = useState(false);
@@ -69,7 +71,9 @@ const LandingPage = () => {
   const handleGetStarted = () => navigate('/chat-input');
   const handleRefer = () => navigate('/refer');
   
-  const handleGoPremium = () => navigate('/pricing');
+  const handleGoPremium = () => {
+    navigateToPricing();
+  };
   
   const handleFounderPurchase = async () => {
     if (!user) {
