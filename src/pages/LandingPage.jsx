@@ -73,6 +73,8 @@ const LandingPage = () => {
   
   const handleFounderPurchase = async () => {
     if (!user) {
+      // Store the intended destination for after authentication
+      localStorage.setItem('postAuthRedirect', '/pricing');
       openModal('sign_up');
       toast({ 
         title: 'Create an account to upgrade!', 

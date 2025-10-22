@@ -55,8 +55,16 @@ const AuthCallbackPage = () => {
               localStorage.setItem('shouldAutoSubmit', 'true');
               setTimeout(() => navigate('/receipts'), 1000);
             } else {
-              console.log('🚀 Auth Callback: No saved form data, redirecting to dashboard');
-              setTimeout(() => navigate('/dashboard'), 1000);
+              // Check if user was trying to access a specific page before auth
+              const postAuthRedirect = localStorage.getItem('postAuthRedirect');
+              if (postAuthRedirect) {
+                console.log('🚀 Auth Callback: Found post-auth redirect destination:', postAuthRedirect);
+                localStorage.removeItem('postAuthRedirect'); // Clear it after use
+                setTimeout(() => navigate(postAuthRedirect), 1000);
+              } else {
+                console.log('🚀 Auth Callback: No saved form data or redirect, redirecting to dashboard');
+                setTimeout(() => navigate('/dashboard'), 1000);
+              }
             }
           }
         } else {
@@ -73,8 +81,16 @@ const AuthCallbackPage = () => {
               localStorage.setItem('shouldAutoSubmit', 'true');
               setTimeout(() => navigate('/receipts'), 1000);
             } else {
-              console.log('🚀 Auth Callback: No saved form data, redirecting to dashboard');
-              setTimeout(() => navigate('/dashboard'), 1000);
+              // Check if user was trying to access a specific page before auth
+              const postAuthRedirect = localStorage.getItem('postAuthRedirect');
+              if (postAuthRedirect) {
+                console.log('🚀 Auth Callback: Found post-auth redirect destination:', postAuthRedirect);
+                localStorage.removeItem('postAuthRedirect'); // Clear it after use
+                setTimeout(() => navigate(postAuthRedirect), 1000);
+              } else {
+                console.log('🚀 Auth Callback: No saved form data or redirect, redirecting to dashboard');
+                setTimeout(() => navigate('/dashboard'), 1000);
+              }
             }
           } else {
             // No code and no hash, something is wrong
