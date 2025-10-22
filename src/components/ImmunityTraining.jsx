@@ -336,11 +336,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
     return '#FB923C'; // orange-400
   };
 
-  // For free users, show blurred version with mobile paywall overlay (matches Playbook style)
-  if (!isPremium && !isCrisisSituation) {
+  // Show full content for all users
+  if (false) {
     return (
       <div className="relative w-full max-w-2xl mx-auto px-0 pb-6">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900/40 via-slate-800/20 to-slate-900/40 border border-slate-600/30">
+        <div className="relative rounded-3xl overflow-hidden bg-black/40 border border-white/20 shadow-lg">
           {/* Actual Content (Blurred Preview) */}
           <div className="p-6 sm:p-8 filter blur-sm pointer-events-none">
             {/* Header preview */}
@@ -354,20 +354,20 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             </div>
             {/* Preview blocks */}
             <div className="space-y-4">
-              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+              <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
                 <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🔁 Break The Cycle</h4>
                 <p className="text-gray-300 leading-relaxed">Spot the pattern early and stop repeating it with field-tested moves…</p>
               </div>
-              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+              <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
                 <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🎯 Micro-Lessons</h4>
                 <p className="text-gray-300 leading-relaxed">Short drills that raise your baseline and protect your peace…</p>
               </div>
-              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+              <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
                 <h4 className="text-base sm:text-lg font-semibold text-white mb-2">🧪 Immunity Test</h4>
                 <p className="text-gray-300 leading-relaxed">A quick test to know exactly where you stand—and what to do next…</p>
               </div>
               {/* See Both Sides (Locked preview: headings only, blurred placeholders) */}
-              <div className="bg-black/30 rounded-2xl p-4 border border-white/10">
+              <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
                 <div className="grid grid-cols-2">
                   <div className="px-2 py-2 bg-gradient-to-br from-emerald-500/10 to-green-500/5 border-r border-white/10">
                     <h5 className="text-emerald-300 font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
@@ -401,23 +401,25 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 <span className="text-3xl">🔒</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 leading-tight">
-                Unlock Immunity Training
+                Unlock Unlimited Receipts + Premium Features
               </h3>
               <p className="text-base sm:text-lg text-gray-300 leading-relaxed mb-5 max-w-md mx-auto">
-                Build real immunity: break the cycle, train your responses, and protect your peace
+                Join 1,200+ users getting unlimited analysis, priority support & exclusive features
               </p>
               <ul className="text-sm text-gray-300/90 mb-6 space-y-2 max-w-md mx-auto">
                 <li>• Personalized drills that actually stick</li>
                 <li>• Micro-lessons for tough moments</li>
                 <li>• One quick test to know your status</li>
+                <li>• Unlimited receipt analysis</li>
+                <li>• Priority support & exclusive features</li>
               </ul>
               <button
                 onClick={() => window.location.href = '/pricing'}
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
-                Unlock Immunity
+                ✨ Upgrade to Premium
               </button>
-              <p className="text-sm text-gray-400 mt-3">$29.99/year • Cancel anytime</p>
+              <p className="text-sm text-gray-400 mt-3">7-day money-back guarantee • Cancel anytime</p>
             </div>
           </div>
         </div>
@@ -454,7 +456,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           className={isCompact ? 'mb-5' : 'mb-8'}
         >
           <div className="text-center mb-1 relative z-50">
-            <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
+            <div className="inline-flex items-center gap-3 bg-black/30 px-6 py-3 rounded-2xl border border-white/20 mb-4 relative z-50 shadow-lg" data-immunity-pill>
               <img
                 src={sageDarkCircle}
                 alt="Sage"
@@ -464,10 +466,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
                 }}
               />
-              <span className={`${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-lg'} font-bold tracking-widest relative z-50`}
+              <span className="text-lg sm:text-xl font-bold tracking-widest relative z-50"
                 style={{
-                  color: '#14B8A6',
-                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                  color: '#A855F7',
+                  textShadow: '0 2px 12px rgba(0, 0, 0, 0.6), 0 0 50px rgba(168, 85, 247, 0.5)'
                 }}>
                 IMMUNITY TRAINING
               </span>
@@ -476,7 +478,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             <div className="mt-2 mb-2 flex justify-center">
               <button
                 onClick={() => setIsCompact((v) => !v)}
-                className="text-[11px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition"
+                className="text-[11px] px-3 py-1 rounded-full bg-black/40 border border-white/20 text-white/80 hover:bg-black/50 transition"
               >
                 View: {isCompact ? 'Compact' : 'Standard'}
               </button>
@@ -484,8 +486,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             {/* Pattern Verified subline */}
             <div className={isCompact ? 'mt-1 mb-4' : 'mt-2 mb-6'} data-pattern-verified-section>
               <h3
-                className={`heading-font font-semibold ${isCompact ? 'text-base sm:text-lg' : 'text-lg sm:text-xl md:text-2xl'} leading-tight`}
-                style={{ color: getHeaderArchetypeColor() + 'E6', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+                className={`heading-font font-black ${isCompact ? 'text-base sm:text-lg' : 'text-lg sm:text-xl md:text-2xl'} leading-tight`}
+                style={{ color: '#A855F7', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
               >
                 Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
             </h3>
@@ -496,11 +498,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* Pattern DNA Formula - Central Visual */}
         {patternDNA && (
           <div className={isCompact ? 'mb-5' : 'mb-8'} data-share-hide="true" data-pattern-dna-section>
-            <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm">
+            <div className="bg-black/40 rounded-xl border border-white/20 overflow-hidden shadow-lg">
               <div className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} border-b border-transparent`}>
                 <div className="flex items-center gap-2">
                   <span className="text-lg">🧬</span>
-                  <h4 className={`font-bold ${isCompact ? 'text-xs' : 'text-sm'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>What This Looks Like</h4>
+                  <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
                 </div>
               </div>
               <div className={`${isCompact ? 'p-4' : 'p-6'} text-center`}>
@@ -520,7 +522,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* The Cycle - Prominent & Animated */}
         {patternLoop.length > 0 && (
           <div className={isCompact ? 'mb-5' : 'mb-8'} data-cycle-section>
-            <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
+            <div className="bg-black/40 rounded-xl overflow-hidden shadow-lg"
             style={{
                 border: '1px solid rgba(20, 184, 166, 0.35)',
                 boxShadow: '0 0 0 1px rgba(20, 184, 166, 0.25), 0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
@@ -529,7 +531,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               <div className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} border-b border-transparent`}>
                 <div className="flex items-center justify-start gap-2">
                   <span className="text-lg animate-pulse">🔄</span>
-                  <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>
+                  <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>
                     The Cycle
                   </h4>
                 </div>
@@ -637,7 +639,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             <div className="px-4 py-3 border-b border-transparent">
               <div className="flex items-center justify-start gap-2">
                 <span className="text-lg">⚖️</span>
-                <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>See Both Sides</h4>
+                <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>See Both Sides</h4>
               </div>
             </div>
             
@@ -695,11 +697,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* Immunity Test - Field Test */}
         {immunityTest && (
           <div className="mb-8" data-share-hide="true">
-            <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] cursor-pointer">
+            <div className="bg-black/40 rounded-xl border border-white/20 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] cursor-pointer">
               <div className="px-4 py-3 border-b border-white/10">
                 <div className="flex items-center justify-start gap-2">
                   <span className="text-lg animate-pulse">🧪</span>
-                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                  <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>
                     Immunity Test
                   </h4>
                 </div>
@@ -721,48 +723,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           </div>
         )}
 
-        {/* Your Training - Checkpoints */}
-        {immunityTraining.length > 0 && (
-          <div className="mb-8" data-training-section>
-            <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
-              style={{
-                border: 'none',
-                boxShadow: '0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
-                backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
-              }}>
-              <div className="px-4 py-3 border-b border-transparent">
-                <div className="flex items-center justify-start gap-2">
-                  <span className="text-lg">🎯</span>
-                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
-                    Your Training
-                  </h4>
-                </div>
-              </div>
-              
-              <div className="p-4">
-                <div className="space-y-3">
-                  {immunityTraining.map((checkpoint, index) => (
-                    <motion.div
-                      key={index}
-                      data-training-item={index > 0 ? "true" : undefined}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 + index * 0.1 }}
-                      className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-transparent hover:bg-white/10 transition-all duration-300"
-                    >
-                      <div className="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-transparent">
-                        <span className="text-teal-300 text-sm font-bold">✓</span>
-                      </div>
-                      <p className="text-stone-200/90 text-sm sm:text-base leading-relaxed font-medium">
-                        {checkpoint}
-                      </p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         </motion.div>
       </div>
@@ -779,15 +739,19 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className={`relative rounded-[24px] ${isCompact ? 'p-3 sm:p-3 md:p-4' : 'p-3 sm:p-4 md:p-6'} text-stone-200/90`}
+        className={`relative rounded-[24px] ${isCompact ? 'p-3 sm:p-3 md:p-4' : 'p-3 sm:p-4 md:p-6'} text-stone-200/90 group`}
         style={{
           background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
           backdropFilter: 'blur(20px) saturate(200%)',
           WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-          border: '2px solid rgba(212, 175, 55, 0.4)',
-          boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
+          border: '2px solid rgba(168, 85, 247, 0.7)',
+          boxShadow: '0 12px 40px rgba(168, 85, 247, 0.2), 0 0 100px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
         }}
       >
+        {/* Enhanced Purple glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/8 to-transparent rounded-[24px] blur-3xl group-hover:blur-2xl transition-all duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/6 to-transparent rounded-[24px] blur-xl group-hover:blur-lg transition-all duration-500" />
+        
         {/* Premium dot pattern background */}
         <div 
           className="absolute inset-0 opacity-[0.02] pointer-events-none"
@@ -805,44 +769,263 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           className="mb-8"
         >
           <div className="text-center mb-1 relative z-50">
-            <div className="inline-flex items-center gap-3 bg-black/40 px-8 py-2 rounded-full border border-stone-400/20 mb-2 relative z-50" data-immunity-pill>
+            <div className="inline-flex items-center gap-3 bg-black/30 px-6 py-3 rounded-2xl border border-white/20 mb-4 relative z-50 shadow-lg" data-immunity-pill>
               <img
                 src={sageDarkCircle}
                 alt="Sage"
-                className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-teal-400/40 relative z-50"
+                className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-full border-2 border-teal-400/50 relative z-50"
                 style={{ 
                   filter: 'brightness(1.2) contrast(1.1)',
-                  boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)'
+                  boxShadow: '0 0 24px rgba(20, 184, 166, 0.4)'
                 }}
               />
-              <span className="text-sm sm:text-lg font-bold tracking-widest relative z-50"
+              <span className="text-lg sm:text-xl font-bold tracking-widest relative z-50"
                 style={{
-                  color: '#14B8A6',
-                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)'
+                  color: '#A855F7',
+                  textShadow: '0 2px 12px rgba(0, 0, 0, 0.6), 0 0 50px rgba(168, 85, 247, 0.5)'
                 }}>
                 IMMUNITY TRAINING
               </span>
             </div>
-            {/* Pattern Verified subline */}
+            
+            {/* Pattern Verified - Purple Premium Styling */}
             <div className="mt-2 mb-6" data-pattern-verified-section>
-              <h3
-                className="heading-font font-semibold text-lg sm:text-xl md:text-2xl leading-tight"
-                style={{ color: getHeaderArchetypeColor() + 'E6', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
-              >
+              <div className="relative group">
+                {/* Enhanced Purple glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/8 to-transparent rounded-xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/6 to-transparent rounded-xl blur-xl group-hover:blur-lg transition-all duration-500" />
+                
+                <div className="relative bg-[#0b1220]/60 backdrop-blur-sm rounded-xl p-6 border border-purple-400/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(168,85,247,0.3)] transition-all duration-500">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <h3 className="text-2xl sm:text-3xl font-black leading-tight"
+                        style={{ 
+                          color: '#A855F7', 
+                          textShadow: '0 3px 12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(168, 85, 247, 0.3)' 
+                        }}>
                 Pattern Verified: {archetypeName?.replace(/^The /, '') || 'Pattern'}
               </h3>
+                    </div>
+                    <p className="text-stone-200/90 text-lg sm:text-xl leading-relaxed">
+                      {immunityData?.patternDescription || 'Your unique pattern has been identified and analyzed.'} 🛡️
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Pattern DNA Formula - Central Visual */}
+        {/* PREMIUM IMMUNITY SCORE METER */}
+        <div className="mt-6 mb-12 group" data-immunity-score-section>
+          <div
+            className="bg-black/40 p-6 rounded-2xl shadow-lg transition-all duration-300"
+            style={{
+              border: '3px solid rgba(212, 175, 55, 0.7)',
+              boxShadow: '0 8px 28px rgba(212, 175, 55, 0.18)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.border = '3px solid rgba(168, 85, 247, 0.7)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(168, 85, 247, 0.22), 0 0 80px rgba(168, 85, 247, 0.10)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.border = '3px solid rgba(212, 175, 55, 0.7)';
+              e.currentTarget.style.boxShadow = '0 8px 28px rgba(212, 175, 55, 0.18)';
+            }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <h3 className="text-white font-bold text-lg uppercase tracking-wider flex items-center">
+                  <Shield className="w-5 h-5 mr-3 text-yellow-400" />
+                  IMMUNITY SCORE
+                </h3>
+              </div>
+              <span className="text-lg font-bold"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 50%, #D4AF37 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>
+                {(() => {
+                  // Use comprehensive analysis data
+                  const redFlags = analysisData?.redFlags || 0;
+                  const greenFlags = immunityData?.greenFlags || [];
+                  const actuallyIntoYou = analysisData?.actuallyIntoYou || 0;
+                  const wastingTime = analysisData?.wastingTime || 0;
+                  const confidenceScore = analysisData?.confidenceScore || 0;
+                  const jokeDetection = analysisData?.jokeDetection || {};
+                  
+                  if (isCrisisSituation) return '25%'; // Crisis = low immunity
+                  
+                  // Start with base immunity based on red flags
+                  let baseImmunity = 50; // neutral starting point
+                  
+                  // Red flags reduce immunity (inverse relationship)
+                  if (redFlags <= 2) baseImmunity = 80;
+                  else if (redFlags <= 4) baseImmunity = 60;
+                  else if (redFlags <= 6) baseImmunity = 40;
+                  else if (redFlags <= 8) baseImmunity = 25;
+                  else baseImmunity = 15;
+                  
+                  // Green flags boost immunity (positive relationship)
+                  const greenFlagBonus = Math.min(15, greenFlags.length * 3); // Max +15% from green flags
+                  
+                  // Interest level adjustment (actuallyIntoYou 0-100)
+                  const interestBonus = Math.min(10, Math.floor(actuallyIntoYou / 10)); // Max +10% from high interest
+                  
+                  // Time wasting penalty (wastingTime 0-100, higher = more time wasted)
+                  const timeWastingPenalty = Math.min(10, Math.floor(wastingTime / 10)); // Max -10% for time wasting
+                  
+                  // Confidence bonus (confidenceScore 0-100, higher confidence = more reliable analysis)
+                  const confidenceBonus = Math.min(5, Math.floor(confidenceScore / 20)); // Max +5% for high confidence
+                  
+                  // Weaponized humor penalty (jokeDetection.risk 0-100)
+                  const humorPenalty = jokeDetection?.risk ? Math.min(8, Math.floor(jokeDetection.risk / 12)) : 0; // Max -8% for weaponized humor
+                  
+                  // Calculate final immunity
+                  const finalImmunity = Math.min(95, Math.max(5, 
+                    baseImmunity + greenFlagBonus + interestBonus + confidenceBonus - timeWastingPenalty - humorPenalty
+                  ));
+                  
+                  return `${finalImmunity}%`;
+                })()}
+              </span>
+            </div>
+            <div className="w-full bg-gray-700/50 rounded-full h-3 mb-4 shadow-inner">
+              <div 
+                className="h-3 rounded-full transition-all duration-500 shadow-lg"
+                style={{ 
+                  background: 'linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)',
+                  width: `${(() => {
+                    const redFlags = analysisData?.redFlags || 0;
+                    const greenFlags = immunityData?.greenFlags || [];
+                    const actuallyIntoYou = analysisData?.actuallyIntoYou || 0;
+                    const wastingTime = analysisData?.wastingTime || 0;
+                    const confidenceScore = analysisData?.confidenceScore || 0;
+                    const jokeDetection = analysisData?.jokeDetection || {};
+                    
+                    if (isCrisisSituation) return '25';
+                    
+                    let baseImmunity = 50;
+                    if (redFlags <= 2) baseImmunity = 80;
+                    else if (redFlags <= 4) baseImmunity = 60;
+                    else if (redFlags <= 6) baseImmunity = 40;
+                    else if (redFlags <= 8) baseImmunity = 25;
+                    else baseImmunity = 15;
+                    
+                    const greenFlagBonus = Math.min(15, greenFlags.length * 3);
+                    const interestBonus = Math.min(10, Math.floor(actuallyIntoYou / 10));
+                    const timeWastingPenalty = Math.min(10, Math.floor(wastingTime / 10));
+                    const confidenceBonus = Math.min(5, Math.floor(confidenceScore / 20));
+                    const humorPenalty = jokeDetection?.risk ? Math.min(8, Math.floor(jokeDetection.risk / 12)) : 0;
+                    
+                    const finalImmunity = Math.min(95, Math.max(5, 
+                      baseImmunity + greenFlagBonus + interestBonus + confidenceBonus - timeWastingPenalty - humorPenalty
+                    ));
+                    
+                    return finalImmunity;
+                  })()}%` 
+                }}
+              ></div>
+            </div>
+            <div className="text-center">
+              <span className="text-lg font-semibold"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 50%, #D4AF37 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>
+                {(() => {
+                  const redFlags = analysisData?.redFlags || 0;
+                  const greenFlags = immunityData?.greenFlags || [];
+                  const actuallyIntoYou = analysisData?.actuallyIntoYou || 0;
+                  const wastingTime = analysisData?.wastingTime || 0;
+                  const confidenceScore = analysisData?.confidenceScore || 0;
+                  const jokeDetection = analysisData?.jokeDetection || {};
+                  
+                  if (isCrisisSituation) return 'Vulnerable • Training Needed';
+                  
+                  let baseImmunity = 50;
+                  if (redFlags <= 2) baseImmunity = 80;
+                  else if (redFlags <= 4) baseImmunity = 60;
+                  else if (redFlags <= 6) baseImmunity = 40;
+                  else if (redFlags <= 8) baseImmunity = 25;
+                  else baseImmunity = 15;
+                  
+                  const greenFlagBonus = Math.min(15, greenFlags.length * 3);
+                  const interestBonus = Math.min(10, Math.floor(actuallyIntoYou / 10));
+                  const timeWastingPenalty = Math.min(10, Math.floor(wastingTime / 10));
+                  const confidenceBonus = Math.min(5, Math.floor(confidenceScore / 20));
+                  const humorPenalty = jokeDetection?.risk ? Math.min(8, Math.floor(jokeDetection.risk / 12)) : 0;
+                  
+                  const finalImmunity = Math.min(95, Math.max(5, 
+                    baseImmunity + greenFlagBonus + interestBonus + confidenceBonus - timeWastingPenalty - humorPenalty
+                  ));
+                  
+                  if (finalImmunity >= 80) return 'Strong Defense • You\'re Protected';
+                  if (finalImmunity >= 60) return 'Good Defense • Stay Alert';
+                  if (finalImmunity >= 40) return 'Moderate Defense • Room to Improve';
+                  if (finalImmunity >= 25) return 'Vulnerable • Training Needed';
+                  return 'High Risk • Protection Critical';
+                })()}
+              </span>
+              
+              {/* Sage's Purple Accent Line */}
+              <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mt-3"></div>
+            </div>
+            
+            {/* How It Works - Contained Info Box */}
+            <div className="mt-4">
+              <div
+                className="bg-black/60 rounded-lg p-6 shadow-lg transition-all duration-300"
+                style={{
+                  border: '3px solid rgba(212, 175, 55, 0.7)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.border = '3px solid rgba(168, 85, 247, 0.7)';
+                  e.currentTarget.style.boxShadow = '0 8px 28px rgba(168, 85, 247, 0.18)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.border = '3px solid rgba(212, 175, 55, 0.7)';
+                  e.currentTarget.style.boxShadow = '';
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-white/20 flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">i</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-white mb-2 text-sm">Your Protection Level</div>
+                    <div className="text-gray-300 text-xs leading-relaxed">
+                      Sage's proprietary analysis of your unique situation. 
+                      Higher scores indicate stronger resistance to manipulation patterns.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Pattern DNA Formula - Enhanced Premium Visual */}
         {patternDNA && (
           <div className="mb-8" data-pattern-dna-section>
-            <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm">
-              <div className="px-4 py-3 border-b border-transparent">
-                <div className="flex items-center gap-2">
+            <div className="bg-black/40 rounded-xl border border-white/20 overflow-hidden shadow-lg"
+              style={{
+                background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
+                boxShadow: '0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)'
+              }}>
+              <div className="px-4 py-3 border-b border-cyan-400/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-cyan-400/20 rounded-full flex items-center justify-center">
                   <span className="text-lg">🧬</span>
-                  <h4 className="font-bold text-sm tracking-wide uppercase" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
+                  </div>
+                  <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
+                  <div className="ml-auto">
+                    <span className="text-xs text-cyan-400/70 font-mono">PATTERN ANALYSIS</span>
+                  </div>
                 </div>
               </div>
               <div className="p-6 text-center">
@@ -861,7 +1044,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* The Cycle */}
         {patternLoop.length > 0 && (
           <div className="mb-8" data-cycle-section>
-            <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
+            <div className="bg-black/40 rounded-xl overflow-hidden shadow-lg"
               style={{
                 border: '1px solid rgba(20, 184, 166, 0.35)',
                 boxShadow: '0 0 0 1px rgba(20, 184, 166, 0.25), 0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
@@ -870,7 +1053,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               <div className="px-4 py-3 border-b border-transparent">
                 <div className="flex items-center justify-start gap-2">
                   <span className="text-lg">🔄</span>
-                  <h4 className="font-bold text-sm sm:text-base tracking-wide uppercase" style={{ color: '#14B8A6' }}>
+                  <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>
                     The Cycle
                   </h4>
                 </div>
@@ -934,16 +1117,18 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {/* See Both Sides */}
         <div className={isCompact ? 'mb-5' : 'mb-8'} data-see-both-sides-section>
           <div className="bg-black/30 rounded-xl border border-transparent overflow-hidden backdrop-blur-sm shadow-lg">
-            <div className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} border-b border-transparent`}>
-              <div className="flex items-center justify-start gap-2">
-                <span className="text-lg">⚖️</span>
-                <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>See Both Sides</h4>
+            <button onClick={() => setShowMoreSides(v=>!v)} className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} w-full text-left border-b border-white/10 flex items-center justify-between hover:bg-white/5 transition-all duration-300 group`}>
+              <div className="flex items-center justify-start gap-3">
+                <div className={`w-4 h-4 border-r-2 border-t-2 border-[#D4AF37] transform transition-all duration-300 ${showMoreSides ? 'rotate-135' : 'rotate-45'}`}></div>
+                <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>See Both Sides</h4>
               </div>
-            </div>
+              <span className="text-white/60 text-xs">{showMoreSides ? 'Hide' : 'Open'}</span>
+            </button>
+            {showMoreSides && (
             <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-600/20">
               <div className={`${isCompact ? 'p-3 sm:p-4' : 'p-4 sm:p-5'} bg-gradient-to-br from-emerald-500/5 to-green-500/5`}>
                 <ul className={isCompact ? 'space-y-2.5' : 'space-y-3'}>
-                  {Array.isArray(greenFlags) && greenFlags.length > 0 ? (showMoreSides ? greenFlags : greenFlags.slice(0, 3)).map((sign, index) => (
+                  {Array.isArray(greenFlags) && greenFlags.length > 0 ? greenFlags.map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-green-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-emerald-400 text-sm mt-0.5 flex-shrink-0">✓</span>
                       <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-emerald-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
@@ -965,7 +1150,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </div>
               <div className={`${isCompact ? 'p-3 sm:p-4' : 'p-4 sm:p-5'} bg-gradient-to-br from-rose-500/5 to-pink-500/5`}>
                 <ul className={isCompact ? 'space-y-2.5' : 'space-y-3'}>
-                  {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? (showMoreSides ? thisMessFlags : thisMessFlags.slice(0, 3)).map((sign, index) => (
+                  {Array.isArray(thisMessFlags) && thisMessFlags.length > 0 ? thisMessFlags.map((sign, index) => (
                     <li key={index} className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`} data-red-flag={index >= 2 ? "true" : undefined}>
                       <span className="text-rose-400 text-sm mt-0.5 flex-shrink-0">⚠</span>
                       <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-rose-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>{cleanFlagText(sign)}</span>
@@ -976,16 +1161,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                       <span className={`${isCompact ? 'text-[13.5px]' : 'text-sm'} text-rose-200 ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`}>No red flags detected</span>
                     </li>
                   )}
-                  {(Array.isArray(thisMessFlags) && thisMessFlags.length > 3) && (
-                    <li className="mt-1">
-                      <button onClick={() => setShowMoreSides((v)=>!v)} className="text-xs text-rose-300/90 underline">
-                        {showMoreSides ? 'Show less' : `Show ${thisMessFlags.length - 3} more`}
-                      </button>
-                    </li>
-                  )}
                 </ul>
               </div>
             </div>
+            )}
           </div>
         </div>
 
@@ -993,10 +1172,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         {immunityTest && (
           <div className={isCompact ? 'mb-5' : 'mb-8'} data-share-hide="true">
             <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg">
-              <button onClick={() => setOpenImmunityTest(v=>!v)} className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} w-full text-left border-b border-white/10 flex items-center justify-between`}>
-                <div className="flex items-center justify-start gap-2">
-                  <span className="text-lg">🧪</span>
-                  <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>
+              <button onClick={() => setOpenImmunityTest(v=>!v)} className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} w-full text-left border-b border-white/10 flex items-center justify-between hover:bg-white/5 transition-all duration-300 group`}>
+                <div className="flex items-center justify-start gap-3">
+                  <div className={`w-4 h-4 border-r-2 border-t-2 border-[#D4AF37] transform transition-all duration-300 ${openImmunityTest ? 'rotate-135' : 'rotate-45'}`}></div>
+                  <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>
                     Immunity Test
                   </h4>
                 </div>
@@ -1015,27 +1194,27 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         )}
 
         {/* Your Training */}
-        {immunityTraining.length > 0 && (
+        {true && (
           <div className={isCompact ? 'mb-5' : 'mb-8'} data-training-section>
-            <div className="bg-black/30 rounded-xl overflow-hidden backdrop-blur-sm shadow-lg"
-              style={{
-                border: 'none',
-                boxShadow: '0 8px 32px rgba(20, 184, 166, 0.12), 0 0 40px rgba(20, 184, 166, 0.08)',
-                backgroundImage: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0.02) 100%)'
-              }}>
-              <button onClick={() => setOpenTraining(v=>!v)} className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} w-full text-left border-b border-transparent flex items-center justify-between`}>
-                <div className="flex items-center justify-start gap-2">
-                  <span className="text-lg">🎯</span>
-                  <h4 className={`font-bold ${isCompact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'} tracking-wide uppercase`} style={{ color: '#14B8A6' }}>
+            <div className="bg-black/30 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm shadow-lg">
+              <button onClick={() => setOpenTraining(v=>!v)} className={`${isCompact ? 'px-3 py-2' : 'px-4 py-3'} w-full text-left border-b border-white/10 flex items-center justify-between hover:bg-white/5 transition-all duration-300 group`}>
+                <div className="flex items-center justify-start gap-3">
+                  <div className={`w-4 h-4 border-r-2 border-t-2 border-[#D4AF37] transform transition-all duration-300 ${openTraining ? 'rotate-135' : 'rotate-45'}`}></div>
+                  <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>
                     Your Training
                   </h4>
                 </div>
                 <span className="text-white/60 text-xs">{openTraining ? 'Hide' : 'Open'}</span>
               </button>
               {openTraining && (
-                <div className={isCompact ? 'p-3' : 'p-4'}>
+                <div className={isCompact ? 'p-4' : 'p-6'}>
                   <div className={isCompact ? 'space-y-2.5' : 'space-y-3'}>
-                    {immunityTraining.map((checkpoint, index) => (
+                    {(immunityTraining.length > 0 ? immunityTraining : [
+                      "Recognize the pattern when it starts",
+                      "Set clear boundaries immediately", 
+                      "Practice the response that breaks the cycle",
+                      "Document what works for future reference"
+                    ]).map((checkpoint, index) => (
                       <motion.div
                         key={index}
                         data-training-item={index > 0 ? "true" : undefined}
@@ -1060,47 +1239,77 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         )}
 
 
-        {/* Sage's Blessing - Premium Sunset Treatment */}
+        {/* Sage's Blessing - Matching Sage's Seal Styling */}
         {sageBlessing && (
-        <div className={isCompact ? 'mb-5' : 'mb-8'}>
-            <div className={`max-w-2xl mx-auto ${isCompact ? 'p-4 sm:p-5' : 'p-6 sm:p-8'} relative overflow-hidden`} data-sage-blessing-container style={{
-              background: 'rgba(0,0,0,0.35)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '24px',
-            border: '1px solid rgba(212, 175, 55, 0.4)',
-              boxShadow: '0 8px 32px rgba(212, 175, 55, 0.12)'
-          }}>
-              <div className="text-center mb-6 sm:mb-8" data-sage-blessing-header>
-                <Crown className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-4" style={{ color: '#F59E0B' }} />
-              <h4 className={`font-bold ${isCompact ? 'text-sm sm:text-base' : 'text-base sm:text-lg md:text-xl'} tracking-wide`} 
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mb-3"
+          data-sage-blessing-section
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+              <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S BLESSING</h3>
+            </div>
+            <div className="text-xs text-stone-400/70 font-mono">FINAL WISDOM</div>
+            </div>
+            
+          <div className="relative group">
+            {/* Enhanced Gold glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/8 to-transparent rounded-xl blur-3xl group-hover:blur-2xl transition-all duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#F5E6D3]/6 to-transparent rounded-xl blur-xl group-hover:blur-lg transition-all duration-500" />
+            
+            <div className="relative bg-[#0b1220]/60 backdrop-blur-sm rounded-xl p-4 border border-[#D4AF37]/30 text-center shadow-2xl group-hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
+              {/* Enhanced Crown with Animation */}
+              <motion.div 
+                initial={{ scale: 0.8, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+                className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300"
+              >
+                👑
+              </motion.div>
+              
+              {/* Enhanced Header */}
+              <motion.h4 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="text-xs font-semibold tracking-[0.2em] text-[#D4AF37] uppercase mb-2"
+              >
+                Sage's Blessing
+              </motion.h4>
+              
+              {/* Enhanced Quote */}
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="text-lg font-medium leading-relaxed px-2 group-hover:scale-105 transition-transform duration-300"
                 style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 50%, #D4AF37 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text'
                 }}>
-                SAGE'S BLESSING
-              </h4>
-            </div>
-            
-              <div className={`${isCompact ? 'px-3 sm:px-4 mb-5' : 'px-4 sm:px-6 mb-8'}`} data-sage-blessing-content>
-                <p className={`${isCompact ? 'text-[13.5px] sm:text-sm' : 'text-sm sm:text-base md:text-lg lg:text-xl'} font-medium text-center ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'}`} data-sage-blessing-text
-                style={{
-                  background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  lineHeight: isCompact ? undefined : '1.6'
-                }}>
                   "{sageBlessing}"
-              </p>
-            </div>
-            
+              </motion.p>
               
-              
-              <p className="text-center text-white/60 text-xs" data-share-hide="true">Blessed by Sage 🔮</p>
+              {/* Enhanced Attribution */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9 }}
+                className="flex items-center justify-center gap-2 mt-3 text-xs text-[#D4AF37]/80 font-medium tracking-wide"
+              >
+                <span>Blessed by Sage</span>
+                <span className="text-lg">🔮</span>
+              </motion.div>
           </div>
         </div>
+        </motion.section>
         )}
 
       </motion.div>
@@ -1113,8 +1322,8 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
             backdropFilter: 'blur(20px) saturate(200%)',
             WebkitBackdropFilter: 'blur(20px) saturate(200%)',
-            border: '2px solid rgba(212, 175, 55, 0.4)',
-            boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
+            border: '3px solid rgba(168, 85, 247, 0.7)',
+            boxShadow: '0 12px 40px rgba(168, 85, 247, 0.2), 0 0 100px rgba(168, 85, 247, 0.08)'
           }}
           data-share-hide="true"
         >
@@ -1177,58 +1386,6 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
       )}
 
       {/* Container 3: Privacy & Disclaimer Section - Exact Truth Receipt Design */}
-      {!showPaywall && (
-        <div 
-          className="bg-gradient-to-br from-slate-900/40 to-slate-800/30 rounded-3xl p-8 border border-slate-700/50 backdrop-blur-xl shadow-2xl"
-          data-share-hide="true"
-        >
-          {/* Privacy Section - Enhanced Side by Side */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-            <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <span className="text-emerald-400 text-lg">🔒</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
-                <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
-              </div>
-            </div>
-            
-            <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <span className="text-amber-400 text-lg">📍</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
-                <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Enhanced Disclaimer */}
-          <div className="mb-8 p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
-            <p className="text-sm text-slate-300 text-center font-medium">
-              🔮 Sage reads patterns for entertainment only - not therapy, not advice.
-              I'm AI with opinions, not a licensed professional. I can be wrong. I only see texts, not your story.
-
-              You make your choices, bestie. I'm here for the tea, not the trauma. By using this, you agree you're responsible for your decisions. 💜
-            </p>
-          </div>
-
-          {/* World-Class CTA Button */}
-          <button 
-            onClick={() => window.open('http://localhost:5173/refer', '_blank')}
-            className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <span className="text-xl relative z-10">💰</span>
-            <div className="relative z-10">
-              <span className="text-lg">Share & Earn</span>
-              <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
-            </div>
-          </button>
-        </div>
-      )}
 
       {/* Website URL */}
       <div className="text-center">

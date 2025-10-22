@@ -10,21 +10,21 @@ import { loadStripe } from '@stripe/stripe-js';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageLanding from '@/assets/sage-landing.png';
 
-// Demo receipt images - All receipt types
+// Demo receipt images  -  All receipt types
 // Truth Receipts
-import ghostingChampionTruth from '@/assets/GTR Demo Assets/Truth Receipts/Ghosting Champion - Sage-Receipt-1761066312906.png';
-import maybeMerchantTruth from '@/assets/GTR Demo Assets/Truth Receipts/Maybe Merchant - Sage-Receipt-1761067025449.png';
-import reassuringPartnerTruth from '@/assets/GTR Demo Assets/Truth Receipts/Reassuring Partner - Sage-Receipt-1761068554637.png';
+import ghostingChampionTruth from '@/assets/GTR Demo Assets/Truth Receipts/Ghosting Champion  -  Sage-Receipt-1761066312906.png';
+import maybeMerchantTruth from '@/assets/GTR Demo Assets/Truth Receipts/Maybe Merchant  -  Sage-Receipt-1761067025449.png';
+import reassuringPartnerTruth from '@/assets/GTR Demo Assets/Truth Receipts/Reassuring Partner  -  Sage-Receipt-1761068554637.png';
 
 // Playbook Receipts
-import ghostingChampionPlaybook from '@/assets/GTR Demo Assets/Ghosting Champion - Sage-Playbook-1761066320799.png';
-import maybeMerchantPlaybook from '@/assets/GTR Demo Assets/Maybe Merchant - Sage-Playbook-1761067383678.png';
-import reassuringPartnerPlaybook from '@/assets/GTR Demo Assets/Reassuring Partner - Sage-Playbook-1761068561011.png';
+import ghostingChampionPlaybook from '@/assets/GTR Demo Assets/Ghosting Champion  -  Sage-Playbook-1761066320799.png';
+import maybeMerchantPlaybook from '@/assets/GTR Demo Assets/Maybe Merchant  -  Sage-Playbook-1761067383678.png';
+import reassuringPartnerPlaybook from '@/assets/GTR Demo Assets/Reassuring Partner  -  Sage-Playbook-1761068561011.png';
 
 // Immunity Receipts
-import ghostingChampionImmunity from '@/assets/GTR Demo Assets/Ghosting Champion - Sage-Immunity-1761067753743.png';
-import maybeMerchantImmunity from '@/assets/GTR Demo Assets/Maybe Merchant - Sage-Immunity-1761067388991.png';
-import reassuringPartnerImmunity from '@/assets/GTR Demo Assets/Reassuring Partner - Sage-Immunity-1761068566579.png';
+import ghostingChampionImmunity from '@/assets/GTR Demo Assets/Ghosting Champion  -  Sage-Immunity-1761067753743.png';
+import maybeMerchantImmunity from '@/assets/GTR Demo Assets/Maybe Merchant  -  Sage-Immunity-1761067388991.png';
+import reassuringPartnerImmunity from '@/assets/GTR Demo Assets/Reassuring Partner  -  Sage-Immunity-1761068566579.png';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -55,12 +55,12 @@ const LandingPage = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [showStreak, setShowStreak] = useState(false);
 
-  // Messages to cycle through - Gen Z nightmare scenarios
+  // Messages to cycle through  -  Gen Z nightmare scenarios
   const messages = [
     { text: '💬 "watches my story instantly but takes 8 hours to reply... lol"', color: 'text-purple-200', archetype: '📱👻 The WiFi Ghoster' },
     { text: '💬 "soft-launched me on close friends then hard-launched their ex"', color: 'text-purple-200', archetype: '📸🤡 The Backup Plan' },
     { text: '💬 "they really typed \'wyd\' at 1:47am thinking that\'s flirting! how am i not confused."', color: 'text-purple-200', archetype: '🌙💔 The 2AM Breadcrumber' },
-    { text: '💬 "is this normal - games 10 hours straight but can\'t call for 5 min?? WTF!"', color: 'text-purple-200', archetype: '🎮⚰️ The AFKer' },
+    { text: '💬 "is this normal  -  games 10 hours straight but can\'t call for 5 min?? WTF!"', color: 'text-purple-200', archetype: '🎮⚰️ The AFKer' },
     { text: '💬 "they said \'I love you\' on date 2 and wants to meet my parents... help"', color: 'text-purple-200', archetype: '💣💕 The Love Bomber' },
     { text: '💬 "date 1: life story trauma dump. date 2: complete ghost. make it make sense"', color: 'text-purple-200', archetype: '💣👻 The Emotional Hit & Run' },
     { text: '💬 "u plan trips we\'ll never take but can\'t plan dinner.. I don\'t get it."', color: 'text-purple-200', archetype: '✈️🎭 The Dream Seller' }
@@ -118,7 +118,7 @@ const LandingPage = () => {
     },
     {
       question: "Can I try Sage without signing up?",
-      answer: "Yep. No account. No strings. You get 1 free Sage Receipt — no login, no credit card, no judgment. Just paste your chat and go. Want more? Join the Free Plan: you\'ll get 3 bonus Receipts right away, plus 1 full Sage read every day (archetype, verdict, and playbook). Still no card. Still no pressure."
+      answer: "Yep. No account. No strings. You get 1 free Sage Receipt  -  no login, no credit card, no judgment. Just paste your chat and go. Want more? Join the Free Plan: you\'ll get 3 bonus Receipts right away, plus 1 full Sage read every day (archetype, verdict, and playbook). Still no card. Still no pressure."
     },
     {
       question: "What do I get with the free plan?",
@@ -126,23 +126,23 @@ const LandingPage = () => {
     },
     {
       question: "Is this actual advice or just for fun?",
-      answer: "Sage is an AI character created for entertainment. Sage is that friend who sees patterns and has opinions — lots of them. While many users say Sage's takes are eerily accurate (94% relate), Sage is not a therapist or counselor. Think of Sage like your horoscope: somehow relevant, technically entertainment, and screen-shot worthy when it hits."
+      answer: "Sage is an AI character created for entertainment. Sage is that friend who sees patterns and has opinions  -  lots of them. While many users say Sage's takes are eerily accurate (94% relate), Sage is not a therapist or counselor. Think of Sage like your horoscope: somehow relevant, technically entertainment, and screen-shot worthy when it hits."
     },
     {
       question: "Why does Sage sound so sure when it\'s just for entertainment?",
-      answer: "That\'s Sage's character — the friend who\'s so done watching you spiral that everything sounds like fact. It\'s not. Sage is an AI with opinions, not a mind reader. But that confidence can help calm an overthinking brain. Take what resonates, leave what doesn\'t."
+      answer: "That\'s Sage's character  -  the friend who\'s so done watching you spiral that everything sounds like fact. It\'s not. Sage is an AI with opinions, not a mind reader. But that confidence can help calm an overthinking brain. Take what resonates, leave what doesn\'t."
     },
     {
       question: "Does Sage only work on toxic situations?",
-      answer: "Hell no. Sage reads everything. Bring your healthy relationship and Sage will validate why it\'s working. Bring your ex from 2009 for laughs. Bring your mom\'s guilt-trip texts. Bring that Love Island chat you\'re obsessed with. Sage has takes on all of it — the good, the bad, and the \"what even is this?\""
+      answer: "Hell no. Sage reads everything. Bring your healthy relationship and Sage will validate why it\'s working. Bring your ex from 2009 for laughs. Bring your mom\'s guilt-trip texts. Bring that Love Island chat you\'re obsessed with. Sage has takes on all of it  -  the good, the bad, and the \"what even is this?\""
     },
     {
       question: "Why is Privacy First such a big deal here?",
-      answer: "Because when you\'re pasting real, messy convos into an app, you deserve to feel safe. From day one, we built Get The Receipts to protect your privacy like it\'s our own. No chat logs. No training on your data. No digging into your history. You\'re not here to hand over secrets — you\'re here to get clarity, without judgment or surveillance."
+      answer: "Because when you\'re pasting real, messy convos into an app, you deserve to feel safe. From day one, we built Get The Receipts to protect your privacy like it\'s our own. No chat logs. No training on your data. No digging into your history. You\'re not here to hand over secrets  -  you\'re here to get clarity, without judgment or surveillance."
     },
     {
       question: "Data: What do you keep, and what do you delete?",
-      answer: "We keep only what\'s needed to run your account and instantly delete everything else. We keep: email (for login), encrypted password, and payment info (if paid). We delete: all receipts and messages after Sage processes it (gone in ~3 seconds), your receipt results, and any record of what you pasted in. We never track your behavior, message history, or usage for training or marketing. We use zero-storage architecture plus real-time processing with contractual no-training AI services. Sage doesn\'t learn from you — Sage helps you learn from your own patterns."
+      answer: "We keep only what\'s needed to run your account and instantly delete everything else. We keep: email (for login), encrypted password, and payment info (if paid). We delete: all receipts and messages after Sage processes it (gone in ~3 seconds), your receipt results, and any record of what you pasted in. We never track your behavior, message history, or usage for training or marketing. We use zero-storage architecture plus real-time processing with contractual no-training AI services. Sage doesn\'t learn from you  -  Sage helps you learn from your own patterns."
     }
   ];
 
@@ -217,7 +217,7 @@ const LandingPage = () => {
       text: archetypes[selectedArchetype].name,
       message: archetypes[selectedArchetype].message,
       time: archetypes[selectedArchetype].time,
-      analysis: `${archetypes[selectedArchetype].name} - Truth Receipt`,
+      analysis: `${archetypes[selectedArchetype].name}  -  Truth Receipt`,
       insight: archetypes[selectedArchetype].insights.truth,
       interest: archetypes[selectedArchetype].interest,
       color: archetypes[selectedArchetype].color,
@@ -229,7 +229,7 @@ const LandingPage = () => {
       text: archetypes[selectedArchetype].name,
       message: archetypes[selectedArchetype].message,
       time: archetypes[selectedArchetype].time,
-      analysis: `${archetypes[selectedArchetype].name} - Playbook`,
+      analysis: `${archetypes[selectedArchetype].name}  -  Playbook`,
       insight: archetypes[selectedArchetype].insights.playbook,
       interest: archetypes[selectedArchetype].interest,
       color: archetypes[selectedArchetype].color,
@@ -241,7 +241,7 @@ const LandingPage = () => {
       text: archetypes[selectedArchetype].name,
       message: archetypes[selectedArchetype].message,
       time: archetypes[selectedArchetype].time,
-      analysis: `${archetypes[selectedArchetype].name} - Immunity Training`,
+      analysis: `${archetypes[selectedArchetype].name}  -  Immunity Training`,
       insight: archetypes[selectedArchetype].insights.immunity,
       interest: archetypes[selectedArchetype].interest,
       color: archetypes[selectedArchetype].color,
@@ -315,7 +315,7 @@ const LandingPage = () => {
     const interval = setInterval(() => {
       setLiveUserCount((prev) => {
         // Randomly fluctuate the number to show live activity
-        const change = Math.random() > 0.5 ? 1 : -1;
+        const change = Math.random() > 0.5 ? 1 : - 1;
         const newCount = prev + change;
         return Math.max(1200, Math.min(1300, newCount)); // Keep between 1200-1300
       });
@@ -344,7 +344,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Deep Charcoal Background - Glassmorphism Optimized */}
+      {/* Deep Charcoal Background  -  Glassmorphism Optimized */}
       <div className="absolute inset-0 bg-[#0F0F0F]" />
       
       {/* Subtle Depth with Cyan Accent */}
@@ -354,7 +354,7 @@ const LandingPage = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
       
       <div className="relative z-10">
-        {/* Hero Section - World-Class SaaS Design */}
+        {/* Hero Section  -  World-Class SaaS Design */}
         <section className="pt-20 pb-32 px-4">
           <div className="max-w-7xl mx-auto">
         <motion.div
@@ -370,7 +370,7 @@ const LandingPage = () => {
           animate={{ 
             opacity: 1, 
             scale: 1,
-            rotate: [0, -1, 1, -1, 0]
+            rotate: [0, - 1, 1, - 1, 0]
           }}
           transition={{ 
             duration: 0.5, 
@@ -388,7 +388,7 @@ const LandingPage = () => {
             <motion.span
               animate={{ 
                 scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
+                rotate: [0, 5, - 5, 0]
               }}
               transition={{ 
                 duration: 2,
@@ -402,9 +402,9 @@ const LandingPage = () => {
           </div>
         </motion.div>
 
-        {/* Typing Animation - Complete the sentence */}
+        {/* Typing Animation  -  Complete the sentence */}
           <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: - 10 }}
             animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mb-8"
@@ -415,7 +415,7 @@ const LandingPage = () => {
                 key={currentMessageIndex}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: - 20 }}
                 transition={{ duration: 0.5 }}
                 className="text-center"
               >
@@ -438,7 +438,7 @@ const LandingPage = () => {
           </div>
           </motion.div>
 
-        {/* Headline - LARGE */}
+        {/* Headline  -  LARGE */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -461,7 +461,7 @@ const LandingPage = () => {
           Paste the chat. Tell the story. Get Sage's take. 💅
         </motion.p>
 
-        {/* Process - SIMPLE */}
+        {/* Process  -  SIMPLE */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -483,9 +483,9 @@ const LandingPage = () => {
             animate={{ 
               scale: [1, 1.02, 1],
               boxShadow: [
-                "0 25px 50px -12px rgba(6, 182, 212, 0.4)",
-                "0 25px 50px -12px rgba(6, 182, 212, 0.6)",
-                "0 25px 50px -12px rgba(6, 182, 212, 0.4)"
+                "0 25px 50px - 12px rgba(6, 182, 212, 0.4)",
+                "0 25px 50px - 12px rgba(6, 182, 212, 0.6)",
+                "0 25px 50px - 12px rgba(6, 182, 212, 0.4)"
               ]
             }}
             transition={{ 
@@ -566,7 +566,7 @@ const LandingPage = () => {
             <motion.div
               animate={{ 
                 scale: [1, 1.05, 1],
-                rotate: [0, 3, -3, 0]
+                rotate: [0, 3, - 3, 0]
               }}
               transition={{ 
                 duration: 1.5,
@@ -589,7 +589,7 @@ const LandingPage = () => {
         {/* Subtle Section Divider */}
         <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent"></div>
 
-        {/* Trust Bridge Section - Enhanced with Live Social Proof */}
+        {/* Trust Bridge Section  -  Enhanced with Live Social Proof */}
         <section className="py-12 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
@@ -607,7 +607,7 @@ const LandingPage = () => {
               
               {/* Live Social Proof Counter */}
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: - 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm text-gray-300 mb-6 shadow-lg shadow-black/10"
@@ -637,7 +637,7 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Meet Sage Section - Enhanced with Personality */}
+        {/* Meet Sage Section  -  Enhanced with Personality */}
         <section className="py-20 px-4">
           <div className="max-w-7xl mx-auto">
             <motion.div
@@ -656,11 +656,11 @@ const LandingPage = () => {
               </h2>
               {/* Body paragraph */}
               <p className="text-lg text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Sage has seen every pattern: breadcrumbing, ghosting, love bombing - no judgment, just clarity.
+                Sage has seen every pattern: breadcrumbing, ghosting, love bombing  -  no judgment, just clarity.
               </p>
             </motion.div>
 
-            {/* Sage's Personality Card - Enhanced */}
+            {/* Sage's Personality Card  -  Enhanced */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -680,10 +680,10 @@ const LandingPage = () => {
                         />
                       </div>
                       {/* Floating personality indicators */}
-                      <div className="absolute -top-2 -right-2 w-12 h-12 bg-purple-400/20 backdrop-blur-sm border border-purple-400/30 rounded-full flex items-center justify-center">
+                      <div className="absolute - top-2 - right-2 w-12 h-12 bg-purple-400/20 backdrop-blur-sm border border-purple-400/30 rounded-full flex items-center justify-center">
                         <span className="text-lg">🗣️</span>
                       </div>
-                      <div className="absolute -bottom-2 -left-2 w-12 h-12 bg-emerald-400/20 backdrop-blur-sm border border-emerald-400/30 rounded-full flex items-center justify-center">
+                      <div className="absolute - bottom-2 - left-2 w-12 h-12 bg-emerald-400/20 backdrop-blur-sm border border-emerald-400/30 rounded-full flex items-center justify-center">
                         <span className="text-lg">💖</span>
                       </div>
                     </div>
@@ -737,7 +737,7 @@ const LandingPage = () => {
 
 
 
-        {/* How It Works Section - MOVED ABOVE DEMO */}
+        {/* How It Works Section  -  MOVED ABOVE DEMO */}
         <section className="py-20 px-4">
           <div className="max-w-7xl mx-auto">
             <motion.div
@@ -835,7 +835,7 @@ const LandingPage = () => {
               <p className="text-gray-400 text-sm">Select a communication pattern to analyze</p>
             </div>
             
-            {/* Archetype Selection - Clean & Consistent */}
+            {/* Archetype Selection  -  Clean & Consistent */}
             <div className="flex flex-wrap justify-center gap-4 mb-8 max-w-4xl mx-auto">
               {Object.entries(archetypes).map(([key, archetype]) => {
                 return (
@@ -857,7 +857,7 @@ const LandingPage = () => {
             </div>
 
 
-          {/* Receipt Display - Responsive Layout */}
+          {/* Receipt Display  -  Responsive Layout */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -882,13 +882,13 @@ const LandingPage = () => {
                 <div className="absolute top-4 bottom-4 right-0 w-px bg-gradient-to-b from-transparent via-blue-400/30 to-transparent"></div>
                 
                 {/* Bottom Shadow Effect */}
-                <div className="absolute -bottom-4 left-4 right-4 h-4 bg-gradient-to-t from-black/20 to-transparent rounded-b-3xl blur-sm"></div>
+                <div className="absolute - bottom-4 left-4 right-4 h-4 bg-gradient-to-t from-black/20 to-transparent rounded-b-3xl blur-sm"></div>
                 
-                {/* Content Grid - Wider Info Panel */}
+                {/* Content Grid  -  Wider Info Panel */}
                 <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-3 items-stretch h-full min-h-[550px]">
               
-              {/* Left Side - Large Receipt Display */}
-              <div className="flex justify-center lg:justify-start lg:col-span-3 -ml-1">
+              {/* Left Side  -  Large Receipt Display */}
+              <div className="flex justify-center lg:justify-start lg:col-span-3 - ml-1">
                 <div className="relative group w-full max-w-lg">
                   {/* Receipt Container with Premium Styling */}
                   <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl border border-white/20 w-full h-full cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-cyan-500/20 hover:border-cyan-400/30" onClick={handleReceiptSwitch}>
@@ -899,7 +899,7 @@ const LandingPage = () => {
                     <div className="relative z-10">
                       <img 
                         src={archetypes[selectedArchetype].images[currentReceiptType]}
-                        alt={`${archetypes[selectedArchetype].name} - ${currentReceiptType.charAt(0).toUpperCase() + currentReceiptType.slice(1)} Receipt`}
+                        alt={`${archetypes[selectedArchetype].name}  -  ${currentReceiptType.charAt(0).toUpperCase() + currentReceiptType.slice(1)} Receipt`}
                         className="w-full h-auto object-contain brightness-110 contrast-110 saturate-110 transition-all duration-300 group-hover:brightness-120"
                         onLoad={() => console.log('Image loaded:', archetypes[selectedArchetype].images[currentReceiptType])}
                         onError={() => console.error('Image failed to load:', archetypes[selectedArchetype].images[currentReceiptType])}
@@ -923,13 +923,13 @@ const LandingPage = () => {
                   </div>
                   
                   {/* Floating Action Hint */}
-                  <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white/70 text-xs px-3 py-1 rounded-full border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="absolute - bottom-6 left-1/2 transform - translate-x-1/2 bg-white/10 backdrop-blur-sm text-white/70 text-xs px-3 py-1 rounded-full border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     Click to cycle through receipt types
                   </div>
                 </div>
               </div>
 
-              {/* Right Side - Wider Analysis Panel */}
+              {/* Right Side  -  Wider Analysis Panel */}
               <div className="lg:col-span-2 flex flex-col justify-center h-full px-2">
                 <div className="max-w-md mx-auto w-full">
                 {/* Spacious Header */}
@@ -1000,7 +1000,7 @@ const LandingPage = () => {
                 {/* Social Proof */}
                 <div className="mb-6 bg-gradient-to-r from-cyan-400/10 to-blue-500/10 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="flex -space-x-2">
+                    <div className="flex - space-x-2">
                       <div className="w-6 h-6 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full border-2 border-white/20"></div>
                       <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full border-2 border-white/20"></div>
                       <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full border-2 border-white/20"></div>
@@ -1008,7 +1008,7 @@ const LandingPage = () => {
                     <p className="text-white font-semibold text-sm">Join 5K+ users</p>
                   </div>
                   <p className="text-gray-300 text-xs transition-all duration-500 ease-in-out">
-                    "{testimonials[currentTestimonialIndex].text}" - {testimonials[currentTestimonialIndex].author}
+                    "{testimonials[currentTestimonialIndex].text}"  -  {testimonials[currentTestimonialIndex].author}
                   </p>
                 </div>
 
@@ -1052,7 +1052,7 @@ const LandingPage = () => {
         </section>
 
 
-        {/* Social Proof Section - Premium SaaS Style */}
+        {/* Social Proof Section  -  Premium SaaS Style */}
         <section className="py-24 px-4 bg-white/2">
           <div className="max-w-7xl mx-auto">
           <motion.div
@@ -1199,17 +1199,17 @@ const LandingPage = () => {
               </p>
             </motion.div>
 
-            {/* Netflix-Style Clean Cards - All Same Size */}
+            {/* Netflix-Style Clean Cards  -  All Same Size */}
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {/* MOST POPULAR Badge for Premium Card */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20 hidden md:block">
+              <div className="absolute top-0 left-1/2 transform - translate-x-1/2 - translate-y-3 z-20 hidden md:block">
                 <div className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-xl shadow-cyan-500/30 animate-pulse border border-cyan-300/50">
                   MOST POPULAR
                 </div>
               </div>
               
               {/* BEST VALUE Badge for OG Founder Card */}
-              <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-3 z-20 hidden md:block">
+              <div className="absolute top-0 right-0 transform translate-x-1/2 - translate-y-3 z-20 hidden md:block">
                 <div className="bg-gradient-to-r from-emerald-400 to-green-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-xl shadow-emerald-500/30 border border-emerald-300/50">
                   BEST VALUE
                 </div>
@@ -1425,7 +1425,7 @@ const LandingPage = () => {
               
               {/* Live Social Proof Counter */}
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: - 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm text-gray-300 mb-8 shadow-lg shadow-black/10"

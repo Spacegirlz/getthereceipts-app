@@ -224,7 +224,7 @@ const TabbedReceiptInterface = ({
       {/* Tab Navigation with Premium Styling */}
       <div className="mb-12">
         <div className="relative max-w-2xl mx-auto">
-          <div className="flex items-center justify-center bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-slate-900/80 rounded-3xl p-3 sm:p-4 backdrop-blur-xl border border-slate-600/40 shadow-2xl shadow-black/30">
+          <div className="flex items-center justify-center bg-white/5 backdrop-blur-sm rounded-3xl p-3 sm:p-4 border border-cyan-400/20 shadow-lg shadow-cyan-500/20">
 
             {/* Tab Labels */}
             <div className="flex-1 flex justify-center">
@@ -519,57 +519,6 @@ const TabbedReceiptInterface = ({
               <div className="w-full">
                 {tabs[activeTab]?.component}
 
-                {/* Additional Sagebot page sections - only for Sage tab */}
-                {tabs[activeTab]?.id === 'sage' && (
-                  <div className="w-full max-w-2xl mx-auto mt-16 sm:mt-20 space-y-6" data-sage-sections>
-                    {/* Privacy & Analysis cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <span className="text-emerald-400 text-lg">🔒</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
-                          <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
-                        </div>
-                      </div>
-                      <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <span className="text-amber-400 text-lg">📍</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
-                          <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Disclaimer */}
-                    <div className="p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
-                      <p className="text-sm text-slate-300 text-center font-medium">
-                        🔮 Sage reads patterns for entertainment only - not therapy, not advice. I'm AI with opinions, not a licensed professional. I can be wrong. I only see texts, not your story.
-                        <br/>You make your choices, bestie. I'm here for the tea, not the trauma. By using this, you agree you're responsible for your decisions. 💜
-                      </p>
-                    </div>
-
-                    {/* Share & Earn */}
-                    <button 
-                      onClick={() => window.open('http://localhost:5173/refer', '_blank')}
-                      className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      <span className="text-xl relative z-10">💰</span>
-                      <div className="relative z-10">
-                        <span className="text-lg">Share & Earn</span>
-                        <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
-                      </div>
-                    </button>
-
-                    {/* space below the Share & Earn and before any following CTAs */}
-                    <div className="h-8" />
-                    {/* Decode Another Text CTA and upsell are already present on Receipts page; avoid duplicating here */}
-                  </div>
-                )}
               </div>
             )}
             
@@ -579,18 +528,18 @@ const TabbedReceiptInterface = ({
                 <button
                   onClick={() => navigateToTab(activeTab - 1)}
                   disabled={activeTab === 0}
-                  className="w-12 h-12 rounded-full bg-gradient-to-r from-slate-700/50 to-slate-800/50 border border-slate-600/40 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-sm border border-cyan-400/20 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30"
                   aria-label="Previous section"
                 >
                   👈
                 </button>
-                <div className="text-xs text-gray-400 text-center px-6 py-2 bg-slate-800/30 rounded-full border border-slate-600/30">
+                <div className="text-xs text-gray-400 text-center px-6 py-2 bg-white/5 backdrop-blur-sm rounded-full border border-cyan-400/20">
                   <div className="font-medium">Swipe or tap to explore</div>
                 </div>
                 <button
                   onClick={() => navigateToTab(activeTab + 1)}
                   disabled={activeTab === tabs.length - 1}
-                  className="w-12 h-12 rounded-full bg-gradient-to-r from-slate-700/50 to-slate-800/50 border border-slate-600/40 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-sm border border-cyan-400/20 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30"
                   aria-label="Next section"
                 >
                   👉

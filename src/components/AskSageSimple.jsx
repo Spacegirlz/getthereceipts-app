@@ -139,20 +139,20 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
       <div className="w-full max-w-2xl mx-auto mt-6">
         <button 
           onClick={() => setIsOpen(true)}
-          className="w-full p-5 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 rounded-2xl text-white font-bold hover:from-purple-700 hover:via-blue-700 hover:to-indigo-800 transition-all duration-300 shadow-2xl hover:shadow-3xl border-2 border-purple-400/30 hover:border-purple-300/50 transform hover:scale-[1.02]"
+          className="w-full p-5 bg-white/8 backdrop-blur-xl rounded-2xl text-white font-bold hover:bg-white/12 transition-all duration-300 shadow-2xl shadow-cyan-500/20 hover:shadow-cyan-500/30 border border-cyan-400/30 hover:border-cyan-400/50 transform hover:scale-[1.02]"
         >
           <div className="flex items-center justify-center gap-4">
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-8 h-8 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full flex items-center justify-center shadow-lg border border-cyan-400/30">
               <span className="text-lg">🔮</span>
             </div>
             <div className="text-center">
               <div className="text-lg font-bold">Ask Sage Anything</div>
-              <div className="text-sm opacity-90">About This Receipt</div>
+              <div className="text-sm opacity-90">Premium AI analysis for any situation</div>
             </div>
             {isPremium ? (
-              <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg"></div>
+              <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse shadow-lg"></div>
             ) : (
-              <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              <div className="bg-gradient-to-r from-cyan-400 to-purple-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-cyan-400/30">
                 PREMIUM
               </div>
             )}
@@ -163,34 +163,52 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto mt-6 bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/60 overflow-hidden flex flex-col" style={{ boxShadow: '0 0 0 1px rgba(148, 163, 184, 0.15), inset 0 0 0 0.5px rgba(148, 163, 184, 0.15)' }}>
+    <div className="w-full max-w-2xl mx-auto mt-6 bg-white/8 backdrop-blur-xl rounded-2xl shadow-2xl shadow-cyan-500/20 border border-cyan-400/30 overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 px-6 py-5 border-b border-purple-400/30">
+      <div className="bg-gradient-to-r from-cyan-500/20 to-purple-500/20 px-6 py-5 border-b border-cyan-400/30">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full flex items-center justify-center shadow-lg border border-cyan-400/30">
               <span className="text-white text-xl">🔮</span>
             </div>
             <div>
-              <h3 className="text-white font-bold text-xl">Ask Sage</h3>
-              <p className="text-purple-100 text-sm">AI-powered analysis for any situation</p>
+              <h3 className="text-white font-bold text-xl">Ask Sage Anything</h3>
+              <p className="text-cyan-200 text-sm">Premium AI analysis for any situation</p>
             </div>
             {isPremium ? (
-              <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              <div className="bg-gradient-to-r from-cyan-400 to-purple-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-cyan-400/30">
                 PREMIUM
               </div>
             ) : (
-              <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+              <div className="bg-gradient-to-r from-cyan-400 to-purple-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse border border-cyan-400/30">
                 UPGRADE
               </div>
             )}
           </div>
           <button 
             onClick={() => setIsOpen(false)}
-            className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white hover:text-white transition-colors shadow-lg"
+            className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white hover:text-white transition-colors shadow-lg border border-white/20"
           >
             ✕
           </button>
+        </div>
+      </div>
+      
+      {/* Subtle Trust Indicators */}
+      <div className="px-6 py-3 border-b border-white/10">
+        <div className="flex items-center justify-center gap-8 text-xs text-gray-400">
+          <div className="flex items-center gap-1.5">
+            <span className="text-cyan-400 text-sm">🔒</span>
+            <span className="font-medium">Private & Secure</span>
+            <span className="text-gray-500">•</span>
+            <span className="text-gray-500">Chat deleted. Never stored.</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-purple-400 text-sm">📍</span>
+            <span className="font-medium">Personalized Analysis</span>
+            <span className="text-gray-500">•</span>
+            <span className="text-gray-500">Based on your message only</span>
+          </div>
         </div>
       </div>
       
@@ -215,37 +233,37 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
               <div className="mt-6 grid grid-cols-2 gap-3 max-w-md mx-auto">
                 <button
                   onClick={() => setInput("Should I text them?")}
-                  className="p-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 rounded-xl text-slate-200 text-xs transition-all border border-purple-500/30 hover:border-purple-400/50"
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
                 >
                   Should I text them?
                 </button>
                 <button
                   onClick={() => setInput("What should I do next?")}
-                  className="p-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 rounded-xl text-slate-200 text-xs transition-all border border-purple-500/30 hover:border-purple-400/50"
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
                 >
                   What should I do next?
                 </button>
                 <button
                   onClick={() => setInput("Are they toxic?")}
-                  className="p-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 rounded-xl text-slate-200 text-xs transition-all border border-purple-500/30 hover:border-purple-400/50"
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
                 >
                   Are they toxic?
                 </button>
                 <button
                   onClick={() => setInput("Should I block them?")}
-                  className="p-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 rounded-xl text-slate-200 text-xs transition-all border border-purple-500/30 hover:border-purple-400/50"
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
                 >
                   Should I block them?
                 </button>
                 <button
                   onClick={() => setInput("What does this situation mean?")}
-                  className="p-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 rounded-xl text-slate-200 text-xs transition-all border border-purple-500/30 hover:border-purple-400/50"
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
                 >
                   What does this mean?
                 </button>
                 <button
                   onClick={() => setInput("How should I handle this?")}
-                  className="p-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 rounded-xl text-slate-200 text-xs transition-all border border-purple-500/30 hover:border-purple-400/50"
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
                 >
                   How should I handle this?
                 </button>

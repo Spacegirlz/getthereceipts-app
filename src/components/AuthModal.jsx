@@ -225,12 +225,12 @@ const AuthModal = () => {
     return (
         <>
             <Dialog open={isOpen} onOpenChange={(open) => { if (!open) closeModal(); }}>
-                <DialogContent className={`sm:max-w-md w-full max-h-[90vh] overflow-auto meme-card text-white ${debugModal ? 'ring-4 ring-red-500' : ''}`}>
+                <DialogContent className={`sm:max-w-md w-full max-h-[90vh] overflow-auto bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl shadow-2xl shadow-cyan-500/20 text-white ${debugModal ? 'ring-4 ring-red-500' : ''}`}>
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-center gradient-text">
+                    <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
                         {view === 'sign_in' ? 'Welcome Back!' : 'Create Your Account'}
                     </DialogTitle>
-                    <DialogDescription className="text-center text-gray-400">
+                    <DialogDescription className="text-center text-gray-300">
                         {view === 'sign_in' ? 'Welcome back! Ready to decode some texts?' : 'Join us and start decoding the tea.'}
                     </DialogDescription>
                 </DialogHeader>
@@ -241,7 +241,7 @@ const AuthModal = () => {
                 <div className="flex flex-col gap-4 py-4">
                      <Button
                         variant="outline"
-                        className="w-full bg-white text-black hover:bg-gray-200 border-2 border-green-400 shadow-lg"
+                        className="w-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border-2 border-cyan-400/50 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300"
                         onClick={handleGoogleSignIn}
                         disabled={loading}
                     >
@@ -251,7 +251,7 @@ const AuthModal = () => {
                     
                     {view === 'sign_up' && (
                         <div className="text-center">
-                            <p className="text-xs text-green-400 font-medium">
+                            <p className="text-xs text-emerald-400 font-medium">
                                 ⚡ Instant signup • No email confirmation needed
                             </p>
                         </div>
@@ -259,10 +259,10 @@ const AuthModal = () => {
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-gray-700" />
+                            <span className="w-full border-t border-white/20" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-card px-2 text-gray-400">
+                            <span className="bg-white/8 backdrop-blur-sm px-2 text-gray-300">
                                 Or continue with
                             </span>
                         </div>
@@ -270,18 +270,18 @@ const AuthModal = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <Label htmlFor="email" >Email</Label>
-                            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-gray-800 border-gray-700" />
+                            <Label htmlFor="email" className="text-gray-300">Email</Label>
+                            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-gray-400 focus:border-cyan-400/50 focus:ring-cyan-400/20" />
                         </div>
                         <div>
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password" className="text-gray-300">Password</Label>
                             <Input 
                                 id="password" 
                                 type="password" 
                                 value={password} 
                                 onChange={handlePasswordChange} 
                                 required 
-                                className="bg-gray-800 border-gray-700" 
+                                className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-gray-400 focus:border-cyan-400/50 focus:ring-cyan-400/20" 
                             />
                             {view === 'sign_up' && password && (
                                 <div className="mt-2">
@@ -313,14 +313,14 @@ const AuthModal = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowForgotPassword(true)}
-                                        className="text-xs text-blue-400 hover:underline"
+                                        className="text-xs text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
                                     >
                                         Forgot your password?
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setShowResendConfirmation(true)}
-                                        className="text-xs text-purple-400 hover:underline"
+                                        className="text-xs text-purple-400 hover:text-purple-300 hover:underline transition-colors"
                                     >
                                         Resend confirmation?
                                     </button>
@@ -350,15 +350,15 @@ const AuthModal = () => {
                             </div>
                         )}
                         
-                        <Button type="submit" className="w-full viral-button" disabled={loading}>
+                        <Button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/25 transition-all duration-300 hover:scale-105" disabled={loading}>
                             {loading ? 'Processing...' : (view === 'sign_in' ? 'Sign In' : 'Sign Up')}
                         </Button>
                     </form>
                 </div>
                 
-                <p className="text-center text-sm text-gray-400">
+                <p className="text-center text-sm text-gray-300">
                     {view === 'sign_in' ? "Don't have an account? " : "Already have an account? "}
-                    <button onClick={() => setView(view === 'sign_in' ? 'sign_up' : 'sign_in')} className="font-semibold text-blue-400 hover:underline">
+                    <button onClick={() => setView(view === 'sign_in' ? 'sign_up' : 'sign_in')} className="font-semibold text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">
                          {view === 'sign_in' ? "Sign up" : "Sign in"}
                     </button>
                 </p>
@@ -367,26 +367,26 @@ const AuthModal = () => {
 
         {/* Forgot Password Modal */}
         <Dialog open={showForgotPassword} onOpenChange={(open) => setShowForgotPassword(!!open)}>
-            <DialogContent className="sm:max-w-md w-full max-h-[90vh] overflow-auto meme-card text-white">
+            <DialogContent className="sm:max-w-md w-full max-h-[90vh] overflow-auto bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl shadow-2xl shadow-cyan-500/20 text-white">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-center gradient-text">
+                    <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
                         Reset Your Password
                     </DialogTitle>
-                    <DialogDescription className="text-center text-gray-400">
+                    <DialogDescription className="text-center text-gray-300">
                         Enter your email address and we'll send you a password reset link.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="flex flex-col gap-4 py-4">
                     <div>
-                        <Label htmlFor="reset-email">Email</Label>
+                        <Label htmlFor="reset-email" className="text-gray-300">Email</Label>
                         <Input 
                             id="reset-email" 
                             type="email" 
                             value={email} 
                             onChange={(e) => setEmail(e.target.value)} 
                             required 
-                            className="bg-gray-800 border-gray-700" 
+                            className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-gray-400 focus:border-cyan-400/50 focus:ring-cyan-400/20" 
                         />
                     </div>
                     
@@ -395,7 +395,7 @@ const AuthModal = () => {
                             type="button" 
                             variant="outline" 
                             onClick={() => setShowForgotPassword(false)}
-                            className="flex-1"
+                            className="flex-1 border-white/20 text-gray-300 hover:bg-white/10 hover:border-white/30"
                         >
                             Cancel
                         </Button>
@@ -403,7 +403,7 @@ const AuthModal = () => {
                             type="button" 
                             onClick={handleForgotPassword}
                             disabled={loading || !email}
-                            className="flex-1 viral-button"
+                            className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/25 transition-all duration-300"
                         >
                             {loading ? 'Sending...' : 'Send Reset Link'}
                         </Button>
@@ -414,26 +414,26 @@ const AuthModal = () => {
 
         {/* Resend Confirmation Modal */}
         <Dialog open={showResendConfirmation} onOpenChange={(open) => setShowResendConfirmation(!!open)}>
-            <DialogContent className="sm:max-w-md w-full max-h-[90vh] overflow-auto meme-card text-white">
+            <DialogContent className="sm:max-w-md w-full max-h-[90vh] overflow-auto bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl shadow-2xl shadow-cyan-500/20 text-white">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-center gradient-text">
+                    <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
                         Resend Confirmation Email
                     </DialogTitle>
-                    <DialogDescription className="text-center text-gray-400">
+                    <DialogDescription className="text-center text-gray-300">
                         Enter your email address and we'll send you a new confirmation link.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="flex flex-col gap-4 py-4">
                     <div>
-                        <Label htmlFor="resend-email">Email</Label>
+                        <Label htmlFor="resend-email" className="text-gray-300">Email</Label>
                         <Input 
                             id="resend-email" 
                             type="email" 
                             value={email} 
                             onChange={(e) => setEmail(e.target.value)} 
                             required 
-                            className="bg-gray-800 border-gray-700" 
+                            className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-gray-400 focus:border-cyan-400/50 focus:ring-cyan-400/20" 
                         />
                     </div>
                     
@@ -442,7 +442,7 @@ const AuthModal = () => {
                             type="button" 
                             variant="outline" 
                             onClick={() => setShowResendConfirmation(false)}
-                            className="flex-1"
+                            className="flex-1 border-white/20 text-gray-300 hover:bg-white/10 hover:border-white/30"
                         >
                             Cancel
                         </Button>
@@ -450,7 +450,7 @@ const AuthModal = () => {
                             type="button" 
                             onClick={handleResendConfirmation}
                             disabled={loading || !email}
-                            className="flex-1 viral-button"
+                            className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/25 transition-all duration-300"
                         >
                             {loading ? 'Sending...' : 'Resend Email'}
                         </Button>

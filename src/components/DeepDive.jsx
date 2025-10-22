@@ -832,7 +832,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             </div>
 
             {/* Premium Metrics Dashboard */}
-            <div className={`rounded-2xl ${isCompact ? 'p-6' : 'p-8'} border border-white/20 shadow-2xl bg-black/50 backdrop-blur-sm ${isCompact ? 'mt-4' : 'mt-6'}`} data-share-hide="true">
+            <div className={`rounded-2xl ${isCompact ? 'p-6' : 'p-8'} border border-white/20 shadow-2xl bg-black/40 ${isCompact ? 'mt-4' : 'mt-6'}`} data-share-hide="true">
 
                 {/* Premium Key Metrics Header */}
                 <div className="flex items-center justify-between mb-6">
@@ -850,7 +850,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     return (
                       <>
                         {/* Compact Risk Assessment */}
-                        <div className="bg-black/40 rounded-xl p-4 border border-white/10 shadow-lg">
+                        <div className="bg-black/40 rounded-xl p-4 border border-white/20 shadow-lg">
                           <div className={`${isCompact ? 'text-[11px] leading-none tracking-normal whitespace-nowrap' : 'text-xs tracking-wider'} uppercase text-white/80 ${isCompact ? 'mb-1' : 'mb-2'} font-semibold`} title="Risk">
                             RISK
                           </div>
@@ -872,7 +872,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                         </div>
                         
                         {/* Compact Compatibility Score */}
-                        <div className="bg-black/40 rounded-xl p-4 border border-white/10 shadow-lg">
+                        <div className="bg-black/40 rounded-xl p-4 border border-white/20 shadow-lg">
                           <div className={`${isCompact ? 'text-[11px] leading-none tracking-normal whitespace-nowrap' : 'text-xs tracking-wider'} uppercase text-white/80 ${isCompact ? 'mb-1' : 'mb-2'} font-semibold`} title="Compatibility (Fit)">
                             FIT
                           </div>
@@ -894,7 +894,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                         </div>
 
                         {/* Compact Communication Health */}
-                        <div className="bg-black/40 rounded-xl p-4 border border-white/10 shadow-lg">
+                        <div className="bg-black/40 rounded-xl p-4 border border-white/20 shadow-lg">
                           <div className={`${isCompact ? 'text-[11px] leading-none tracking-normal whitespace-nowrap' : 'text-xs tracking-wider'} uppercase text-white/80 ${isCompact ? 'mb-1' : 'mb-2'} font-semibold`} title="Communication (Comms)">
                             COMMS
                           </div>
@@ -932,11 +932,11 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               className="mb-3"
               data-autopsy-section
             >
-              <div className="bg-black/45 backdrop-blur-sm rounded-xl p-3 border border-white/[0.12] shadow-2xl">
+              <div className="bg-black/40 rounded-xl p-3 border border-white/20 shadow-2xl">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                    <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S RECEIPT AUTOPSY</h3>
+                    <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S RECEIPT AUTOPSY</h3>
                   </div>
                   <div className="text-xs text-stone-400/70 font-mono">EVIDENCE COLLECTED</div>
                 </div>
@@ -1245,28 +1245,28 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     
                     {/* Preview Content Blocks */}
                     <div className="space-y-6">
-                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                      <div className="bg-black/40 rounded-2xl p-6 border border-white/20 shadow-lg">
                         <h4 className="text-lg font-semibold text-white mb-3">🎯 Your Strategic Action Plan</h4>
                         <p className="text-gray-300 leading-relaxed">
                           Based on this conversation pattern, here's your personalized 3-step strategy to handle this situation like a pro...
                         </p>
                       </div>
                       
-                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                      <div className="bg-black/40 rounded-2xl p-6 border border-white/20 shadow-lg">
                         <h4 className="text-lg font-semibold text-white mb-3">⚡ Next 48 Hours</h4>
                         <p className="text-gray-300 leading-relaxed">
                           Immediate actions to take, specific phrases to use, and timing strategies that actually work...
                         </p>
                       </div>
                       
-                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                      <div className="bg-black/40 rounded-2xl p-6 border border-white/20 shadow-lg">
                         <h4 className="text-lg font-semibold text-white mb-3">🛡️ Immunity Training</h4>
                         <p className="text-gray-300 leading-relaxed">
                           Break the cycle with these micro-lessons and field tests designed specifically for your situation...
                         </p>
                       </div>
                       {/* See Both Sides Locked Preview (headings only) */}
-                      <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                      <div className="bg-black/40 rounded-2xl p-6 border border-white/20 shadow-lg">
                         <div className="grid grid-cols-2">
                           <div className="px-3 py-2 bg-gradient-to-br from-emerald-500/10 to-green-500/5 border-r border-white/10">
                             <h5 className="text-emerald-300 font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
@@ -1301,26 +1301,28 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       
                       {/* Unlock Message */}
                       <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
-                        Unlock Complete Playbook
+                        Unlock Unlimited Receipts + Premium Features
                       </h3>
                       <p className="text-lg text-gray-300 leading-relaxed mb-6 max-w-md mx-auto">
-                        Get your personalized action plan, next 48 hours strategy, and immunity training
+                        Join 1,200+ users getting unlimited analysis, priority support & exclusive features
                       </p>
                       <ul className="text-sm text-gray-300/90 mb-6 space-y-2 max-w-md mx-auto">
                         <li>• Personalized 3-step action plan</li>
                         <li>• Exact wording for tricky moments</li>
                         <li>• Micro-lessons that break the cycle</li>
+                        <li>• Unlimited receipt analysis</li>
+                        <li>• Priority support & exclusive features</li>
                       </ul>
                       
                       {/* Unlock Button */}
                       <button
                         onClick={() => window.location.href = '/pricing'}
-                        className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:shadow-xl transition-all duration-300 hover:scale-105"
                       >
-                        Unlock Playbook
+                        ✨ Upgrade to Premium
                       </button>
                       <p className="text-sm text-gray-400 mt-3">
-                        $29.99/year • Cancel anytime
+                        7-day money-back guarantee • Cancel anytime
                       </p>
                     </div>
                   </div>
@@ -1345,7 +1347,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                      <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S PLAYBOOK</h3>
+                      <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S PLAYBOOK</h3>
                     </div>
                     <div className="text-xs text-stone-400/70 font-mono">STRATEGIC MOVES</div>
                   </div>
@@ -1355,7 +1357,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
-                      className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-xl p-4 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40"
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -1373,7 +1375,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
-                      className=" rounded-xl p-4 border border-white/[0.12] shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40 backdrop-blur-sm"
+                      className=" rounded-xl p-4 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 group bg-black/40"
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 rounded-xl bg-teal-600/25 border border-teal-400/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -1419,7 +1421,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
-                  <h3 className="text-base sm:text-sm font-bold uppercase tracking-wider" style={{ color: '#399d96' }}>SAGE'S SEAL</h3>
+                  <h3 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>SAGE'S SEAL</h3>
                 </div>
                 <div className="text-xs text-stone-400/70 font-mono">FINAL WISDOM</div>
           </div>
@@ -1538,59 +1540,6 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           </div>
         )}
         
-        {/* Container 3: Privacy & Disclaimer Section - Exact Truth Receipt Design */}
-        {!showPaywall && (
-          <div 
-            className="bg-gradient-to-br from-slate-900/40 to-slate-800/30 rounded-3xl p-8 border border-slate-700/50 backdrop-blur-xl shadow-2xl"
-            data-share-hide="true"
-          >
-            {/* Privacy Section - Enhanced Side by Side */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-emerald-400 text-lg">🔒</span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
-                  <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
-                </div>
-              </div>
-              
-              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-amber-400 text-lg">📍</span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
-                  <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Enhanced Disclaimer */}
-            <div className="mb-8 p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
-              <p className="text-sm text-slate-300 text-center font-medium">
-              🔮 Sage reads patterns for entertainment only - not therapy, not advice.
-              I'm AI with opinions, not a licensed professional. I can be wrong. I only see texts, not your story.
-
-              You make your choices, bestie. I'm here for the tea, not the trauma. By using this, you agree you're responsible for your decisions. 💜
-              </p>
-            </div>
-
-            {/* World-Class CTA Button */}
-            <button 
-              onClick={() => window.open('http://localhost:5173/refer', '_blank')}
-              className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <span className="text-xl relative z-10">💰</span>
-              <div className="relative z-10">
-                <span className="text-lg">Share & Earn</span>
-                <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
-              </div>
-            </button>
-          </div>
-        )}
 
         {/* Website URL */}
         <div className="text-center">

@@ -6,9 +6,9 @@ const TermsOfServicePage = () => {
   return (
     <>
       <Helmet>
-        <title>Terms of Service - Get The Receipts</title>
+        <title>Terms of Service  -  Get The Receipts</title>
         <meta name="description" content="Read our Terms of Service to understand the rules and guidelines for using Get The Receipts AI text analysis service." />
-        <meta property="og:title" content="Terms of Service - Get The Receipts" />
+        <meta property="og:title" content="Terms of Service  -  Get The Receipts" />
         <meta property="og:description" content="Read our Terms of Service to understand the rules and guidelines for using Get The Receipts AI text analysis service." />
       </Helmet>
       <div className="container mx-auto px-4 py-16 text-white max-w-4xl">
@@ -213,7 +213,7 @@ const TermsOfServicePage = () => {
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-white mb-4">Payment Processing</h3>
             <p className="text-gray-300">
-              We offer both free and paid features. All payments are processed securely through Stripe—we never see or store your payment information.
+              We offer both free and paid features. All payments are processed securely through Stripe-we never see or store your payment information.
             </p>
           </div>
 

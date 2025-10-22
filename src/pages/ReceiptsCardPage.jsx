@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import ReceiptCardViral from '@/components/ReceiptCardViral';
@@ -27,9 +27,9 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { injectMovingGradientStyles } from '@/utils/gradientUtils';
 // Age verification imports removed
 // Sage mood images based on red flags
-import greenFlag from '@/assets/green-flag.png'; // 0-3 red flags - Happy Sage
-import orangeFlag from '@/assets/orange-flag.png'; // 4-6 red flags - Suspicious Sage  
-import redFlag from '@/assets/red-flag.png'; // 7-10 red flags - Savage Sage
+import greenFlag from '@/assets/green-flag.png'; // 0-3 red flags  -  Happy Sage
+import orangeFlag from '@/assets/orange-flag.png'; // 4-6 red flags  -  Suspicious Sage  
+import redFlag from '@/assets/red-flag.png'; // 7-10 red flags  -  Savage Sage
 
 
 
@@ -46,9 +46,9 @@ const ReceiptsCardPage = () => {
   // Function to get Sage's mood image based on red flags
   const getSageImage = (redFlagCount) => {
     const flags = parseInt(redFlagCount) || 5;
-    if (flags <= 3) return greenFlag;   // 0-3 red flags - Happy Sage with Green Flags
-    if (flags <= 6) return orangeFlag;  // 4-6 red flags - Suspicious Sage with Orange Flags  
-    return redFlag;                     // 7-10 red flags - Savage Sage with Red Flags
+    if (flags <= 3) return greenFlag;   // 0-3 red flags  -  Happy Sage with Green Flags
+    if (flags <= 6) return orangeFlag;  // 4-6 red flags  -  Suspicious Sage with Orange Flags  
+    return redFlag;                     // 7-10 red flags  -  Savage Sage with Red Flags
   };
 
 
@@ -111,7 +111,7 @@ const ReceiptsCardPage = () => {
   const handleSaveReceipt = async () => {
     setIsSharing(true);
     try {
-      // Use the new social export system for Truth Receipt - direct download only
+      // Use the new social export system for Truth Receipt  -  direct download only
       await captureById('social-receipt-card', "Sage-Receipt", false);
     } catch (error) {
       console.error('❌ Save failed:', error);
@@ -182,7 +182,7 @@ const ReceiptsCardPage = () => {
         message || receiptData.originalMessage || receiptData.message || 'Receipt generated',
         receiptData.analysis || receiptData,
         'truth',
-        0 // tokens used - could be calculated if needed
+        0 // tokens used  -  could be calculated if needed
       );
       
       if (result.success) {
@@ -216,10 +216,10 @@ const ReceiptsCardPage = () => {
         setReceiptData(location.state);
         setLoading(false);
         
-        // Save receipt if user has saving enabled - DISABLED FOR LAUNCH
+        // Save receipt if user has saving enabled  -  DISABLED FOR LAUNCH
         // await saveReceiptIfEnabled(location.state, location.state?.originalMessage);
         
-        // Age verification removed - handled at input level
+        // Age verification removed  -  handled at input level
         
         return;
       }
@@ -239,10 +239,10 @@ const ReceiptsCardPage = () => {
             confidenceScore: 92,
             confidenceRemark: "TOXIC AF",
             deepDive: {
-              patternExpose: "This is a classic avoidant attachment pattern. He's using you as an emotional security blanket while keeping his options open. The hot-and-cold behavior isn't confusion - it's calculated emotional manipulation.",
-              theirGame: "He's running the 'breadcrumb special' - just enough attention to keep you hooked, never enough to actually commit. This man has perfected the art of having his cake and eating it too.",
+              patternExpose: "This is a classic avoidant attachment pattern. He's using you as an emotional security blanket while keeping his options open. The hot-and-cold behavior isn't confusion  -  it's calculated emotional manipulation.",
+              theirGame: "He's running the 'breadcrumb special'  -  just enough attention to keep you hooked, never enough to actually commit. This man has perfected the art of having his cake and eating it too.",
               whyYoureStuck: "You're stuck because you're hoping potential will become reality. News flash: it won't. You're trauma-bonded to the intermittent reinforcement he's giving you.",
-              yourPattern: "You keep accepting crumbs because you're afraid of being alone. But honey, you're already alone - he's just making you feel crazy about it.",
+              yourPattern: "You keep accepting crumbs because you're afraid of being alone. But honey, you're already alone  -  he's just making you feel crazy about it.",
               finalRead: "This man will never choose you fully because he doesn't have to. You're giving him relationship benefits without the relationship commitment. Time to stop auditioning for a role that was never going to be yours."
             },
             immunityTraining: {
@@ -253,7 +253,7 @@ const ReceiptsCardPage = () => {
               exitStrategy: "Consider limiting contact if patterns persist. Focus on your own growth for 30 days before dating again. Trust that someone better is coming.",
               riskLevel: "high",
               whatGoodLooksLike: [
-                "Specific plans locked 24–48h ahead—then kept",
+                "Specific plans locked 24-48h ahead-then kept",
                 "Repairs without jokes, blame, or rewrites", 
                 "Public and private affection match"
               ],
@@ -285,7 +285,7 @@ const ReceiptsCardPage = () => {
         // Receipt saving disabled
         // await saveReceiptIfEnabled(testReceiptData, testReceiptData.originalMessage);
         
-        // Age verification removed - handled at input level
+        // Age verification removed  -  handled at input level
         
         return;
       }
@@ -310,7 +310,7 @@ const ReceiptsCardPage = () => {
         }
         setLoading(false);
       } else {
-        // No receiptId and no location.state - redirect to home
+        // No receiptId and no location.state  -  redirect to home
         if (!hasRedirectedRef.current) {
           hasRedirectedRef.current = true;
           toast({
@@ -328,27 +328,26 @@ const ReceiptsCardPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white p-4" style={{
-        background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
-        backgroundAttachment: 'fixed'
-      }}>
-        <div className="text-center bg-gradient-to-br from-slate-900/50 to-indigo-900/30 rounded-3xl border border-white/10 backdrop-blur-sm p-8 max-w-md mx-auto">
+      <div className="min-h-screen flex items-center justify-center text-white p-4 bg-[#0F0F0F] relative">
+        {/* Glassmorphism Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5"></div>
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(circle at 20% 80%, rgba(0,229,255,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(168,85,247,0.05) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(255,255,255,0.02) 0%, transparent 50%)'
+        }}></div>
+        
+        <div className="text-center bg-white/8 backdrop-blur-xl rounded-3xl border border-cyan-400/30 shadow-2xl shadow-cyan-500/20 p-8 max-w-md mx-auto relative z-10">
           <div className="relative">
             {/* Animated background */}
             <div className="absolute inset-0 rounded-3xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-cyan-500/10 animate-pulse"></div>
-              <div className="absolute inset-0 bg-gradient-to-tl from-indigo-500/5 to-teal-500/10" 
-                style={{
-                  animation: 'float 6s ease-in-out infinite'
-                }}></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-emerald-500/10 animate-pulse"></div>
             </div>
             
             <div className="relative z-10">
-              <Loader2 className="h-16 w-16 animate-spin text-purple-400 mb-6 mx-auto" />
-              <p className="text-lg font-medium text-gray-200 mb-2" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              <Loader2 className="h-16 w-16 animate-spin text-cyan-400 mb-6 mx-auto" />
+              <p className="text-lg font-medium text-cyan-200 mb-2">
                 Serving the tea... it's hot! ☕️
               </p>
-              <p className="text-sm text-gray-400">Preparing your truth receipt</p>
+              <p className="text-sm text-cyan-300">Preparing your truth receipt</p>
             </div>
           </div>
         </div>
@@ -361,11 +360,11 @@ const ReceiptsCardPage = () => {
   const id = receiptData?.id;
   
   
-  // Don't early return after hooks - handle missing analysis in render instead  
+  // Don't early return after hooks  -  handle missing analysis in render instead  
   const shareTitle = analysis ? `Receipts Pulled: They're a ${analysis.archetype}!` : 'Loading...';
   const helmetTitle = analysis ? `Receipts Pulled: They're a ${analysis.archetype}!` : 'Get The Receipts';
   const helmetDesc = analysis ? `The verdict is in: "${analysis.verdict || ''}"` : 'Loading analysis...';
-  // Deep Dive data (generated alongside receipt) - New 5-field structure
+  // Deep Dive data (generated alongside receipt)  -  New 5-field structure
   const deep = analysis?.deepDive || {};
   const { patternExpose, theirGame, whyYoureStuck, yourPattern, finalRead } = deep;
   const archetypeTitle = analysis?.archetype || '';
@@ -379,7 +378,7 @@ const ReceiptsCardPage = () => {
     
     setIsSharing(true);
     try {
-      // Use the new social export system for Truth Receipt sharing - with share menu
+      // Use the new social export system for Truth Receipt sharing  -  with share menu
       await captureById('social-receipt-card', "Sage-Receipt", true);
     } catch (error) {
       console.error('❌ Share failed:', error);
@@ -394,10 +393,15 @@ const ReceiptsCardPage = () => {
   const archetypeNameForImmunity = archetypeName.replace(/^The\s+/i, '');
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-2 text-white overflow-y-auto">
-      {/* Hidden export cards - Positioned off-screen to avoid layout gap */}
+    <div className="min-h-screen flex flex-col items-center px-4 py-2 text-white overflow-y-auto bg-[#0F0F0F] relative">
+      {/* Glassmorphism Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5"></div>
+      <div className="absolute inset-0" style={{
+        background: 'radial-gradient(circle at 20% 80%, rgba(0,229,255,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(168,85,247,0.05) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(255,255,255,0.02) 0%, transparent 50%)'
+      }}></div>
+      {/* Hidden export cards  -  Positioned off-screen to avoid layout gap */}
       {analysis && (
-        <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none" aria-hidden="true">
+        <div className="fixed - left-[9999px] - top-[9999px] pointer-events-none" aria-hidden="true">
           <SocialReceiptCard analysis={analysis} archetype={analysis.archetype} />
           <SocialPlaybookCard deepDive={analysis.deepDive} archetype={analysis.archetype} analysis={analysis} />
           <SocialImmunityCard immunityData={analysis.immunityTraining} archetype={archetypeNameForImmunity} analysis={analysis} />
@@ -421,8 +425,8 @@ const ReceiptsCardPage = () => {
           background: linear-gradient(-45deg, #60A5FA, #A78BFA, #C084FC, #60A5FA);
           background-size: 400% 400%;
           background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          - webkit-background-clip: text;
+          - webkit-text-fill-color: transparent;
           text-fill-color: transparent;
         }
 
@@ -450,7 +454,7 @@ const ReceiptsCardPage = () => {
         className="w-full max-w-none relative pb-20"
       >
         {user && receiptId && (
-           <LinkButton to="/dashboard" variant="ghost" size="sm" className="absolute -top-10 left-0 text-white hover:bg-white/10">
+           <LinkButton to="/dashboard" variant="ghost" size="sm" className="absolute - top-10 left-0 text-white hover:bg-white/10">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
           </LinkButton>
         )}
@@ -458,8 +462,8 @@ const ReceiptsCardPage = () => {
         {/* Credits Remaining Indicator */}
         {!isPremium && (
           <div className="flex justify-center mb-4">
-            <div className="inline-flex items-center px-4 py-2 bg-purple-900/20 rounded-full border border-purple-500/30">
-              <p className="text-purple-300 text-sm">
+            <div className="inline-flex items-center px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-cyan-400/30">
+              <p className="text-cyan-300 text-sm">
                 {userCredits.credits || 0} Truth Receipts left today
               </p>
             </div>
@@ -469,16 +473,7 @@ const ReceiptsCardPage = () => {
         {/* Page Title */}
         <div className="text-center mb-3 md:mb-4 py-1 md:py-2 px-2">
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 px-2 md:px-3 py-0 md:py-1 leading-relaxed">
-            <span style={{
-              background: 'linear-gradient(90deg, #a58bfa 0%, #0a92aa 50%, #59a5fb 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              color: 'transparent',
-              display: 'inline-block',
-              paddingBottom: '0.5em',
-              lineHeight: '1.4'
-            }}>
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
               Sage's Truth Receipts
             </span>
           </h1>
@@ -487,8 +482,24 @@ const ReceiptsCardPage = () => {
           </p>
         </div>
 
+        {/* Trust Indicators */}
+        <div className="flex flex-wrap justify-center gap-4 mb-6 px-4">
+          <div className="flex items-center gap-2 px-3 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-cyan-400/30">
+            <span className="text-cyan-400">🔒</span>
+            <span className="text-xs text-cyan-200 font-semibold">Private & Secure</span>
+            <span className="text-cyan-300/70">•</span>
+            <span className="text-xs text-cyan-300/90">Chat deleted. Never stored.</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30">
+            <span className="text-purple-400">📍</span>
+            <span className="text-xs text-purple-200 font-semibold">Personalized Analysis</span>
+            <span className="text-purple-300/70">•</span>
+            <span className="text-xs text-purple-300/90">Based on your message only</span>
+          </div>
+        </div>
 
-        {/* Conditional render - only show content if analysis exists */}
+
+        {/* Conditional render  -  only show content if analysis exists */}
         {analysis ? (
           <div>
             {/* Tabbed Interface */}
@@ -518,97 +529,84 @@ const ReceiptsCardPage = () => {
 
             {/* Hidden export cards are rendered at the top of the page tree */}
 
-
-
-
-        {/* 3. NEXT TAKE + PREMIUM CTA (redesigned) */}
-        <div className="w-full max-w-2xl mx-auto mt-8 sm:mt-12 mb-10 sm:mb-16">
-          {/* Next Take - full width CTA directly below save/share */}
-          {/* ELEGANT GOLD GRADIENT VERSION */}
-          <div className="rounded-2xl mb-10 pb-5 mt-10 sm:mt-12">
-            <LinkButton
-              to="/luxe-chat-input"
-              className="w-full flex items-center justify-center gap-2 font-black px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] text-black"
-              style={{
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F5E6D3 100%)'
-              }}
-            >
-              {/* Single line text */}
-              <span className="text-lg">✨</span>
-              <span className="text-lg font-black tracking-wide uppercase">Decode Another Text</span>
-              <span className="text-lg">✨</span>
-            </LinkButton>
-          </div>
-
-          {/* Premium Paywall - Luxury FOMO Design */}
-          <div className="relative rounded-3xl overflow-hidden sm:min-h-[500px] bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-purple-900/40 border border-purple-500/30 shadow-2xl shadow-purple-500/20 backdrop-blur-xl mt-8 sm:mt-10">
-            {/* Animated Background Pattern */}
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/10 via-transparent to-indigo-600/10"></div>
-              <div className="absolute top-1/4 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
-              <div className="absolute bottom-1/4 left-0 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-full blur-2xl"></div>
+            {/* Next Receipt CTA  -  Right after the receipt */}
+            <div className="w-full max-w-2xl mx-auto mt-6 mb-4">
+              <LinkButton
+                to="/luxe-chat-input"
+                className="w-full flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/50 border border-cyan-300/50"
+              >
+                <span className="text-xl">✨</span>
+                <span className="text-lg">Click here to decode another receipt</span>
+                <span className="text-xl">✨</span>
+              </LinkButton>
             </div>
-            
-            {/* Content */}
-            <div className="relative z-10 p-5 sm:p-12 text-center">
-              {/* Luxury Header */}
-              <div className="mb-6 sm:mb-10">
-                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-purple-500/30 to-indigo-500/30 border-2 border-purple-400/50 mb-3 sm:mb-6 shadow-lg shadow-purple-500/30">
-                  <span className="text-2xl sm:text-3xl">👑</span>
+
+            {/* Secondary Actions */}
+            <div className="w-full max-w-2xl mx-auto mb-8">
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
+                <div className="space-y-4">
+                  {/* Enhanced Premium Upsell */}
+                  {!isPremium && (
+                    <div className="text-center p-4 bg-gradient-to-r from-purple-500/10 to-cyan-500/10 rounded-xl border border-purple-400/20">
+                      <div className="mb-3">
+                        <h3 className="text-lg font-bold text-white mb-1">
+                          Unlock Unlimited Receipts + Premium Features
+                        </h3>
+                        <p className="text-sm text-gray-300">
+                          Join 1,200+ users getting unlimited analysis, priority support & exclusive features
+                        </p>
+                      </div>
+                      <Button
+                        onClick={handleFounderCheckout}
+                        disabled={loadingCheckout}
+                        className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-bold px-6 py-3 rounded-xl text-base transition-all duration-300 hover:scale-105 disabled:opacity-50 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+                      >
+                        {loadingCheckout ? 'Redirecting…' : '✨ Upgrade to Premium'}
+                      </Button>
+                      <p className="text-xs text-gray-400 mt-2">7-day money-back guarantee • Cancel anytime</p>
+                    </div>
+                  )}
+
+                  {/* Share & Earn  -  Enhanced Container */}
+                  <div className="text-center pt-4 border-t border-white/10">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-white/20">
+                      <span className="text-yellow-400">💰</span>
+                      <span className="text-sm text-white font-medium">Love Sage?</span>
+                      <span className="text-white/60">•</span>
+                      <LinkButton
+                        to="/refer"
+                        className="text-white hover:text-yellow-400 underline underline-offset-2 font-semibold text-sm transition-colors"
+                      >
+                        Share & earn 30%
+                      </LinkButton>
+                    </div>
+                  </div>
                 </div>
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 px-3 py-1.5 rounded-full border border-purple-400/30 mb-3 sm:mb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-purple-300">EXCLUSIVE ACCESS</span>
-                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
-                </div>
-                <h3 className="text-2xl sm:text-4xl font-black text-white mb-2 sm:mb-4 leading-tight bg-gradient-to-r from-purple-200 to-indigo-200 bg-clip-text text-transparent">
-                  Unlock Unlimited Receipts
-                </h3>
-                <p className="text-base sm:text-xl text-purple-100/90 leading-relaxed max-w-2xl mx-auto">
-                  Join the elite circle of users who never second-guess their relationships again
+              </div>
+            </div>
+
+        {/* Premium Legal Footer */}
+        <div className="w-full max-w-2xl mx-auto mb-8">
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-purple-400/20 p-6">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="text-purple-400 text-lg">🔮</span>
+                <span className="text-purple-400 font-semibold text-sm">Sage's Disclaimer</span>
+              </div>
+              <div className="text-xs text-gray-400 leading-relaxed space-y-2">
+                <p>
+                  <span className="text-purple-400 font-medium">16+ Entertainment Only</span> • I read patterns for fun, not therapy or advice. I'm AI with opinions, not a licensed professional. I can be wrong. I only see texts, not your full story.
                 </p>
-              </div>
-              
-              {/* FOMO Features Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-10">
-                <div className="bg-gradient-to-br from-purple-800/30 to-indigo-800/30 rounded-2xl p-4 sm:p-6 border border-purple-400/20 backdrop-blur-sm">
-                  <div className="text-xl sm:text-2xl mb-2 sm:mb-3">🔮</div>
-                  <h4 className="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2">Unlimited Analysis</h4>
-                  <p className="text-xs sm:text-sm text-purple-200/80">Decode any text, anytime, anywhere</p>
-                </div>
-                <div className="bg-gradient-to-br from-purple-800/30 to-indigo-800/30 rounded-2xl p-4 sm:p-6 border border-purple-400/20 backdrop-blur-sm">
-                  <div className="text-xl sm:text-2xl mb-2 sm:mb-3">🎯</div>
-                  <h4 className="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2">Elite Strategies</h4>
-                  <p className="text-xs sm:text-sm text-purple-200/80">Advanced playbook & immunity training</p>
-                </div>
-                <div className="bg-gradient-to-br from-purple-800/30 to-indigo-800/30 rounded-2xl p-4 sm:p-6 border border-purple-400/20 backdrop-blur-sm">
-                  <div className="text-xl sm:text-2xl mb-2 sm:mb-3">⚡</div>
-                  <h4 className="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2">Instant Access</h4>
-                  <p className="text-xs sm:text-sm text-purple-200/80">No limits, no waiting, no questions</p>
-                </div>
-              </div>
-              
-              {/* Urgency & Social Proof */}
-              <div className="mb-4 sm:mb-8">
-                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 px-4 py-2 rounded-full border border-red-400/30 mb-3 sm:mb-4">
-                  <span className="text-red-400 text-sm font-bold uppercase tracking-wider">LIMITED TIME</span>
-                  <span className="text-white/90 text-sm">Only 47 spots left at this price</span>
-                </div>
-                <p className="text-purple-200/80 text-xs sm:text-sm">
-                  Join 12,847+ users who've transformed their relationships
-                </p>
-              </div>
-              
-              {/* Premium CTA Button - Keep Blue as requested */}
-              <div className="text-center">
-                <Button
-                  onClick={handleFounderCheckout}
-                  disabled={loadingCheckout}
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold text-lg sm:text-xl rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loadingCheckout ? 'Redirecting…' : 'Claim Your Spot'}
-                </Button>
-                <p className="text-xs sm:text-sm text-purple-300/80 mt-3 sm:mt-4">
-                  Less than $2.49/month • Cancel anytime • 30-day money-back guarantee
+                <p className="text-gray-500 italic">
+                  You make your choices, bestie. By using this site, you agree to our{" "}
+                  <Link to="/privacy-policy" className="text-purple-400 hover:text-purple-300 underline underline-offset-2">
+                    Privacy Policy
+                  </Link>
+                  {" "}and{" "}
+                  <Link to="/terms-of-service" className="text-purple-400 hover:text-purple-300 underline underline-offset-2">
+                    Terms & Conditions
+                  </Link>
+                  . 💜
                 </p>
               </div>
             </div>
@@ -617,14 +615,14 @@ const ReceiptsCardPage = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <Loader2 className="h-12 w-12 animate-spin text-purple-400 mb-4 mx-auto" />
+            <Loader2 className="h-12 w-12 animate-spin text-cyan-400 mb-4 mx-auto" />
             <p className="text-white/70">Loading analysis...</p>
           </div>
         )}
       </motion.div>
       
       
-      {/* Age Verification Modal - Removed */}
+      {/* Age Verification Modal  -  Removed */}
       
       {/* Share Instructions Modal */}
       <ShareInstructionsModal 

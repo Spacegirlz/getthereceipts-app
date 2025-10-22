@@ -222,7 +222,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     };
 
     return (
-      <div className={`bg-black/50 rounded-2xl ${compact ? 'p-3' : 'p-4 sm:p-5'} border border-white/10 shadow-lg`}>
+      <div className={`bg-white/5 backdrop-blur-sm rounded-2xl ${compact ? 'p-3' : 'p-4 sm:p-5'} border border-cyan-400/20 shadow-lg shadow-cyan-500/20`}>
         {/* Premium typography and spacing */}
         <div className={`${compact ? 'text-[10px] mb-2' : 'text-xs sm:text-sm mb-3'} uppercase tracking-wider text-white/80 font-semibold`}>
           {label}
@@ -411,7 +411,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {/* PREMIUM VERDICT */}
           {verdict && (
             <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
-              <h3 className="text-teal-400 font-bold text-lg tracking-wide mb-4"
+              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider mb-4"
                 style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>THE BREAKDOWN</h3>
               <p className="text-stone-200/90 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
                 {verdict}
@@ -422,7 +422,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {/* PREMIUM REAL TEA */}
           {(realTea || nextMove.length > 0) && (
             <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
-              <h3 className="text-teal-400 font-bold text-lg tracking-wide mb-4"
+              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider mb-4"
                 style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>🫖 THE REAL TEA</h3>
               <div className="space-y-3 sm:space-y-2">
                 {/* User's Question (if provided) */}
@@ -462,7 +462,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {/* PREMIUM SAGE'S PROPHECY */}
           {prophecy && (
             <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
-              <h3 className="text-teal-400 font-bold text-lg tracking-wide mb-4"
+              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider mb-4"
                 style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>🔮 SAGE BETS...</h3>
               <p className="text-stone-200/90 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
                 {prophecy}
@@ -473,7 +473,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {/* PREMIUM SAGE'S CONFIDENCE BAR */}
           <div className="bg-black/40 p-6 rounded-2xl border border-white/20 mb-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-teal-400 font-bold text-lg tracking-wide flex items-center">
+              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider flex items-center">
                 <Brain className="w-5 h-5 mr-3 text-teal-400" />
                 SAGE'S DRAMA METER
               </h3>
@@ -587,55 +587,6 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
         </div>
         
         {/* Premium Footer Card - World-Class SaaS Design */}
-        <div className="mt-8 mb-6" data-share-hide="true">
-          <div className="bg-gradient-to-br from-slate-900/40 to-slate-800/30 rounded-3xl p-8 border border-slate-700/50 backdrop-blur-xl shadow-2xl">
-            {/* Privacy Section - Enhanced Side by Side */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-emerald-500/30 transition-all duration-300 hover:bg-slate-800/50">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-emerald-400 text-lg">🔒</span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-base font-semibold text-white mb-1">Private & Secure</p>
-                  <p className="text-sm text-slate-400 leading-relaxed">Chat deleted. Never stored.</p>
-                </div>
-              </div>
-              
-              <div className="group flex items-center gap-4 p-4 rounded-2xl bg-slate-800/30 border border-slate-700/40 hover:border-amber-500/30 transition-all duration-300 hover:bg-slate-800/50">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-amber-400 text-lg">📍</span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-base font-semibold text-white mb-1">Personalized Analysis</p>
-                  <p className="text-sm text-slate-400 leading-relaxed">Based on your message only</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Enhanced Disclaimer */}
-            <div className="mb-8 p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/40 rounded-2xl border border-slate-600/40">
-              <p className="text-sm text-slate-300 text-center font-medium">
-                🔮 Sage reads patterns for entertainment only - not therapy, not advice.
-                I'm AI with opinions, not a licensed professional. I can be wrong. I only see texts, not your story.
-
-                You make your choices, bestie. I'm here for the tea, not the trauma. By using this, you agree you're responsible for your decisions. 💜
-              </p>
-            </div>
-
-            {/* World-Class CTA Button */}
-            <button 
-              onClick={() => window.open('http://localhost:5173/refer', '_blank')}
-              className="group w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white font-semibold py-5 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] flex items-center justify-center gap-4 border-2 border-amber-400/70 hover:border-amber-300/90 hover:from-slate-700 hover:to-slate-600 relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-amber-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <span className="text-xl relative z-10">💰</span>
-              <div className="relative z-10">
-                <span className="text-lg">Share & Earn</span>
-                <p className="text-sm opacity-90 font-normal">30% commission • Join 12K+ creators</p>
-              </div>
-            </button>
-          </div>
-        </div>
         
       </div>
 

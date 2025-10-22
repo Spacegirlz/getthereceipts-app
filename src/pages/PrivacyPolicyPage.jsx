@@ -6,9 +6,9 @@ const PrivacyPolicyPage = () => {
   return (
     <>
       <Helmet>
-        <title>Privacy Policy - Get The Receipts</title>
+        <title>Privacy Policy  -  Get The Receipts</title>
         <meta name="description" content="Read our Privacy Policy to understand how Get The Receipts collects, uses, and protects your personal information." />
-        <meta property="og:title" content="Privacy Policy - Get The Receipts" />
+        <meta property="og:title" content="Privacy Policy  -  Get The Receipts" />
         <meta property="og:description" content="Read our Privacy Policy to understand how Get The Receipts collects, uses, and protects your personal information." />
       </Helmet>
       <div className="container mx-auto px-4 py-16 text-white max-w-4xl">
@@ -26,10 +26,10 @@ const PrivacyPolicyPage = () => {
         <section className="mb-12 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-8">
           <h2 className="text-3xl font-bold mb-6 text-white">Our Privacy First Philosophy</h2>
           <p className="text-lg text-gray-300 mb-4">
-            At Get The Receipts, privacy isn't just a feature—it's our foundation. We believe your personal communications should remain exactly that: personal. This Privacy Policy explains our commitment to protecting your privacy and details how we've built our entire service around the principle that your messages are analyzed and immediately forgotten.
+            At Get The Receipts, privacy isn't just a feature-it's our foundation. We believe your personal communications should remain exactly that: personal. This Privacy Policy explains our commitment to protecting your privacy and details how we've built our entire service around the principle that your messages are analyzed and immediately forgotten.
           </p>
           <p className="text-lg text-gray-300">
-            We designed our architecture from the ground up to ensure that your most sensitive information—your personal communications—never becomes a permanent part of our systems. This isn't just good practice; it's who we are.
+            We designed our architecture from the ground up to ensure that your most sensitive information-your personal communications-never becomes a permanent part of our systems. This isn't just good practice; it's who we are.
           </p>
         </section>
 
@@ -60,15 +60,15 @@ const PrivacyPolicyPage = () => {
           <ul className="space-y-3 text-gray-300">
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>No receipt storage - analyzed and immediately deleted</span>
+              <span>No receipt storage  -  analyzed and immediately deleted</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>No message history - processed and instantly discarded</span>
+              <span>No message history  -  processed and instantly discarded</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
-              <span>No analysis results saved - shown once and gone forever</span>
+              <span>No analysis results saved  -  shown once and gone forever</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-400 font-bold mt-1">✓</span>
@@ -135,7 +135,7 @@ const PrivacyPolicyPage = () => {
           <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6 mb-6">
             <h3 className="text-xl font-semibold text-blue-300 mb-3">The 3-Second Rule:</h3>
             <p className="text-lg text-gray-300">
-              Your data exists in our system for approximately 3 seconds—just long enough to analyze and return results.
+              Your data exists in our system for approximately 3 seconds-just long enough to analyze and return results.
             </p>
           </div>
           
