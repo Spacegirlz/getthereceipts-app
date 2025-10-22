@@ -24,45 +24,9 @@ const PricingPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Check for pending checkout on page load (after user returns from auth)
-  useEffect(() => {
-    if (user && !loading) {
-      const pendingCheckout = localStorage.getItem('pendingCheckout');
-      if (pendingCheckout) {
-        try {
-          const checkoutData = JSON.parse(pendingCheckout);
-          // Check if checkout intent is still valid (within 10 minutes)
-          const isRecent = (Date.now() - checkoutData.timestamp) < 10 * 60 * 1000;
-          if (isRecent) {
-            console.log('🛒 PricingPage: Found pending checkout, auto-triggering checkout');
-            localStorage.removeItem('pendingCheckout'); // Clear it
-            // Small delay to ensure page is fully loaded
-            setTimeout(() => {
-              handleCheckout(checkoutData.priceId, checkoutData.tierName);
-            }, 500);
-          } else {
-            // Expired checkout intent
-            localStorage.removeItem('pendingCheckout');
-            console.log('🛒 PricingPage: Pending checkout expired, clearing');
-          }
-        } catch (error) {
-          console.error('🛒 PricingPage: Error parsing pending checkout:', error);
-          localStorage.removeItem('pendingCheckout');
-        }
-      }
-    }
-  }, [user, loading]);
-
   const handleCheckout = async (priceId, tierName) => {
     if (loading) return; // wait for auth to settle
     if (!user) {
-      // Store the payment intent before opening auth modal
-      localStorage.setItem('pendingCheckout', JSON.stringify({
-        priceId: priceId,
-        tierName: tierName,
-        timestamp: Date.now()
-      }));
-      
       openModal('sign_up');
       toast({ 
         title: 'Create an account to upgrade!', 

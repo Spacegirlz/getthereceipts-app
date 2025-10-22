@@ -68,29 +68,6 @@ const AuthCallback = () => {
             console.error('❌ AuthCallback: Error processing referral:', referralError);
           }
           
-          // Check for pending checkout first (highest priority)
-          const pendingCheckout = localStorage.getItem('pendingCheckout');
-          if (pendingCheckout) {
-            try {
-              const checkoutData = JSON.parse(pendingCheckout);
-              // Check if checkout intent is still valid (within 10 minutes)
-              const isRecent = (Date.now() - checkoutData.timestamp) < 10 * 60 * 1000;
-              if (isRecent) {
-                console.log('🔐 AuthCallback: Found pending checkout, redirecting to pricing page');
-                localStorage.removeItem('pendingCheckout'); // Clear it
-                setTimeout(() => navigate('/pricing'), 1000);
-                return;
-              } else {
-                // Expired checkout intent
-                localStorage.removeItem('pendingCheckout');
-                console.log('🔐 AuthCallback: Pending checkout expired, clearing');
-              }
-            } catch (error) {
-              console.error('🔐 AuthCallback: Error parsing pending checkout:', error);
-              localStorage.removeItem('pendingCheckout');
-            }
-          }
-          
           // Check if there's saved form data that should trigger auto-processing
           const savedFormData = localStorage.getItem('chatInputFormData');
           if (savedFormData) {

@@ -48,30 +48,6 @@ const AuthCallbackPage = () => {
             navigate(`/?error=${encodeURIComponent(exchangeError.message)}`);
           } else {
             console.log('Code exchange successful, user:', data.user?.email);
-            
-            // Check for pending checkout first (highest priority)
-            const pendingCheckout = localStorage.getItem('pendingCheckout');
-            if (pendingCheckout) {
-              try {
-                const checkoutData = JSON.parse(pendingCheckout);
-                // Check if checkout intent is still valid (within 10 minutes)
-                const isRecent = (Date.now() - checkoutData.timestamp) < 10 * 60 * 1000;
-                if (isRecent) {
-                  console.log('🚀 Auth Callback: Found pending checkout, redirecting to pricing page');
-                  localStorage.removeItem('pendingCheckout'); // Clear it
-                  setTimeout(() => navigate('/pricing'), 1000);
-                  return;
-                } else {
-                  // Expired checkout intent
-                  localStorage.removeItem('pendingCheckout');
-                  console.log('🚀 Auth Callback: Pending checkout expired, clearing');
-                }
-              } catch (error) {
-                console.error('🚀 Auth Callback: Error parsing pending checkout:', error);
-                localStorage.removeItem('pendingCheckout');
-              }
-            }
-            
             // Check if user has saved form data and should return to receipts processing
             const hasSavedFormData = localStorage.getItem('chatInputFormData');
             if (hasSavedFormData) {
@@ -90,30 +66,6 @@ const AuthCallbackPage = () => {
           
           if (hashParams.has('access_token')) {
             console.log('Found access token in hash');
-            
-            // Check for pending checkout first (highest priority)
-            const pendingCheckout = localStorage.getItem('pendingCheckout');
-            if (pendingCheckout) {
-              try {
-                const checkoutData = JSON.parse(pendingCheckout);
-                // Check if checkout intent is still valid (within 10 minutes)
-                const isRecent = (Date.now() - checkoutData.timestamp) < 10 * 60 * 1000;
-                if (isRecent) {
-                  console.log('🚀 Auth Callback: Found pending checkout, redirecting to pricing page');
-                  localStorage.removeItem('pendingCheckout'); // Clear it
-                  setTimeout(() => navigate('/pricing'), 1000);
-                  return;
-                } else {
-                  // Expired checkout intent
-                  localStorage.removeItem('pendingCheckout');
-                  console.log('🚀 Auth Callback: Pending checkout expired, clearing');
-                }
-              } catch (error) {
-                console.error('🚀 Auth Callback: Error parsing pending checkout:', error);
-                localStorage.removeItem('pendingCheckout');
-              }
-            }
-            
             // Check if user has saved form data and should return to receipts processing
             const hasSavedFormData = localStorage.getItem('chatInputFormData');
             if (hasSavedFormData) {

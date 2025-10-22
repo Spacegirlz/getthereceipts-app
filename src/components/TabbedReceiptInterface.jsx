@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, Lock, Brain, Shield, Sparkles, ChevronLeft, ChevronRight, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
-import { usePaymentIntent } from '@/hooks/usePaymentIntent';
 import ReceiptCardViral from '@/components/ReceiptCardViral';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
@@ -25,7 +24,6 @@ const TabbedReceiptInterface = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { isPremium } = useAuth();
   const navigate = useNavigate();
-  const { navigateToPricing } = usePaymentIntent();
   const sageTabRef = useRef(null);
 
   // Ensure first tab content is immediately visible on mount
@@ -172,7 +170,7 @@ const TabbedReceiptInterface = ({
   };
 
   const handleUpgradeClick = () => {
-    navigateToPricing();
+    navigate('/pricing');
   };
 
   // Keyboard navigation
