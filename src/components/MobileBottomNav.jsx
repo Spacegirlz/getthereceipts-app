@@ -13,10 +13,10 @@ const MobileBottomNav = () => {
       isActive: location.pathname === '/receipts' || location.pathname.startsWith('/receipts/')
     },
     {
-      path: '/luxe-chat-input',
+      path: '/new-receipt',
       icon: MessageSquare,
       label: 'New Receipt',
-      isActive: location.pathname === '/luxe-chat-input' || location.pathname === '/chat-input'
+      isActive: location.pathname === '/new-receipt' || location.pathname === '/luxe-chat-input' || location.pathname === '/chat-input'
     },
     {
       path: '/pricing',

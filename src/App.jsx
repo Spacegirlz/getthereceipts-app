@@ -57,7 +57,7 @@ function App() {
               <Routes location={location} key={location.pathname}>
               <Route path="/" element={<LandingPage />} />
               <Route path="/quiz" element={<QuizPage />} />
-              <Route path="/chat-input" element={<LuxeChatInputPage />} />
+              <Route path="/new-receipt" element={<LuxeChatInputPage />} />
               <Route path="/receipts" element={<ReceiptsCardPage />} />
               <Route path="/receipts/:id" element={<ReceiptsCardPage />} />
               <Route path="/pricing" element={<PricingPage />} />
