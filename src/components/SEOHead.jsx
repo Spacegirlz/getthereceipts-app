@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet';
 
 const SEOHead = ({ 
   title = "Get The Receipts - Decode Any Text Message Instantly",
-  description = "Got a confusing text? Get the receipts! Answer quick questions, paste their message, and discover what they really meant with our viral text decoder.",
-  keywords = "text message decoder, dating advice, relationship analysis, AI dating coach, text analysis, dating app, relationship red flags",
+  description = "Decode confusing text messages instantly with AI. Get expert dating advice, spot red flags, and understand what they really mean. Free analysis + premium insights.",
+  keywords = "text message decoder, what does his text mean, dating advice AI, decode text messages, relationship red flags, mixed signals, breadcrumbing, dating coach, text analysis, get the receipts",
   canonical = "https://www.getthereceipts.com",
   ogImage = "https://www.getthereceipts.com/og-image.png",
   ogType = "website",
