@@ -438,10 +438,10 @@ const LuxeChatInputPage = () => {
           {/* Header */}
           <div className="text-center mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-white">
-              Decode Your <span className="text-cyan-400">Conversation</span>
+              New <span className="text-cyan-400">Receipt</span>
             </h1>
             <p className="text-gray-300 text-sm">
-              Paste your texts. Get clarity in seconds.
+              Decode your conversation. Get the receipts.
             </p>
           </div>
 

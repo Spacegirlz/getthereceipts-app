@@ -15,7 +15,7 @@ const LandingPageRedesign = () => {
   const [demoResult, setDemoResult] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const handleGetStarted = () => navigate('/chat-input');
+  const handleGetStarted = () => navigate('/new-receipt');
   const handleGoPremium = () => navigate('/pricing');
 
   useEffect(() => {

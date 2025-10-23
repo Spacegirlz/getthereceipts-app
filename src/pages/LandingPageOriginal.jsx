@@ -16,7 +16,7 @@ const LandingPage = () => {
   const [showDemoResult, setShowDemoResult] = useState(false);
   const [liveUserCount, setLiveUserCount] = useState(1247);
 
-  const handleGetStarted = () => navigate('/chat-input');
+  const handleGetStarted = () => navigate('/new-receipt');
   const handleGoPremium = () => navigate('/pricing');
   const handleRefer = () => navigate('/refer');
 

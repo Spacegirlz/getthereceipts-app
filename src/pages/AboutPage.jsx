@@ -264,7 +264,7 @@ const AboutPage = () => {
         </p>
         
         <Button
-          onClick={() => navigate('/chat-input')}
+          onClick={() => navigate('/new-receipt')}
           className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
           size="lg"
         >

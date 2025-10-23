@@ -401,7 +401,7 @@ const DashboardPage = () => {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
             >
               <LinkButton 
-                to="/chat-input" 
+                to="/new-receipt" 
                 className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-semibold text-lg px-8 py-4 rounded-xl shadow-2xl shadow-cyan-500/40 transition-all duration-300 hover:scale-105 min-h-[56px] min-w-[200px]"
               >
                 <PlusCircle className="mr-2 h-5 w-5" /> New Receipt

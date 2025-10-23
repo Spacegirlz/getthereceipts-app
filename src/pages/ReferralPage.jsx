@@ -319,7 +319,7 @@ const ReferralPage = () => {
                 <Button 
                   size="lg" 
                   className="viral-button font-bold w-full md:w-auto"
-                  onClick={() => navigate('/chat-input')}
+                  onClick={() => navigate('/new-receipt')}
                 >
                   Get Your Receipt Now
                 </Button>

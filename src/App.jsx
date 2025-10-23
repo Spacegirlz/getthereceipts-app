@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import LandingPage from '@/pages/LandingPage';
 import { lazy } from 'react';
 
@@ -58,6 +58,9 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/quiz" element={<QuizPage />} />
               <Route path="/new-receipt" element={<LuxeChatInputPage />} />
+              {/* Redirect old routes to new route */}
+              <Route path="/chat-input" element={<Navigate to="/new-receipt" replace />} />
+              <Route path="/luxe-chat-input" element={<Navigate to="/new-receipt" replace />} />
               <Route path="/receipts" element={<ReceiptsCardPage />} />
               <Route path="/receipts/:id" element={<ReceiptsCardPage />} />
               <Route path="/pricing" element={<PricingPage />} />

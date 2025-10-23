@@ -64,7 +64,7 @@ const QuizPage = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      navigate('/chat-input', { state: { quizAnswers: answers } });
+      navigate('/new-receipt', { state: { quizAnswers: answers } });
     }
   };
 
@@ -148,7 +148,7 @@ const QuizPage = () => {
               <ArrowRight className="ml-2" />
             </Button>
             <button
-              onClick={() => navigate('/chat-input')}
+              onClick={() => navigate('/new-receipt')}
               className="text-gray-400 hover:text-white transition-colors underline text-sm"
             >
               Skip quiz - I don't have time

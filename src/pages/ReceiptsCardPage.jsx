@@ -534,7 +534,7 @@ const ReceiptsCardPage = () => {
             {/* Next Receipt CTA  -  Right after the receipt */}
             <div className="w-full max-w-2xl mx-auto mt-6 mb-4">
               <LinkButton
-                to="/luxe-chat-input"
+                to="/new-receipt"
                 className="w-full flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/50 border border-cyan-300/50"
               >
                 <span className="text-xl">✨</span>

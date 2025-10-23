@@ -66,7 +66,7 @@ const LandingPage = () => {
     { text: '💬 "u plan trips we\'ll never take but can\'t plan dinner.. I don\'t get it."', color: 'text-purple-200', archetype: '✈️🎭 The Dream Seller' }
   ];
 
-  const handleGetStarted = () => navigate('/chat-input');
+  const handleGetStarted = () => navigate('/new-receipt');
   const handleRefer = () => navigate('/refer');
   
   const handleGoPremium = () => navigate('/pricing');

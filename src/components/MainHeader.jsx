@@ -53,7 +53,7 @@ const MainHeader = () => {
         </Link>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex gap-6 items-center">
-            <Link to="/chat-input" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">New Receipt</Link>
+            <Link to="/new-receipt" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">New Receipt</Link>
             <Link to="/pricing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</Link>
             {user ? (
               <>

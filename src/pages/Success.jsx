@@ -123,7 +123,7 @@ export default function Success() {
         )}
         
         <a 
-          href="/chat-input" 
+          href="/new-receipt" 
           className="inline-block bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg"
         >
           Start Getting Your Receipts →

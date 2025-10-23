@@ -193,7 +193,7 @@ const PricingPage = () => {
                 </div>
                 <div className="mt-auto">
                   <div className="pt-2 text-xs text-emerald-400 font-medium mb-4">Perfect for: Curious but cautious</div>
-                  <Button onClick={() => navigate('/chat-input')} variant="outline" className="border-emerald-400 text-white hover:bg-emerald-500/20 w-full">
+                  <Button onClick={() => navigate('/new-receipt')} variant="outline" className="border-emerald-400 text-white hover:bg-emerald-500/20 w-full">
                     Start Free →
                   </Button>
                 </div>
@@ -435,7 +435,7 @@ const PricingPage = () => {
                   <div className="mt-6 pt-6 border-t border-slate-600/30">
                     <p className="text-sm text-gray-400 mb-4 text-center">Not ready to commit?</p>
                     <Button 
-                      onClick={() => navigate('/chat-input')}
+                      onClick={() => navigate('/new-receipt')}
                       variant="outline"
                       className="border-slate-500/50 text-gray-300 hover:bg-slate-700/30 hover:border-slate-400/70 w-full transition-all duration-300"
                     >
@@ -604,7 +604,7 @@ const PricingPage = () => {
               {/* Tiny Badge - Clickable Link */}
               <div className="mt-2">
                 <button
-                  onClick={() => navigate('/chat-input')}
+                  onClick={() => navigate('/new-receipt')}
                   className="inline-flex items-center px-3 py-1 bg-cyan-500/10 border border-cyan-400/30 rounded-full text-xs text-cyan-300 font-medium hover:bg-cyan-500/20 hover:border-cyan-400/50 hover:text-cyan-200 transition-all duration-300 hover:scale-105 cursor-pointer"
                 >
                   Click Here to Start Free. Anonymous. No Login Required.

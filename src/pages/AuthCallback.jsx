@@ -71,9 +71,9 @@ const AuthCallback = () => {
           // Check if there's saved form data that should trigger auto-processing
           const savedFormData = localStorage.getItem('chatInputFormData');
           if (savedFormData) {
-            console.log('🔐 AuthCallback: Found saved form data, redirecting to chat-input for auto-submit');
+            console.log('🔐 AuthCallback: Found saved form data, redirecting to new-receipt for auto-submit');
             // Shorter delay since we fixed the auth context loading issue
-            setTimeout(() => navigate('/chat-input'), 1500);
+            setTimeout(() => navigate('/new-receipt'), 1500);
           } else {
             console.log('🔐 AuthCallback: No saved form data, redirecting to dashboard');
             setTimeout(() => navigate('/dashboard'), 1000);
