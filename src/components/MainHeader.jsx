@@ -165,32 +165,32 @@ const MainHeader = () => {
                     <Link
                       to="/new-receipt"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-cyan-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
-                      style={{ color: '#ffffff' }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                      style={{ color: '#ffffff', textDecoration: 'none' }}
                     >
-                      <MessageSquare className="h-5 w-5 text-cyan-400" style={{ color: '#22d3ee' }} />
-                      <span className="font-medium" style={{ color: '#ffffff' }}>New Receipt</span>
+                      <MessageSquare className="h-5 w-5 flex-shrink-0" style={{ color: '#22d3ee' }} />
+                      <span className="font-medium text-base" style={{ color: '#ffffff' }}>New Receipt</span>
                     </Link>
 
                     <Link
                       to="/pricing"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-purple-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
-                      style={{ color: '#ffffff' }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                      style={{ color: '#ffffff', textDecoration: 'none' }}
                     >
-                      <Gift className="h-5 w-5 text-purple-400" style={{ color: '#a855f7' }} />
-                      <span className="font-medium" style={{ color: '#ffffff' }}>Pricing</span>
+                      <Gift className="h-5 w-5 flex-shrink-0" style={{ color: '#a855f7' }} />
+                      <span className="font-medium text-base" style={{ color: '#ffffff' }}>Pricing</span>
                     </Link>
 
                     {user && (
                       <Link
                         to="/dashboard"
                         onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-emerald-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
-                        style={{ color: '#ffffff' }}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                        style={{ color: '#ffffff', textDecoration: 'none' }}
                       >
-                        <LayoutDashboard className="h-5 w-5 text-emerald-400" style={{ color: '#10b981' }} />
-                        <span className="font-medium" style={{ color: '#ffffff' }}>Dashboard</span>
+                        <LayoutDashboard className="h-5 w-5 flex-shrink-0" style={{ color: '#10b981' }} />
+                        <span className="font-medium text-base" style={{ color: '#ffffff' }}>Dashboard</span>
                       </Link>
                     )}
 
@@ -202,33 +202,33 @@ const MainHeader = () => {
                       <Link
                         to="/about"
                         onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-cyan-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
-                        style={{ color: '#ffffff' }}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                        style={{ color: '#ffffff', textDecoration: 'none' }}
                       >
-                        <Info className="h-5 w-5 text-cyan-400" style={{ color: '#22d3ee' }} />
-                        <span className="font-medium" style={{ color: '#ffffff' }}>About</span>
+                        <Info className="h-5 w-5 flex-shrink-0" style={{ color: '#22d3ee' }} />
+                        <span className="font-medium text-base" style={{ color: '#ffffff' }}>About</span>
                       </Link>
                     )}
 
                     <Link
                       to="/refer"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-purple-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
-                      style={{ color: '#ffffff' }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                      style={{ color: '#ffffff', textDecoration: 'none' }}
                     >
-                      <Gift className="h-5 w-5 text-purple-400" style={{ color: '#a855f7' }} />
-                      <span className="font-medium" style={{ color: '#ffffff' }}>Refer and Earn</span>
+                      <Gift className="h-5 w-5 flex-shrink-0" style={{ color: '#a855f7' }} />
+                      <span className="font-medium text-base" style={{ color: '#ffffff' }}>Refer and Earn</span>
                     </Link>
 
                     {user && (
                       <Link
                         to="/settings"
                         onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-emerald-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
-                        style={{ color: '#ffffff' }}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                        style={{ color: '#ffffff', textDecoration: 'none' }}
                       >
-                        <Settings className="h-5 w-5 text-emerald-400" style={{ color: '#10b981' }} />
-                        <span className="font-medium" style={{ color: '#ffffff' }}>Settings</span>
+                        <Settings className="h-5 w-5 flex-shrink-0" style={{ color: '#10b981' }} />
+                        <span className="font-medium text-base" style={{ color: '#ffffff' }}>Settings</span>
                       </Link>
                     )}
 
@@ -239,20 +239,20 @@ const MainHeader = () => {
                     <Link
                       to="/privacy-policy"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-                      style={{ color: '#d1d5db' }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                      style={{ color: '#d1d5db', textDecoration: 'none' }}
                     >
-                      <Shield className="h-4 w-4 text-gray-400" style={{ color: '#9ca3af' }} />
+                      <Shield className="h-4 w-4 flex-shrink-0" style={{ color: '#9ca3af' }} />
                       <span className="text-sm" style={{ color: '#d1d5db' }}>Privacy Policy</span>
                     </Link>
 
                     <Link
                       to="/terms-of-service"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-                      style={{ color: '#d1d5db' }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                      style={{ color: '#d1d5db', textDecoration: 'none' }}
                     >
-                      <FileText className="h-4 w-4 text-gray-400" style={{ color: '#9ca3af' }} />
+                      <FileText className="h-4 w-4 flex-shrink-0" style={{ color: '#9ca3af' }} />
                       <span className="text-sm" style={{ color: '#d1d5db' }}>Terms of Service</span>
                     </Link>
                 </nav>
