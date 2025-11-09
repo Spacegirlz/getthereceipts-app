@@ -140,47 +140,46 @@ const MainHeader = () => {
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] md:hidden"
             />
 
-            {/* Slide-Out Menu */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black border-l border-white/10 shadow-2xl z-[70] md:hidden overflow-y-auto"
-            >
-                <div className="flex flex-col h-full">
-                  {/* Menu Header */}
-                  <div className="flex items-center justify-between p-6 border-b border-white/10">
-                    <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent font-black text-xl">
-                      Get The Receipts
-                    </span>
-                    <button
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="text-gray-400 hover:text-white transition-colors p-2"
-                      aria-label="Close menu"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  </div>
+              {/* Slide-Out Menu */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black border-l border-white/10 shadow-2xl z-[70] md:hidden flex flex-col"
+              >
+                {/* Menu Header */}
+                <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
+                  <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent font-black text-xl">
+                    Get The Receipts
+                  </span>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-gray-400 hover:text-white transition-colors p-2"
+                    aria-label="Close menu"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
 
-                  {/* Menu Items */}
-                  <nav className="flex-1 p-4 space-y-2">
+                {/* Menu Items - Scrollable */}
+                <nav className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0">
                     {/* Primary Links */}
                     <Link
                       to="/new-receipt"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-cyan-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
                     >
-                      <MessageSquare className="h-5 w-5" />
+                      <MessageSquare className="h-5 w-5 text-cyan-400" />
                       <span className="font-medium">New Receipt</span>
                     </Link>
 
                     <Link
                       to="/pricing"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-purple-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
                     >
-                      <Gift className="h-5 w-5" />
+                      <Gift className="h-5 w-5 text-purple-400" />
                       <span className="font-medium">Pricing</span>
                     </Link>
 
@@ -188,9 +187,9 @@ const MainHeader = () => {
                       <Link
                         to="/dashboard"
                         onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-emerald-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
                       >
-                        <LayoutDashboard className="h-5 w-5" />
+                        <LayoutDashboard className="h-5 w-5 text-emerald-400" />
                         <span className="font-medium">Dashboard</span>
                       </Link>
                     )}
@@ -203,9 +202,9 @@ const MainHeader = () => {
                       <Link
                         to="/about"
                         onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-cyan-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
                       >
-                        <Info className="h-5 w-5" />
+                        <Info className="h-5 w-5 text-cyan-400" />
                         <span className="font-medium">About</span>
                       </Link>
                     )}
@@ -213,9 +212,9 @@ const MainHeader = () => {
                     <Link
                       to="/refer"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-purple-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
                     >
-                      <Gift className="h-5 w-5" />
+                      <Gift className="h-5 w-5 text-purple-400" />
                       <span className="font-medium">Refer and Earn</span>
                     </Link>
 
@@ -223,9 +222,9 @@ const MainHeader = () => {
                       <Link
                         to="/settings"
                         onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-emerald-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
                       >
-                        <Settings className="h-5 w-5" />
+                        <Settings className="h-5 w-5 text-emerald-400" />
                         <span className="font-medium">Settings</span>
                       </Link>
                     )}
@@ -237,24 +236,24 @@ const MainHeader = () => {
                     <Link
                       to="/privacy-policy"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-300 hover:bg-white/5 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                     >
-                      <Shield className="h-4 w-4" />
+                      <Shield className="h-4 w-4 text-gray-400" />
                       <span className="text-sm">Privacy Policy</span>
                     </Link>
 
                     <Link
                       to="/terms-of-service"
                       onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-300 hover:bg-white/5 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                     >
-                      <FileText className="h-4 w-4" />
+                      <FileText className="h-4 w-4 text-gray-400" />
                       <span className="text-sm">Terms of Service</span>
                     </Link>
-                  </nav>
+                </nav>
 
-                  {/* Menu Footer */}
-                  <div className="p-4 border-t border-white/10">
+                {/* Menu Footer */}
+                <div className="p-4 border-t border-white/10 flex-shrink-0">
                     {!loading && user ? (
                       <Button
                         variant="ghost"
