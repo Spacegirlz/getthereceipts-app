@@ -411,8 +411,8 @@ const LandingPage = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mb-8"
         >
-          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-4 max-w-3xl mx-auto shadow-2xl shadow-cyan-500/20">
-            <div className="relative overflow-hidden h-24 flex items-center justify-center">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-4 sm:p-6 max-w-3xl mx-auto shadow-2xl shadow-cyan-500/20">
+            <div className="relative overflow-hidden min-h-[140px] sm:min-h-[120px] flex items-center justify-center py-4">
               <motion.div
                 key={currentMessageIndex}
                 initial={{ opacity: 0, x: 20 }}
@@ -445,11 +445,11 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-8 max-w-5xl mx-auto"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight sm:leading-[1.1] mb-8 max-w-5xl mx-auto px-4 sm:px-0"
         >
-          <span className="text-white">The message that won't leave your </span>
+          <span className="text-white">For the message that won't leave your </span>
           <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-            brain alone?
+            brain alone.
           </span>
         </motion.h1>
 
@@ -458,7 +458,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto"
+          className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-6 sm:mb-4 max-w-3xl mx-auto"
         >
           Paste the chat. Tell the story. Get Sage's take. 💅
         </motion.p>
@@ -468,7 +468,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-xs sm:text-sm md:text-base text-gray-400 font-light mb-12 max-w-2xl mx-auto"
+          className="text-sm sm:text-base md:text-lg text-gray-400 font-normal mb-12 max-w-2xl mx-auto leading-relaxed"
         >
           Sage decodes the chat you can't stop replaying. From crushes to coworkers, breakups to besties. Sage doesn't read minds... she reads patterns. And she's seen it all...
         </motion.p>
@@ -498,7 +498,7 @@ const LandingPage = () => {
           >
             <Button
               onClick={handleGetStarted}
-              className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-lg px-8 py-4 rounded-xl shadow-2xl shadow-cyan-500/40 transition-all duration-300 hover:scale-105 min-h-[56px] min-w-[200px] border border-cyan-300/50"
+              className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-base sm:text-lg px-6 sm:px-8 py-4 rounded-xl shadow-2xl shadow-cyan-500/40 transition-all duration-300 hover:scale-105 min-h-[56px] w-full sm:min-w-[200px] sm:w-auto border border-cyan-300/50"
             >
               Get Your First Receipt Free (No Signup)
             </Button>
@@ -533,7 +533,7 @@ const LandingPage = () => {
               ease: "easeInOut"
             } : {}
           }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 text-base text-gray-400"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-base text-gray-400"
         >
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-emerald-400" />
@@ -554,7 +554,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
-          className="flex justify-center gap-8 text-sm text-gray-400 mb-8"
+          className="flex justify-center gap-4 sm:gap-6 md:gap-8 text-sm text-gray-400 mb-8"
         >
           <div className="text-center">
             <div className="text-cyan-400 font-bold text-lg">2.1K+</div>
