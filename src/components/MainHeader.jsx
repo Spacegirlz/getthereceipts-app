@@ -28,7 +28,8 @@ const MainHeader = () => {
     setMobileMenuOpen(false);
   };
 
-  const handleLinkClick = () => {
+  const handleMenuNavigation = (path) => {
+    navigate(path);
     setMobileMenuOpen(false);
   };
 
@@ -162,36 +163,30 @@ const MainHeader = () => {
                 {/* Menu Items - Scrollable */}
                 <nav className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0">
                     {/* Primary Links */}
-                    <Link
-                      to="/new-receipt"
-                      onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                      style={{ color: '#ffffff', textDecoration: 'none' }}
+                    <button
+                      onClick={() => handleMenuNavigation('/new-receipt')}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                     >
-                      <MessageSquare className="h-5 w-5 flex-shrink-0" style={{ color: '#22d3ee' }} />
-                      <span className="font-medium text-base" style={{ color: '#ffffff' }}>New Receipt</span>
-                    </Link>
+                      <MessageSquare className="h-5 w-5 text-cyan-400 flex-shrink-0" />
+                      <span className="font-medium text-base text-white">New Receipt</span>
+                    </button>
 
-                    <Link
-                      to="/pricing"
-                      onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                      style={{ color: '#ffffff', textDecoration: 'none' }}
+                    <button
+                      onClick={() => handleMenuNavigation('/pricing')}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                     >
-                      <Gift className="h-5 w-5 flex-shrink-0" style={{ color: '#a855f7' }} />
-                      <span className="font-medium text-base" style={{ color: '#ffffff' }}>Pricing</span>
-                    </Link>
+                      <Gift className="h-5 w-5 text-purple-400 flex-shrink-0" />
+                      <span className="font-medium text-base text-white">Pricing</span>
+                    </button>
 
                     {user && (
-                      <Link
-                        to="/dashboard"
-                        onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                        style={{ color: '#ffffff', textDecoration: 'none' }}
+                      <button
+                        onClick={() => handleMenuNavigation('/dashboard')}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                       >
-                        <LayoutDashboard className="h-5 w-5 flex-shrink-0" style={{ color: '#10b981' }} />
-                        <span className="font-medium text-base" style={{ color: '#ffffff' }}>Dashboard</span>
-                      </Link>
+                        <LayoutDashboard className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                        <span className="font-medium text-base text-white">Dashboard</span>
+                      </button>
                     )}
 
                     {/* Divider */}
@@ -199,62 +194,52 @@ const MainHeader = () => {
 
                     {/* Secondary Links */}
                     {!user && (
-                      <Link
-                        to="/about"
-                        onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                        style={{ color: '#ffffff', textDecoration: 'none' }}
+                      <button
+                        onClick={() => handleMenuNavigation('/about')}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                       >
-                        <Info className="h-5 w-5 flex-shrink-0" style={{ color: '#22d3ee' }} />
-                        <span className="font-medium text-base" style={{ color: '#ffffff' }}>About</span>
-                      </Link>
+                        <Info className="h-5 w-5 text-cyan-400 flex-shrink-0" />
+                        <span className="font-medium text-base text-white">About</span>
+                      </button>
                     )}
 
-                    <Link
-                      to="/refer"
-                      onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                      style={{ color: '#ffffff', textDecoration: 'none' }}
+                    <button
+                      onClick={() => handleMenuNavigation('/refer')}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                     >
-                      <Gift className="h-5 w-5 flex-shrink-0" style={{ color: '#a855f7' }} />
-                      <span className="font-medium text-base" style={{ color: '#ffffff' }}>Refer and Earn</span>
-                    </Link>
+                      <Gift className="h-5 w-5 text-purple-400 flex-shrink-0" />
+                      <span className="font-medium text-base text-white">Refer and Earn</span>
+                    </button>
 
                     {user && (
-                      <Link
-                        to="/settings"
-                        onClick={handleLinkClick}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                        style={{ color: '#ffffff', textDecoration: 'none' }}
+                      <button
+                        onClick={() => handleMenuNavigation('/settings')}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                       >
-                        <Settings className="h-5 w-5 flex-shrink-0" style={{ color: '#10b981' }} />
-                        <span className="font-medium text-base" style={{ color: '#ffffff' }}>Settings</span>
-                      </Link>
+                        <Settings className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                        <span className="font-medium text-base text-white">Settings</span>
+                      </button>
                     )}
 
                     {/* Divider */}
                     <div className="h-px bg-white/10 my-4"></div>
 
                     {/* Legal Links */}
-                    <Link
-                      to="/privacy-policy"
-                      onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                      style={{ color: '#d1d5db', textDecoration: 'none' }}
+                    <button
+                      onClick={() => handleMenuNavigation('/privacy-policy')}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                     >
-                      <Shield className="h-4 w-4 flex-shrink-0" style={{ color: '#9ca3af' }} />
-                      <span className="text-sm" style={{ color: '#d1d5db' }}>Privacy Policy</span>
-                    </Link>
+                      <Shield className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-300">Privacy Policy</span>
+                    </button>
 
-                    <Link
-                      to="/terms-of-service"
-                      onClick={handleLinkClick}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
-                      style={{ color: '#d1d5db', textDecoration: 'none' }}
+                    <button
+                      onClick={() => handleMenuNavigation('/terms-of-service')}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
                     >
-                      <FileText className="h-4 w-4 flex-shrink-0" style={{ color: '#9ca3af' }} />
-                      <span className="text-sm" style={{ color: '#d1d5db' }}>Terms of Service</span>
-                    </Link>
+                      <FileText className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-300">Terms of Service</span>
+                    </button>
                 </nav>
 
                 {/* Menu Footer */}
