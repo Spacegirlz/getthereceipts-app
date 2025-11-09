@@ -163,30 +163,39 @@ const MainHeader = () => {
                 {/* Menu Items - Scrollable */}
                 <nav className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0">
                     {/* Primary Links */}
-                    <button
+                    <div
                       onClick={() => handleMenuNavigation('/new-receipt')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/new-receipt')}
                     >
                       <MessageSquare className="h-5 w-5 text-cyan-400 flex-shrink-0" />
                       <span className="font-medium text-base text-white">New Receipt</span>
-                    </button>
+                    </div>
 
-                    <button
+                    <div
                       onClick={() => handleMenuNavigation('/pricing')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/pricing')}
                     >
                       <Gift className="h-5 w-5 text-purple-400 flex-shrink-0" />
                       <span className="font-medium text-base text-white">Pricing</span>
-                    </button>
+                    </div>
 
                     {user && (
-                      <button
+                      <div
                         onClick={() => handleMenuNavigation('/dashboard')}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/dashboard')}
                       >
                         <LayoutDashboard className="h-5 w-5 text-emerald-400 flex-shrink-0" />
                         <span className="font-medium text-base text-white">Dashboard</span>
-                      </button>
+                      </div>
                     )}
 
                     {/* Divider */}
@@ -194,52 +203,67 @@ const MainHeader = () => {
 
                     {/* Secondary Links */}
                     {!user && (
-                      <button
+                      <div
                         onClick={() => handleMenuNavigation('/about')}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/about')}
                       >
                         <Info className="h-5 w-5 text-cyan-400 flex-shrink-0" />
                         <span className="font-medium text-base text-white">About</span>
-                      </button>
+                      </div>
                     )}
 
-                    <button
+                    <div
                       onClick={() => handleMenuNavigation('/refer')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/refer')}
                     >
                       <Gift className="h-5 w-5 text-purple-400 flex-shrink-0" />
                       <span className="font-medium text-base text-white">Refer and Earn</span>
-                    </button>
+                    </div>
 
                     {user && (
-                      <button
+                      <div
                         onClick={() => handleMenuNavigation('/settings')}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/settings')}
                       >
                         <Settings className="h-5 w-5 text-emerald-400 flex-shrink-0" />
                         <span className="font-medium text-base text-white">Settings</span>
-                      </button>
+                      </div>
                     )}
 
                     {/* Divider */}
                     <div className="h-px bg-white/10 my-4"></div>
 
                     {/* Legal Links */}
-                    <button
+                    <div
                       onClick={() => handleMenuNavigation('/privacy-policy')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/privacy-policy')}
                     >
                       <Shield className="h-4 w-4 text-gray-400 flex-shrink-0" />
                       <span className="text-sm text-gray-300">Privacy Policy</span>
-                    </button>
+                    </div>
 
-                    <button
+                    <div
                       onClick={() => handleMenuNavigation('/terms-of-service')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 text-left"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/terms-of-service')}
                     >
                       <FileText className="h-4 w-4 text-gray-400 flex-shrink-0" />
                       <span className="text-sm text-gray-300">Terms of Service</span>
-                    </button>
+                    </div>
                 </nav>
 
                 {/* Menu Footer */}
