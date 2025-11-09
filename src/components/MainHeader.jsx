@@ -111,10 +111,7 @@ const MainHeader = () => {
 
           {/* Mobile Hamburger Menu Button */}
           <button
-            onClick={() => {
-              console.log('Menu button clicked, current state:', mobileMenuOpen);
-              setMobileMenuOpen(!mobileMenuOpen);
-            }}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-white hover:text-cyan-400 transition-colors p-2 relative z-[80]"
             aria-label="Toggle menu"
           >
@@ -169,18 +166,20 @@ const MainHeader = () => {
                       to="/new-receipt"
                       onClick={handleLinkClick}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-cyan-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
+                      style={{ color: '#ffffff' }}
                     >
-                      <MessageSquare className="h-5 w-5 text-cyan-400" />
-                      <span className="font-medium">New Receipt</span>
+                      <MessageSquare className="h-5 w-5 text-cyan-400" style={{ color: '#22d3ee' }} />
+                      <span className="font-medium" style={{ color: '#ffffff' }}>New Receipt</span>
                     </Link>
 
                     <Link
                       to="/pricing"
                       onClick={handleLinkClick}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-purple-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
+                      style={{ color: '#ffffff' }}
                     >
-                      <Gift className="h-5 w-5 text-purple-400" />
-                      <span className="font-medium">Pricing</span>
+                      <Gift className="h-5 w-5 text-purple-400" style={{ color: '#a855f7' }} />
+                      <span className="font-medium" style={{ color: '#ffffff' }}>Pricing</span>
                     </Link>
 
                     {user && (
@@ -188,9 +187,10 @@ const MainHeader = () => {
                         to="/dashboard"
                         onClick={handleLinkClick}
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-emerald-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
+                        style={{ color: '#ffffff' }}
                       >
-                        <LayoutDashboard className="h-5 w-5 text-emerald-400" />
-                        <span className="font-medium">Dashboard</span>
+                        <LayoutDashboard className="h-5 w-5 text-emerald-400" style={{ color: '#10b981' }} />
+                        <span className="font-medium" style={{ color: '#ffffff' }}>Dashboard</span>
                       </Link>
                     )}
 
@@ -203,9 +203,10 @@ const MainHeader = () => {
                         to="/about"
                         onClick={handleLinkClick}
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-cyan-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
+                        style={{ color: '#ffffff' }}
                       >
-                        <Info className="h-5 w-5 text-cyan-400" />
-                        <span className="font-medium">About</span>
+                        <Info className="h-5 w-5 text-cyan-400" style={{ color: '#22d3ee' }} />
+                        <span className="font-medium" style={{ color: '#ffffff' }}>About</span>
                       </Link>
                     )}
 
@@ -213,9 +214,10 @@ const MainHeader = () => {
                       to="/refer"
                       onClick={handleLinkClick}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-purple-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
+                      style={{ color: '#ffffff' }}
                     >
-                      <Gift className="h-5 w-5 text-purple-400" />
-                      <span className="font-medium">Refer and Earn</span>
+                      <Gift className="h-5 w-5 text-purple-400" style={{ color: '#a855f7' }} />
+                      <span className="font-medium" style={{ color: '#ffffff' }}>Refer and Earn</span>
                     </Link>
 
                     {user && (
@@ -223,9 +225,10 @@ const MainHeader = () => {
                         to="/settings"
                         onClick={handleLinkClick}
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:text-emerald-400 hover:bg-white/10 transition-colors border border-transparent hover:border-white/20"
+                        style={{ color: '#ffffff' }}
                       >
-                        <Settings className="h-5 w-5 text-emerald-400" />
-                        <span className="font-medium">Settings</span>
+                        <Settings className="h-5 w-5 text-emerald-400" style={{ color: '#10b981' }} />
+                        <span className="font-medium" style={{ color: '#ffffff' }}>Settings</span>
                       </Link>
                     )}
 
@@ -237,18 +240,20 @@ const MainHeader = () => {
                       to="/privacy-policy"
                       onClick={handleLinkClick}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                      style={{ color: '#d1d5db' }}
                     >
-                      <Shield className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">Privacy Policy</span>
+                      <Shield className="h-4 w-4 text-gray-400" style={{ color: '#9ca3af' }} />
+                      <span className="text-sm" style={{ color: '#d1d5db' }}>Privacy Policy</span>
                     </Link>
 
                     <Link
                       to="/terms-of-service"
                       onClick={handleLinkClick}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                      style={{ color: '#d1d5db' }}
                     >
-                      <FileText className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">Terms of Service</span>
+                      <FileText className="h-4 w-4 text-gray-400" style={{ color: '#9ca3af' }} />
+                      <span className="text-sm" style={{ color: '#d1d5db' }}>Terms of Service</span>
                     </Link>
                 </nav>
 
@@ -275,7 +280,6 @@ const MainHeader = () => {
                         Login
                       </Button>
                     ) : null}
-                  </div>
                 </div>
               </motion.div>
             </>
