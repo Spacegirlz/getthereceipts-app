@@ -96,6 +96,42 @@ export async function askSage(question, receiptData, previousMessages = [], opts
     // Build compact, personality-first prompt (+ keep legacy as fallback)
     const useLite = true; // core switch per user request
     const otherName = receiptData?.otherName || 'them';
+    
+    // ✅ ENHANCEMENT: Build additional context block with red flags, background, etc.
+    const additionalContext = [];
+    
+    // Core analysis fields (from lines 265-267 in prompt)
+    if (receiptData?.archetype) {
+      additionalContext.push(`Archetype: ${receiptData.archetype}`);
+    }
+    if (typeof receiptData?.redFlags !== 'undefined') {
+      additionalContext.push(`Red Flags: ${receiptData.redFlags}/10`);
+    }
+    if (receiptData?.verdict) {
+      additionalContext.push(`Pattern: ${receiptData.verdict.substring(0, 150)}`);
+    }
+    
+    // Additional context fields
+    if (receiptData?.redFlagChips && receiptData.redFlagChips.length > 0) {
+      additionalContext.push(`Red Flags Identified: ${receiptData.redFlagChips.slice(0, 5).join(', ')}`);
+    } else if (receiptData?.redFlagTags && receiptData.redFlagTags.length > 0) {
+      additionalContext.push(`Red Flags Identified: ${receiptData.redFlagTags.slice(0, 5).join(', ')}`);
+    }
+    if (receiptData?.background) {
+      additionalContext.push(`Background Context: ${receiptData.background}`);
+    }
+    if (receiptData?.relationshipType) {
+      additionalContext.push(`Relationship Type: ${receiptData.relationshipType}`);
+    }
+    if (receiptData?.userName) {
+      additionalContext.push(`User Name: ${receiptData.userName}`);
+    }
+    if (receiptData?.otherName) {
+      additionalContext.push(`Other Name: ${receiptData.otherName}`);
+    }
+    
+    const contextBlock = additionalContext.length > 0 ? `\n\nADDITIONAL CONTEXT:\n${additionalContext.join('\n')}` : '';
+    
     const systemPromptFilled = (useLite ? askSagePromptLite : askSagePrompt)
       .replace('{otherName}', otherName)
       .replace('{archetype}', receiptData.archetype || 'Unknown')
@@ -113,13 +149,25 @@ export async function askSage(question, receiptData, previousMessages = [], opts
     const systemPrompt = systemPromptFilled;
 
     // Add the original analyzed conversation and chat history
-    const originalConversation = receiptData.conversation ? 
-      `\n\nORIGINAL ANALYZED CONVERSATION:\n${receiptData.conversation}` : '';
+    // ✅ ENHANCEMENT: Check multiple possible locations for conversation
+    const originalConversation = receiptData.conversation || receiptData.originalMessage || receiptData.message || '';
+    const conversationBlock = originalConversation ? 
+      `\n\nORIGINAL ANALYZED CONVERSATION:\n${originalConversation}` : '';
     
     const chatHistory = previousMessages.length > 0 ? 
       `\n\nRECENT CHAT WITH USER:\n${previousMessages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\n')}` : '';
     
-    const fullPrompt = systemPrompt + originalConversation + chatHistory;
+    const fullPrompt = systemPrompt + contextBlock + conversationBlock + chatHistory;
+
+    // Debug logging
+    console.log('🔍 askSage - Prompt check:', {
+      hasOriginalConversation: !!originalConversation,
+      originalConversationLength: originalConversation?.length || 0,
+      hasChatHistory: !!chatHistory,
+      chatHistoryLength: chatHistory?.length || 0,
+      fullPromptLength: fullPrompt.length,
+      systemPromptLength: systemPrompt.length
+    });
 
     // For local development only, use direct OpenAI call
     if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1'))) {
@@ -133,7 +181,7 @@ export async function askSage(question, receiptData, previousMessages = [], opts
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: systemPrompt },
+            { role: 'system', content: fullPrompt }, // ✅ FIX: Use fullPrompt with conversation
             { role: 'user', content: useLite ? contextualQuestion : question }
           ],
           temperature: 0.88,
@@ -153,6 +201,7 @@ export async function askSage(question, receiptData, previousMessages = [], opts
       return cleanedResponse;
     } else {
       // Production: Call OpenAI via proxy
+      // ✅ FIX: Send full receiptData, not just conversation
       const response = await fetch('/api/sage-chat', {
         method: 'POST',
         headers: {
@@ -160,7 +209,7 @@ export async function askSage(question, receiptData, previousMessages = [], opts
         },
         body: JSON.stringify({
           question: useLite ? contextualQuestion : question,
-          receiptData: { conversation: receiptData?.conversation || '' },
+          receiptData: receiptData || {}, // ✅ Send full receiptData with all fields
           previousMessages: previousMessages
         })
       });

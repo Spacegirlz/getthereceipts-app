@@ -308,7 +308,18 @@ const ReceiptsCardPage = () => {
             navigate('/dashboard');
           }
         } else {
-          setReceiptData({ ...data, analysis: data.analysis_result, originalMessage: data.original_message, quizAnswers: data.quiz_answers });
+          // ✅ FIX: Ensure conversation field is available in analysis for Sage chatbot
+          const analysisWithConversation = {
+            ...data.analysis_result,
+            // If conversation doesn't exist in analysis_result, use the message field as fallback
+            conversation: data.analysis_result?.conversation || data.message || data.original_message || ''
+          };
+          setReceiptData({ 
+            ...data, 
+            analysis: analysisWithConversation, 
+            originalMessage: data.original_message || data.message, 
+            quizAnswers: data.quiz_answers 
+          });
         }
         setLoading(false);
       } else {

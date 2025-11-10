@@ -198,6 +198,20 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
   const handleSend = async () => {
     if (!input.trim() || loading || messages.length >= maxMessages) return;
     
+    // Debug: Verify receiptData has conversation field
+    if (receiptData) {
+      console.log('🔍 AskSageChat - receiptData check:', {
+        hasConversation: !!receiptData.conversation,
+        conversationLength: receiptData.conversation?.length || 0,
+        hasArchetype: !!receiptData.archetype,
+        hasVerdict: !!receiptData.verdict,
+        hasRedFlags: typeof receiptData.redFlags !== 'undefined',
+        receiptDataKeys: Object.keys(receiptData)
+      });
+    } else {
+      console.warn('⚠️ AskSageChat - receiptData is null/undefined');
+    }
+    
     const userMsg = { 
       role: 'user', 
       content: input, 

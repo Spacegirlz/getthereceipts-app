@@ -85,8 +85,60 @@ export default async function handler(req, res) {
       .replace('{verdictSummary}', receiptData.verdict?.substring(0, 150) || '')
       .replace('{flagNumber}', '1'); // Just use first flag for now
 
-    const fullPrompt = systemPrompt + '\n\nRECENT CONVERSATION:\n' + 
-      previousMessages.slice(-3).map(m => `${m.role}: ${m.content}`).join('\n');
+    // ✅ FIX: Add original analyzed conversation (check multiple possible locations)
+    const originalConversation = receiptData.conversation || receiptData.originalMessage || receiptData.message || '';
+    const conversationBlock = originalConversation ? 
+      `\n\nORIGINAL ANALYZED CONVERSATION:\n${originalConversation}` : '';
+    
+    // ✅ ENHANCEMENT: Build additional context block
+    const additionalContext = [];
+    
+    // Core analysis fields (from lines 265-267 in prompt)
+    if (receiptData?.archetype) {
+      additionalContext.push(`Archetype: ${receiptData.archetype}`);
+    }
+    if (typeof receiptData?.redFlags !== 'undefined') {
+      additionalContext.push(`Red Flags: ${receiptData.redFlags}/10`);
+    }
+    if (receiptData?.verdict) {
+      additionalContext.push(`Pattern: ${receiptData.verdict.substring(0, 150)}`);
+    }
+    
+    // Additional context fields
+    if (receiptData?.redFlagChips && receiptData.redFlagChips.length > 0) {
+      additionalContext.push(`Red Flags Identified: ${receiptData.redFlagChips.slice(0, 5).join(', ')}`);
+    } else if (receiptData?.redFlagTags && receiptData.redFlagTags.length > 0) {
+      additionalContext.push(`Red Flags Identified: ${receiptData.redFlagTags.slice(0, 5).join(', ')}`);
+    }
+    if (receiptData?.background) {
+      additionalContext.push(`Background Context: ${receiptData.background}`);
+    }
+    if (receiptData?.relationshipType) {
+      additionalContext.push(`Relationship Type: ${receiptData.relationshipType}`);
+    }
+    if (receiptData?.userName) {
+      additionalContext.push(`User Name: ${receiptData.userName}`);
+    }
+    if (receiptData?.otherName) {
+      additionalContext.push(`Other Name: ${receiptData.otherName}`);
+    }
+    
+    const contextBlock = additionalContext.length > 0 ? `\n\nADDITIONAL CONTEXT:\n${additionalContext.join('\n')}` : '';
+    
+    // ✅ FIX: Add chat history with more context
+    const chatHistory = previousMessages.length > 0 ? 
+      `\n\nRECENT CHAT WITH USER:\n${previousMessages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\n')}` : '';
+
+    const fullPrompt = systemPrompt + contextBlock + conversationBlock + chatHistory;
+    
+    // Debug logging
+    console.log('🔍 api/sage-chat - Prompt check:', {
+      hasOriginalConversation: !!originalConversation,
+      originalConversationLength: originalConversation?.length || 0,
+      hasChatHistory: !!chatHistory,
+      chatHistoryLength: chatHistory?.length || 0,
+      fullPromptLength: fullPrompt.length
+    });
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
