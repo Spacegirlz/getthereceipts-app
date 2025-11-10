@@ -144,10 +144,11 @@ const MainHeader = () => {
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black border-l border-white/10 shadow-2xl z-[70] md:hidden flex flex-col"
+                className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black border-l border-white/10 shadow-2xl z-[70] md:hidden"
+                style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
               >
                 {/* Menu Header */}
-                <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
+                <div className="flex items-center justify-between p-6 border-b border-white/10" style={{ flexShrink: 0 }}>
                   <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent font-black text-xl">
                     Get The Receipts
                   </span>
@@ -161,40 +162,61 @@ const MainHeader = () => {
                 </div>
 
                 {/* Menu Items - Scrollable */}
-                <nav className="flex-1 overflow-y-auto p-4 space-y-2 min-h-0">
+                <nav className="overflow-y-auto p-4 space-y-2" style={{ flex: '1 1 auto', minHeight: 0, WebkitOverflowScrolling: 'touch' }}>
                     {/* Primary Links */}
                     <div
                       onClick={() => handleMenuNavigation('/new-receipt')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/new-receipt')}
+                      style={{ 
+                        display: 'flex', 
+                        minHeight: '48px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        alignItems: 'center'
+                      }}
                     >
-                      <MessageSquare className="h-5 w-5 text-cyan-400 flex-shrink-0" />
-                      <span className="font-medium text-base text-white">New Receipt</span>
+                      <MessageSquare className="h-5 w-5 flex-shrink-0" style={{ color: '#22d3ee', display: 'block' }} />
+                      <span className="font-medium text-base" style={{ color: '#ffffff', display: 'block' }}>New Receipt</span>
                     </div>
 
                     <div
                       onClick={() => handleMenuNavigation('/pricing')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/pricing')}
+                      style={{ 
+                        display: 'flex', 
+                        minHeight: '48px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        alignItems: 'center'
+                      }}
                     >
-                      <Gift className="h-5 w-5 text-purple-400 flex-shrink-0" />
-                      <span className="font-medium text-base text-white">Pricing</span>
+                      <Gift className="h-5 w-5 flex-shrink-0" style={{ color: '#a855f7', display: 'block' }} />
+                      <span className="font-medium text-base" style={{ color: '#ffffff', display: 'block' }}>Pricing</span>
                     </div>
 
                     {user && (
                       <div
                         onClick={() => handleMenuNavigation('/dashboard')}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/dashboard')}
+                        style={{ 
+                          display: 'flex', 
+                          minHeight: '48px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          alignItems: 'center'
+                        }}
                       >
-                        <LayoutDashboard className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-                        <span className="font-medium text-base text-white">Dashboard</span>
+                        <LayoutDashboard className="h-5 w-5 flex-shrink-0" style={{ color: '#10b981', display: 'block' }} />
+                        <span className="font-medium text-base" style={{ color: '#ffffff', display: 'block' }}>Dashboard</span>
                       </div>
                     )}
 
@@ -205,37 +227,58 @@ const MainHeader = () => {
                     {!user && (
                       <div
                         onClick={() => handleMenuNavigation('/about')}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/about')}
+                        style={{ 
+                          display: 'flex', 
+                          minHeight: '48px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          alignItems: 'center'
+                        }}
                       >
-                        <Info className="h-5 w-5 text-cyan-400 flex-shrink-0" />
-                        <span className="font-medium text-base text-white">About</span>
+                        <Info className="h-5 w-5 flex-shrink-0" style={{ color: '#22d3ee', display: 'block' }} />
+                        <span className="font-medium text-base" style={{ color: '#ffffff', display: 'block' }}>About</span>
                       </div>
                     )}
 
                     <div
                       onClick={() => handleMenuNavigation('/refer')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/refer')}
+                      style={{ 
+                        display: 'flex', 
+                        minHeight: '48px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        alignItems: 'center'
+                      }}
                     >
-                      <Gift className="h-5 w-5 text-purple-400 flex-shrink-0" />
-                      <span className="font-medium text-base text-white">Refer and Earn</span>
+                      <Gift className="h-5 w-5 flex-shrink-0" style={{ color: '#a855f7', display: 'block' }} />
+                      <span className="font-medium text-base" style={{ color: '#ffffff', display: 'block' }}>Refer and Earn</span>
                     </div>
 
                     {user && (
                       <div
                         onClick={() => handleMenuNavigation('/settings')}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/settings')}
+                        style={{ 
+                          display: 'flex', 
+                          minHeight: '48px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          alignItems: 'center'
+                        }}
                       >
-                        <Settings className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-                        <span className="font-medium text-base text-white">Settings</span>
+                        <Settings className="h-5 w-5 flex-shrink-0" style={{ color: '#10b981', display: 'block' }} />
+                        <span className="font-medium text-base" style={{ color: '#ffffff', display: 'block' }}>Settings</span>
                       </div>
                     )}
 
@@ -245,29 +288,43 @@ const MainHeader = () => {
                     {/* Legal Links */}
                     <div
                       onClick={() => handleMenuNavigation('/privacy-policy')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/privacy-policy')}
+                      style={{ 
+                        display: 'flex', 
+                        minHeight: '44px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        alignItems: 'center'
+                      }}
                     >
-                      <Shield className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                      <span className="text-sm text-gray-300">Privacy Policy</span>
+                      <Shield className="h-4 w-4 flex-shrink-0" style={{ color: '#d1d5db', display: 'block' }} />
+                      <span className="text-sm" style={{ color: '#d1d5db', display: 'block' }}>Privacy Policy</span>
                     </div>
 
                     <div
                       onClick={() => handleMenuNavigation('/terms-of-service')}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer"
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => e.key === 'Enter' && handleMenuNavigation('/terms-of-service')}
+                      style={{ 
+                        display: 'flex', 
+                        minHeight: '44px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        alignItems: 'center'
+                      }}
                     >
-                      <FileText className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                      <span className="text-sm text-gray-300">Terms of Service</span>
+                      <FileText className="h-4 w-4 flex-shrink-0" style={{ color: '#d1d5db', display: 'block' }} />
+                      <span className="text-sm" style={{ color: '#d1d5db', display: 'block' }}>Terms of Service</span>
                     </div>
                 </nav>
 
                 {/* Menu Footer */}
-                <div className="p-4 border-t border-white/10 flex-shrink-0">
+                <div className="p-4 border-t border-white/10" style={{ flexShrink: 0 }}>
                     {!loading && user ? (
                       <Button
                         variant="ghost"
