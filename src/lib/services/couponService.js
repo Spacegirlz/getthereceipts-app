@@ -42,40 +42,8 @@ export const redeemCoupon = async (couponCode, userId) => {
       };
     }
     
-    // Add credits to user account
-    const creditsToAdd = data.receipts_count;
-    const isPremium = data.is_premium;
-    
-    // Get current user credits
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('credits_remaining, subscription_status')
-      .eq('id', userId)
-      .single();
-    
-    if (userError) {
-      console.error('Error fetching user data:', userError);
-      return {
-        success: false,
-        error: 'Failed to update credits. Please contact support.'
-      };
-    }
-    
-    // Update user credits
-    const newCredits = (userData.credits_remaining || 0) + creditsToAdd;
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({ credits_remaining: newCredits })
-      .eq('id', userId);
-    
-    if (updateError) {
-      console.error('Error updating credits:', updateError);
-      return {
-        success: false,
-        error: 'Failed to update credits. Please contact support.'
-      };
-    }
-    
+    // Database function already updates credits, so we just return the result
+    // The function returns new_credits in the response
     console.log('✅ Coupon redeemed successfully:', data);
     
     return {
@@ -84,7 +52,8 @@ export const redeemCoupon = async (couponCode, userId) => {
       receiptsCount: data.receipts_count,
       isPremium: data.is_premium,
       remainingUses: data.remaining_uses,
-      newCredits: newCredits
+      newCredits: data.new_credits || (data.previous_credits + data.credits_added),
+      creditsAdded: data.credits_added || data.receipts_count
     };
     
   } catch (error) {
