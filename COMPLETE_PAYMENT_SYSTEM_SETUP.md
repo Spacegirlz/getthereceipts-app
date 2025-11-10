@@ -114,6 +114,8 @@ ORDER BY code;
 **Expected Coupons**:
 - `BF5` - Black Friday Freebie (5 credits, expires 2025-12-31)
 - `PMFRIENDS50` - PM Friends Mega Drop (50 credits, expires 2025-12-31)
+- `SAGESANTA05` - Sage Santa 05 (5 credits, expires 2025-12-31)
+- `GTRCHRISTMAS10` - GTR Christmas 10 (10 credits, expires 2025-12-31)
 
 ---
 
@@ -401,6 +403,8 @@ Document all active coupons:
 |------|------|---------|---------|-----------|--------------|
 | BF5 | Black Friday Freebie | 5 | 2025-12-31 | 500 | 0 |
 | PMFRIENDS50 | PM Friends Mega Drop | 50 | 2025-12-31 | 100 | 0 |
+| SAGESANTA05 | Sage Santa 05 | 5 | 2025-12-31 | 1000 | 0 |
+| GTRCHRISTMAS10 | GTR Christmas 10 | 10 | 2025-12-31 | 1000 | 0 |
 
 ---
 
