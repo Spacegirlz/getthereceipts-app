@@ -583,6 +583,42 @@ const LandingPage = () => {
           </div>
         </motion.div>
 
+        {/* Typing Animation  -  Supporting Examples Above Headline */}
+          <motion.div
+          initial={{ opacity: 0, y: - 10 }}
+            animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-6 md:mb-8 lg:mb-10"
+        >
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl px-3 py-3 sm:p-6 md:p-8 lg:p-10 max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto shadow-2xl shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300">
+            <div className="relative overflow-hidden min-h-[80px] sm:min-h-[110px] md:min-h-[120px] flex items-center justify-center py-2 sm:py-3 md:py-4">
+              <motion.div
+                key={currentMessageIndex}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: - 20 }}
+                transition={{ duration: 0.5 }}
+                className="text-center w-full px-2 sm:px-4 md:px-6"
+              >
+                <div className={`text-xs sm:text-lg md:text-xl lg:text-2xl font-medium leading-relaxed md:leading-relaxed ${messages[currentMessageIndex].color}`}>
+                  {currentText}
+                  {isTyping && <span className="animate-pulse">|</span>}
+                </div>
+                {!isTyping && currentText && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-xs sm:text-base md:text-lg lg:text-xl text-gray-400 mt-1 md:mt-2"
+                  >
+                    {messages[currentMessageIndex].archetype}
+                  </motion.div>
+                )}
+              </motion.div>
+            </div>
+          </div>
+          </motion.div>
+
         {/* Headline Group - Integrated Unit */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -591,7 +627,8 @@ const LandingPage = () => {
           className="mb-8 md:mb-12 lg:mb-16 max-w-5xl md:max-w-6xl lg:max-w-7xl mx-auto px-4 sm:px-0"
         >
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight sm:leading-[1.1] md:leading-[1.05] mb-3 md:mb-4">
-            <span className="text-white">Stop spiraling.&nbsp;</span>
+            <span className="text-white">Stop spiraling.</span>
+            <br className="sm:hidden" />
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
               Start&nbsp;knowing.
             </span>
@@ -607,42 +644,6 @@ const LandingPage = () => {
             Even if you've done a full FBI investigation and called it "closure."
           </motion.p>
         </motion.div>
-
-        {/* Typing Animation  -  Supporting Examples Below Headline */}
-          <motion.div
-          initial={{ opacity: 0, y: - 10 }}
-            animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mb-8 md:mb-12 lg:mb-16"
-        >
-          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-4 sm:p-6 md:p-8 max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto shadow-2xl shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300">
-            <div className="relative overflow-hidden min-h-[100px] sm:min-h-[110px] flex items-center justify-center py-3">
-              <motion.div
-                key={currentMessageIndex}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: - 20 }}
-                transition={{ duration: 0.5 }}
-                className="text-center"
-              >
-                <div className={`text-lg sm:text-xl md:text-2xl font-medium ${messages[currentMessageIndex].color}`}>
-                  {currentText}
-                  {isTyping && <span className="animate-pulse">|</span>}
-                </div>
-                {!isTyping && currentText && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-base sm:text-lg md:text-xl text-gray-400 mt-1"
-                  >
-                    {messages[currentMessageIndex].archetype}
-                  </motion.div>
-                )}
-              </motion.div>
-            </div>
-          </div>
-          </motion.div>
 
         {/* Combined Process & Description - Streamlined */}
         <motion.p
@@ -695,19 +696,19 @@ const LandingPage = () => {
             transition={{ duration: 0.6, delay: 0.85 }}
             className="w-full"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-2xl mx-auto">
               {[
-                { icon: '🔒', title: 'Privacy First Policy' },
-                { icon: '🛡️', title: 'Never Stored Or Shared' },
-                { icon: '⚡', title: 'Your Choice Always' }
-              ].map(({ icon, title }) => {
+                { icon: '🔒', title: 'Privacy First Policy', hideOnMobile: false },
+                { icon: '🛡️', title: 'Not Stored or Shared', hideOnMobile: true },
+                { icon: '⚡', title: 'Your Choice Always', hideOnMobile: true }
+              ].map(({ icon, title, hideOnMobile }) => {
                 return (
                   <div
                     key={title}
-                    className="bg-white/6 backdrop-blur-sm border border-cyan-400/25 rounded-2xl px-4 py-3 flex items-center gap-3 shadow shadow-cyan-500/15"
+                    className={`bg-white/6 backdrop-blur-sm border border-cyan-400/25 rounded-full px-4 py-2 flex items-center gap-2 shadow shadow-cyan-500/15 ${hideOnMobile ? 'hidden sm:flex' : ''}`}
                   >
-                    <span className="text-lg sm:text-xl" role="img" aria-hidden="true">{icon}</span>
-                    <p className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">{title}</p>
+                    <span className="text-base sm:text-lg" role="img" aria-hidden="true">{icon}</span>
+                    <p className="text-white font-semibold text-xs sm:text-sm whitespace-nowrap">{title}</p>
                   </div>
                 );
               })}
@@ -821,17 +822,11 @@ const LandingPage = () => {
                     </div>
 
                     <div className="flex-1 text-center lg:text-left space-y-4 sm:space-y-5 max-w-lg">
-                      <h3 className="text-2xl sm:text-3xl font-bold text-white">
-                        Meet Sage.
-                      </h3>
                       <p className="text-gray-300 text-base leading-relaxed italic">
                         Sage is that friend who tells it like it is.
                       </p>
                       <p className="text-gray-300 text-base leading-relaxed">
-                        Not a therapist. Not your mom. Not even real.
-                      </p>
-                      <p className="text-gray-300 text-base leading-relaxed">
-                        Just your no-BS bestie who refuses to watch you spiral.
+                        Not a therapist. Not your mom. Not even real. Just your no-BS bestie who refuses to watch you spiral.
                       </p>
                       <p className="text-gray-300 text-base leading-relaxed">
                         Made for laughs, clarity, and maybe a little reality check.
@@ -875,12 +870,6 @@ const LandingPage = () => {
                 <span className="text-cyan-300 font-extrabold">Sage Freebies</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white mt-4">Start free. Stay curious.</h2>
-              <p className="text-sm sm:text-base text-gray-300 mt-2 max-w-2xl mx-auto">
-                One tap, one decode, zero invoices. A free plan that actually delivers daily clarity - and a <span className="text-emerald-300 font-semibold">Black Friday treat waiting the moment you sign up.</span>
-              </p>
-              <p className="text-xs sm:text-sm text-gray-400 italic mt-3">
-                Sage: “When I say receipt, I mean the written tea on your chat - no payment stuff, bestie.”
-              </p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
@@ -960,23 +949,23 @@ const LandingPage = () => {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
               {/* Step 1 */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="text-center"
+                className="bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-2xl p-5 sm:p-6 shadow-xl shadow-cyan-500/10"
               >
-                <div className="mb-3 md:mb-6">
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                    <span className="text-xl md:text-2xl">🧠</span>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🧠</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">1. Paste Your Chat</h3>
+                    <p className="text-sm text-gray-300">
+                      Copy any conversation and paste it in. Sage instantly analyzes every message, emoji, and timing pattern.
+                    </p>
                   </div>
                 </div>
-                <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">1. Paste Your Chat</h3>
-                <p className="text-sm md:text-base text-gray-300 leading-snug md:leading-relaxed">
-                  Copy any conversation and paste it in. Sage instantly analyzes every message, emoji, and timing pattern.
-                </p>
               </motion.div>
 
               {/* Step 2 */}
@@ -984,17 +973,17 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="text-center"
+                className="bg-white/5 backdrop-blur-sm border border-purple-400/20 rounded-2xl p-5 sm:p-6 shadow-xl shadow-purple-500/10"
               >
-                <div className="mb-3 md:mb-6">
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                    <span className="text-xl md:text-2xl">💡</span>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">💡</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">2. Get the Truth</h3>
+                    <p className="text-sm text-gray-300">
+                      Sage gives you the unfiltered breakdown: what they really mean, not what you want to hear. No sugar-coating.
+                    </p>
                   </div>
                 </div>
-                <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">2. Get the Truth</h3>
-                <p className="text-sm md:text-base text-gray-300 leading-snug md:leading-relaxed">
-                  Sage gives you the unfiltered breakdown: what they really mean, not what you want to hear. No sugar-coating.
-                </p>
               </motion.div>
 
               {/* Step 3 */}
@@ -1002,17 +991,17 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="text-center"
+                className="bg-white/5 backdrop-blur-sm border border-emerald-400/30 rounded-2xl p-5 sm:p-6 shadow-xl shadow-emerald-500/10"
               >
-                <div className="mb-3 md:mb-6">
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                    <span className="text-xl md:text-2xl">📱</span>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">📱</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">3. Share the Receipt</h3>
+                    <p className="text-sm text-gray-300">
+                      Get a beautiful receipt you can screenshot and share. Finally, proof you were right all along.
+                    </p>
                   </div>
                 </div>
-                <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">3. Share the Receipt</h3>
-                <p className="text-sm md:text-base text-gray-300 leading-snug md:leading-relaxed">
-                  Get a beautiful receipt you can screenshot and share. Finally, proof you were right all along.
-                </p>
               </motion.div>
             </div>
           </div>
@@ -1071,7 +1060,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="w-full max-w-7xl mx-auto"
+            className="w-full max-w-7xl mx-auto mb-12 md:mb-16"
           >
 
             {/* Premium 3D Container */}
@@ -1142,13 +1131,13 @@ const LandingPage = () => {
               <div className="lg:col-span-2 flex flex-col justify-center h-full px-2">
                 <div className="max-w-md mx-auto w-full">
                 {/* Spacious Header */}
-                <div className="mb-6 text-center">
+                <div className="mb-6 text-center mt-8 lg:mt-0">
                   <div className="flex flex-col items-center gap-2 mb-3">
-                    <div className="bg-gradient-to-r from-cyan-400/20 to-blue-500/20 backdrop-blur-sm border border-cyan-400/30 rounded-full px-4 py-2">
+                    <div className="hidden md:block bg-gradient-to-r from-cyan-400/20 to-blue-500/20 backdrop-blur-sm border border-cyan-400/30 rounded-full px-4 py-2">
                       <span className="text-white text-sm font-semibold">Live Demo</span>
                     </div>
                     {/* NEW! Ask Sage Anything Chatbot Badge */}
-                    <div className="bg-gradient-to-r from-purple-500/20 via-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-purple-400/40 rounded-full px-3 py-1.5 animate-pulse">
+                    <div className="bg-gradient-to-r from-purple-500/20 via-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-purple-400/40 rounded-full px-3 py-1.5">
                       <span className="text-white text-xs font-bold">
                         <span className="text-purple-300">NEW!</span> Ask Sage Anything Chatbot - Unlimited Chats
                       </span>
