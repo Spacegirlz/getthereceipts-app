@@ -395,7 +395,7 @@ const ReceiptsCardPage = () => {
   const archetypeNameForImmunity = archetypeName.replace(/^The\s+/i, '');
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-2 text-white overflow-y-auto bg-[#0F0F0F] relative">
+    <div className="min-h-screen flex flex-col items-center px-4 py-2 text-white overflow-y-auto overflow-x-hidden bg-[#0F0F0F] relative">
       {/* Glassmorphism Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5"></div>
       <div className="absolute inset-0" style={{
@@ -453,7 +453,7 @@ const ReceiptsCardPage = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, type: "spring" }}
-        className="w-full max-w-none relative pb-20"
+        className="w-full max-w-none relative pb-24 sm:pb-20"
       >
         {user && receiptId && (
            <LinkButton to="/dashboard" variant="ghost" size="sm" className="absolute - top-10 left-0 text-white hover:bg-white/10">
@@ -472,34 +472,17 @@ const ReceiptsCardPage = () => {
           </div>
         )}
 
-        {/* Page Title */}
-        <div className="text-center mb-3 md:mb-4 py-1 md:py-2 px-2">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 px-2 md:px-3 py-0 md:py-1 leading-relaxed">
+        {/* Page Title - Streamlined for mobile */}
+        <div className="text-center mb-6 sm:mb-8 px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 sm:mb-3 md:mb-4 leading-tight">
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
               Sage's Truth Receipts
             </span>
           </h1>
-          <p className="text-gray-400 text-base md:text-lg mb-4 md:mb-6 px-2">
-            The receipts are in. Here's what really happened.
+          <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-0 sm:mb-2 md:mb-4">
+            Here's what really happened.
           </p>
         </div>
-
-        {/* Trust Indicators */}
-        <div className="flex flex-wrap justify-center gap-4 mb-6 px-4">
-          <div className="flex items-center gap-2 px-3 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-cyan-400/30">
-            <span className="text-cyan-400">🔒</span>
-            <span className="text-xs text-cyan-200 font-semibold">Private & Secure</span>
-            <span className="text-cyan-300/70">•</span>
-            <span className="text-xs text-cyan-300/90">Chat deleted. Never stored.</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30">
-            <span className="text-purple-400">📍</span>
-            <span className="text-xs text-purple-200 font-semibold">Personalized Analysis</span>
-            <span className="text-purple-300/70">•</span>
-            <span className="text-xs text-purple-300/90">Based on your message only</span>
-          </div>
-        </div>
-
 
         {/* Conditional render  -  only show content if analysis exists */}
         {analysis ? (
@@ -532,14 +515,17 @@ const ReceiptsCardPage = () => {
             {/* Hidden export cards are rendered at the top of the page tree */}
 
             {/* Next Receipt CTA  -  Right after the receipt */}
-            <div className="w-full max-w-2xl mx-auto mt-6 mb-4">
+            <div className="w-full max-w-2xl mx-auto mt-4 mb-6 px-4">
               <LinkButton
                 to="/new-receipt"
-                className="w-full flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/50 border border-cyan-300/50"
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black shadow-2xl shadow-cyan-500/60 hover:shadow-cyan-500/80 border border-cyan-300/50 text-sm sm:text-base relative overflow-hidden group"
+                style={{
+                  boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(6, 182, 212, 0.2), 0 4px 20px rgba(0, 0, 0, 0.3)'
+                }}
               >
-                <span className="text-xl">✨</span>
-                <span className="text-lg">Click here to decode another receipt</span>
-                <span className="text-xl">✨</span>
+                <span className="text-lg sm:text-xl">✨</span>
+                <span className="text-base sm:text-lg">Decode Another Receipt</span>
+                <span className="text-lg sm:text-xl">✨</span>
               </LinkButton>
             </div>
 
@@ -561,7 +547,10 @@ const ReceiptsCardPage = () => {
                       <Button
                         onClick={handleFounderCheckout}
                         disabled={loadingCheckout}
-                        className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-bold px-6 py-3 rounded-xl text-base transition-all duration-300 hover:scale-105 disabled:opacity-50 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+                        className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-bold px-6 py-3 rounded-xl text-base transition-all duration-300 hover:scale-105 disabled:opacity-50 shadow-lg shadow-purple-500/40 hover:shadow-purple-500/60 relative overflow-hidden group"
+                        style={{
+                          boxShadow: '0 0 15px rgba(168, 85, 247, 0.3), 0 0 30px rgba(168, 85, 247, 0.15), 0 4px 15px rgba(0, 0, 0, 0.2)'
+                        }}
                       >
                         {loadingCheckout ? 'Redirecting…' : '✨ Upgrade to Premium'}
                       </Button>
@@ -571,13 +560,16 @@ const ReceiptsCardPage = () => {
 
                   {/* Share & Earn  -  Enhanced Container */}
                   <div className="text-center pt-4 border-t border-white/10">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-white/20">
-                      <span className="text-yellow-400">💰</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30 shadow-md shadow-purple-500/20">
+                      <span className="text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]">💰</span>
                       <span className="text-sm text-white font-medium">Love Sage?</span>
                       <span className="text-white/60">•</span>
                       <LinkButton
                         to="/refer"
-                        className="text-white hover:text-yellow-400 underline underline-offset-2 font-semibold text-sm transition-colors"
+                        className="text-white hover:text-purple-300 underline underline-offset-2 font-semibold text-sm transition-colors relative"
+                        style={{
+                          textShadow: '0 0 8px rgba(168, 85, 247, 0.3)'
+                        }}
                       >
                         Share & earn 30%
                       </LinkButton>
@@ -612,6 +604,24 @@ const ReceiptsCardPage = () => {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Trust Indicators - Moved below disclaimer */}
+        <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-6 mb-4 px-4">
+          <div className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30 w-full sm:w-auto">
+            <span className="text-purple-400 text-sm">🔒</span>
+            <span className="text-xs text-purple-200 font-semibold">Private & Secure</span>
+            <span className="text-purple-300/70 hidden sm:inline">•</span>
+            <span className="text-xs text-purple-300/90 hidden sm:inline">Chat deleted. Never stored.</span>
+            <span className="text-xs text-purple-300/90 sm:hidden ml-1">Chat deleted. Never stored.</span>
+          </div>
+          <div className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30 w-full sm:w-auto">
+            <span className="text-purple-400 text-sm">📍</span>
+            <span className="text-xs text-purple-200 font-semibold">Personalized Analysis</span>
+            <span className="text-purple-300/70 hidden sm:inline">•</span>
+            <span className="text-xs text-purple-300/90 hidden sm:inline">Based on your message only</span>
+            <span className="text-xs text-purple-300/90 sm:hidden ml-1">Based on your message only</span>
           </div>
         </div>
           </div>

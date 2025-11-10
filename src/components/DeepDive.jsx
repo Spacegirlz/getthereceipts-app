@@ -188,7 +188,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       const container = document.createElement('div');
       container.style.width = '1080px';
       container.style.height = '1920px';
-      container.style.background = 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)';
+      container.style.background = 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)';
       container.style.border = '2px solid rgba(20, 184, 166, 0.4)';
       container.style.borderRadius = '32px';
       container.style.boxShadow = '0 8px 32px rgba(20,184,166,0.15), 0 0 80px rgba(20,184,166,0.05)';
@@ -384,7 +384,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
           <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-500/20 rounded-full mb-4">
             <span className="text-2xl">🔮</span>
           </div>
-          <h3 className="text-purple-300 font-bold text-base mb-2">Sage is finishing the read</h3>
+          <h3 className="text-white font-bold text-base mb-2">Sage is finishing the read</h3>
           <p className="text-stone-200 text-xl leading-relaxed">Try again in a moment for your complete analysis.</p>
         </div>
       </div>
@@ -736,14 +736,50 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
       >
         {/* Container 1: Main Playbook Content */}
         <div 
-          className={`relative rounded-3xl ${isCompact ? 'p-4 sm:p-5 md:p-6' : 'p-6 sm:p-8 md:p-10'} text-stone-200/90`}
+          className={`relative rounded-3xl ${isCompact ? 'p-4 sm:p-5 md:p-6' : 'p-6 sm:p-8 md:p-10'} text-stone-200/90 overflow-hidden`}
           style={{
-            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
             backdropFilter: 'blur(24px) saturate(200%)',
             WebkitBackdropFilter: 'blur(24px) saturate(200%)',
             border: '2px solid rgba(168, 85, 247, 0.7)',
             boxShadow: '0 12px 40px rgba(168, 85, 247, 0.2), 0 0 100px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}>
+          {/* Connecting Visual Elements - Links to page background */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Radial gradients matching page theme */}
+            <div 
+              className="absolute top-0 right-0 w-64 h-64 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+                boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+              }}
+            ></div>
+            <div 
+              className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+                boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+              }}
+            ></div>
+            
+            {/* Subtle grid pattern for texture */}
+            <div 
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage: `
+                  linear-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px)
+                `,
+                backgroundSize: '40px 40px'
+              }}
+            ></div>
+            
+            {/* Corner accent lines */}
+            <div className="absolute top-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/30 via-transparent to-transparent"></div>
+            <div className="absolute top-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/30 via-transparent to-transparent"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/20 via-transparent to-transparent"></div>
+            <div className="absolute bottom-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/20 via-transparent to-transparent"></div>
+          </div>
           <div className="relative z-10">
 
             {/* Sage's Playbook Header - Horizontal Banner Style */}
@@ -1052,17 +1088,17 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                           {/* Content sections with better spacing */}
                           <div className="space-y-4">
                             <div>
-                              <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
+                              <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
                               <div className="text-white text-sm leading-relaxed">{receipt.bestie_look}</div>
                             </div>
 
                             <div>
-                              <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
+                              <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
                               <div className="text-white/90 text-sm leading-relaxed">{receipt.calling_it}</div>
                             </div>
 
                             <div>
-                              <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
+                              <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
                               <div className="text-white/70 text-sm leading-relaxed italic">{receipt.vibe_check}</div>
                             </div>
                           </div>
@@ -1115,17 +1151,17 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                     {/* Content sections with better spacing */}
                     <div className="space-y-2">
                       <div>
-                        <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
+                        <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
                         <div className="text-white text-base leading-relaxed">{receipt.bestie_look}</div>
                       </div>
 
                       <div>
-                        <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
+                        <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
                         <div className="text-white/90 text-sm leading-relaxed">{receipt.calling_it}</div>
                       </div>
 
                       <div>
-                        <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
+                        <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
                         <div className="text-white/70 text-sm leading-relaxed italic">{receipt.vibe_check}</div>
                       </div>
                     </div>
@@ -1147,7 +1183,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       className="w-full py-4 px-6 bg-gradient-to-r from-teal-500/10 to-teal-600/5 border border-teal-400/30 rounded-xl hover:border-teal-400/50 transition-all duration-300 group"
                     >
                       <div className="flex items-center justify-center gap-3">
-                        <span className="text-teal-400 font-medium">
+                        <span className="text-white font-medium">
                           {showAllAutopsy ? 'Hide Additional Evidence' : 'Click here to view more evidence'}
                         </span>
                         <motion.div
@@ -1197,17 +1233,17 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                               {/* Content sections */}
                               <div className="space-y-3">
                                 <div>
-                                  <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
+                                  <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">The Tactic</div>
                                   <div className="text-white text-sm leading-relaxed">{receipt.bestie_look}</div>
                                 </div>
 
                                 <div>
-                                  <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
+                                  <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">Calling It</div>
                                   <div className="text-white/90 text-sm leading-relaxed">{receipt.calling_it}</div>
                                 </div>
 
                                 <div>
-                                  <div className="text-teal-400 text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
+                                  <div className="text-white text-xs uppercase tracking-wider mb-2 font-bold">Vibe Check</div>
                                   <div className="text-white/70 text-sm leading-relaxed italic">{receipt.vibe_check}</div>
                                 </div>
                               </div>
@@ -1269,10 +1305,10 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
                       <div className="bg-black/40 rounded-2xl p-6 border border-white/20 shadow-lg">
                         <div className="grid grid-cols-2">
                           <div className="px-3 py-2 bg-gradient-to-br from-emerald-500/10 to-green-500/5 border-r border-white/10">
-                            <h5 className="text-emerald-300 font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
+                            <h5 className="text-white font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
                           </div>
                           <div className="px-3 py-2 bg-gradient-to-br from-rose-500/10 to-pink-500/5">
-                            <h5 className="text-rose-300 font-bold text-xs sm:text-sm text-center">What You Got</h5>
+                            <h5 className="text-white font-bold text-xs sm:text-sm text-center">What You Got</h5>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 divide-x divide-white/10 mt-2">
@@ -1485,9 +1521,9 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
         {/* Container 2: Save & Share Section - Separated like Truth Receipt */}
         {isPremium && (
           <div 
-            className="rounded-3xl p-8 mt-16"
+            className="rounded-3xl p-8 mt-16 relative overflow-hidden"
             style={{
-              background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+              background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
               backdropFilter: 'blur(24px) saturate(200%)',
               WebkitBackdropFilter: 'blur(24px) saturate(200%)',
               border: '2px solid rgba(168, 85, 247, 0.7)',
@@ -1495,9 +1531,25 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
             }}
             data-share-hide="true"
           >
+            {/* Subtle connecting visual elements */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div 
+                className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%)'
+                }}
+              ></div>
+              <div 
+                className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%)'
+                }}
+              ></div>
+            </div>
+            <div className="relative z-10">
             {/* Urgency Message */}
             <div className="text-center mb-6">
-              <p className="text-sm text-teal-400/90 font-medium animate-pulse flex items-center justify-center gap-2">
+              <p className="text-sm text-gray-300 font-medium animate-pulse flex items-center justify-center gap-2">
                 <span className="text-lg">😱</span>
                 Your friends need to see this
               </p>
@@ -1536,6 +1588,7 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
               >
                 How does sharing work? →
               </button>
+            </div>
             </div>
           </div>
         )}

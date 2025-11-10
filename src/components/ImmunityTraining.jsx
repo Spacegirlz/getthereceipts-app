@@ -116,7 +116,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
             {/* Professional Support */}
             <div className="bg-blue-500/10 border border-blue-400/30 rounded-2xl p-6">
-              <h3 className="text-xl font-bold text-blue-300 mb-4 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <span>🏥</span> Professional Support
               </h3>
               <div className="space-y-3">
@@ -138,12 +138,12 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
 
           {/* Universal Safety Principles */}
           <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-400/30 rounded-2xl p-6 mb-8">
-            <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
               <span>🛡️</span> Universal Safety Principles
             </h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-semibold text-purple-200 mb-2">If You're Experiencing This:</h4>
+                <h4 className="font-semibold text-white mb-2">If You're Experiencing This:</h4>
                 <ul className="space-y-2 text-gray-200">
                   <li>• Your feelings are valid and real</li>
                   <li>• This is not your fault</li>
@@ -152,7 +152,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-purple-200 mb-2">If You're Observing This:</h4>
+                <h4 className="font-semibold text-white mb-2">If You're Observing This:</h4>
                 <ul className="space-y-2 text-gray-200">
                   <li>• Take the situation seriously</li>
                   <li>• Encourage professional help</li>
@@ -292,7 +292,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-500/20 rounded-full mb-4">
           <span className="text-2xl">🏗️</span>
         </div>
-        <h3 className="text-emerald-300 font-bold text-lg mb-2">Your Immunity Training is Being Crafted</h3>
+        <h3 className="text-white font-bold text-lg mb-2">Your Immunity Training is Being Crafted</h3>
         <p className="text-stone-300/90 text-xl leading-relaxed">Sage is preparing your personalized protection strategies. This premium feature will be available soon.</p>
       </div>
     );
@@ -370,10 +370,10 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
                 <div className="grid grid-cols-2">
                   <div className="px-2 py-2 bg-gradient-to-br from-emerald-500/10 to-green-500/5 border-r border-white/10">
-                    <h5 className="text-emerald-300 font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
+                    <h5 className="text-white font-bold text-xs sm:text-sm text-center">Healthy Version</h5>
                   </div>
                   <div className="px-2 py-2 bg-gradient-to-br from-rose-500/10 to-pink-500/5">
-                    <h5 className="text-rose-300 font-bold text-xs sm:text-sm text-center">What You Got</h5>
+                    <h5 className="text-white font-bold text-xs sm:text-sm text-center">What You Got</h5>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 divide-x divide-white/10">
@@ -432,13 +432,49 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           className={`relative rounded-[24px] ${isCompact ? 'p-3 sm:p-3 md:p-4' : 'p-3 sm:p-4 md:p-6'} text-stone-200/90 mt-4`}
           style={{
-            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
             backdropFilter: 'blur(20px) saturate(200%)',
             WebkitBackdropFilter: 'blur(20px) saturate(200%)',
             border: '2px solid rgba(212, 175, 55, 0.4)',
             boxShadow: '0 8px 32px rgba(212, 175, 55, 0.15), 0 0 80px rgba(212, 175, 55, 0.06)'
           }}
         >
+          {/* Connecting Visual Elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div 
+              className="absolute top-0 right-0 w-64 h-64 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+                boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+              }}
+            ></div>
+            <div 
+              className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+                boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+              }}
+            ></div>
+            
+            {/* Subtle grid pattern */}
+            <div 
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage: `
+                  linear-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px)
+                `,
+                backgroundSize: '40px 40px'
+              }}
+            ></div>
+            
+            {/* Corner accent lines */}
+            <div className="absolute top-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/30 via-transparent to-transparent"></div>
+            <div className="absolute top-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/30 via-transparent to-transparent"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/20 via-transparent to-transparent"></div>
+            <div className="absolute bottom-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/20 via-transparent to-transparent"></div>
+          </div>
+          <div className="relative z-10">
         {/* Premium dot pattern background */}
         <div 
           className="absolute inset-0 opacity-[0.02] pointer-events-none"
@@ -647,11 +683,11 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             <div className="grid grid-cols-2">
               <div className="px-4 py-3 bg-gradient-to-br from-emerald-500/15 to-green-500/10 border-r border-slate-600/30 relative">
                 <div className="absolute inset-0 bg-emerald-400/5"></div>
-                <h5 className="text-emerald-400 font-bold text-xs sm:text-sm text-center relative z-10">🟢 Healthy Version</h5>
+                <h5 className="text-white font-bold text-xs sm:text-sm text-center relative z-10">🟢 Healthy Version</h5>
               </div>
               <div className="px-4 py-3 bg-gradient-to-br from-rose-500/15 to-pink-500/10 relative">
                 <div className="absolute inset-0 bg-rose-400/5"></div>
-                <h5 className="text-rose-400 font-bold text-xs sm:text-sm text-center relative z-10">🔴 What You Got</h5>
+                <h5 className="text-white font-bold text-xs sm:text-sm text-center relative z-10">🔴 What You Got</h5>
               </div>
             </div>
             
@@ -691,6 +727,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                 </ul>
               </div>
             </div>
+          </div>
           </div>
         </div>
 
@@ -739,15 +776,51 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className={`relative rounded-[24px] ${isCompact ? 'p-3 sm:p-3 md:p-4' : 'p-3 sm:p-4 md:p-6'} text-stone-200/90 group`}
+        className={`relative rounded-[24px] ${isCompact ? 'p-3 sm:p-3 md:p-4' : 'p-3 sm:p-4 md:p-6'} text-stone-200/90 group overflow-hidden`}
         style={{
-          background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
           backdropFilter: 'blur(20px) saturate(200%)',
           WebkitBackdropFilter: 'blur(20px) saturate(200%)',
           border: '2px solid rgba(168, 85, 247, 0.7)',
           boxShadow: '0 12px 40px rgba(168, 85, 247, 0.2), 0 0 100px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
         }}
       >
+        {/* Connecting Visual Elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div 
+            className="absolute top-0 right-0 w-64 h-64 rounded-full blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+              boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+            }}
+          ></div>
+          <div 
+            className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+              boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+            }}
+          ></div>
+          
+          {/* Subtle grid pattern */}
+          <div 
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '40px 40px'
+            }}
+          ></div>
+          
+          {/* Corner accent lines */}
+          <div className="absolute top-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/30 via-transparent to-transparent"></div>
+          <div className="absolute top-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/30 via-transparent to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/20 via-transparent to-transparent"></div>
+          <div className="absolute bottom-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/20 via-transparent to-transparent"></div>
+        </div>
+        <div className="relative z-10">
         {/* Enhanced Purple glow effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/8 to-transparent rounded-[24px] blur-3xl group-hover:blur-2xl transition-all duration-500" />
         <div className="absolute inset-0 bg-gradient-to-br from-purple-400/6 to-transparent rounded-[24px] blur-xl group-hover:blur-lg transition-all duration-500" />
@@ -1024,7 +1097,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   </div>
                   <h4 className="text-lg font-bold uppercase tracking-wider" style={{ color: '#14B8A6' }}>What This Looks Like</h4>
                   <div className="ml-auto">
-                    <span className="text-xs text-cyan-400/70 font-mono">PATTERN ANALYSIS</span>
+                    <span className="text-xs text-white/70 font-mono">PATTERN ANALYSIS</span>
                   </div>
                 </div>
               </div>
@@ -1141,7 +1214,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                   )}
                   {(Array.isArray(greenFlags) && greenFlags.length > 3) && (
                     <li className="mt-1">
-                      <button onClick={() => setShowMoreSides((v)=>!v)} className="text-xs text-emerald-300/90 underline">
+                      <button onClick={() => setShowMoreSides((v)=>!v)} className="text-xs text-white/90 underline">
                         {showMoreSides ? 'Show less' : `Show ${greenFlags.length - 3} more`}
                       </button>
                     </li>
@@ -1224,7 +1297,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
                         className={`flex items-start gap-3 ${isCompact ? 'p-2.5' : 'p-3'} bg-white/5 rounded-lg border border-transparent hover:bg-white/10 transition-all duration-300`}
                       >
                         <div className="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-transparent">
-                          <span className="text-teal-300 text-sm font-bold">✓</span>
+                          <span className="text-white text-sm font-bold">✓</span>
                         </div>
                         <p className={`${isCompact ? 'text-[13.5px]' : 'text-sm sm:text-base'} ${isCompact ? 'leading-[1.45]' : 'leading-relaxed'} text-stone-200/90 font-medium`}>
                           {checkpoint}
@@ -1312,14 +1385,15 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
         </motion.section>
         )}
 
+        </div>
       </motion.div>
 
       {/* Container 2: Save & Share Section - Separated like Truth Receipt */}
       {isPremium && (
         <div 
-          className="rounded-3xl p-8 mt-16"
+          className="rounded-3xl p-8 mt-16 relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
             backdropFilter: 'blur(20px) saturate(200%)',
             WebkitBackdropFilter: 'blur(20px) saturate(200%)',
             border: '3px solid rgba(168, 85, 247, 0.7)',
@@ -1327,9 +1401,25 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
           }}
           data-share-hide="true"
         >
+          {/* Subtle connecting visual elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div 
+              className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%)'
+              }}
+            ></div>
+            <div 
+              className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%)'
+              }}
+            ></div>
+          </div>
+          <div className="relative z-10">
           {/* Urgency Message */}
           <div className="text-center mb-6">
-            <p className="text-sm text-teal-400/90 font-medium animate-pulse flex items-center justify-center gap-2">
+            <p className="text-sm text-gray-300 font-medium animate-pulse flex items-center justify-center gap-2">
               <span className="text-lg">😱</span>
               Your friends need to see this
             </p>
@@ -1381,6 +1471,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
             >
               How does sharing work? →
             </button>
+          </div>
           </div>
         </div>
       )}

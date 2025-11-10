@@ -260,14 +260,52 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
     >
       <div 
         id="receipt-inner-container"
-        className={`relative rounded-3xl ${isCompact ? 'p-4 sm:p-5 md:p-6' : 'p-6 sm:p-8 md:p-10'} text-stone-200/90`}
+        className={`relative rounded-3xl ${isCompact ? 'p-4 sm:p-5 md:p-6' : 'p-6 sm:p-8 md:p-10'} text-stone-200/90 overflow-hidden`}
         style={{
-          background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
           backdropFilter: 'blur(24px) saturate(200%)',
           WebkitBackdropFilter: 'blur(24px) saturate(200%)',
           border: '2px solid rgba(20, 184, 166, 0.5)',
           boxShadow: '0 12px 40px rgba(20, 184, 166, 0.2), 0 0 100px rgba(20, 184, 166, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
         }}>
+        {/* Connecting Visual Elements - Links to page background */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Radial gradients matching page theme - Enhanced glow */}
+          <div 
+            className="absolute top-0 right-0 w-64 h-64 rounded-full blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+              boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+            }}
+          ></div>
+          <div 
+            className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+              boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+            }}
+          ></div>
+          
+          {/* Subtle grid pattern for texture */}
+          <div 
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '40px 40px'
+            }}
+          ></div>
+          
+          {/* Corner accent lines - connecting to page gradients */}
+          <div className="absolute top-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/30 via-transparent to-transparent"></div>
+          <div className="absolute top-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/30 via-transparent to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-px bg-gradient-to-r from-cyan-400/20 via-transparent to-transparent"></div>
+          <div className="absolute bottom-0 right-0 w-32 h-px bg-gradient-to-l from-purple-400/20 via-transparent to-transparent"></div>
+        </div>
+        {/* Content wrapper - ensures content is above background elements */}
+        <div className="relative z-10">
         {isSavage && (
           <div className="absolute top-4 right-4 z-20">
             <motion.div 
@@ -358,49 +396,61 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           {/* PREMIUM DYNAMIC FLAGS */}
           <div className={isCompact ? 'mb-5' : 'mb-8'}>
             {isHealthy ? (
-              <div className="flex flex-col items-center gap-4">
-                <h3 className="text-green-400 text-base font-bold tracking-wider flex items-center gap-2">
-                  <span>✓</span> GREEN FLAGS
+              <div className="flex flex-col items-center gap-2 relative">
+                {/* Subtle background gradient for depth */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-green-500/5 rounded-2xl -z-10"></div>
+                
+                <h3 className="text-emerald-400 text-sm font-bold tracking-wider flex items-center gap-1.5 mb-1">
+                  <span className="text-base">✓</span> GREEN FLAGS
                 </h3>
-                <div className="flex flex-wrap gap-3 justify-center max-w-lg mx-auto">
+                <div className="flex flex-wrap gap-2 justify-center max-w-lg mx-auto">
                   {((isCompact && !showAllFlags) ? guaranteedFlags.slice(0,6) : guaranteedFlags).map((chip, i) => (
                     <motion.span 
                       key={i} 
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-4 py-2 text-green-300 text-base font-semibold whitespace-nowrap bg-green-500/10 rounded-xl border border-green-400/20 shadow-lg"
+                      className="inline-flex items-center justify-center px-3 py-1.5 text-white text-sm font-medium whitespace-nowrap bg-gradient-to-br from-emerald-500/20 to-teal-500/15 rounded-lg border border-emerald-400/40 shadow-md hover:border-emerald-400/60 hover:bg-gradient-to-br hover:from-emerald-500/25 hover:to-teal-500/20 transition-all duration-200"
+                      style={{
+                        boxShadow: '0 2px 8px rgba(16, 185, 129, 0.2), 0 0 0 1px rgba(16, 185, 153, 0.15)'
+                      }}
                     >
                       {chip}
                     </motion.span>
                   ))}
                 </div>
                 {isCompact && guaranteedFlags.length > 6 && (
-                  <button onClick={() => setShowAllFlags(v=>!v)} className="text-xs text-green-300/90 underline">
+                  <button onClick={() => setShowAllFlags(v=>!v)} className="text-xs text-gray-300 hover:text-white underline mt-1 transition-colors">
                     {showAllFlags ? 'Show less' : `Show ${guaranteedFlags.length - 6} more`}
                   </button>
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-4">
-                <h3 className="text-red-400 text-base font-bold tracking-wider flex items-center gap-2">
-                  <span>🚩</span> RED FLAGS
+              <div className="flex flex-col items-center gap-2 relative">
+                {/* Subtle background gradient for depth - avoiding maroon tones */}
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-purple-500/5 to-fuchsia-500/5 rounded-2xl -z-10"></div>
+                
+                <h3 className="text-pink-400 text-sm font-bold tracking-wider flex items-center gap-1.5 mb-1">
+                  <span className="text-base">🚩</span> RED FLAGS
                 </h3>
-                <div className="flex flex-wrap gap-3 justify-center max-w-lg mx-auto">
+                <div className="flex flex-wrap gap-2 justify-center max-w-lg mx-auto">
                   {((isCompact && !showAllFlags) ? guaranteedFlags.slice(0,6) : guaranteedFlags).map((chip, i) => (
                     <motion.span 
                       key={i} 
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.1 * i, duration: 0.3 }}
-                      className="inline-flex items-center justify-center px-4 py-2 text-red-300 text-base font-semibold whitespace-nowrap bg-red-500/10 rounded-xl border border-red-400/20 shadow-lg"
+                      className="inline-flex items-center justify-center px-3 py-1.5 text-white text-sm font-medium whitespace-nowrap bg-gradient-to-br from-pink-500/20 via-purple-500/15 to-fuchsia-500/15 rounded-lg border border-pink-400/40 shadow-md hover:border-pink-400/60 hover:bg-gradient-to-br hover:from-pink-500/25 hover:via-purple-500/20 hover:to-fuchsia-500/20 transition-all duration-200"
+                      style={{
+                        boxShadow: '0 2px 8px rgba(236, 72, 153, 0.2), 0 0 0 1px rgba(236, 72, 153, 0.15)'
+                      }}
                     >
                       {chip}
                     </motion.span>
                   ))}
                 </div>
                 {isCompact && guaranteedFlags.length > 6 && (
-                  <button onClick={() => setShowAllFlags(v=>!v)} className="text-xs text-red-300/90 underline">
+                  <button onClick={() => setShowAllFlags(v=>!v)} className="text-xs text-gray-300 hover:text-white underline mt-1 transition-colors">
                     {showAllFlags ? 'Show less' : `Show ${guaranteedFlags.length - 6} more`}
                   </button>
                 )}
@@ -410,10 +460,10 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
 
           {/* PREMIUM VERDICT */}
           {verdict && (
-            <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
-              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider mb-4"
+            <div className="bg-black/50 p-6 sm:p-8 rounded-2xl border border-white/20 mb-8 shadow-lg">
+              <h3 className="text-white font-bold text-lg uppercase tracking-wider mb-5"
                 style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>THE BREAKDOWN</h3>
-              <p className="text-stone-200/90 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
+              <p className="text-gray-300 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
                 {verdict}
               </p>
             </div>
@@ -421,15 +471,15 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
 
           {/* PREMIUM REAL TEA */}
           {(realTea || nextMove.length > 0) && (
-            <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
-              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider mb-4"
+            <div className="bg-black/50 p-6 sm:p-8 rounded-2xl border border-white/20 mb-8 shadow-lg">
+              <h3 className="text-white font-bold text-lg uppercase tracking-wider mb-5"
                 style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>🫖 THE REAL TEA</h3>
               <div className="space-y-3 sm:space-y-2">
                 {/* User's Question (if provided) */}
                 {parsedUserQuestion && (
                   <div className="mb-6 pb-4 border-b border-white/20">
-                    <p className="text-amber-300 text-base font-semibold mb-3">Your Question:</p>
-                    <p className="text-stone-300 text-lg leading-relaxed italic tracking-wide">
+                    <p className="text-gray-400 text-base font-semibold mb-3">Your Question:</p>
+                    <p className="text-gray-300 text-lg leading-relaxed italic tracking-wide">
                       "{truncateToThreeLines(parsedUserQuestion)}"
                     </p>
                   </div>
@@ -437,13 +487,13 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 
                 {/* Main tea content - try realTea, then teaAndMovePlay, then nextMove */}
                 {realTea ? (
-                  <div className="text-stone-200/90 text-xl sm:text-2xl leading-relaxed tracking-wide">
+                  <div className="text-gray-300 text-xl sm:text-2xl leading-relaxed tracking-wide">
                     {realTea}
                   </div>
                 ) : teaAndMovePlay && Array.isArray(teaAndMovePlay) ? (
                   <div className="space-y-4">
                     {teaAndMovePlay.map((line, index) => (
-                      <div key={index} className="text-stone-200/90 text-xl sm:text-2xl leading-relaxed tracking-wide">
+                      <div key={index} className="text-gray-300 text-xl sm:text-2xl leading-relaxed tracking-wide">
                         {line}
                       </div>
                     ))}
@@ -451,7 +501,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 ) : nextMove.length > 0 ? (
                   <div className="space-y-3">
                     {nextMove.slice(0, 2).map((item, index) => (
-                      <div key={index} className="text-stone-200/90 text-xl sm:text-2xl leading-relaxed tracking-wide">• {item}</div>
+                      <div key={index} className="text-gray-300 text-xl sm:text-2xl leading-relaxed tracking-wide">• {item}</div>
                     ))}
                   </div>
                 ) : null}
@@ -461,29 +511,29 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
 
           {/* PREMIUM SAGE'S PROPHECY */}
           {prophecy && (
-            <div className="bg-black/40 p-6 sm:p-8 rounded-2xl border border-white/20 mb-6 shadow-lg">
-              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider mb-4"
+            <div className="bg-black/50 p-6 sm:p-8 rounded-2xl border border-white/20 mb-8 shadow-lg">
+              <h3 className="text-white font-bold text-lg uppercase tracking-wider mb-5"
                 style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)' }}>🔮 SAGE BETS...</h3>
-              <p className="text-stone-200/90 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
+              <p className="text-gray-300 text-xl sm:text-2xl italic leading-relaxed tracking-wide">
                 {prophecy}
               </p>
             </div>
           )}
           
           {/* PREMIUM SAGE'S CONFIDENCE BAR */}
-          <div className="bg-black/40 p-6 rounded-2xl border border-white/20 mb-6 shadow-lg">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-teal-400 font-bold text-lg uppercase tracking-wider flex items-center">
+          <div className="bg-black/50 p-6 rounded-2xl border border-white/20 mb-8 shadow-lg">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-white font-bold text-lg uppercase tracking-wider flex items-center">
                 <Brain className="w-5 h-5 mr-3 text-teal-400" />
                 SAGE'S DRAMA METER
               </h3>
-              <span className="text-lg font-bold text-cyan-400">{confidenceScore}%</span>
+              <span className="text-lg font-bold text-white">{confidenceScore}%</span>
             </div>
-            <div className="w-full bg-gray-700/50 rounded-full h-3 mb-4 shadow-inner">
+            <div className="w-full bg-gray-700/50 rounded-full h-3 mb-5 shadow-inner">
               <div className="bg-gradient-to-r from-cyan-400 to-cyan-500 h-3 rounded-full transition-all duration-500 shadow-lg" style={{ width: `${confidenceScore}%` }}></div>
             </div>
             <div className="text-center">
-              <span className="text-base font-semibold text-cyan-300">{confidenceRemark}</span>
+              <span className="text-base font-semibold text-gray-300">{confidenceRemark}</span>
             </div>
           </div>
           
@@ -495,22 +545,39 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             </p>
           </div>
         </div>
+        </div>
       </div>
       </motion.div>
 
       {/* PREMIUM SAVE/SHARE BOX */}
       <div className="w-full max-w-2xl mx-auto mt-16 mb-8">
         <div 
-          className="flex flex-col gap-6 justify-center items-center p-8 backdrop-blur-xl rounded-3xl shadow-2xl"
+          className="flex flex-col gap-6 justify-center items-center p-8 backdrop-blur-xl rounded-3xl shadow-2xl relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #1a1a3e 0%, #14142e 100%)',
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
             border: '2px solid rgba(20, 184, 166, 0.5)',
             boxShadow: '0 12px 40px rgba(20, 184, 166, 0.2), 0 0 100px rgba(20, 184, 166, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}
         >
+          {/* Subtle connecting visual elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div 
+              className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%)'
+              }}
+            ></div>
+            <div 
+              className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%)'
+              }}
+            ></div>
+          </div>
+          <div className="relative z-10 w-full">
           {/* Urgency Message - Centered Above Both Buttons */}
           <div className="text-center mb-4">
-            <p className="text-xs text-teal-400/90 font-medium animate-pulse">
+            <p className="text-xs text-gray-300 font-medium animate-pulse">
               😱 Your friends need to see this
             </p>
           </div>
@@ -583,6 +650,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 How does sharing work? →
               </span>
             </div>
+          </div>
           </div>
         </div>
         

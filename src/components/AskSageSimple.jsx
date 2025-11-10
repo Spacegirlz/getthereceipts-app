@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { askSage } from '@/lib/chat/askSage';
-import { Send, Loader2, Copy, Check, MoreVertical, Heart, ThumbsUp } from 'lucide-react';
+import { Send, Loader2, Copy, Check, MoreVertical, Heart, ThumbsUp, Maximize2, Minimize2 } from 'lucide-react';
 import { getUserCredits } from '@/lib/services/creditsSystem';
+import sageDarkCircle from '@/assets/sage-dark-circle.png';
 
 export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverride, userId }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [typingIndicator, setTypingIndicator] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
   const messagesContainerRef = useRef(null);
@@ -82,6 +84,18 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
     window.addEventListener('resize', calcHeights);
     return () => window.removeEventListener('resize', calcHeights);
   }, []);
+
+  // Lock body scroll when expanded
+  useEffect(() => {
+    if (isExpanded) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isExpanded]);
 
   // Copy message to clipboard
   const copyMessage = async (content, messageId) => {
@@ -163,172 +177,189 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto mt-6 bg-white/8 backdrop-blur-xl rounded-2xl shadow-2xl shadow-cyan-500/20 border border-cyan-400/30 overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-cyan-500/20 to-purple-500/20 px-6 py-5 border-b border-cyan-400/30">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full flex items-center justify-center shadow-lg border border-cyan-400/30">
-              <span className="text-white text-xl">🔮</span>
-            </div>
-            <div>
-              <h3 className="text-white font-bold text-xl">Ask Sage Anything</h3>
-              <p className="text-cyan-200 text-sm">Premium AI analysis for any situation</p>
-            </div>
-            {isPremium ? (
-              <div className="bg-gradient-to-r from-cyan-400 to-purple-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-cyan-400/30">
-                PREMIUM
-              </div>
-            ) : (
-              <div className="bg-gradient-to-r from-cyan-400 to-purple-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse border border-cyan-400/30">
-                UPGRADE
-              </div>
-            )}
-          </div>
-          <button 
-            onClick={() => setIsOpen(false)}
-            className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white hover:text-white transition-colors shadow-lg border border-white/20"
-          >
-            ✕
-          </button>
+    <>
+      {/* Backdrop when expanded */}
+      {isExpanded && (
+        <div 
+          className="fixed inset-0 z-[99] bg-black/80 backdrop-blur-sm"
+          onClick={() => setIsExpanded(false)}
+        />
+      )}
+      
+      <div 
+        className={`w-full ${isExpanded ? 'fixed inset-0 z-[100] overflow-y-auto' : 'max-w-2xl mx-auto mt-6'} flex flex-col transition-all duration-300`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Sage Header - Matching Other Tabs */}
+      <div className={`text-center ${isExpanded ? 'mb-4 pt-4' : 'mb-6'} relative z-50`}>
+        <div className="inline-flex items-center gap-3 bg-black/30 px-6 py-3 rounded-2xl border border-white/20 mb-4 relative z-50 shadow-lg">
+          <img 
+            src={sageDarkCircle}
+            alt="Sage" 
+            className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-full border-2 border-teal-400/50 relative z-50"
+            style={{
+              filter: 'brightness(1.2) contrast(1.1)',
+              boxShadow: '0 0 24px rgba(20, 184, 166, 0.4)'
+            }}
+          />
+          <span className="text-lg sm:text-xl font-bold tracking-widest relative z-50"
+            style={{
+              color: '#14B8A6',
+              textShadow: '0 2px 12px rgba(0, 0, 0, 0.6), 0 0 50px rgba(20, 184, 166, 0.5)'
+            }}>
+            CHAT WITH SAGE
+          </span>
         </div>
       </div>
+
+      {/* Chat Container - Clean Character AI Style */}
+      <div className={`bg-white/8 backdrop-blur-xl ${isExpanded ? 'rounded-t-2xl' : 'rounded-2xl'} shadow-2xl shadow-cyan-500/20 border border-cyan-400/30 overflow-hidden flex flex-col ${isExpanded ? 'flex-1' : ''}`} style={{ 
+        minHeight: isExpanded ? 'calc(100vh - 200px)' : '600px', 
+        maxHeight: isExpanded ? 'none' : 'calc(100vh - 300px)',
+        height: isExpanded ? 'calc(100vh - 200px)' : '600px',
+        background: isExpanded ? 'rgba(15, 15, 15, 0.98)' : undefined
+      }}>
       
-      {/* Subtle Trust Indicators */}
-      <div className="px-6 py-3 border-b border-white/10">
-        <div className="flex items-center justify-center gap-8 text-xs text-gray-400">
-          <div className="flex items-center gap-1.5">
-            <span className="text-cyan-400 text-sm">🔒</span>
-            <span className="font-medium">Private & Secure</span>
-            <span className="text-gray-500">•</span>
-            <span className="text-gray-500">Chat deleted. Never stored.</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-purple-400 text-sm">📍</span>
-            <span className="font-medium">Personalized Analysis</span>
-            <span className="text-gray-500">•</span>
-            <span className="text-gray-500">Based on your message only</span>
-          </div>
-        </div>
+      {/* Expand/Collapse Button */}
+      <div className="flex justify-end p-3 border-b border-white/10">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-all group"
+          title={isExpanded ? "Minimize chat" : "Expand to full page"}
+        >
+          {isExpanded ? (
+            <>
+              <Minimize2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:hidden font-medium">Minimize</span>
+            </>
+          ) : (
+            <>
+              <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:hidden font-medium">Full Page</span>
+            </>
+          )}
+        </button>
       </div>
+
+      {/* Chat Content - Clean Character AI Style */}
+      <div className="flex flex-col h-full flex-1" style={{ minHeight: 0 }}>
       
-      {/* Chat Content */}
-      <div className="p-6 flex flex-col h-full">
-      
-        {/* Messages */}
-        <div ref={messagesContainerRef} className="space-y-4 mb-6 flex-1 overflow-y-auto" style={{ maxHeight: (messages.length > 0 && maxChatHeight) ? `${maxChatHeight}px` : undefined }}>
+        {/* Messages - Cleaner spacing, better bubbles */}
+        <div 
+          ref={messagesContainerRef} 
+          className="flex-1 overflow-y-auto px-4 py-6 space-y-4 scrollbar-hide"
+          style={{ 
+            minHeight: 0,
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
           {messages.length === 0 && (
-            <div className="text-center py-8">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 rounded-full flex items-center justify-center mx-auto mb-3 border border-blue-500/30">
-                <span className="text-2xl">💬</span>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-cyan-400/30">
+                <span className="text-3xl">🔮</span>
               </div>
-              <p className="text-slate-200 text-sm">
-                Ask me anything about these receipts, bestie...
+              <p className="text-white font-medium text-base mb-1">
+                Ask me anything about these receipts
               </p>
-              <p className="text-slate-400 text-xs mt-1">
+              <p className="text-gray-400 text-xs mb-6">
                 {maxExchanges} exchanges available
               </p>
               
-              {/* Quick action buttons */}
-              <div className="mt-6 grid grid-cols-2 gap-3 max-w-md mx-auto">
-                <button
-                  onClick={() => setInput("Should I text them?")}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
-                >
-                  Should I text them?
-                </button>
-                <button
-                  onClick={() => setInput("What should I do next?")}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
-                >
-                  What should I do next?
-                </button>
-                <button
-                  onClick={() => setInput("Are they toxic?")}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
-                >
-                  Are they toxic?
-                </button>
-                <button
-                  onClick={() => setInput("Should I block them?")}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
-                >
-                  Should I block them?
-                </button>
-                <button
-                  onClick={() => setInput("What does this situation mean?")}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
-                >
-                  What does this mean?
-                </button>
-                <button
-                  onClick={() => setInput("How should I handle this?")}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-xs transition-all border border-cyan-400/20 hover:border-cyan-400/40"
-                >
-                  How should I handle this?
-                </button>
+              {/* Quick action buttons - Cleaner, more compact */}
+              <div className="mt-6 flex flex-wrap justify-center gap-2 max-w-md mx-auto">
+                {[
+                  "Should I text them?",
+                  "What should I do next?",
+                  "Are they toxic?",
+                  "Should I block them?"
+                ].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    onClick={() => setInput(suggestion)}
+                    className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-gray-300 text-xs transition-all border border-white/10 hover:border-cyan-400/40 hover:text-white"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
               </div>
             </div>
           )}
           {messages.map((msg, i) => (
-            <div key={msg.id || i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} group`}>
-              <div className={`max-w-[80%] relative ${
+            <div key={msg.id || i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-start gap-3 group`}>
+              {/* Sage Avatar - Only for Sage messages */}
+              {msg.role === 'sage' && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden border-2 border-teal-400/50" style={{
+                  boxShadow: '0 0 12px rgba(20, 184, 166, 0.3)'
+                }}>
+                  <img 
+                    src={sageDarkCircle}
+                    alt="Sage"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              
+              {/* Message Bubble - Character AI Style */}
+              <div className={`max-w-[85%] sm:max-w-[75%] relative ${
                 msg.role === 'user' 
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
-                  : 'bg-slate-800/80 text-slate-100 border border-slate-700/50 backdrop-blur-sm'
-              } rounded-2xl p-4 transition-all duration-200 hover:shadow-xl`}>
-                <div className="text-sm leading-relaxed pr-8 whitespace-pre-wrap">{msg.content}</div>
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg rounded-2xl rounded-tr-sm' 
+                  : 'bg-slate-800/90 text-slate-100 border border-slate-700/50 backdrop-blur-sm rounded-2xl rounded-tl-sm'
+              } px-4 py-3 transition-all duration-200`}>
+                <div className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</div>
                 
-                {/* Message timestamp */}
-                <div className={`text-xs mt-2 ${
+                {/* Message timestamp - Subtle */}
+                <div className={`text-xs mt-2 opacity-60 ${
                   msg.role === 'user' ? 'text-purple-100' : 'text-slate-400'
                 }`}>
                   {msg.timestamp}
                 </div>
                 
-                {/* Message actions */}
-                <div className={`absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+                {/* Message actions - Always visible on mobile */}
+                <div className={`absolute top-2 right-2 opacity-0 group-hover:opacity-100 sm:opacity-0 transition-opacity duration-200 ${
                   msg.role === 'user' ? 'text-purple-100' : 'text-slate-400'
                 }`}>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => copyMessage(msg.content, msg.id)}
-                      className="p-1 hover:bg-white/10 rounded transition-colors"
-                      title="Copy message"
-                    >
-                      {copiedMessageId === msg.id ? (
-                        <Check className="w-3 h-3 text-green-400" />
-                      ) : (
-                        <Copy className="w-3 h-3" />
-                      )}
-                    </button>
-                    {msg.role === 'sage' && (
-                      <button
-                        className="p-1 hover:bg-white/10 rounded transition-colors"
-                        title="Like response"
-                      >
-                        <Heart className="w-3 h-3" />
-                      </button>
+                  <button
+                    onClick={() => copyMessage(msg.content, msg.id)}
+                    className="p-1.5 hover:bg-white/10 rounded transition-colors"
+                    title="Copy message"
+                  >
+                    {copiedMessageId === msg.id ? (
+                      <Check className="w-3.5 h-3.5 text-green-400" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
                     )}
-                  </div>
+                  </button>
                 </div>
               </div>
+              
+              {/* User Avatar Placeholder - Only for user messages */}
+              {msg.role === 'user' && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold border-2 border-purple-400/50">
+                  You
+                </div>
+              )}
             </div>
           ))}
           {typingIndicator && (
-            <div className="flex justify-start">
-              <div className="bg-slate-800/80 text-slate-100 border border-slate-700/50 backdrop-blur-sm rounded-2xl p-4 max-w-[80%]">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">🔮</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-slate-300 text-sm">Sage is typing</span>
-                    <div className="flex gap-1">
-                      <div className="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-1 h-1 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                    </div>
+            <div className="flex justify-start items-start gap-3">
+              {/* Sage Avatar */}
+              <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden border-2 border-teal-400/50" style={{
+                boxShadow: '0 0 12px rgba(20, 184, 166, 0.3)'
+              }}>
+                <img 
+                  src={sageDarkCircle}
+                  alt="Sage"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Typing Indicator Bubble */}
+              <div className="bg-slate-800/90 text-slate-100 border border-slate-700/50 backdrop-blur-sm rounded-2xl rounded-tl-sm px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                   </div>
                 </div>
               </div>
@@ -336,36 +367,74 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
           )}
         </div>
 
-        {/* Input */}
-        <div className="flex gap-3 items-end">
-          <div className="flex-1 relative">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-              placeholder="Ask Sage anything about this receipt..."
-              className="w-full p-4 pr-12 bg-slate-800/80 border border-slate-700/50 rounded-xl text-slate-100 placeholder-slate-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all backdrop-blur-sm resize-none"
-              disabled={loading || messages.length >= maxMessages}
-              rows={1}
-            />
-            <div className="absolute bottom-2 right-2 text-xs text-slate-500">
-              {input.length}/500
+        {/* Input - Clean Character AI Style - Expandable */}
+        <div className="border-t border-white/10 bg-slate-900/50 backdrop-blur-sm p-4 flex-shrink-0">
+          <div className="flex gap-3 items-end">
+            <div className="flex-1 relative">
+              <textarea
+                ref={(el) => {
+                  if (el) {
+                    // Auto-resize textarea to fit content (up to 3 lines)
+                    el.style.height = 'auto';
+                    const lineHeight = 24; // Approximate line height in pixels
+                    const maxLines = 3;
+                    const maxHeight = lineHeight * maxLines + 24; // 24px for padding
+                    const newHeight = Math.min(el.scrollHeight, maxHeight);
+                    el.style.height = `${newHeight}px`;
+                    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden';
+                  }
+                }}
+                value={input}
+                onChange={(e) => {
+                  if (e.target.value.length <= 500) {
+                    setInput(e.target.value);
+                    // Trigger resize
+                    e.target.style.height = 'auto';
+                    const lineHeight = 24;
+                    const maxLines = 3;
+                    const maxHeight = lineHeight * maxLines + 24;
+                    const newHeight = Math.min(e.target.scrollHeight, maxHeight);
+                    e.target.style.height = `${newHeight}px`;
+                    e.target.style.overflowY = e.target.scrollHeight > maxHeight ? 'auto' : 'hidden';
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                placeholder="Ask Sage anything about this receipt..."
+                className="w-full p-3 pr-20 bg-slate-800/80 border border-slate-700/50 rounded-xl text-slate-100 placeholder-slate-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all backdrop-blur-sm resize-none text-sm"
+                disabled={loading || messages.length >= maxMessages}
+                rows={1}
+                style={{ 
+                  minHeight: '44px', 
+                  maxHeight: '96px',
+                  lineHeight: '24px',
+                  overflowY: 'auto'
+                }}
+              />
+              <div className="absolute bottom-2 right-2 text-xs text-slate-500 pointer-events-none">
+                {input.length}/500
+              </div>
             </div>
+            <button
+              onClick={handleSend}
+              disabled={loading || messages.length >= maxMessages || !input.trim()}
+              className="p-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl hover:from-cyan-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl border border-cyan-400/30 flex-shrink-0"
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+            </button>
           </div>
-          <button
-            onClick={handleSend}
-            disabled={loading || messages.length >= maxMessages || !input.trim()}
-            className="p-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl border border-purple-500/30 group"
-          >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Send className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            )}
-          </button>
         </div>
+      </div>
       
-        {messages.length >= maxMessages && (
+      {messages.length >= maxMessages && (
           <div className="mt-4">
             {!isPremium ? (
               <div className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 rounded-xl p-4 border border-slate-600/50 backdrop-blur-sm">
@@ -393,6 +462,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

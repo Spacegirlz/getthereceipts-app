@@ -514,9 +514,9 @@ const LandingPage = () => {
             <span>60s</span>
           </div>
           <span className="text-gray-600">•</span>
-          <div className="text-cyan-400 font-semibold">2.1K+ users</div>
+          <div className="text-white font-semibold">2.1K+ users</div>
           <span className="text-gray-600">•</span>
-          <div className="text-emerald-400 font-semibold">94% accurate</div>
+          <div className="text-white font-semibold">94% accurate</div>
         </motion.div>
 
         {/* Privacy First Badge */}
@@ -553,7 +553,7 @@ const LandingPage = () => {
               className="bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-2xl p-8 shadow-lg shadow-cyan-500/10"
             >
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                Join <span className="text-cyan-400">2.1K+ people</span> getting clarity
+                Join <span className="text-white font-extrabold">2.1K+ people</span> getting clarity
               </h2>
               <p className="text-lg text-gray-300 mb-6">
                 Get instant clarity on what they really mean. No more guessing games.
@@ -601,12 +601,12 @@ const LandingPage = () => {
               className="text-center mb-12"
           >
               {/* Badge */}
-              <div className="inline-flex items-center px-6 py-3 rounded-full bg-cyan-400/15 backdrop-blur-sm border border-cyan-400/40 text-cyan-300 text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="inline-flex items-center px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 Meet Sage
               </div>
               {/* Main heading */}
               <h2 className="text-4xl md:text-5xl font-bold mb-4 max-w-4xl mx-auto leading-tight text-white">
-                Stop overthinking <span className="text-cyan-400">every&nbsp;text</span>
+                Stop overthinking <span className="text-white">every&nbsp;text</span>
               </h2>
               {/* Body paragraph */}
               <p className="text-lg text-gray-300 max-w-4xl mx-auto leading-relaxed">
@@ -657,7 +657,7 @@ const LandingPage = () => {
                         </div>
                         
                         <div className="bg-gradient-to-r from-cyan-400/10 to-purple-400/10 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-4">
-                          <p className="text-cyan-300 font-medium italic text-lg">
+                          <p className="text-white font-medium italic text-lg">
                             "Savage takes. Zero filter. Made with love." 🪄
                           </p>
                         </div>
@@ -669,18 +669,18 @@ const LandingPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-cyan-400/10 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-4 text-center">
                       <div className="text-2xl mb-2">🔒</div>
-                      <h4 className="font-semibold text-cyan-300 mb-1">Anonymous</h4>
-                      <p className="text-gray-400 text-sm">Your secrets stay safe</p>
+                      <h4 className="font-semibold text-white mb-1">Anonymous</h4>
+                      <p className="text-gray-300 text-sm">Your secrets stay safe</p>
                     </div>
                     <div className="bg-purple-400/10 backdrop-blur-sm border border-purple-400/20 rounded-xl p-4 text-center">
                       <div className="text-2xl mb-2">🗣️</div>
-                      <h4 className="font-semibold text-purple-300 mb-1">Zero Filter</h4>
-                      <p className="text-gray-400 text-sm">Brutal honesty always</p>
+                      <h4 className="font-semibold text-white mb-1">Zero Filter</h4>
+                      <p className="text-gray-300 text-sm">Brutal honesty always</p>
                     </div>
                     <div className="bg-emerald-400/10 backdrop-blur-sm border border-emerald-400/20 rounded-xl p-4 text-center">
                       <div className="text-2xl mb-2">⚡</div>
-                      <h4 className="font-semibold text-emerald-300 mb-1">Made with Love</h4>
-                      <p className="text-gray-400 text-sm">Savage but caring</p>
+                      <h4 className="font-semibold text-white mb-1">Made with Love</h4>
+                      <p className="text-gray-300 text-sm">Savage but caring</p>
                     </div>
                   </div>
                 </div>
@@ -701,7 +701,7 @@ const LandingPage = () => {
               className="text-center mb-12"
             >
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                How <span className="text-cyan-400">Sage Works</span> (it's embarrassingly simple)
+                How <span className="text-white">Sage Works</span> (it's embarrassingly simple)
               </h2>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                 From confused to confident in under 60 seconds
@@ -721,7 +721,7 @@ const LandingPage = () => {
                     <span className="text-2xl">🧠</span>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-cyan-400 mb-3">1. Paste Your Chat</h3>
+                <h3 className="text-xl font-bold text-white mb-3">1. Paste Your Chat</h3>
                 <p className="text-gray-300 leading-relaxed">
                   Copy any conversation and paste it in. Sage instantly analyzes every message, emoji, and timing pattern.
                 </p>
@@ -739,7 +739,7 @@ const LandingPage = () => {
                     <span className="text-2xl">💡</span>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-purple-400 mb-3">2. Get the Truth</h3>
+                <h3 className="text-xl font-bold text-white mb-3">2. Get the Truth</h3>
                 <p className="text-gray-300 leading-relaxed">
                   Sage gives you the unfiltered breakdown: what they really mean, not what you want to hear. No sugar-coating.
                 </p>
@@ -757,7 +757,7 @@ const LandingPage = () => {
                     <span className="text-2xl">📱</span>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-emerald-400 mb-3">3. Share the Receipt</h3>
+                <h3 className="text-xl font-bold text-white mb-3">3. Share the Receipt</h3>
                 <p className="text-gray-300 leading-relaxed">
                   Get a beautiful receipt you can screenshot and share. Finally, proof you were right all along.
                 </p>
@@ -776,7 +776,7 @@ const LandingPage = () => {
               className="text-center mb-12"
           >
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
-                See Sage work in&nbsp;<span className="text-cyan-400">10&nbsp;seconds</span>
+                See Sage work in&nbsp;<span className="text-white font-extrabold">10&nbsp;seconds</span>
             </h2>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                 Choose an archetype to see how Sage analyzes different communication patterns
@@ -785,7 +785,7 @@ const LandingPage = () => {
 
             {/* Step 1: Archetype Selection */}
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-cyan-400 mb-2">Step 1: Choose an Archetype</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">Step 1: Choose an Archetype</h3>
               <p className="text-gray-400 text-sm">Select a communication pattern to analyze</p>
             </div>
             
@@ -890,7 +890,7 @@ const LandingPage = () => {
                 <div className="mb-6 text-center">
                   <div className="flex justify-center mb-3">
                     <div className="bg-gradient-to-r from-cyan-400/20 to-blue-500/20 backdrop-blur-sm border border-cyan-400/30 rounded-full px-4 py-2">
-                      <span className="text-cyan-300 text-sm font-semibold">Live Demo</span>
+                      <span className="text-white text-sm font-semibold">Live Demo</span>
                     </div>
                   </div>
                   <h3 className="text-3xl font-bold mb-3 text-cyan-400 leading-tight">
@@ -987,7 +987,7 @@ const LandingPage = () => {
                 {/* Spacious CTA */}
                 <div className="mt-auto">
                   <Button 
-                    onClick={() => navigate('/input')}
+                    onClick={() => navigate('/new-receipt')}
                     className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/25 text-base border border-white/20"
                   >
                     Get My Full Analysis

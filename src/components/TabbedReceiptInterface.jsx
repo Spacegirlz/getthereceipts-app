@@ -60,8 +60,8 @@ const TabbedReceiptInterface = ({
   const tabs = [
     {
       id: 'receipt',
-      label: 'Receipt',
-      icon: '📄',
+      label: '💥 Sage Receipt',
+      icon: '',
       component: (
         <ReceiptCardViral 
           results={analysis}
@@ -114,7 +114,7 @@ const TabbedReceiptInterface = ({
     },
     {
       id: 'sage',
-      label: 'Sage',
+      label: 'Chat with Sage',
       icon: '🔮',
       component: (
         <div ref={sageTabRef} className="w-full max-w-2xl mx-auto">
@@ -127,7 +127,7 @@ const TabbedReceiptInterface = ({
           />
         </div>
       ),
-      isPremium: false // Sage chat is free for all users
+      isPremium: true // Chat with Sage is now a Premium feature
     }
   ];
 
@@ -220,42 +220,42 @@ const TabbedReceiptInterface = ({
   // Debug logging removed for production
   
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto overflow-x-hidden">
       {/* Tab Navigation with Premium Styling */}
-      <div className="mb-12">
-        <div className="relative max-w-2xl mx-auto">
-          <div className="flex items-center justify-center bg-white/5 backdrop-blur-sm rounded-3xl p-3 sm:p-4 border border-cyan-400/20 shadow-lg shadow-cyan-500/20">
+      <div className="mb-6 sm:mb-12">
+        <div className="relative max-w-2xl mx-auto overflow-hidden">
+          <div className="flex items-center justify-center bg-white/5 backdrop-blur-sm rounded-3xl p-2 sm:p-4 border border-cyan-400/20 shadow-lg shadow-cyan-500/20">
 
-            {/* Tab Labels */}
+            {/* Tab Labels - Vertical on mobile, horizontal on desktop */}
             <div className="flex-1 flex justify-center">
-              <div className="flex items-center">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-0 w-full sm:w-auto">
                 {tabs.map((tab, index) => {
                   const getTabColors = () => {
                     if (index === 0) { // Receipt
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-xl shadow-teal-500/30 border border-teal-400/40 transform scale-105' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-teal-500/15 hover:to-cyan-500/15 hover:shadow-lg hover:shadow-teal-500/20 border border-transparent hover:border-teal-400/25 hover:scale-102';
+                        ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-xl shadow-teal-500/30 border border-teal-400/40 sm:transform sm:scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-teal-500/15 hover:to-cyan-500/15 hover:shadow-lg hover:shadow-teal-500/20 border border-transparent hover:border-teal-400/25 sm:hover:scale-102';
                     } else if (index === 1) { // Playbook
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xl shadow-purple-500/30 border border-purple-400/40 transform scale-105' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:to-pink-600/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 hover:scale-102';
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xl shadow-purple-500/30 border border-purple-400/40 sm:transform sm:scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:to-pink-600/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 sm:hover:scale-102';
                     } else if (index === 2) { // Immunity
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5E6D3] text-black shadow-xl shadow-amber-500/30 border border-[#D4AF37]/60 transform scale-105' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-[#D4AF37]/15 hover:to-[#F5E6D3]/15 hover:shadow-lg hover:shadow-amber-500/20 border border-transparent hover:border-[#D4AF37]/25 hover:scale-102';
+                        ? 'bg-gradient-to-r from-purple-600 to-purple-400 text-white shadow-xl shadow-purple-500/30 border border-purple-400/60 sm:transform sm:scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:to-purple-400/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 sm:hover:scale-102';
                     } else { // Sage
                       return activeTab === index 
-                        ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 text-white shadow-xl shadow-purple-500/30 border border-purple-400/40 transform scale-105' 
-                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:via-blue-600/15 hover:to-indigo-700/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 hover:scale-102';
+                        ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 text-white shadow-xl shadow-purple-500/30 border border-purple-400/40 sm:transform sm:scale-105' 
+                        : 'text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/15 hover:via-blue-600/15 hover:to-indigo-700/15 hover:shadow-lg hover:shadow-purple-500/20 border border-transparent hover:border-purple-400/25 sm:hover:scale-102';
                     }
                   };
 
                   const getLockIconColor = () => {
                     // Make lock/crown icons visible based on active state and tab
                     if ((index === 1 || index === 2) && activeTab === index) {
-                      return 'text-black'; // Black icon on gold background when active
+                      return 'text-white'; // White icon on purple background when active
                     }
-                    return 'text-amber-400'; // Default amber color
+                    return 'text-purple-400'; // Default purple color
                   };
 
                   return (
@@ -264,18 +264,18 @@ const TabbedReceiptInterface = ({
                         onClick={() => handleTabClick(index)}
                         disabled={isTransitioning}
                         className={`
-                          group relative w-28 sm:w-36 px-3 sm:px-4 py-3 sm:py-4 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 ease-out
+                          group relative w-full sm:w-28 md:w-36 px-3 py-2 sm:px-3 sm:py-3 md:px-4 md:py-4 rounded-xl sm:rounded-2xl flex flex-row items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 ease-out
                           ${getTabColors()}
                           ${isTransitioning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                         `}
                       >
                         {tab.isPremium && !isPremium && (
-                          <Lock className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${getLockIconColor()} animate-pulse absolute top-1 right-1`} />
+                          <Lock className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 ${getLockIconColor()} animate-pulse absolute top-0.5 right-0.5 sm:top-1 sm:right-1`} />
                         )}
                         {tab.isPremium && isPremium && (
-                          <Crown className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${getLockIconColor()} absolute top-1 right-1`} />
+                          <Crown className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 ${getLockIconColor()} absolute top-0.5 right-0.5 sm:top-1 sm:right-1`} />
                         )}
-                        <span className="text-lg sm:text-xl flex-shrink-0 relative z-10">{tab.icon}</span>
+                        <span className="text-base sm:text-xl flex-shrink-0 relative z-10">{tab.icon}</span>
                         <span className="text-xs sm:text-sm font-semibold whitespace-nowrap tracking-wide relative z-10" style={{
                           textShadow: activeTab === index && index !== 2 ? '0 2px 4px rgba(0, 0, 0, 0.8)' : 'none'
                         }}>{tab.label}</span>
@@ -289,9 +289,9 @@ const TabbedReceiptInterface = ({
                         )}
                       </button>
                       
-                      {/* Premium divider between tabs */}
+                      {/* Premium divider between tabs - Hidden on mobile, shown on desktop */}
                       {index < tabs.length - 1 && (
-                        <div className="w-px h-10 sm:h-12 bg-gradient-to-b from-slate-500/30 via-slate-400/50 to-slate-500/30 mx-2 sm:mx-3" />
+                        <div className="hidden sm:block w-px h-10 md:h-12 bg-gradient-to-b from-slate-500/30 via-slate-400/50 to-slate-500/30 mx-2 md:mx-3" />
                       )}
                     </React.Fragment>
                   );
@@ -353,14 +353,14 @@ const TabbedReceiptInterface = ({
                   <div
                     className="relative backdrop-blur-xl bg-black/40 border rounded-3xl p-12"
                     style={{
-                      border: '1px solid rgba(212, 175, 55, 0.65)',
-                      boxShadow: '0 0 0 1px rgba(212, 175, 55, 0.25), 0 8px 32px rgba(212, 175, 55, 0.18), 0 0 60px rgba(212, 175, 55, 0.10)'
+                      border: '1px solid rgba(147, 51, 234, 0.65)',
+                      boxShadow: '0 0 0 1px rgba(147, 51, 234, 0.25), 0 8px 32px rgba(147, 51, 234, 0.18), 0 0 60px rgba(147, 51, 234, 0.10)'
                     }}
                   >
                     {/* Lock Icon */}
                     <div className="flex justify-center mb-6">
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400/20 to-orange-400/20 flex items-center justify-center border border-yellow-400/30">
-                        <Lock className="w-10 h-10 text-yellow-400" />
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-400/20 to-purple-600/20 flex items-center justify-center border border-purple-400/30">
+                        <Lock className="w-10 h-10 text-purple-400" />
                       </div>
                     </div>
 
@@ -435,20 +435,20 @@ const TabbedReceiptInterface = ({
                           <div className="flex items-center justify-center gap-3 flex-wrap">
                             {analysis.immunityTraining?.patternLoop?.slice(0, 3).map((step, index) => (
                               <div key={step} className="contents">
-                                <div className="bg-cyan-900/30 text-cyan-300 px-3 py-2 rounded-xl text-sm font-medium text-center border border-cyan-500/20 min-w-[100px]">
+                                <div className="bg-cyan-900/30 text-white px-3 py-2 rounded-xl text-sm font-medium text-center border border-cyan-500/20 min-w-[100px]">
                                   {step}
                                 </div>
                                 {index < 2 && (
-                                  <span className="text-cyan-300 text-lg">→</span>
+                                  <span className="text-white text-lg">→</span>
                                 )}
                               </div>
                             ))}
-                            <div className="bg-cyan-900/30 text-cyan-300 px-3 py-2 rounded-xl text-sm font-medium text-center border border-cyan-500/20 opacity-50 min-w-[100px]">
+                            <div className="bg-cyan-900/30 text-white px-3 py-2 rounded-xl text-sm font-medium text-center border border-cyan-500/20 opacity-50 min-w-[100px]">
                               ...
                             </div>
                           </div>
                           <div className="text-center mt-3">
-                            <span className="text-xs tracking-wide text-cyan-300">
+                            <span className="text-xs tracking-wide text-white">
                               ↻ Endless Loop
                             </span>
                           </div>
@@ -486,8 +486,8 @@ const TabbedReceiptInterface = ({
                     {/* Compact SaaS Paywall Card for Immunity (mobile-first, single card) */}
                     <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900/40 via-slate-800/20 to-slate-900/40 border border-slate-600/30 mb-8">
                       <div className="p-5 sm:p-8 text-center">
-                        <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-yellow-400/30 to-orange-400/30 border-2 border-yellow-400/50 mb-3 sm:mb-5 shadow-lg shadow-yellow-500/30">
-                          <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                        <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-purple-400/30 to-purple-600/30 border-2 border-purple-400/50 mb-3 sm:mb-5 shadow-lg shadow-purple-500/30">
+                          <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-purple-300" />
                         </div>
                         <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3 leading-tight">
                           Unlock Immunity Training
@@ -502,7 +502,7 @@ const TabbedReceiptInterface = ({
                         </ul>
                         <button
                           onClick={handleUpgradeClick}
-                          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                         >
                           Unlock Immunity
                         </button>
