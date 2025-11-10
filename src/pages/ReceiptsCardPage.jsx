@@ -561,7 +561,7 @@ const ReceiptsCardPage = () => {
                   {/* Share & Earn  -  Enhanced Container */}
                   <div className="text-center pt-4 border-t border-white/10">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30 shadow-md shadow-purple-500/20">
-                      <span className="text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]">💰</span>
+                      <span className="text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]">💜</span>
                       <span className="text-sm text-white font-medium">Love Sage?</span>
                       <span className="text-white/60">•</span>
                       <LinkButton
@@ -611,17 +611,17 @@ const ReceiptsCardPage = () => {
         <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-6 mb-4 px-4">
           <div className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30 w-full sm:w-auto">
             <span className="text-purple-400 text-sm">🔒</span>
-            <span className="text-xs text-purple-200 font-semibold">Private & Secure</span>
-            <span className="text-purple-300/70 hidden sm:inline">•</span>
-            <span className="text-xs text-purple-300/90 hidden sm:inline">Chat deleted. Never stored.</span>
-            <span className="text-xs text-purple-300/90 sm:hidden ml-1">Chat deleted. Never stored.</span>
+            <span className="text-xs text-white font-semibold">Private & Secure</span>
+            <span className="text-gray-400 hidden sm:inline">•</span>
+            <span className="text-xs text-gray-300 hidden sm:inline">Chat deleted. Never stored.</span>
+            <span className="text-xs text-gray-300 sm:hidden ml-1">Chat deleted. Never stored.</span>
           </div>
           <div className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-purple-400/30 w-full sm:w-auto">
-            <span className="text-purple-400 text-sm">📍</span>
-            <span className="text-xs text-purple-200 font-semibold">Personalized Analysis</span>
-            <span className="text-purple-300/70 hidden sm:inline">•</span>
-            <span className="text-xs text-purple-300/90 hidden sm:inline">Based on your message only</span>
-            <span className="text-xs text-purple-300/90 sm:hidden ml-1">Based on your message only</span>
+            <span className="text-cyan-400 text-sm">📍</span>
+            <span className="text-xs text-white font-semibold">Personalized Analysis</span>
+            <span className="text-gray-400 hidden sm:inline">•</span>
+            <span className="text-xs text-gray-300 hidden sm:inline">Based on your message only</span>
+            <span className="text-xs text-gray-300 sm:hidden ml-1">Based on your message only</span>
           </div>
         </div>
           </div>
