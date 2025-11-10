@@ -62,7 +62,23 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ received: true });
     }
     
-    await handlePaymentSuccess(userEmail, amountPaid, 'subscription', invoice);
+    // Get actual subscription period end from Stripe (more accurate than calculating)
+    let subscriptionDetails = null;
+    if (subscriptionId) {
+      try {
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        subscriptionDetails = {
+          subscriptionId,
+          expiresAt: new Date(subscription.current_period_end * 1000)
+        };
+        console.log(`📅 Subscription expires: ${subscriptionDetails.expiresAt.toISOString()}`);
+      } catch (error) {
+        console.error('❌ Error fetching subscription details:', error);
+        // Continue without subscription details - will use calculated expiration
+      }
+    }
+    
+    await handlePaymentSuccess(userEmail, amountPaid, 'subscription', invoice, subscriptionDetails);
   }
 
   // Handle subscription cancellations
@@ -149,7 +165,7 @@ module.exports = async function handler(req, res) {
   }
 
   // Shared payment processing function
-  async function handlePaymentSuccess(userEmail, amountPaid, mode, paymentObject) {
+  async function handlePaymentSuccess(userEmail, amountPaid, mode, paymentObject, subscriptionDetails = null) {
     // Get current user data FIRST (needed for Emergency Pack logic)
     const { data: currentUser, error: fetchError } = await supabase
       .from('users')
@@ -182,11 +198,13 @@ module.exports = async function handler(req, res) {
       console.log('🆕 Mapping $4.99 monthly to premium');
       creditsToAdd = -1;
       subscriptionType = 'premium';
-      expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+      // Use Stripe's actual subscription period end if available, otherwise calculate
+      expiresAt = subscriptionDetails?.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     } else if (amountPaid === 29.99) {
       creditsToAdd = -1; // Unlimited for yearly
       subscriptionType = 'yearly'; // Yearly subscription
-      expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 365 days from now
+      // Use Stripe's actual subscription period end if available, otherwise calculate
+      expiresAt = subscriptionDetails?.expiresAt || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
     } else {
       console.log(`⚠️ Unknown one-time payment amount: $${amountPaid} - no plan change applied`);
       creditsToAdd = 0;
