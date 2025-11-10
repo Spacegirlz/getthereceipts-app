@@ -26,7 +26,7 @@ Leo (Thu, 1:47 AM): wyd
 Me (Thu, 8:36 AM): Just woke up, what's up
 Leo (Thu, 8:39 AM): nvm crashed
 Me (Sat, 5:21 PM): Free tmr?
-— no reply —
+ -  no reply  - 
 Me (Mon, 12:02 PM): You alive?
 Leo (Mon, 1:55 PM): Work tsunami. You know I adore you tho 🤍
 
@@ -36,7 +36,7 @@ MY GUT: Brain says "green flag words," body says "red flag actions." Feels like 
     },
     {
       name: "Rules Masquerading as Care (TOXIC)",
-      message: `Ava (6:02 PM): Running 10 late—tram stalled.
+      message: `Ava (6:02 PM): Running 10 late - tram stalled.
 Miles (6:03 PM): Share live location so I know you're actually on a tram.
 Ava (6:04 PM): Not doing tracking. I'll be there at 6:15.
 Miles (6:05 PM): If you loved me you'd calm my anxiety instead of being difficult.
@@ -47,12 +47,12 @@ Miles (6:31 PM): Jess says you've been distant. Even my friends notice.
 Ava (6:33 PM): Jess met me twice.
 Miles (11:41 PM): I'm at your door. Let me in so we can finish this.
 Ava (11:42 PM): It's midnight. Not tonight.
-Miles (11:43 PM): Wow. Dramatic. Delete that beach pic too—my cousin follows me.
+Miles (11:43 PM): Wow. Dramatic. Delete that beach pic too - my cousin follows me.
 Ava (11:44 PM): No.
 Miles (11:45 PM): Silent treatment activated.
-— Next day —
+ -  Next day  - 
 Ava (10:06 AM): Are we talking?
-— no response —
+ -  no response  - 
 Miles (1:12 AM): Let's reset. I brought flowers 🌹
 Ava (7:34 AM): Flowers don't fix patterns.
 Miles (7:36 AM): Patterns like you flirting with the bartender?
@@ -73,29 +73,29 @@ Ava (12:20 PM): If that's your choice, noted.`
       message: `Rae (5:11 PM): You crushed your demo. Celebratory ramen Friday?
 Finn (5:12 PM): Yes pls. 7pm? I'll book.
 Rae (5:13 PM): Lock it.
-— Friday —
+ -  Friday  - 
 Finn (4:56 PM): Client call moved. I can do 7:30 or Sat. Your call.
 Rae (4:59 PM): Let's do Sat. I don't want a rushed dinner.
 Finn (5:01 PM): Booked Sat 6:30. I owe you gyoza.
-— Saturday —
+ -  Saturday  - 
 Rae (6:18 PM): Parking now.
-Finn (6:19 PM): Running 10 late—flowers + apology in hand.
+Finn (6:19 PM): Running 10 late - flowers + apology in hand.
 Rae (6:20 PM): I like apologies that arrive on time.
 Finn (6:21 PM): Fair. Setting "leave early" alarm for future me.
-— Later —
+ -  Later  - 
 Finn (9:04 PM): Tonight was so good. Brunch tomorrow?
 Rae (9:06 PM): Yes, if "tomorrow" means an actual time.
 Finn (9:07 PM): 10:30, Little Pearl.
-— Sunday —
+ -  Sunday  - 
 Rae (10:28 AM): Here.
 Finn (10:36 AM): 8 mins out 🙃
 Rae (10:37 AM): Pattern spotted. I'll grab a table.
 Finn (10:39 AM): You're right. I keep cutting it close. I'll fix it.
-— Midweek —
+ -  Midweek  - 
 Finn (8:12 PM): Rooftop w/ team tonight. Heads up so Insta doesn't look "single energy."
 Rae (8:14 PM): Appreciate the ping. Thirst traps allowed; mystery arms banned.
 Finn (8:15 PM): Copy.
-— Friday —
+ -  Friday  - 
 Rae (6:03 PM): Are we still on for movie?
 Finn (6:05 PM): Totally. Already bought seats.
 Rae (6:06 PM): Green flag noted.
@@ -105,7 +105,7 @@ Rae (6:09 PM): Accepting bribes that arrive on schedule.`
     {
       name: "Misread Signals → Clear Repair (HEALTHY)",
       message: `Nina (7:41 PM): Your rooftop story looked fun. My brain did a little spin.
-Jae (7:42 PM): Team drinks. I should've sent a heads up—my bad.
+Jae (7:42 PM): Team drinks. I should've sent a heads up - my bad.
 Nina (7:44 PM): I don't want to police you. I just hate guessing.
 Jae (7:45 PM): Let's do rules that aren't weird: if I'm out late, I send "home by X."
 Nina (7:46 PM): Works. I'll do the same when I'm off-grid.
@@ -115,10 +115,10 @@ Jae (7:51 PM): Cool. I'll ask next time, not spiral.
 Nina (7:53 PM): Capacity check: I'm yellow tonight. Short call?
 Jae (7:54 PM): Yellow too. 15-min debrief then Mario Kart ceasefire?
 Nina (7:55 PM): Deal.
-— Later —
+ -  Later  - 
 Jae (9:11 PM): Also… I joked about your caption last week. It landed mean. Sorry.
 Nina (9:13 PM): Thanks for naming it. I'm sensitive about that; appreciate the catch.
-Jae (9:15 PM): Re: Sunday—my sis asked if you'll come to her picnic. Dog-friendly.
+Jae (9:15 PM): Re: Sunday - my sis asked if you'll come to her picnic. Dog-friendly.
 Nina (9:16 PM): Yes, but I'll bail at 3 to prep Monday.
 Jae (9:17 PM): I'll walk you to the tram at 2:55.
 Nina (9:18 PM): Phones away during picnic?

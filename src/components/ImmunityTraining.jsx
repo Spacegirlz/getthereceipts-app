@@ -364,7 +364,7 @@ const ImmunityTraining = memo(({ immunityData, archetypeName = "The Gaslighter",
               </div>
               <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">
                 <h4 className="text-base sm:text-lg font-semibold text-stone-200 mb-2">🧪 Immunity Test</h4>
-                <p className="text-gray-300 leading-relaxed">A quick test to know exactly where you stand—and what to do next…</p>
+                <p className="text-gray-300 leading-relaxed">A quick test to know exactly where you stand - and what to do next…</p>
               </div>
               {/* See Both Sides (Locked preview: headings only, blurred placeholders) */}
               <div className="bg-black/40 rounded-2xl p-4 border border-white/20 shadow-lg">

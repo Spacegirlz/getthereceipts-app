@@ -98,12 +98,12 @@ export const getTrendCaption = (archetype, percentage, trend) => {
   const captions = {
     up: [
       `Apparently ${percentage}% of us got ${archetype} this week. We're all in this together 😭`,
-      `${archetype} is trending at ${percentage}% — the streets are NOT okay`,
+      `${archetype} is trending at ${percentage}%  -  the streets are NOT okay`,
       `PSA: ${archetype} spiked to ${percentage}% this week. Stay safe out there.`,
     ],
     down: [
       `Only ${percentage}% got ${archetype} this week. Nature is healing? 🌱`,
-      `${archetype} down to ${percentage}% — we're learning!`,
+      `${archetype} down to ${percentage}%  -  we're learning!`,
       `Good news: ${archetype} dropped to ${percentage}%. Progress.`,
     ],
     stable: [

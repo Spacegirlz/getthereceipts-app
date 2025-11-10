@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye, Lock } from 'lucide-react';
+import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -38,11 +38,16 @@ const LandingPage = () => {
   const [liveUserCount, setLiveUserCount] = useState(150);
   const [selectedArchetype, setSelectedArchetype] = useState('ghosting-champion');
   const [currentReceiptType, setCurrentReceiptType] = useState('truth');
-  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
+  const [isTestimonialPaused, setIsTestimonialPaused] = useState(false);
   const [loadingPriceId, setLoadingPriceId] = useState(null);
   const stripe = useStripe() || null; // Fallback if Stripe not loaded yet
   const autoRotateIntervalRef = useRef(null);
   const userInteractedRef = useRef(false);
+  const testimonialScrollRef = useRef(null);
+  const testimonialScrollTimeoutRef = useRef(null);
+  const testimonialAutoIntervalRef = useRef(null);
+  const testimonialResumeTimeoutRef = useRef(null);
 
   // Testimonials array
   const testimonials = [
@@ -86,6 +91,22 @@ const LandingPage = () => {
   const [currentText, setCurrentText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showStreak, setShowStreak] = useState(false);
+
+  const handleTestimonialScroll = useCallback(() => {
+    const container = testimonialScrollRef.current;
+    if (!container || testimonials.length === 0) return;
+
+    if (testimonialScrollTimeoutRef.current) {
+      clearTimeout(testimonialScrollTimeoutRef.current);
+    }
+
+    testimonialScrollTimeoutRef.current = setTimeout(() => {
+      const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 1;
+      const scrollLeft = container.scrollLeft;
+      const idx = Math.round(scrollLeft / (cardWidth + 12)); // 12px gap
+      setActiveTestimonialIndex(Math.max(0, Math.min(idx, testimonials.length - 1)));
+    }, 150);
+  }, [testimonials.length]);
 
   // Messages to cycle through  -  Gen Z nightmare scenarios
   const messages = [
@@ -413,14 +434,55 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Testimonial rotation effect
+  // Auto-scroll testimonials unless paused
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonialIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-    }, 5000); // Change every 5 seconds
+    const container = testimonialScrollRef.current;
+    if (!container || testimonials.length <= 1) return;
 
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
+    if (testimonialAutoIntervalRef.current) {
+      clearInterval(testimonialAutoIntervalRef.current);
+      testimonialAutoIntervalRef.current = null;
+    }
+
+    if (isTestimonialPaused) return;
+
+    testimonialAutoIntervalRef.current = setInterval(() => {
+      setActiveTestimonialIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => {
+      if (testimonialAutoIntervalRef.current) {
+        clearInterval(testimonialAutoIntervalRef.current);
+        testimonialAutoIntervalRef.current = null;
+      }
+    };
+  }, [isTestimonialPaused, testimonials.length]);
+
+  // Sync scroll position when index changes
+  useEffect(() => {
+    const container = testimonialScrollRef.current;
+    if (!container) return;
+    const cards = container.children;
+    const card = cards[activeTestimonialIndex];
+    if (!card) return;
+
+    const target = card.offsetLeft;
+    container.scrollTo({ left: target, behavior: 'smooth' });
+  }, [activeTestimonialIndex]);
+
+  useEffect(() => {
+    return () => {
+      if (testimonialAutoIntervalRef.current) {
+        clearInterval(testimonialAutoIntervalRef.current);
+      }
+      if (testimonialScrollTimeoutRef.current) {
+        clearTimeout(testimonialScrollTimeoutRef.current);
+      }
+      if (testimonialResumeTimeoutRef.current) {
+        clearTimeout(testimonialResumeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Trust badge streak effect
   useEffect(() => {
@@ -626,35 +688,29 @@ const LandingPage = () => {
             </Button>
           </motion.div>
           
-          {/* Privacy First Badge - Right Under CTA */}
+          {/* Trust badges under CTA */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.85 }}
-            className="flex justify-center w-full"
+            className="w-full"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm border border-emerald-400/30 rounded-full text-xs sm:text-sm text-gray-300 hover:bg-white/10 transition-all duration-300">
-              <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400" />
-              <span className="font-medium">
-                <span className="text-emerald-400">Privacy First Policy</span>
-                <span className="text-gray-500 mx-1.5">•</span>
-                Your Data Your Choice
-              </span>
-            </div>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            className="flex flex-col items-center gap-2 text-sm sm:text-base text-gray-300"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/6 border border-cyan-400/30 rounded-full text-xs sm:text-sm text-white shadow shadow-cyan-500/20">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-              </span>
-              1,921 chats decoded this week
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto">
+              {[
+                { icon: '🔒', title: 'Privacy First Policy' },
+                { icon: '🛡️', title: 'Never Stored Or Shared' },
+                { icon: '⚡', title: 'Your Choice Always' }
+              ].map(({ icon, title }) => {
+                return (
+                  <div
+                    key={title}
+                    className="bg-white/6 backdrop-blur-sm border border-cyan-400/25 rounded-2xl px-4 py-3 flex items-center gap-3 shadow shadow-cyan-500/15"
+                  >
+                    <span className="text-lg sm:text-xl" role="img" aria-hidden="true">{icon}</span>
+                    <p className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">{title}</p>
+                  </div>
+                );
+              })}
             </div>
           </motion.div>
 
@@ -729,7 +785,7 @@ const LandingPage = () => {
           >
               {/* Badge with gradient */}
               <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400/20 via-purple-400/20 to-emerald-400/20 backdrop-blur-sm border-2 border-cyan-400/40 text-white text-sm font-bold mb-0 shadow-lg shadow-cyan-500/20 hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105">
-                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent font-extrabold">Meet Sage</span>
+                <span className="text-cyan-300 font-extrabold">Meet Sage</span>
               </div>
             </motion.div>
 
@@ -738,83 +794,65 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="max-w-5xl mx-auto mb-16"
+              className="max-w-5xl mx-auto mb-14 sm:mb-16"
             >
-              {/* Gradient border wrapper */}
-              <div className="rounded-3xl p-[2px] bg-gradient-to-r from-cyan-400/50 via-purple-400/50 to-emerald-400/50">
-                <div className="bg-white/8 backdrop-blur-xl rounded-3xl p-8 relative overflow-hidden shadow-2xl">
-                {/* Subtle background glow - neutral */}
-                <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
-                <div className="relative z-10">
-                  <div className="flex flex-col lg:flex-row items-center gap-8 mb-8">
+              <div className="rounded-3xl p-[2px] bg-gradient-to-r from-cyan-400/40 via-purple-400/40 to-emerald-400/40">
+                <div className="bg-white/8 backdrop-blur-xl rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+                  <div className="absolute top-0 right-0 w-32 h-32 sm:w-40 sm:h-40 bg-white/5 rounded-full blur-3xl"></div>
+                  <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
                     <div className="relative">
-                      {/* Sage - VIBRANT and PROMINENT */}
-                      <div className="relative">
-                        {/* Strong radial glow behind Sage */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/40 via-purple-400/35 to-emerald-300/40 rounded-full blur-2xl animate-pulse"></div>
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-purple-500/25 to-emerald-400/30 rounded-full blur-xl"></div>
-                        
-                        {/* Sage container - more vibrant */}
-                        <div className="relative w-72 h-72 bg-gradient-to-br from-cyan-400/30 via-purple-400/25 to-emerald-300/30 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden shadow-2xl border-2 border-cyan-400/50" style={{
-                          boxShadow: '0 0 60px rgba(6, 182, 212, 0.4), 0 0 100px rgba(168, 85, 247, 0.3), 0 0 140px rgba(16, 185, 129, 0.2)'
-                        }}>
-                          <img 
-                            src={sageLanding} 
-                            alt="Sage" 
-                            className="w-72 h-72 rounded-full object-cover relative z-10"
-                            style={{
-                              filter: 'brightness(1.1) contrast(1.05) saturate(1.1)'
-                            }}
-                          />
-                        </div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/35 via-purple-400/30 to-emerald-300/35 rounded-full blur-2xl animate-pulse"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/25 via-purple-500/20 to-emerald-400/25 rounded-full blur-xl"></div>
+                      <div
+                        className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 bg-gradient-to-br from-cyan-400/25 via-purple-400/20 to-emerald-300/20 rounded-full flex items-center justify-center overflow-hidden shadow-2xl border border-cyan-400/40 mx-auto lg:mx-0"
+                        style={{
+                          boxShadow: '0 0 40px rgba(6, 182, 212, 0.35), 0 0 80px rgba(168, 85, 247, 0.25), 0 0 120px rgba(16, 185, 129, 0.2)'
+                        }}
+                      >
+                        <img
+                          src={sageLanding}
+                          alt="Sage"
+                          className="w-full h-full object-cover"
+                          style={{
+                            filter: 'brightness(1.08) contrast(1.05) saturate(1.08)'
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className="flex-1 text-center lg:text-left">
-                      <div className="space-y-6">
-                        <div>
-                          <h3 className="text-2xl font-bold mb-3">
-                            <span className="text-white">She's the friend </span>
-                            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">we all wish we&nbsp;had</span>
-                          </h3>
-                          <p className="text-gray-300 leading-relaxed text-lg">
-                            Not a therapist. Not your mom. Not even <em>really</em> real.
-                          </p>
-                        </div>
-                        
-                        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
-                          <p className="text-gray-300 leading-relaxed">
-                            Just that friend who's had enough of your spiral and loves you too much to watch it continue. Created for your entertainment (and maybe some perspective).
-                          </p>
-                        </div>
-                        
-                        <div className="bg-white/8 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-                          <p className="text-white font-medium italic text-lg">
-                            "Savage takes. Zero filter. Made with love." 🪄
-                          </p>
-                        </div>
+
+                    <div className="flex-1 text-center lg:text-left space-y-4 sm:space-y-5 max-w-lg">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-white">
+                        Meet Sage.
+                      </h3>
+                      <p className="text-gray-300 text-base leading-relaxed italic">
+                        Sage is that friend who tells it like it is.
+                      </p>
+                      <p className="text-gray-300 text-base leading-relaxed">
+                        Not a therapist. Not your mom. Not even real.
+                      </p>
+                      <p className="text-gray-300 text-base leading-relaxed">
+                        Just your no-BS bestie who refuses to watch you spiral.
+                      </p>
+                      <p className="text-gray-300 text-base leading-relaxed">
+                        Made for laughs, clarity, and maybe a little reality check.
+                      </p>
+                      <p className="text-gray-300 text-base leading-relaxed italic">
+                        "Savage takes. Zero filter. Made with love." 🪄
+                      </p>
+
+                      <div className="bg-white/6 border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left shadow-lg shadow-black/10">
+                        <Button
+                          onClick={() => navigate('/new-receipt')}
+                          className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-black font-semibold px-6 py-3 rounded-xl shadow-lg shadow-cyan-500/30"
+                        >
+                          Chat with Sage free
+                        </Button>
+                        <p className="text-sm text-gray-200 font-medium">
+                          Free • No signup • 60 seconds
+                        </p>
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Feature tags - NEUTRAL to let Sage shine */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-center">
-                      <div className="text-2xl mb-2">🔒</div>
-                      <h4 className="font-semibold text-white mb-1">Anonymous</h4>
-                      <p className="text-gray-300 text-sm">Your secrets stay safe</p>
-                    </div>
-                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-center">
-                      <div className="text-2xl mb-2">🗣️</div>
-                      <h4 className="font-semibold text-white mb-1">Zero Filter</h4>
-                      <p className="text-gray-300 text-sm">Brutal honesty always</p>
-                    </div>
-                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-center">
-                      <div className="text-2xl mb-2">⚡</div>
-                      <h4 className="font-semibold text-white mb-1">Made with Love</h4>
-                      <p className="text-gray-300 text-sm">Savage but caring</p>
-                    </div>
-                  </div>
-                </div>
                 </div>
               </div>
             </motion.div>
@@ -825,7 +863,7 @@ const LandingPage = () => {
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/25 to-transparent opacity-80 my-10 sm:my-12 lg:my-16"></div>
 
         {/* Sage Freebies - quick value snapshot */}
-        <section className="px-4 pb-6 md:pb-10">
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -833,13 +871,15 @@ const LandingPage = () => {
               transition={{ duration: 0.6 }}
               className="text-center mb-6 md:mb-8"
             >
-              <p className="text-xs uppercase tracking-[0.4em] text-cyan-300 mb-2">Sage Freebies</p>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">Start free. Stay curious.</h2>
+              <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400/20 via-purple-400/20 to-emerald-400/20 backdrop-blur-sm border-2 border-cyan-400/40 text-white text-sm font-bold mb-0 shadow-lg shadow-cyan-500/20 hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105">
+                <span className="text-cyan-300 font-extrabold">Sage Freebies</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mt-4">Start free. Stay curious.</h2>
               <p className="text-sm sm:text-base text-gray-300 mt-2 max-w-2xl mx-auto">
-                One tap, one decode, zero invoices. A free plan that actually delivers daily clarity—and a <span className="text-emerald-300 font-semibold">Black Friday treat waiting the moment you sign up.</span>
+                One tap, one decode, zero invoices. A free plan that actually delivers daily clarity - and a <span className="text-emerald-300 font-semibold">Black Friday treat waiting the moment you sign up.</span>
               </p>
               <p className="text-xs sm:text-sm text-gray-400 italic mt-3">
-                Sage: “When I say receipt, I mean the written tea on your chat—no payment stuff, bestie.”
+                Sage: “When I say receipt, I mean the written tea on your chat - no payment stuff, bestie.”
               </p>
             </motion.div>
 
@@ -910,11 +950,10 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center mb-6 md:mb-12"
             >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 md:mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
                   How&nbsp;Sage&nbsp;Works
-                </span>{' '}
-                <span className="text-white">(it's embarrassingly simple)</span>
+                </span>
               </h2>
               <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto">
                 From confused to confident in under 60 seconds
@@ -992,7 +1031,7 @@ const LandingPage = () => {
               className="text-center mb-12"
           >
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
-                See Sage work in&nbsp;<span className="text-white font-extrabold">10&nbsp;seconds</span>
+                Demo: See Sage work in&nbsp;<span className="text-white font-extrabold">10&nbsp;seconds</span>
             </h2>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                 Choose an archetype to see how Sage analyzes different communication patterns
@@ -1001,8 +1040,8 @@ const LandingPage = () => {
 
             {/* Step 1: Archetype Selection */}
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-white mb-2">Step 1: Choose an Archetype</h3>
-              <p className="text-gray-400 text-sm">Select a communication pattern to analyze</p>
+              <h3 className="text-lg font-semibold text-white mb-1">Step 1: Pick the vibe</h3>
+              <p className="text-gray-400 text-sm">Choose the chat pattern that matches your tea</p>
             </div>
             
             {/* Archetype Selection  -  Clean & Consistent */}
@@ -1181,21 +1220,6 @@ const LandingPage = () => {
                   </div>
                 </div>
 
-                {/* Social Proof */}
-                <div className="mb-6 bg-gradient-to-r from-cyan-400/10 to-blue-500/10 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="flex - space-x-2">
-                      <div className="w-6 h-6 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full border-2 border-white/20"></div>
-                      <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full border-2 border-white/20"></div>
-                      <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full border-2 border-white/20"></div>
-                    </div>
-                    <p className="text-white font-semibold text-sm">Join the first 500</p>
-                  </div>
-                  <p className="text-gray-300 text-xs transition-all duration-500 ease-in-out">
-                    "{testimonials[currentTestimonialIndex].text}"  -  {testimonials[currentTestimonialIndex].author}
-                  </p>
-                </div>
-
                 {/* Trust Badges */}
                 <div className="mb-6">
                   <div className="grid grid-cols-3 gap-2">
@@ -1272,7 +1296,7 @@ const LandingPage = () => {
                   >
                     <div className="flex flex-col items-center pt-1">
                       <span className="text-xs uppercase tracking-[0.35em] text-cyan-300 mb-3">{String(idx + 1).padStart(2, '0')}</span>
-                      <span className="text-xs font-semibold text-gray-400 rotate-180 writing-vertical hidden sm:block">Receipt</span>
+                      <span className="text-xs font-semibold text-gray-400 writing-vertical hidden sm:block">Receipt</span>
                     </div>
                     <div className="flex-1">
                       <div className="text-sm font-semibold text-emerald-300 uppercase tracking-wide mb-1">{item.reaction}</div>
@@ -1296,7 +1320,7 @@ const LandingPage = () => {
                   <div className="text-emerald-300 text-xs font-bold uppercase tracking-[0.3em] mb-2">Proof</div>
                   <p className="text-lg sm:text-xl font-semibold text-white mb-3">82% said Sage spotted the pattern they were missing.</p>
                   <p className="text-sm text-gray-300">
-                    We’re not flexing four-digit user counts yet—we’re flexing how often Sage tells people what their friends couldn’t.
+                    We’re not flexing four-digit user counts yet - we’re flexing how often Sage tells people what their friends couldn’t.
                   </p>
                 </div>
                 <div className="bg-white/8 backdrop-blur-xl border border-white/15 rounded-3xl p-6 shadow-lg shadow-purple-500/15">
@@ -1327,11 +1351,13 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-center mt-16"
+              className="mt-16"
             >
-              <p className="text-sm sm:text-base text-gray-400">
-                <em>Built by a team that's generated $7M+ with AI systems because we were tired of spiraling over 2am texts and what "k..." really means. First 500 users lock in lifetime access.</em>
-              </p>
+              <div className="max-w-3xl mx-auto bg-white/6 backdrop-blur-sm border border-cyan-400/20 rounded-3xl px-6 py-6 shadow-lg shadow-cyan-500/10 text-center">
+                <p className="text-sm sm:text-base text-gray-200 leading-relaxed italic">
+                  Built by a team that's generated $7M+ with AI systems because we were tired of spiraling over 2am texts and what "k..." really means. First 500 users lock in lifetime access.
+                </p>
+              </div>
             </motion.div>
           </div>
         </section>

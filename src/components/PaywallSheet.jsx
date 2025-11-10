@@ -225,7 +225,7 @@ const PaywallSheet = ({
           {/* Footnote */}
           <div className="px-6 pb-6">
             <p className="text-center text-xs text-gray-500">
-              Cancel anytime. Entertainment/Education—no therapy.
+              Cancel anytime. Entertainment/Education - no therapy.
             </p>
           </div>
         </motion.div>

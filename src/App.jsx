@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import LandingPage from '@/pages/LandingPage';
+import EnhancedReferralPage from '@/pages/EnhancedReferralPage';
 import { lazy } from 'react';
 
 // Lazy load heavy components
@@ -11,7 +12,6 @@ const ReceiptsCardPage = lazy(() => import('@/pages/ReceiptsCardPage'));
 const PricingPage = lazy(() => import('@/pages/PricingPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const ReferralPage = lazy(() => import('@/pages/ReferralPage'));
-const EnhancedReferralPage = lazy(() => import('@/pages/EnhancedReferralPage'));
 const AffiliateApplicationPage = lazy(() => import('@/pages/AffiliateApplicationPage'));
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'));

@@ -204,7 +204,7 @@ const BlurredSection = ({
         
         <div className="text-center mt-2">
           <p className="text-xs text-gray-400">
-            Cancel anytime. Entertainment/Education—no therapy.
+            Cancel anytime. Entertainment/Education - no therapy.
           </p>
         </div>
       </motion.div>

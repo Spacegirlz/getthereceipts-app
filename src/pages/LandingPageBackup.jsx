@@ -393,7 +393,7 @@ const LandingPage = () => {
                 "That's not flirting. That's emotional breadcrumbing."
               </p>
               <p className="text-gray-300 italic text-lg leading-relaxed">
-                "This friend loves you—but they keep making it about them. It's not your job to shrink so they feel bigger."
+                "This friend loves you - but they keep making it about them. It's not your job to shrink so they feel bigger."
               </p>
             </div>
 
@@ -1237,7 +1237,7 @@ const LandingPage = () => {
               <h3 className="text-xl font-bold text-white mb-4">Your privacy comes first.</h3>
               <div className="space-y-3 text-gray-300 text-sm max-w-2xl mx-auto">
                 <p>Every chat is processed anonymously, never stored, and never used for training or machine learning models.</p>
-                <p>When Sage's job is done, the message is gone — for good.</p>
+                <p>When Sage's job is done, the message is gone  -  for good.</p>
               </div>
             </div>
             

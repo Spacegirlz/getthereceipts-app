@@ -487,7 +487,7 @@ const fixGrammar = (text) => {
     .replace(/you waste more time\./g, "than waste more time.")
     .replace(/they aresue/g, "an issue")
     // Replace em dashes with spaces to prevent word concatenation
-    .replace(/—/g, " ")
+    .replace(/\u2014/g, " ")
     .replace(/–/g, " ");
   
   return fixed;
@@ -563,7 +563,7 @@ const parseConversationSides = (message, context) => {
       processed++;
     }
     // Format 3: Other party with timestamp "Mateo (10:42 PM): text"
-    else if (line.includes('(') && line.includes('):') && !line.includes('—')) {
+    else if (line.includes('(') && line.includes('):') && !line.includes('\u2014')) {
       const text = line.substring(line.indexOf('):') + 2);
       otherText += ' ' + text;
       const speaker = line.substring(0, line.indexOf(' ('));
@@ -571,7 +571,7 @@ const parseConversationSides = (message, context) => {
       processed++;
     }
     // Format 4: Other party simple format "Name: text" (NEW)
-    else if (line.includes(':') && !line.includes('(') && !line.includes('—')) {
+    else if (line.includes(':') && !line.includes('(') && !line.includes('\u2014')) {
       const colonIndex = line.indexOf(':');
       const speaker = line.substring(0, colonIndex).trim();
       const text = line.substring(colonIndex + 1).trim();

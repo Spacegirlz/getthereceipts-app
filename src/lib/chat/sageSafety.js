@@ -8,7 +8,7 @@ export const SAGE_SAFETY_LAYER = {
   HARD_BLOCKS: [
     {
       trigger: (t) => /\b(kill myself|end it all|want to die|suicide|end my life|can't go on)\b/i.test(t),
-      response: "Bestie, I need you to call 988 (Crisis Lifeline) right now. This is beyond relationship patterns — it's about keeping you safe. I care about you, but they’re trained for this. Please reach out. 💜"
+      response: "Bestie, I need you to call 988 (Crisis Lifeline) right now. This is beyond relationship patterns  -  it's about keeping you safe. I care about you, but they’re trained for this. Please reach out. 💜"
     },
     {
       trigger: (t) => {
@@ -33,7 +33,7 @@ export const SAGE_SAFETY_LAYER = {
     },
     {
       trigger: (t) => /\b(he|she|they)\s+(grabbed|pushed|threatened|controlled|tracked)\b/i.test(t),
-      prefix: "I’m hearing controlling/violent vibes — that matters more than any pattern read. The DV Hotline (1‑800‑799‑7233) can help you think through options safely. "
+      prefix: "I’m hearing controlling/violent vibes  -  that matters more than any pattern read. The DV Hotline (1‑800‑799‑7233) can help you think through options safely. "
     }
   ],
 };

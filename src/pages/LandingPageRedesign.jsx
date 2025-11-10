@@ -37,7 +37,7 @@ const LandingPageRedesign = () => {
         { sender: 'Ava', text: 'maybe we should hang soon', type: 'ava' },
         { sender: 'Chris', text: 'yeah when?', type: 'chris' },
         { sender: 'Ava', text: 'idk I\'ll let u know', type: 'ava' },
-        { separator: '— 2 days later, 2:47 AM —' },
+        { separator: ' -  2 days later, 2:47 AM  - ' },
         { sender: 'Ava', text: 'hey', type: 'ava' }
       ],
       result: {
@@ -81,7 +81,7 @@ const LandingPageRedesign = () => {
         { sender: 'Ava', text: 'maybe! I might be free', type: 'ava' },
         { sender: 'Chris', text: 'should I make a reservation?', type: 'chris' },
         { sender: 'Ava', text: 'let me see how the week goes', type: 'ava' },
-        { separator: '— Weekend passes —' },
+        { separator: ' -  Weekend passes  - ' },
         { sender: 'Ava', text: 'sorry this weekend got crazy!', type: 'ava' }
       ],
       result: {
