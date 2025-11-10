@@ -812,11 +812,11 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
   // Primary: Use quiz context if provided
   if (context?.context || context?.contextType || context?.relationshipType) {
     const quizContext = (context?.context || context?.contextType || context?.relationshipType).toLowerCase();
-    if (quizContext === 'work') {
+    if (quizContext === 'work' || quizContext === 'workplace' || quizContext === 'professional') {
       actualContext = 'Work/Professional';
-    } else if (quizContext === 'family') {
+    } else if (quizContext === 'family' || quizContext === 'familial') {
       actualContext = 'Family/Personal';
-    } else if (quizContext === 'friends') {
+    } else if (quizContext === 'friends' || quizContext === 'friend') {
       actualContext = 'Friendship';
     } else if (quizContext === 'dating' || quizContext === 'situationship' || quizContext === 'marriage' || quizContext === "don't know yet") {
       actualContext = 'Dating/Romantic';
@@ -1087,9 +1087,37 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
         CONTEXT: {
           names: `${cleanContext.userName} is asking about ${cleanContext.otherName}`,
           relationship: cleanContext.relationshipType,
-          background: cleanContext.background || context?.background || ''
+          background: cleanContext.background || context?.background || '',
+          inputFormat: context?.inputFormat || cleanContext?.inputFormat || 'conversation',
+          inputMethod: context?.inputMethod || 'conversation',
+          narrativeDisclaimer: context?.narrativeDisclaimer || cleanContext?.narrativeDisclaimer || ''
         }
       };
+      const supplementalContextParts = [];
+      if (userPayload.CONTEXT.relationship) {
+        supplementalContextParts.push(`Relationship Type: ${userPayload.CONTEXT.relationship}`);
+      }
+      if (userPayload.CONTEXT.background) {
+        supplementalContextParts.push(`Context Notes: ${userPayload.CONTEXT.background}`);
+      }
+      if (context?.colorMapping) {
+        supplementalContextParts.push(`Color Mapping (for screenshots): ${context.colorMapping}`);
+      }
+      if (Array.isArray(context?.extractedTexts) && context.extractedTexts.length) {
+        supplementalContextParts.push(`Extracted Screenshot Text Count: ${context.extractedTexts.length}`);
+      }
+      if (userPayload.CONTEXT.inputMethod) {
+        supplementalContextParts.push(`Input Method: ${userPayload.CONTEXT.inputMethod}`);
+      }
+      if (userPayload.CONTEXT.inputFormat) {
+        supplementalContextParts.push(`Input Format: ${userPayload.CONTEXT.inputFormat}`);
+      }
+      if (userPayload.CONTEXT.narrativeDisclaimer) {
+        supplementalContextParts.push(`Narrative Disclaimer: ${userPayload.CONTEXT.narrativeDisclaimer}`);
+      }
+      const supplementalContextBlock = supplementalContextParts.length
+        ? `USER-PROVIDED CONTEXT:\n${supplementalContextParts.join('\n')}\n\n`
+        : '';
       console.log('🎯 FINAL NAME ASSIGNMENT CHECK:', {
         userSelectedAs: cleanContext.userName,
         otherIdentifiedAs: cleanContext.otherName,
@@ -1100,7 +1128,7 @@ export const analyzeWithGPT = async (message, context, attemptNumber = 0) => {
         criticalContext: `USER: ${cleanContext.userName} | OTHER: ${cleanContext.otherName}`
       });
       const userContent = `
-CONVERSATION BETWEEN ${cleanContext.userName} AND ${cleanContext.otherName}:
+${supplementalContextBlock}CONVERSATION BETWEEN ${cleanContext.userName} AND ${cleanContext.otherName}:
 ${cleanConversation}
 
 IMPORTANT: 
@@ -1109,7 +1137,7 @@ IMPORTANT:
 - NEVER use the words "chat excerpt" or any field names
 - The actual names are ${cleanContext.userName} and ${cleanContext.otherName}
 `;
-
+      
       console.log('API Request selection:', { provider, openAIModel, geminiModel });
 
 

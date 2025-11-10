@@ -541,7 +541,7 @@ const ReceiptsCardPage = () => {
                           Unlock Unlimited Receipts + Premium Features
                         </h3>
                         <p className="text-sm text-gray-300">
-                          Join 1,200+ users getting unlimited analysis, priority support & exclusive features
+                          Join the first 500 getting unlimited analysis, priority support & exclusive features
                         </p>
                       </div>
                       <Button

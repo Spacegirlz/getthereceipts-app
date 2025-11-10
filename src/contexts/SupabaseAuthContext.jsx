@@ -148,21 +148,21 @@ export const AuthProvider = ({ children }) => {
               setTimeout(() => reject(new Error('Database query timeout')), 5000)
             );
             
-              const queryPromise = supabase
-                .from('users')
+            const queryPromise = supabase
+              .from('users')
                 .select('subscription_status, credits_remaining')
-                .eq('id', session.user.id)
-                .single();
-              
-              const { data: userData, error } = await Promise.race([queryPromise, timeoutPromise]);
-              
-              if (error) {
-                console.warn('🔐 Initial session database query error:', error, 'Defaulting to free tier');
-                setIsPremium(false);
-              } else {
+              .eq('id', session.user.id)
+              .single();
+            
+            const { data: userData, error } = await Promise.race([queryPromise, timeoutPromise]);
+            
+            if (error) {
+              console.warn('🔐 Initial session database query error:', error, 'Defaulting to free tier');
+              setIsPremium(false);
+            } else {
                 // Premium if: subscription is premium/yearly/founder OR has Emergency Pack credits
                 const hasEmergencyPackCredits = userData?.subscription_status === 'free' && (userData?.credits_remaining > 0);
-                const actualIsPremium = userData?.subscription_status === 'premium' || 
+              const actualIsPremium = userData?.subscription_status === 'premium' || 
                                      userData?.subscription_status === 'yearly' || 
                                      userData?.subscription_status === 'founder' ||
                                      hasEmergencyPackCredits;

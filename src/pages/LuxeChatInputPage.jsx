@@ -302,7 +302,7 @@ const LuxeChatInputPage = () => {
           // Free users: Check Emergency Pack credits first (from database), then FreeUsageService
           if (userCredits.credits > 0) {
             // User has Emergency Pack credits - use those first
-            canProceed = true;
+          canProceed = true;
             creditMessage = `Free user - ${userCredits.credits} Emergency Pack credits remaining`;
             creditCheckResult = { reason: 'emergency', remaining: userCredits.credits, needsIncrement: true };
           } else {
@@ -472,10 +472,10 @@ const LuxeChatInputPage = () => {
           if (creditCheckResult.reason === 'emergency') {
             // Emergency Pack credits: Deduct from database credits_remaining
             const { deductCredits } = await import('@/lib/services/creditsSystem');
-            const deductResult = await deductCredits(user.id, 1);
-            if (deductResult.success) {
+        const deductResult = await deductCredits(user.id, 1);
+        if (deductResult.success) {
               console.log(`✅ Emergency Pack credit consumed. Remaining: ${deductResult.newCredits}`);
-            } else {
+        } else {
               console.warn('⚠️ Failed to deduct Emergency Pack credit:', deductResult.error);
             }
           } else if (creditCheckResult.reason === 'starter') {
@@ -490,14 +490,14 @@ const LuxeChatInputPage = () => {
             console.log('✅ Daily receipt consumed for free user');
             // Also update database via RPC for consistency
             await SubscriptionService.consumeCredit(user.id);
-          }
+        }
         } else if (userCredits.subscription === 'premium' || 
                    userCredits.subscription === 'yearly' || 
                    userCredits.subscription === 'founder') {
           // Premium users: No credit deduction needed, but track usage
           await SubscriptionService.consumeCredit(user.id);
           console.log('✅ Usage tracked for premium user (unlimited)');
-        } else {
+      } else {
           // Legacy users (non-free subscription with credits): Use RPC function
           const consumeResult = await SubscriptionService.consumeCredit(user.id);
           if (consumeResult.success) {
@@ -1025,7 +1025,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                     Instant access, no commitment • 5 receipts + 40 chats each
                   </p>
                 </div>
-
+                  
                 {/* Secondary CTA: $4.99 Monthly - Clear Value Prop */}
                 <div className="space-y-3 mb-4">
                   <button
@@ -1077,12 +1077,12 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                 )}
 
                 {/* Dismiss */}
-                <button
-                  onClick={() => setShowLimitModal(false)}
+                  <button
+                    onClick={() => setShowLimitModal(false)}
                   className="w-full text-gray-400 hover:text-white transition-colors duration-300 py-2 text-sm"
-                >
-                  Maybe Later
-                </button>
+                  >
+                    Maybe Later
+                  </button>
               </div>
             </motion.div>
           </motion.div>

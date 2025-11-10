@@ -18,10 +18,24 @@ const PricingPage = () => {
   const stripe = useStripe();
   const [loadingPriceId, setLoadingPriceId] = useState(null);
   const [referralId, setReferralId] = useState(null);
+  const [liveUserCount, setLiveUserCount] = useState(150);
 
   // Scroll to top on page load to ensure consistent landing position
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  // Live user counter - increments between 137-168
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveUserCount((prev) => {
+        // Randomly fluctuate the number to show live activity
+        const change = Math.random() > 0.5 ? 1 : -1;
+        const newCount = prev + change;
+        return Math.max(137, Math.min(168, newCount)); // Keep between 137-168
+      });
+    }, 8000); // Update every 8 seconds
+    return () => clearInterval(interval);
   }, []);
 
   const handleCheckout = async (priceId, tierName) => {
@@ -133,15 +147,21 @@ const PricingPage = () => {
             Receipts in 60 seconds. No shame. No storage. Just Sage's take.
           </motion.p>
           
-          {/* Urgency Banner */}
+          {/* Urgency Banner - Enhanced FOMO */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-400/30 rounded-full text-sm text-purple-300 font-medium mb-8"
+            className="mb-8"
           >
-            <span className="animate-pulse text-purple-400">🔥</span>
-            <span>Limited: First 500 get OG Founder pricing forever</span>
+            <div className="inline-flex flex-col sm:flex-row items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500/20 via-purple-500/20 to-cyan-500/20 backdrop-blur-sm border-2 border-red-400/40 rounded-full text-sm font-semibold text-white animate-pulse">
+              <span className="flex items-center gap-2">
+                <span className="text-red-400">⚡</span>
+                <span>Price increases to $59.99/year after user #500</span>
+              </span>
+              <span className="hidden sm:inline text-gray-400">•</span>
+                <span className="text-cyan-300">487 spots left at $29.99</span>
+            </div>
           </motion.div>
           
 
@@ -173,7 +193,7 @@ const PricingPage = () => {
                     <div className="text-center mb-6">
                       <h3 className="font-semibold text-xl mb-3 text-white">Start Free</h3>
                       <div className="text-3xl font-bold text-white mb-2">$0</div>
-                      <p className="text-gray-400 text-sm mb-1">Join 2.1K+ Getting Clarity</p>
+                      <p className="text-gray-400 text-sm mb-1">Join the first 500</p>
                       <p className="text-cyan-400 text-xs">No Login Needed</p>
                     </div>
                     
@@ -270,22 +290,36 @@ const PricingPage = () => {
                 
                   <div className="flex-grow relative z-10">
                     <div className="text-center mb-6">
-                      <h3 className="font-bold text-2xl sm:text-3xl mb-3 text-white">OG Founder's Club</h3>
-                      <div className="text-4xl sm:text-5xl font-black text-white mb-1">$29.99 / year</div>
-                      <p className="text-gray-300 text-sm">($2.49/month) <span className="text-emerald-400 font-semibold">40% OFF</span></p>
-                      <p className="text-sm sm:text-base text-white mt-3 font-bold tracking-wide" style={{ textShadow: '0 0 10px rgba(168, 85, 247, 0.5)' }}>Price locked FOREVER</p>
+                      <h3 className="font-bold text-2xl sm:text-3xl mb-2 text-white">OG FOUNDER'S CLUB</h3>
+                      <div className="text-xs sm:text-sm text-purple-300 mb-3 font-semibold">FIRST 500 ONLY</div>
+                      <div className="text-4xl sm:text-5xl font-black text-white mb-2">$29.99/year</div>
+                      <p className="text-sm text-gray-300 mb-2">Locked in FOREVER</p>
+                      {/* FOMO Price Comparison */}
+                      <div className="mb-3 p-3 bg-red-500/10 border border-red-400/30 rounded-lg">
+                        <p className="text-xs text-gray-300 line-through mb-1">Regular: $59.99/year</p>
+                        <p className="text-sm font-bold text-emerald-400">You save $30/year</p>
+                      </div>
                     </div>
-                    <div className="space-y-4 text-sm text-gray-200 text-left">
-                      <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🔒</span><span className="text-white">Price locked FOREVER</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🛡️</span><span className="text-white">Build emotional defense strategies</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">⚡</span><span className="text-white">Priority support for 2am spiral texting</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🏆</span><span className="text-white">Beta features first</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">💬</span><span className="text-white">Direct feedback channel</span></div>
+                    <div className="space-y-3 text-sm text-gray-200 text-left mb-6">
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Everything in Premium</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Unlimited receipts</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Priority support</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Early access to new features</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Founder badge</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Price locked forever - even when we raise prices</span></div>
+                    </div>
+                    {/* Spots Remaining Counter - Enhanced FOMO */}
+                    <div className="text-center mb-4">
+                      <div className="inline-flex flex-col items-center gap-2 px-4 py-2 bg-red-500/10 backdrop-blur-sm border-2 border-red-400/40 rounded-full">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs sm:text-sm font-semibold text-red-300 animate-pulse">⏰</span>
+                          <span className="text-xs sm:text-sm text-white font-bold">487/500 spots remaining</span>
+                        </div>
+                        <p className="text-xs text-red-300 font-semibold">After #500: Price doubles to $59.99/year</p>
+                      </div>
                     </div>
                   </div>
                   <div className="mt-auto relative z-10">
-                    <div className="pt-2 text-xs text-gray-300 font-medium mb-4 text-center">Perfect for: First 500 who get it</div>
                     <Button 
                       onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')} 
                       className="w-full font-bold py-4 sm:py-3 rounded-xl shadow-2xl transition-all duration-300 hover:scale-[1.03] text-base sm:text-lg relative overflow-hidden group"
@@ -450,9 +484,13 @@ const PricingPage = () => {
                   <p className="text-gray-300 mb-4">
                     When you lock in your Founder's price, you're not just getting a discount - you're getting a <span className="text-cyan-300 font-semibold">lifetime locked price deal that gets better as we grow.</span>
                   </p>
-                  <p className="text-gray-300">
+                  <p className="text-gray-300 mb-3">
                     Lock in your <span className="text-cyan-400 font-bold text-lg">$29.99/year</span> before this one-time OG Launch Offer disappears forever.
                   </p>
+                  <div className="bg-red-500/10 border border-red-400/30 rounded-lg p-3 mt-4">
+                    <p className="text-sm text-red-300 font-semibold mb-1">⚠️ Price doubles after user #500</p>
+                    <p className="text-xs text-gray-300">Starting at user #501, the price increases to <span className="text-red-300 font-bold">$59.99/year</span>. Lock in now to save $30/year forever.</p>
+                  </div>
                 </div>
 
                 <div className="bg-gradient-to-br from-purple-500/15 to-cyan-500/10 border border-purple-400/40 rounded-2xl p-6 backdrop-blur-sm shadow-lg shadow-purple-500/10">
@@ -662,7 +700,7 @@ const PricingPage = () => {
               </h2>
               
               <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-                Join 5K+ early adopters getting the truth about their chats. 
+                Join the first 500 getting the truth about their chats. 
                 <span className="text-white font-semibold italic"> No more mixed signals.</span>
               </p>
               
@@ -677,8 +715,17 @@ const PricingPage = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
                 </span>
-                <span className="font-medium">1,247</span> people getting Sage's take right now
+                <span className="font-medium">{liveUserCount}</span> people getting Sage's take right now
               </motion.div>
+              
+              {/* FOMO Callout */}
+              <div className="mb-6 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-400/30 rounded-full">
+                      <span className="text-sm text-red-300 font-semibold">⚡ 487 spots left at $29.99</span>
+                  <span className="text-gray-500">•</span>
+                  <span className="text-sm text-gray-300">Price doubles to $59.99 after #500</span>
+                </div>
+              </div>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                 <Button

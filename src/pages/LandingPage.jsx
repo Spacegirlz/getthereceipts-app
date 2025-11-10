@@ -35,7 +35,7 @@ const LandingPage = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
   const [selectedDemo, setSelectedDemo] = useState(null);
   const [showDemoResult, setShowDemoResult] = useState(false);
-  const [liveUserCount, setLiveUserCount] = useState(1247);
+  const [liveUserCount, setLiveUserCount] = useState(150);
   const [selectedArchetype, setSelectedArchetype] = useState('ghosting-champion');
   const [currentReceiptType, setCurrentReceiptType] = useState('truth');
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
@@ -378,9 +378,9 @@ const LandingPage = () => {
     const interval = setInterval(() => {
       setLiveUserCount((prev) => {
         // Randomly fluctuate the number to show live activity
-        const change = Math.random() > 0.5 ? 1 : - 1;
+        const change = Math.random() > 0.5 ? 1 : -1;
         const newCount = prev + change;
-        return Math.max(1200, Math.min(1300, newCount)); // Keep between 1200-1300
+        return Math.max(137, Math.min(168, newCount)); // Keep between 137-168
       });
     }, 8000); // Update every 8 seconds
     return () => clearInterval(interval);
@@ -489,23 +489,35 @@ const LandingPage = () => {
                 ease: "easeInOut"
               }}
             >
-              🔥
-            </motion.span> Limited: First 500 get lifetime access
+              🚀
+            </motion.span> Just Launched: First 500 Lock in OG Founders Lifetime Access
           </div>
         </motion.div>
 
-        {/* Headline  -  LARGE */}
-        <motion.h1
+        {/* Headline Group - Integrated Unit */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight sm:leading-[1.1] md:leading-[1.05] mb-8 md:mb-12 lg:mb-16 max-w-5xl md:max-w-6xl lg:max-w-7xl mx-auto px-4 sm:px-0"
+          className="mb-8 md:mb-12 lg:mb-16 max-w-5xl md:max-w-6xl lg:max-w-7xl mx-auto px-4 sm:px-0"
         >
-          <span className="text-white">For the message that won't leave your&nbsp;</span>
-          <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-            brain&nbsp;alone.
-          </span>
-        </motion.h1>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight sm:leading-[1.1] md:leading-[1.05] mb-3 md:mb-4">
+            <span className="text-white">Stop spiraling.&nbsp;</span>
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+              Start&nbsp;knowing.
+            </span>
+          </h1>
+          
+          {/* Even-if Tagline - Tightly Integrated */}
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="text-center text-base sm:text-lg md:text-xl lg:text-2xl text-gray-400 font-light leading-relaxed max-w-4xl md:max-w-5xl mx-auto"
+          >
+            Even if you've done a full FBI investigation and called it "closure."
+          </motion.p>
+        </motion.div>
 
         {/* Typing Animation  -  Supporting Examples Below Headline */}
           <motion.div
@@ -550,8 +562,8 @@ const LandingPage = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 md:mb-12 lg:mb-16 max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto leading-relaxed md:leading-loose px-4 sm:px-0"
         >
-          Paste the chat. Tell the story. Get&nbsp;Sage's&nbsp;take. 💅<br />
-          <span className="text-sm sm:text-base text-gray-400">Sage is an Advanced AI Liquistics Decoder. She reads what's really being said: patterns, subtext, and hidden&nbsp;messages.</span>
+          Paste the text. Get the truth. 60&nbsp;seconds.<br />
+          <span className="text-sm sm:text-base text-gray-400 italic">Sage is your advanced AI Decoder who reads between the patterns, subtext and hidden&nbsp;messages.</span>
         </motion.p>
 
 
@@ -560,7 +572,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 md:mb-12 lg:mb-16"
+          className="flex flex-col items-center justify-center mb-8 md:mb-12 lg:mb-16"
         >
           <motion.div
             animate={{ 
@@ -576,7 +588,7 @@ const LandingPage = () => {
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="group"
+            className="group mb-4"
           >
             <Button
               onClick={handleGetStarted}
@@ -587,45 +599,23 @@ const LandingPage = () => {
             </Button>
           </motion.div>
           
-        </motion.div>
-
-        {/* Compact Trust & Social Proof - Combined */}
+          {/* Privacy First Badge - Right Under CTA */}
           <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm md:text-base text-gray-400 mb-6 md:mb-10 px-4"
-        >
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck className="h-4 w-4 text-emerald-400" />
-            <span>Secure</span>
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.85 }}
+            className="flex justify-center w-full"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm border border-emerald-400/30 rounded-full text-xs sm:text-sm text-gray-300 hover:bg-white/10 transition-all duration-300">
+              <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400" />
+              <span className="font-medium">
+                <span className="text-emerald-400">Privacy First Policy</span>
+                <span className="text-gray-500 mx-1.5">•</span>
+                Your Data Your Choice
+              </span>
             </div>
-          <span className="text-gray-600">•</span>
-          <div className="flex items-center gap-1.5">
-            <Zap className="h-4 w-4 text-cyan-400" />
-            <span>60s</span>
-          </div>
-          <span className="text-gray-600">•</span>
-          <div className="text-white font-semibold">2.1K+ users</div>
-          <span className="text-gray-600">•</span>
-          <div className="text-white font-semibold">94% accurate</div>
-        </motion.div>
-
-        {/* Privacy First Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex justify-center mb-8 md:mb-12"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm border border-emerald-400/30 rounded-full text-xs sm:text-sm text-gray-300 hover:bg-white/10 transition-all duration-300">
-            <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400" />
-            <span className="font-medium">
-              <span className="text-emerald-400">Privacy First Policy</span>
-              <span className="text-gray-500 mx-1.5">•</span>
-              Your Data Your Choice
-            </span>
-          </div>
+          </motion.div>
+          
         </motion.div>
 
             </motion.div>
@@ -645,7 +635,7 @@ const LandingPage = () => {
               className="bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-2xl p-8 shadow-lg shadow-cyan-500/10"
             >
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                Join <span className="text-white font-extrabold">2.1K+ people</span> getting clarity
+                Join the first 500 getting clarity
               </h2>
               <p className="text-lg text-gray-300 mb-6">
                 Get instant clarity on what they really mean. No more guessing games.
@@ -662,7 +652,7 @@ const LandingPage = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
                 </span>
-                <span className="font-medium">247</span> people online now
+                <span className="font-medium">{liveUserCount}</span> people online now
               </motion.div>
               
               <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
@@ -682,6 +672,9 @@ const LandingPage = () => {
             </motion.div>
           </div>
         </section>
+
+        {/* Gradient Divider */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent opacity-80 my-10 sm:my-12 lg:my-16"></div>
 
         {/* Meet Sage Section  -  Enhanced with Personality */}
         <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
@@ -786,7 +779,8 @@ const LandingPage = () => {
             </div>
         </section>
 
-
+        {/* Gradient Divider */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/25 to-transparent opacity-80 my-10 sm:my-12 lg:my-16"></div>
 
         {/* How It Works Section  -  MOVED ABOVE DEMO - Compact Mobile */}
         <section className="py-8 md:py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
@@ -862,6 +856,9 @@ const LandingPage = () => {
             </div>
           </div>
         </section>
+
+        {/* Gradient Divider */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent opacity-80 my-10 sm:my-12 lg:my-16"></div>
 
         {/* Interactive Demo Section */}
         <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
@@ -1070,7 +1067,7 @@ const LandingPage = () => {
                       <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full border-2 border-white/20"></div>
                       <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full border-2 border-white/20"></div>
                     </div>
-                    <p className="text-white font-semibold text-sm">Join 5K+ users</p>
+                    <p className="text-white font-semibold text-sm">Join the first 500</p>
                   </div>
                   <p className="text-gray-300 text-xs transition-all duration-500 ease-in-out">
                     "{testimonials[currentTestimonialIndex].text}"  -  {testimonials[currentTestimonialIndex].author}
@@ -1116,7 +1113,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-
         {/* Social Proof Section  -  Premium SaaS Style - Segmented */}
         <section className="py-20 md:py-24 lg:py-32 px-4 relative overflow-hidden" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           {/* Distinct Background for Segmentation */}
@@ -1144,60 +1140,30 @@ const LandingPage = () => {
               className="text-center mb-12"
           >
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 max-w-4xl mx-auto leading-tight">
-                  Trusted by thousands who are <span className="text-cyan-400">DONE</span> guessing 💯
-            </h2>
+                  Trust by those who are <span className="text-cyan-400">DONE</span> guessing 💯
+                </h2>
                 <p className="text-base sm:text-lg text-gray-300 max-w-5xl mx-auto tracking-tight px-4">
                   Join the community that's finally getting the real talk (and proving their friends wrong)
                 </p>
           </motion.div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-          <motion.div
-                initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="text-center"
-              >
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2">
-                  2.1K+
+            {/* Just Launched Badge - Replaces Fake Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-center mb-16"
+            >
+              <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-cyan-400/30 rounded-full">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                </span>
+                <span className="text-base sm:text-lg font-semibold text-white">
+                  Just Launched • Join the first 500 users
+                </span>
               </div>
-                <div className="text-sm text-gray-400">Early Adopters</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-center"
-              >
-                <div className="text-3xl sm:text-4xl font-bold text-emerald-400 mb-2">
-                  8.7K+
-            </div>
-                <div className="text-sm text-gray-400">Receipts That Hit Different</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="text-center"
-              >
-                <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2">
-                  94%
-              </div>
-                <div className="text-sm text-gray-400">No BS Accuracy</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-center"
-              >
-                <div className="text-3xl sm:text-4xl font-bold text-emerald-400 mb-2">
-                  60s
-            </div>
-                <div className="text-sm text-gray-400">Lightning Fast Tea</div>
-              </motion.div>
-            </div>
+            </motion.div>
 
             {/* Testimonial Cards - Enhanced for Segmented Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1261,6 +1227,19 @@ const LandingPage = () => {
                   </p>
           </motion.div>
         </div>
+          
+          {/* Built By Line - After Testimonials */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="text-center mt-12 mb-8"
+          >
+            <p className="text-sm sm:text-base text-gray-400">
+              <em>Built by a team that's generated $7M+ with AI systems because we were tired of spiraling over 2am texts and what "k..." really means. First 500 users lock in lifetime access.</em>
+            </p>
+          </motion.div>
+          
           </div>
         </section>
 
@@ -1290,8 +1269,8 @@ const LandingPage = () => {
                 transition={{ delay: 0.4, duration: 0.5 }}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-400/30 rounded-full text-sm text-purple-300 font-medium mb-8"
               >
-                <span className="animate-pulse text-purple-400">🔥</span>
-                <span>Limited: First 500 get OG Founder pricing forever</span>
+                <span className="animate-pulse text-purple-400">🚀</span>
+                <span>Just Launched: First 500 Lock in OG Founders Lifetime Access</span>
               </motion.div>
             </motion.div>
 
@@ -1420,22 +1399,29 @@ const LandingPage = () => {
                 
                   <div className="flex-grow relative z-10">
                     <div className="text-center mb-6">
-                      <h3 className="font-bold text-2xl sm:text-3xl mb-3 text-white">OG Founder's Club</h3>
-                      <div className="text-4xl sm:text-5xl font-black text-white mb-1">$29.99 / year</div>
-                      <p className="text-gray-300 text-sm">($2.49/month) <span className="text-emerald-400 font-semibold">40% OFF</span></p>
-                      <p className="text-sm sm:text-base text-white mt-3 font-bold tracking-wide" style={{ textShadow: '0 0 10px rgba(168, 85, 247, 0.5)' }}>Price locked FOREVER</p>
+                      <h3 className="font-bold text-2xl sm:text-3xl mb-2 text-white">OG FOUNDER'S CLUB</h3>
+                      <div className="text-xs sm:text-sm text-purple-300 mb-3 font-semibold">FIRST 500 ONLY</div>
+                      <div className="text-4xl sm:text-5xl font-black text-white mb-2">$29.99/year</div>
+                      <p className="text-sm text-gray-300 mb-4">Locked in FOREVER</p>
+                      <p className="text-xs text-gray-400">(Regular price: $59.99/year starting user #501)</p>
                     </div>
-                    <div className="space-y-4 text-sm text-gray-200 text-left">
-                      <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🔒</span><span className="text-white">Price locked FOREVER</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🛡️</span><span className="text-white">Build emotional defense strategies</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">⚡</span><span className="text-white">Priority support for 2am spiral texting</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🏆</span><span className="text-white">Beta features first</span></div>
-                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">💬</span><span className="text-white">Direct feedback channel</span></div>
+                    <div className="space-y-3 text-sm text-gray-200 text-left mb-6">
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Everything in Premium</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Unlimited receipts</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Priority support</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Early access to new features</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Founder badge</span></div>
+                      <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">✅</span><span className="text-white">Price locked forever - even when we raise prices</span></div>
+                    </div>
+                    {/* Spots Remaining Counter */}
+                    <div className="text-center mb-4">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-purple-400/30 rounded-full">
+                        <span className="text-xs sm:text-sm font-semibold text-purple-300">⏰</span>
+                        <span className="text-xs sm:text-sm text-white font-medium">487/500 spots remaining</span>
+                      </div>
                     </div>
                   </div>
                   <div className="mt-auto relative z-10">
-                    <div className="pt-2 text-xs text-gray-300 font-medium mb-4 text-center">Perfect for: First 500 who get it</div>
                     <Button 
                       onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')} 
                       className="w-full font-bold py-4 sm:py-3 rounded-xl shadow-2xl transition-all duration-300 hover:scale-[1.03] text-base sm:text-lg relative overflow-hidden group"
@@ -1600,7 +1586,7 @@ const LandingPage = () => {
           </h2>
           
               <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-                Join 5K+ early adopters getting the truth about their&nbsp;chats. 
+                Join the first 500 getting the truth about their&nbsp;chats. 
                 <span className="text-white font-semibold italic"> No&nbsp;more mixed&nbsp;signals.</span>
               </p>
               
@@ -1615,7 +1601,7 @@ const LandingPage = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                 </span>
-                <span className="font-medium">{liveUserCount.toLocaleString()}</span> people getting Sage's take right now
+                <span className="font-medium">{liveUserCount}</span> people getting Sage's take right now
               </motion.div>
               
             

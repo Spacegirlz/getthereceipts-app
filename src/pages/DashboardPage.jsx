@@ -942,7 +942,7 @@ const DashboardPage = () => {
                     </div>
                     <div>
                       <h2 className="text-lg sm:text-xl font-bold text-white">
-                        Receipts & Riches
+                          Receipts & Riches
                       </h2>
                       <p className="text-xs sm:text-sm text-gray-300">Earn 30% commission on referrals</p>
                     </div>
