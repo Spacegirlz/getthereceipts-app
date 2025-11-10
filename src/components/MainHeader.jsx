@@ -97,17 +97,17 @@ const MainHeader = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex">
-            {!loading && user ? (
-              <Button variant="ghost" className="text-white hover:bg-white/10" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4"/>
-              </Button>
-            ) : !loading ? (
-              <Button className="viral-button-popular" onClick={() => openModal('sign_in')}>
-                <LogIn className="mr-2 h-4 w-4" /> Login
-              </Button>
-            ) : (
-              <div style={{ width: 88, height: 36 }} />
-            )}
+          {!loading && user ? (
+            <Button variant="ghost" className="text-white hover:bg-white/10" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4"/>
+            </Button>
+          ) : !loading ? (
+            <Button className="viral-button-popular" onClick={() => openModal('sign_in')}>
+              <LogIn className="mr-2 h-4 w-4" /> Login
+            </Button>
+          ) : (
+            <div style={{ width: 88, height: 36 }} />
+          )}
           </div>
 
           {/* Mobile Hamburger Menu Button */}

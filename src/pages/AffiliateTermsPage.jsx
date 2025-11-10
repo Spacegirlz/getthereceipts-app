@@ -271,7 +271,7 @@ export default function AffiliateTermsPage() {
           </div>
           
           {/* Disclaimer */}
-          <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+          <p className="text-gray-500 text-xs mb-2">For 16+ Entertainment Purposes Only</p>
           
           {/* Copyright */}
           <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>

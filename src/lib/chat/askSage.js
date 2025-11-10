@@ -59,13 +59,9 @@ const cleanupSageResponse = (text) => {
 
 export async function askSage(question, receiptData, previousMessages = [], opts = {}) {
   try {
-    // Client-side daily chat cap for Free users (5/day, UTC)
-    if (opts?.userId && !opts?.isPremium && !opts?.isTrial) {
-      const chatCheck = FreeUsageService.checkAndIncrementDailyChat(opts.userId);
-      if (!chatCheck.allowed) {
-        return 'Daily chat limit reached for Free accounts. Upgrade to continue, or try again after midnight (UTC).';
-      }
-    }
+    // Note: Daily chat limit removed - now using per-receipt exchange limits only
+    // Free users get 5 exchanges per receipt (enforced in AskSageSimple.jsx)
+    // Premium users get 40 exchanges per receipt
     // Try API endpoint first (for production)
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
       try {

@@ -153,25 +153,36 @@ module.exports = async function handler(req, res) {
     // Determine credits and subscription type based on amount
     let creditsToAdd = 0;
     let subscriptionType = 'free';
+    let expiresAt = null;
     
-    if (amountPaid === 4.99) {
-      // Launch Early Bird Monthly ($4.99) → premium unlimited
+    if (amountPaid === 0.99) {
+      // Emergency Pack x 5 - $0.99
+      console.log('🆘 Processing Emergency Pack x 5 ($0.99)');
+      creditsToAdd = 5;
+      subscriptionType = currentUser?.subscription_status || 'free'; // Keep current status, just add credits
+    } else if (amountPaid === 1.99) {
+      // Emergency Pack x 10 - $1.99
+      console.log('🆘 Processing Emergency Pack x 10 ($1.99)');
+      creditsToAdd = 10;
+      subscriptionType = currentUser?.subscription_status || 'free'; // Keep current status, just add credits
+    } else if (amountPaid === 4.99) {
+      // Monthly Premium ($4.99) → premium unlimited
       console.log('🆕 Mapping $4.99 monthly to premium');
       creditsToAdd = -1;
       subscriptionType = 'premium';
-    } else if (amountPaid === 6.99) {
-      creditsToAdd = -1; // Unlimited for monthly premium
-      subscriptionType = 'premium'; // Monthly subscription
+      expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
     } else if (amountPaid === 29.99) {
       creditsToAdd = -1; // Unlimited for yearly
       subscriptionType = 'yearly'; // Yearly subscription
+      expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 365 days from now
     } else {
       console.log(`⚠️ Unknown one-time payment amount: $${amountPaid} - no plan change applied`);
       creditsToAdd = 0;
       subscriptionType = currentUser?.subscription_status || 'free';
+      // No expiration for unknown payments
     }
     
-    console.log(`🎯 Processing ${userEmail}: ${creditsToAdd === -1 ? 'unlimited' : creditsToAdd} credits, subscription: ${subscriptionType}`);
+    console.log(`🎯 Processing ${userEmail}: ${creditsToAdd === -1 ? 'unlimited' : creditsToAdd} credits, subscription: ${subscriptionType}, expires: ${expiresAt?.toISOString()}`);
     
     // Get current user data
     const { data: currentUser, error: fetchError } = await supabase
@@ -193,20 +204,28 @@ module.exports = async function handler(req, res) {
       newCredits = (currentUser.credits_remaining || 0) + creditsToAdd; // Add to existing
     }
     
+    // Build update object with expiration tracking
+    const updateData = {
+      credits_remaining: newCredits,
+      subscription_status: subscriptionType,
+      last_free_receipt_date: new Date().toISOString().split('T')[0]
+    };
+    
+    // Add expiration date if subscription has one
+    if (expiresAt) {
+      updateData.subscription_expires_at = expiresAt.toISOString();
+    }
+    
     // Update user subscription and credits
     const { data, error } = await supabase
       .from('users')
-      .update({ 
-        credits_remaining: newCredits,
-        subscription_status: subscriptionType,
-        last_free_receipt_date: new Date().toISOString().split('T')[0]
-      })
+      .update(updateData)
       .eq('email', userEmail);
       
     if (error) {
       console.error('❌ Error updating user:', error);
     } else {
-      console.log(`✅ Successfully updated ${userEmail}: ${newCredits === -1 ? 'unlimited' : newCredits} credits, subscription: ${subscriptionType}`);
+      console.log(`✅ Successfully updated ${userEmail}: ${newCredits === -1 ? 'unlimited' : newCredits} credits, subscription: ${subscriptionType}${expiresAt ? `, expires: ${expiresAt.toISOString()}` : ''}`);
     }
   }
 

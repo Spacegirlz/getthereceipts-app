@@ -36,7 +36,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
   // Set exchange limits based on tier, with optional explicit override (e.g., anonymous = 3)
   const maxExchanges = typeof maxExchangesOverride === 'number'
     ? maxExchangesOverride
-    : (isPremium || isTrial ? 40 : 5);
+    : (isPremium || isTrial ? 40 : 3);
   const maxMessages = maxExchanges * 2; // 2 messages per exchange
 
   // Auto-scroll to bottom when new messages arrive
@@ -211,7 +211,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
           </span>
         </div>
       </div>
-
+      
       {/* Chat Container - Clean Character AI Style */}
       <div className={`bg-white/8 backdrop-blur-xl ${isExpanded ? 'rounded-t-2xl' : 'rounded-2xl'} shadow-2xl shadow-cyan-500/20 border border-cyan-400/30 overflow-hidden flex flex-col ${isExpanded ? 'flex-1' : ''}`} style={{ 
         minHeight: isExpanded ? 'calc(100vh - 200px)' : '600px', 
@@ -240,7 +240,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
           )}
         </button>
       </div>
-
+      
       {/* Chat Content - Clean Character AI Style */}
       <div className="flex flex-col h-full flex-1" style={{ minHeight: 0 }}>
       
@@ -273,13 +273,13 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
                   "Are they toxic?",
                   "Should I block them?"
                 ].map((suggestion) => (
-                  <button
+                <button
                     key={suggestion}
                     onClick={() => setInput(suggestion)}
                     className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-gray-300 text-xs transition-all border border-white/10 hover:border-cyan-400/40 hover:text-white"
-                  >
+                >
                     {suggestion}
-                  </button>
+                </button>
                 ))}
               </div>
             </div>
@@ -318,17 +318,17 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
                 <div className={`absolute top-2 right-2 opacity-0 group-hover:opacity-100 sm:opacity-0 transition-opacity duration-200 ${
                   msg.role === 'user' ? 'text-purple-100' : 'text-slate-400'
                 }`}>
-                  <button
-                    onClick={() => copyMessage(msg.content, msg.id)}
+                    <button
+                      onClick={() => copyMessage(msg.content, msg.id)}
                     className="p-1.5 hover:bg-white/10 rounded transition-colors"
-                    title="Copy message"
-                  >
-                    {copiedMessageId === msg.id ? (
+                      title="Copy message"
+                    >
+                      {copiedMessageId === msg.id ? (
                       <Check className="w-3.5 h-3.5 text-green-400" />
-                    ) : (
+                      ) : (
                       <Copy className="w-3.5 h-3.5" />
-                    )}
-                  </button>
+                      )}
+                    </button>
                 </div>
               </div>
               
@@ -351,12 +351,12 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
                   alt="Sage"
                   className="w-full h-full object-cover"
                 />
-              </div>
+                  </div>
               
               {/* Typing Indicator Bubble */}
               <div className="bg-slate-800/90 text-slate-100 border border-slate-700/50 backdrop-blur-sm rounded-2xl rounded-tl-sm px-4 py-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
+                    <div className="flex gap-1">
                     <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                     <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                     <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
@@ -369,8 +369,8 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
 
         {/* Input - Clean Character AI Style - Expandable */}
         <div className="border-t border-white/10 bg-slate-900/50 backdrop-blur-sm p-4 flex-shrink-0">
-          <div className="flex gap-3 items-end">
-            <div className="flex-1 relative">
+        <div className="flex gap-3 items-end">
+          <div className="flex-1 relative">
               <textarea
                 ref={(el) => {
                   if (el) {
@@ -384,7 +384,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
                     el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden';
                   }
                 }}
-                value={input}
+              value={input}
                 onChange={(e) => {
                   if (e.target.value.length <= 500) {
                     setInput(e.target.value);
@@ -404,37 +404,37 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
                     handleSend();
                   }
                 }}
-                placeholder="Ask Sage anything about this receipt..."
+              placeholder="Ask Sage anything about this receipt..."
                 className="w-full p-3 pr-20 bg-slate-800/80 border border-slate-700/50 rounded-xl text-slate-100 placeholder-slate-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all backdrop-blur-sm resize-none text-sm"
-                disabled={loading || messages.length >= maxMessages}
-                rows={1}
+              disabled={loading || messages.length >= maxMessages}
+              rows={1}
                 style={{ 
                   minHeight: '44px', 
                   maxHeight: '96px',
                   lineHeight: '24px',
                   overflowY: 'auto'
                 }}
-              />
+            />
               <div className="absolute bottom-2 right-2 text-xs text-slate-500 pointer-events-none">
-                {input.length}/500
-              </div>
+              {input.length}/500
             </div>
-            <button
-              onClick={handleSend}
-              disabled={loading || messages.length >= maxMessages || !input.trim()}
+          </div>
+          <button
+            onClick={handleSend}
+            disabled={loading || messages.length >= maxMessages || !input.trim()}
               className="p-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl hover:from-cyan-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl border border-cyan-400/30 flex-shrink-0"
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
                 <Send className="w-5 h-5" />
-              )}
-            </button>
+            )}
+          </button>
           </div>
         </div>
-      </div>
+        </div>
       
-      {messages.length >= maxMessages && (
+        {messages.length >= maxMessages && (
           <div className="mt-4">
             {!isPremium ? (
               <div className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 rounded-xl p-4 border border-slate-600/50 backdrop-blur-sm">
@@ -462,7 +462,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
           </div>
         )}
       </div>
-      </div>
+    </div>
     </>
   );
 }

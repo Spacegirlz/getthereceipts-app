@@ -212,15 +212,18 @@ const LuxeChatInputPage = () => {
     try {
       // 🔐 CREDIT CHECK: Verify user can perform analysis
       const { AnonymousUserService } = await import('@/lib/services/anonymousUserService');
-      const { getUserCredits, deductCredits } = await import('@/lib/services/creditsSystem');
+      const { getUserCredits } = await import('@/lib/services/creditsSystem');
+      const { SubscriptionService } = await import('@/lib/services/subscriptionService');
+      const FreeUsageService = (await import('@/lib/services/freeUsageService')).default;
       
       let canProceed = false;
       let creditMessage = '';
       let creditCheckResult = null; // Initialize for both user types
+      let userCredits = null; // Store for use in deduction phase
       
       if (user) {
-        // Logged-in user: Check their credits
-        const userCredits = await getUserCredits(user.id);
+        // Logged-in user: Check their credits using proper service
+        userCredits = await getUserCredits(user.id);
         console.log('🔐 User credits check:', userCredits);
         
         if (userCredits.subscription === 'premium' || 
@@ -228,18 +231,41 @@ const LuxeChatInputPage = () => {
             userCredits.subscription === 'founder') {
           canProceed = true;
           creditMessage = 'Premium user - unlimited analysis';
-        } else if (userCredits.subscription === 'free' && userCredits.credits === -1) {
-          // Free users with unlimited credits (new system)
-          canProceed = true;
-          creditMessage = 'Free user - unlimited analysis';
+        } else if (userCredits.subscription === 'free') {
+          // Free users: Check Emergency Pack credits first (from database), then FreeUsageService
+          if (userCredits.credits > 0) {
+            // User has Emergency Pack credits - use those first
+            canProceed = true;
+            creditMessage = `Free user - ${userCredits.credits} Emergency Pack credits remaining`;
+            creditCheckResult = { reason: 'emergency', remaining: userCredits.credits, needsIncrement: true };
+          } else {
+            // No Emergency Pack credits, check daily limits (3 starter + 1 daily) using FreeUsageService
+            const starterUsed = FreeUsageService.getStarterUsed(user.id);
+            if (starterUsed < 3) {
+              canProceed = true;
+              creditMessage = `Free user - ${3 - starterUsed} starter receipts remaining`;
+              creditCheckResult = { reason: 'starter', remaining: 3 - starterUsed, needsIncrement: true };
+            } else {
+              // Starter exhausted, check daily limit
+              const todayReceipts = FreeUsageService.getTodayReceiptCount(user.id);
+              if (todayReceipts < 1) {
+                canProceed = true;
+                creditMessage = 'Free user - daily receipt available';
+                creditCheckResult = { reason: 'daily', remaining: 1 - todayReceipts, needsIncrement: true };
+              } else {
+                canProceed = false;
+                creditMessage = 'Daily limit reached. Please upgrade or wait for tomorrow.';
+                creditCheckResult = { reason: 'limit_reached' };
+              }
+            }
+          }
         } else if (userCredits.credits > 0) {
-          // Legacy users with limited credits
+          // Legacy users with limited credits (non-free subscription with credits)
           canProceed = true;
-          creditMessage = `Free user - ${userCredits.credits} credits remaining`;
+          creditMessage = `User - ${userCredits.credits} credits remaining`;
         } else {
           canProceed = false;
           creditMessage = 'No credits remaining. Please upgrade or wait for daily reset.';
-          // Set creditCheckResult for logged-in users with no credits
           creditCheckResult = { reason: 'limit_reached' };
         }
       } else {
@@ -372,17 +398,49 @@ const LuxeChatInputPage = () => {
       
       console.log('✅ Analysis complete:', analysisResult);
       
-      // 🔐 DEDUCT CREDITS: After successful analysis
+      // 🔐 DEDUCT CREDITS: After successful analysis (atomic operation)
       if (user) {
-        // Logged-in user: Deduct credit
-        const deductResult = await deductCredits(user.id, 1);
-        if (deductResult.success) {
-          console.log('✅ Credit deducted for logged-in user');
+        // Logged-in user: Consume credit based on subscription type
+        if (userCredits.subscription === 'free' && creditCheckResult?.needsIncrement) {
+          if (creditCheckResult.reason === 'emergency') {
+            // Emergency Pack credits: Deduct from database credits_remaining
+            const { deductCredits } = await import('@/lib/services/creditsSystem');
+            const deductResult = await deductCredits(user.id, 1);
+            if (deductResult.success) {
+              console.log(`✅ Emergency Pack credit consumed. Remaining: ${deductResult.newCredits}`);
+            } else {
+              console.warn('⚠️ Failed to deduct Emergency Pack credit:', deductResult.error);
+            }
+          } else if (creditCheckResult.reason === 'starter') {
+            // Starter receipt: Use FreeUsageService
+            FreeUsageService.checkAndIncrementStarterReceipt(user.id);
+            console.log('✅ Starter receipt consumed for free user');
+            // Also update database via RPC for consistency
+            await SubscriptionService.consumeCredit(user.id);
+          } else if (creditCheckResult.reason === 'daily') {
+            // Daily receipt: Use FreeUsageService
+            FreeUsageService.checkAndIncrementDailyReceipt(user.id);
+            console.log('✅ Daily receipt consumed for free user');
+            // Also update database via RPC for consistency
+            await SubscriptionService.consumeCredit(user.id);
+          }
+        } else if (userCredits.subscription === 'premium' || 
+                   userCredits.subscription === 'yearly' || 
+                   userCredits.subscription === 'founder') {
+          // Premium users: No credit deduction needed, but track usage
+          await SubscriptionService.consumeCredit(user.id);
+          console.log('✅ Usage tracked for premium user (unlimited)');
         } else {
-          console.warn('⚠️ Failed to deduct credit for logged-in user:', deductResult.error);
+          // Legacy users (non-free subscription with credits): Use RPC function
+          const consumeResult = await SubscriptionService.consumeCredit(user.id);
+          if (consumeResult.success) {
+            console.log('✅ Credit consumed for logged-in user (atomic operation)');
+          } else {
+            console.warn('⚠️ Failed to consume credit for logged-in user:', consumeResult.error);
+          }
         }
       } else {
-        // Anonymous user: Credit already deducted in atomic operation
+        // Anonymous user: Credit already deducted in atomic operation during check
         console.log('✅ Anonymous analysis count already updated in atomic operation');
       }
       
@@ -796,7 +854,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
           </div>
           
           {/* Disclaimer */}
-          <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+          <p className="text-gray-500 text-xs mb-2">For 16+ Entertainment Purposes Only</p>
           
           {/* Copyright */}
           <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>
@@ -854,6 +912,16 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                     className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                   >
                     🆓 Sign Up for Free Credits
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setShowLimitModal(false);
+                      navigate('/pricing');
+                    }}
+                    className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    🆘 Get Emergency Pack - $0.99
                   </button>
                   
                   <button

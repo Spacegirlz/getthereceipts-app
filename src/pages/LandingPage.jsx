@@ -7,6 +7,7 @@ import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { loadStripe } from '@stripe/stripe-js';
+import { useStripe } from '@stripe/react-stripe-js';
 import sagePurpleSwirl from '@/assets/sage-purple-swirl-circle.png';
 import sageLanding from '@/assets/sage-landing.png';
 
@@ -38,6 +39,8 @@ const LandingPage = () => {
   const [selectedArchetype, setSelectedArchetype] = useState('ghosting-champion');
   const [currentReceiptType, setCurrentReceiptType] = useState('truth');
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const [loadingPriceId, setLoadingPriceId] = useState(null);
+  const stripe = useStripe() || null; // Fallback if Stripe not loaded yet
 
   // Testimonials array
   const testimonials = [
@@ -71,9 +74,8 @@ const LandingPage = () => {
   
   const handleGoPremium = () => navigate('/pricing');
   
-  const handleFounderPurchase = async () => {
+  const handleCheckout = async (priceId, tierName) => {
     if (!user) {
-      // Store the intended destination for after authentication
       localStorage.setItem('postAuthRedirect', '/pricing');
       openModal('sign_up');
       toast({ 
@@ -83,6 +85,17 @@ const LandingPage = () => {
       return;
     }
 
+    if (!stripe) {
+      toast({
+        variant: "destructive",
+        title: "Stripe Error",
+        description: "Stripe is not configured correctly. Please check the console.",
+      });
+      return;
+    }
+
+    setLoadingPriceId(priceId);
+
     try {
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -90,24 +103,42 @@ const LandingPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          priceId: 'price_1RzgBYG71EqeOEZer7ojcw0R', // OG Founders Club $29.99
+          priceId: priceId,
           userId: user.email,
-        }),
+        })
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
       const { sessionId } = await response.json();
-      
-      // Redirect to Stripe Checkout
-      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionId
+      });
+
       if (error) {
-        console.error('Stripe checkout error:', error);
+        console.error("Stripe redirect error:", error);
+        toast({
+          variant: "destructive",
+          title: "Payment Error",
+          description: error.message || "Could not redirect to checkout.",
+        });
+        setLoadingPriceId(null);
       }
     } catch (error) {
-      console.error('Checkout error:', error);
+      console.error("Checkout session error:", error);
+      toast({
+        variant: "destructive",
+        title: "Payment Error",
+        description: error.message || "Could not create checkout session.",
+      });
+      setLoadingPriceId(null);
     }
   };
+
+  const handleFounderPurchase = () => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club');
 
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index);
@@ -498,7 +529,7 @@ const LandingPage = () => {
         </motion.div>
 
         {/* Compact Trust & Social Proof - Combined */}
-        <motion.div
+          <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
@@ -507,7 +538,7 @@ const LandingPage = () => {
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="h-4 w-4 text-emerald-400" />
             <span>Secure</span>
-          </div>
+            </div>
           <span className="text-gray-600">•</span>
           <div className="flex items-center gap-1.5">
             <Zap className="h-4 w-4 text-cyan-400" />
@@ -598,53 +629,57 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-center mb-12"
+              className="text-center mb-6"
           >
-              {/* Badge */}
-              <div className="inline-flex items-center px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                Meet Sage
+              {/* Badge with gradient */}
+              <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400/20 via-purple-400/20 to-emerald-400/20 backdrop-blur-sm border-2 border-cyan-400/40 text-white text-sm font-bold mb-0 shadow-lg shadow-cyan-500/20 hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105">
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent font-extrabold">Meet Sage</span>
               </div>
-              {/* Main heading */}
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 max-w-4xl mx-auto leading-tight text-white">
-                Stop overthinking <span className="text-white">every&nbsp;text</span>
-              </h2>
-              {/* Body paragraph */}
-              <p className="text-lg text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Sage has seen every pattern: breadcrumbing, ghosting, love&nbsp;bombing&nbsp;—&nbsp;no&nbsp;judgment, just&nbsp;clarity.
-              </p>
             </motion.div>
 
-            {/* Sage's Personality Card  -  Enhanced */}
+            {/* Sage's Personality Card  -  Sage as the Star */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
               className="max-w-5xl mx-auto mb-16"
             >
-              <div className="bg-white/8 backdrop-blur-xl border-2 border-cyan-400/40 rounded-3xl p-8 relative overflow-hidden shadow-2xl shadow-cyan-500/20">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-cyan-400/20 to-emerald-300/15 rounded-full blur-3xl"></div>
+              {/* Gradient border wrapper */}
+              <div className="rounded-3xl p-[2px] bg-gradient-to-r from-cyan-400/50 via-purple-400/50 to-emerald-400/50">
+                <div className="bg-white/8 backdrop-blur-xl rounded-3xl p-8 relative overflow-hidden shadow-2xl">
+                {/* Subtle background glow - neutral */}
+                <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
                 <div className="relative z-10">
                   <div className="flex flex-col lg:flex-row items-center gap-8 mb-8">
                     <div className="relative">
-                      <div className="w-64 h-64 bg-gradient-to-br from-cyan-400/20 via-purple-400/15 to-emerald-300/20 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden shadow-2xl shadow-cyan-400/30 backdrop-blur-sm border border-cyan-400/20">
-                        <img 
-                          src={sageLanding} 
-                          alt="Sage" 
-                          className="w-64 h-64 rounded-full object-cover"
-                        />
-                      </div>
-                      {/* Floating personality indicators */}
-                      <div className="absolute - top-2 - right-2 w-12 h-12 bg-purple-400/20 backdrop-blur-sm border border-purple-400/30 rounded-full flex items-center justify-center">
-                        <span className="text-lg">🗣️</span>
-                      </div>
-                      <div className="absolute - bottom-2 - left-2 w-12 h-12 bg-emerald-400/20 backdrop-blur-sm border border-emerald-400/30 rounded-full flex items-center justify-center">
-                        <span className="text-lg">💖</span>
+                      {/* Sage - VIBRANT and PROMINENT */}
+                      <div className="relative">
+                        {/* Strong radial glow behind Sage */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/40 via-purple-400/35 to-emerald-300/40 rounded-full blur-2xl animate-pulse"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-purple-500/25 to-emerald-400/30 rounded-full blur-xl"></div>
+                        
+                        {/* Sage container - more vibrant */}
+                        <div className="relative w-72 h-72 bg-gradient-to-br from-cyan-400/30 via-purple-400/25 to-emerald-300/30 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden shadow-2xl border-2 border-cyan-400/50" style={{
+                          boxShadow: '0 0 60px rgba(6, 182, 212, 0.4), 0 0 100px rgba(168, 85, 247, 0.3), 0 0 140px rgba(16, 185, 129, 0.2)'
+                        }}>
+                          <img 
+                            src={sageLanding} 
+                            alt="Sage" 
+                            className="w-72 h-72 rounded-full object-cover relative z-10"
+                            style={{
+                              filter: 'brightness(1.1) contrast(1.05) saturate(1.1)'
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="flex-1 text-center lg:text-left">
                       <div className="space-y-6">
                         <div>
-                          <h3 className="text-2xl font-bold text-white mb-3">The friend you wish you&nbsp;had</h3>
+                          <h3 className="text-2xl font-bold mb-3">
+                            <span className="text-white">She's the friend </span>
+                            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">we all wish we&nbsp;had</span>
+                          </h3>
                           <p className="text-gray-300 leading-relaxed text-lg">
                             Not a therapist. Not your mom. Not even <em>really</em> real.
                           </p>
@@ -656,7 +691,7 @@ const LandingPage = () => {
                           </p>
                         </div>
                         
-                        <div className="bg-gradient-to-r from-cyan-400/10 to-purple-400/10 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-4">
+                        <div className="bg-white/8 backdrop-blur-sm border border-white/20 rounded-xl p-4">
                           <p className="text-white font-medium italic text-lg">
                             "Savage takes. Zero filter. Made with love." 🪄
                           </p>
@@ -665,24 +700,25 @@ const LandingPage = () => {
                     </div>
                   </div>
                   
-                  {/* Enhanced feature tags */}
+                  {/* Feature tags - NEUTRAL to let Sage shine */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-cyan-400/10 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-4 text-center">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-center">
                       <div className="text-2xl mb-2">🔒</div>
                       <h4 className="font-semibold text-white mb-1">Anonymous</h4>
                       <p className="text-gray-300 text-sm">Your secrets stay safe</p>
                     </div>
-                    <div className="bg-purple-400/10 backdrop-blur-sm border border-purple-400/20 rounded-xl p-4 text-center">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-center">
                       <div className="text-2xl mb-2">🗣️</div>
                       <h4 className="font-semibold text-white mb-1">Zero Filter</h4>
                       <p className="text-gray-300 text-sm">Brutal honesty always</p>
                     </div>
-                    <div className="bg-emerald-400/10 backdrop-blur-sm border border-emerald-400/20 rounded-xl p-4 text-center">
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-center">
                       <div className="text-2xl mb-2">⚡</div>
                       <h4 className="font-semibold text-white mb-1">Made with Love</h4>
                       <p className="text-gray-300 text-sm">Savage but caring</p>
                     </div>
                   </div>
+                </div>
                 </div>
               </div>
             </motion.div>
@@ -717,7 +753,7 @@ const LandingPage = () => {
                 className="text-center"
               >
                 <div className="mb-6">
-                  <div className="w-16 h-16 bg-cyan-400/20 backdrop-blur-sm border border-cyan-400/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-cyan-400/20">
+                  <div className="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
                     <span className="text-2xl">🧠</span>
                   </div>
                 </div>
@@ -735,7 +771,7 @@ const LandingPage = () => {
                 className="text-center"
               >
                 <div className="mb-6">
-                  <div className="w-16 h-16 bg-purple-400/20 backdrop-blur-sm border border-purple-400/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-purple-400/20">
+                  <div className="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
                     <span className="text-2xl">💡</span>
                   </div>
                 </div>
@@ -753,7 +789,7 @@ const LandingPage = () => {
                 className="text-center"
               >
                 <div className="mb-6">
-                  <div className="w-16 h-16 bg-emerald-400/20 backdrop-blur-sm border border-emerald-400/30 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-emerald-400/20">
+                  <div className="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
                     <span className="text-2xl">📱</span>
                   </div>
                 </div>
@@ -1137,7 +1173,7 @@ const LandingPage = () => {
         </section>
 
         {/* Premium Pricing Section */}
-        <section className="py-16 px-4 bg-white/3" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -1145,26 +1181,40 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center mb-12"
             >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
-                <span className="text-purple-400">Simple pricing.</span> <span className="text-cyan-400">No surprises.</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+                Simple pricing.{" "}
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                  No surprises.
+                </span>
               </h2>
-              <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-                Start free, upgrade when you're ready for unlimited clarity
+              <p className="text-lg sm:text-xl text-gray-300 mb-4 sm:mb-6">
+                Receipts in 60 seconds. No shame. No storage. Just Sage's take.
               </p>
+              
+              {/* Urgency Banner */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-400/30 rounded-full text-sm text-purple-300 font-medium mb-8"
+              >
+                <span className="animate-pulse text-purple-400">🔥</span>
+                <span>Limited: First 500 get OG Founder pricing forever</span>
+              </motion.div>
             </motion.div>
 
-            {/* Netflix-Style Clean Cards  -  All Same Size */}
-            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {/* MOST POPULAR Badge for Premium Card */}
-              <div className="absolute top-0 left-1/2 transform - translate-x-1/2 - translate-y-3 z-20 hidden md:block">
-                <div className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-xl shadow-cyan-500/30 animate-pulse border border-cyan-300/50">
+            {/* Netflix-Style Clean Cards - OG Founders Gets Special Treatment */}
+            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8 mt-8 sm:mt-12">
+              {/* MOST POPULAR Badge for Premium Card - Desktop */}
+              <div className="hidden md:block absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
+                <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
                   MOST POPULAR
                 </div>
               </div>
               
-              {/* BEST VALUE Badge for OG Founder Card */}
-              <div className="absolute top-0 right-0 transform translate-x-1/2 - translate-y-3 z-20 hidden md:block">
-                <div className="bg-gradient-to-r from-emerald-400 to-green-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-xl shadow-emerald-500/30 border border-emerald-300/50">
+              {/* BEST VALUE Badge for OG Founder Card - Desktop */}
+              <div className="hidden md:block absolute top-0 right-0 transform translate-x-1/2 -translate-y-3 z-20">
+                <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                   BEST VALUE
                 </div>
               </div>
@@ -1174,22 +1224,22 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                className="meme-card p-8 rounded-2xl flex flex-col border-2 border-emerald-400/60 bg-emerald-500/5 shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/40 transition-all duration-300" 
+                className="bg-white/8 backdrop-blur-xl p-6 sm:p-8 rounded-2xl flex flex-col border-2 border-cyan-400/20 shadow-xl shadow-cyan-500/10" 
                 style={{ minHeight: '420px' }}
               >
                 <div className="flex-grow">
                     <div className="text-center mb-6">
-                      <h3 className="font-semibold text-xl mb-3 text-emerald-400">Start Free</h3>
+                      <h3 className="font-semibold text-xl mb-3 text-white">Start Free</h3>
                       <div className="text-3xl font-bold text-white mb-2">$0</div>
                       <p className="text-gray-400 text-sm mb-1">Join 2.1K+ Getting Clarity</p>
-                      <p className="text-cyan-400 text-xs">No Login • Start in 10 seconds</p>
+                      <p className="text-cyan-400 text-xs">No Login Needed</p>
                     </div>
                     
                   <div className="space-y-4 text-sm text-gray-300 text-left">
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">🧠</span><span>3 Truth Receipts to try</span></div>
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">💬</span><span>3 Ask Sage Anything chats</span></div>
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">👀</span><span>See why everyone's obsessed</span></div>
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">🆓</span><span>No commitment required</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">🧠</span><span>3 Truth Receipts to try</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">💬</span><span>3 Ask Sage Anything chats</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">👀</span><span>See why everyone's obsessed</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">🆓</span><span>No commitment required</span></div>
                     
                     <div className="mt-4 pt-3 border-t border-gray-700">
                       <div className="flex items-center text-cyan-400 text-xs">
@@ -1200,8 +1250,8 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="mt-auto">
-                  <div className="pt-2 text-xs text-emerald-400 font-medium mb-4">Perfect for: Curious but cautious</div>
-                  <Button onClick={handleGetStarted} className="bg-emerald-500 hover:bg-emerald-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-emerald-500/25">
+                  <div className="pt-2 text-xs text-gray-300 font-medium mb-4">Perfect for: Curious but cautious</div>
+                  <Button onClick={handleGetStarted} variant="outline" className="border-cyan-400/40 text-white hover:bg-cyan-500/20 w-full">
                     Start Free →
                   </Button>
                 </div>
@@ -1212,20 +1262,20 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="meme-card p-8 rounded-2xl flex flex-col border-2 border-cyan-500/60 bg-cyan-500/5 shadow-xl shadow-cyan-500/30 hover:shadow-cyan-500/40 transition-all duration-300" 
+                className="bg-white/8 backdrop-blur-xl p-6 sm:p-8 rounded-2xl flex flex-col border-2 border-cyan-400/30 shadow-xl shadow-cyan-500/15 relative" 
                 style={{ minHeight: '420px' }}
               >
-                <div className="flex-grow">
-                  {/* Mobile Badge */}
-                  <div className="md:hidden text-center mb-4">
-                    <div className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-cyan-500/30 border border-cyan-300/50 inline-block">
-                      MOST POPULAR
-                    </div>
+                {/* MOST POPULAR Badge - Mobile */}
+                <div className="md:hidden absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
+                  <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                    MOST POPULAR
                   </div>
+                </div>
+                <div className="flex-grow">
                   <div className="text-center mb-6">
-                    <h3 className="font-semibold text-xl mb-3 text-cyan-400">Premium Monthly</h3>
+                    <h3 className="font-semibold text-xl mb-3 text-white">Premium Monthly</h3>
                     <div className="text-4xl font-black text-white mb-2">$4.99</div>
-                    <p className="text-gray-400 text-sm">per month • Cancel anytime</p>
+                    <p className="text-gray-400 text-sm">per month</p>
                   </div>
                   <div className="space-y-4 text-sm text-gray-300 text-left">
                     <div className="text-xs text-gray-400 mb-2">Everything in Free, plus:</div>
@@ -1237,61 +1287,146 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="mt-auto">
-                  <div className="pt-2 text-xs text-cyan-400 font-medium mb-4">Perfect for: Done with the drama</div>
-                  <Button onClick={handleGoPremium} className="bg-cyan-500 hover:bg-cyan-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-cyan-500/25">
+                  <div className="pt-2 text-xs text-gray-300 font-medium mb-4">Perfect for: Done with the drama</div>
+                  <Button onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly')} className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/30 transition-all duration-300 hover:shadow-cyan-500/50 hover:scale-[1.02]">
                     Go Premium
                   </Button>
                 </div>
               </motion.div>
               
-              {/* OG Founder's Club Card */}
+              {/* OG Founder's Club Card - Special Distinct Component */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="p-8 rounded-2xl flex flex-col border-2 border-purple-400/60 bg-purple-500/5 shadow-xl shadow-purple-500/30 hover:shadow-purple-500/40 transition-all duration-300" 
-                style={{ minHeight: '420px' }}
+                className="relative md:col-span-1"
               >
+                {/* Distinct Wrapper - Creates Component Feel */}
+                <div className="relative bg-gradient-to-br from-purple-900/60 via-purple-800/40 to-cyan-900/30 backdrop-blur-xl p-6 sm:p-8 rounded-3xl flex flex-col border-4 border-purple-400/60 shadow-2xl shadow-purple-500/50 overflow-hidden" 
+                  style={{ minHeight: '420px' }}
+                >
+                  {/* Enhanced Animated Background Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-cyan-500/10 to-purple-500/20 animate-pulse pointer-events-none"></div>
+                  
+                  {/* Radial Glow Effects for Depth */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
                 
-                <div className="flex-grow">
-                  {/* Mobile Badge */}
-                  <div className="md:hidden text-center mb-4">
-                    <div className="bg-gradient-to-r from-emerald-400 to-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-emerald-500/30 border border-emerald-300/50 inline-block">
-                      BEST VALUE
-                    </div>
-                  </div>
-                  <div className="text-center mb-6">
-                    <h3 className="font-bold text-2xl mb-3 text-purple-400">OG Founder's Club</h3>
-                    <div className="text-4xl font-black text-white mb-1">$29.99 / year</div>
-                    <p className="text-gray-400 text-sm">($2.49/month) <span className="text-green-400 font-semibold">40% OFF</span></p>
-                  </div>
-                  <div className="space-y-4 text-sm text-gray-300 text-left">
-                    <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🔒</span><span>Price locked FOREVER</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🛡️</span><span>Build emotional defense strategies</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">⚡</span><span>Priority support for 2am spiral texting</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🏆</span><span>Beta features first</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">💬</span><span>Direct feedback channel</span></div>
+                {/* Special Badge - Mobile */}
+                <div className="md:hidden absolute -top-2 left-1/2 transform -translate-x-1/2 z-30">
+                  <div className="bg-gradient-to-r from-purple-500 to-cyan-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl animate-pulse border-2 border-white/30">
+                    🔥 FIRST 500 ONLY
                   </div>
                 </div>
-                <div className="mt-auto">
-                  <div className="pt-2 text-xs text-purple-400 font-medium mb-4">Perfect for: First 500 who get it</div>
-                  <Button onClick={handleFounderPurchase} className="bg-purple-500 hover:bg-purple-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-purple-500/25">
-                    Lock In Founder's Price
-                  </Button>
+                
+                {/* BEST VALUE Badge - Desktop */}
+                <div className="hidden md:block absolute top-0 right-0 transform translate-x-1/2 -translate-y-3 z-20">
+                  <div className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-emerald-500/50" style={{ willChange: 'transform' }}>
+                    BEST VALUE
+                  </div>
+                </div>
+                
+                  <div className="flex-grow relative z-10">
+                    <div className="text-center mb-6">
+                      <h3 className="font-bold text-2xl sm:text-3xl mb-3 text-white">OG Founder's Club</h3>
+                      <div className="text-4xl sm:text-5xl font-black text-white mb-1">$29.99 / year</div>
+                      <p className="text-gray-300 text-sm">($2.49/month) <span className="text-emerald-400 font-semibold">40% OFF</span></p>
+                      <p className="text-sm sm:text-base text-white mt-3 font-bold tracking-wide" style={{ textShadow: '0 0 10px rgba(168, 85, 247, 0.5)' }}>Price locked FOREVER</p>
+                    </div>
+                    <div className="space-y-4 text-sm text-gray-200 text-left">
+                      <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🔒</span><span className="text-white">Price locked FOREVER</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🛡️</span><span className="text-white">Build emotional defense strategies</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">⚡</span><span className="text-white">Priority support for 2am spiral texting</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🏆</span><span className="text-white">Beta features first</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">💬</span><span className="text-white">Direct feedback channel</span></div>
+                    </div>
+                  </div>
+                  <div className="mt-auto relative z-10">
+                    <div className="pt-2 text-xs text-gray-300 font-medium mb-4 text-center">Perfect for: First 500 who get it</div>
+                    <Button 
+                      onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')} 
+                      className="w-full font-bold py-4 sm:py-3 rounded-xl shadow-2xl transition-all duration-300 hover:scale-[1.03] text-base sm:text-lg relative overflow-hidden group"
+                      style={{
+                        background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #8b5cf6 100%)',
+                        color: '#000000',
+                        boxShadow: '0 0 30px rgba(16, 185, 129, 0.4), 0 0 60px rgba(6, 182, 212, 0.3), 0 8px 32px rgba(139, 92, 246, 0.4)'
+                      }}
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <span className="text-xl">🔒</span>
+                        <span className="font-black">Lock In Founder's Price</span>
+                      </span>
+                      {/* Animated shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
             </div>
             
-            {/* Subtitle under pricing table */}
-            <motion.p 
+            {/* Emergency Packs - Compact 1x2 Row (Below Main Pricing) */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="text-lg text-gray-400 text-center mt-8"
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="mb-8 max-w-2xl mx-auto mt-12"
             >
-              Start free, upgrade when you're ready for unlimited clarity
-            </motion.p>
+              {/* Sage's Voice Explanation */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="text-center text-sm sm:text-base text-gray-300 italic mb-4 px-4"
+              >
+                Sometimes you just need an emergency pack to put your mind at ease or test out the Premium features. 💅
+              </motion.p>
+              
+              {/* Compact 1x2 Grid */}
+              <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+                {/* Emergency Pack x 5 */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.9 }}
+                  className="bg-white/5 backdrop-blur-xl p-4 rounded-xl flex flex-col border border-purple-400/30 shadow-lg shadow-purple-500/10 hover:border-purple-400/50 transition-all"
+                >
+                  <div className="text-center mb-3">
+                    <div className="text-2xl font-black text-white mb-1">$0.99</div>
+                    <p className="text-xs text-gray-400">5 Receipts</p>
+                    <p className="text-xs text-purple-400 font-semibold mt-1">+ Premium</p>
+                  </div>
+                  <Button 
+                    onClick={() => handleCheckout('price_1SRl6hG71EqeOEZebPJkKJB6', 'Emergency Pack x5')} 
+                    disabled={loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6'}
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white w-full font-semibold py-2 text-sm rounded-lg shadow-md transition-all duration-300 mt-auto"
+                  >
+                    {loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6' ? 'Loading...' : 'Get 5'}
+                  </Button>
+                </motion.div>
+
+                {/* Emergency Pack x 10 */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 1.0 }}
+                  className="bg-white/5 backdrop-blur-xl p-4 rounded-xl flex flex-col border border-cyan-400/30 shadow-lg shadow-cyan-500/10 hover:border-cyan-400/50 transition-all"
+                >
+                  <div className="text-center mb-3">
+                    <div className="text-2xl font-black text-white mb-1">$1.99</div>
+                    <p className="text-xs text-gray-400">10 Receipts</p>
+                    <p className="text-xs text-cyan-400 font-semibold mt-1">+ Premium</p>
+                  </div>
+                  <Button 
+                    onClick={() => handleCheckout('price_1S0Po4G71EqeOEZeSqdB1Qfa', 'Emergency Pack x10')} 
+                    disabled={loadingPriceId === 'price_1S0Po4G71EqeOEZeSqdB1Qfa'}
+                    className="bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white w-full font-semibold py-2 text-sm rounded-lg shadow-md transition-all duration-300 mt-auto"
+                  >
+                    {loadingPriceId === 'price_1S0Po4G71EqeOEZeSqdB1Qfa' ? 'Loading...' : 'Get 10'}
+                  </Button>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -1436,7 +1571,7 @@ const LandingPage = () => {
             </div>
             
             {/* Disclaimer */}
-            <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+            <p className="text-gray-500 text-xs mb-2">For 16+ Entertainment Purposes Only</p>
             
             {/* Copyright */}
             <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>

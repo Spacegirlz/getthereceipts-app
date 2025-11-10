@@ -161,21 +161,26 @@ const DashboardPage = () => {
   };
 
   const getCreditsDisplay = () => {
-    if (!userCredits) return '0';
+    if (!userCredits) return '0 Credits';
     if (userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') {
-      return 'Unlimited';
+      return 'Unlimited Credits';
     }
     if (userCredits.subscription === 'free') {
-      // For free users, show actual usage from FreeUsageService
+      // For free users, check Emergency Pack credits first (from database)
+      if (userCredits.credits > 0) {
+        return `${userCredits.credits} ${userCredits.credits === 1 ? 'Emergency Pack Credit' : 'Emergency Pack Credits'}`;
+      }
+      // Then show FreeUsageService credits (starter + daily)
       if (usageData.starterUsed < 3) {
-        return `${3 - usageData.starterUsed} starter left`;
+        const remaining = 3 - usageData.starterUsed;
+        return `${remaining} ${remaining === 1 ? 'Starter Credit' : 'Starter Credits'} Remaining`;
       } else if (usageData.todayReceipts < 1) {
-        return '1 daily left';
+        return '1 Daily Credit Remaining';
       } else {
-        return '0 left (resets at midnight UTC)';
+        return '0 Credits Remaining';
       }
     }
-    return String(userCredits.credits || 0);
+    return `${userCredits.credits || 0} Credits`;
   };
 
   const getUsageProgress = () => {
@@ -367,28 +372,28 @@ const DashboardPage = () => {
         {/* Glassmorphism Glow Effect */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
         
-        <div className="relative z-10 container mx-auto px-4 py-8 text-white">
+        <div className="relative z-10 container mx-auto px-4 py-6 sm:py-8 text-white">
         {/* Hero Header Section */}
         <motion.header 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="mb-8"
+              className="mb-6 sm:mb-8"
             >
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight sm:leading-[1.1] mb-3 sm:mb-4 px-2">
                 <span className="text-white">Welcome back,</span>
                 <br />
                 <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
                   {user?.email?.split('@')[0] || 'Sage User'}
                 </span>
               </h1>
-              <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-2">
                 Your personal command center for decoding conversations and managing your Sage experience
               </p>
             </motion.div>
@@ -398,21 +403,21 @@ const DashboardPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 px-2"
             >
               <LinkButton 
                 to="/new-receipt" 
-                className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-semibold text-lg px-8 py-4 rounded-xl shadow-2xl shadow-cyan-500/40 transition-all duration-300 hover:scale-105 min-h-[56px] min-w-[200px]"
+                className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-2xl shadow-cyan-500/40 transition-all duration-300 hover:scale-105 min-h-[48px] sm:min-h-[56px]"
               >
-                <PlusCircle className="mr-2 h-5 w-5" /> New Receipt
+                <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> New Receipt
               </LinkButton>
               
               <LinkButton 
                 to="/refer" 
                 variant="outline" 
-                className="border-purple-400/60 text-white hover:bg-purple-500/10 hover:border-purple-400/80 font-medium px-6 py-4 rounded-xl transition-all duration-300 min-h-[56px] shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30"
+                className="w-full sm:w-auto border-purple-400/60 text-white hover:bg-purple-500/10 hover:border-purple-400/80 font-medium px-6 py-3 sm:py-4 rounded-xl transition-all duration-300 min-h-[48px] sm:min-h-[56px] shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30"
               >
-                <Gift className="mr-2 h-5 w-5" /> Earn Rewards
+                <Gift className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Earn Rewards
               </LinkButton>
             </motion.div>
 
@@ -461,43 +466,61 @@ const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12"
         >
           {/* Plan Status Card */}
           <motion.div 
-            whileHover={{ scale: 1.02, y: -5 }}
-            className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/20 relative overflow-hidden"
+            whileHover={{ scale: 1.01, y: -2 }}
+            className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-2xl shadow-cyan-500/20 relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+            }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10"></div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+            {/* Connecting Visual Elements */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div 
+                className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+                  boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+                }}
+              ></div>
+              <div 
+                className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+                  boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+                }}
+              ></div>
+            </div>
             <div className="relative z-10">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-2xl flex items-center justify-center mr-4">
-                  <Zap className="h-6 w-6 text-white" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-xl sm:rounded-2xl flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                  <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
-                <h2 className="text-xl font-bold text-white">Current Plan</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-white">Current Plan</h2>
               </div>
-              <p className="text-2xl font-bold bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent mb-2">
-                {getPlanName(userCredits.subscription)}
+              <p className="text-xl sm:text-2xl font-bold text-white mb-2">
+                {getPlanName(userCredits.subscription)} - {getCreditsDisplay()}
               </p>
-              <p className="text-sm text-gray-300 mb-4">
+              <p className="text-xs sm:text-sm text-gray-300 mb-4">
                 {getPlanDescription(userCredits.subscription)}
               </p>
               
               {/* Additional Plan Info */}
-              <div className="space-y-2 text-xs text-gray-400">
+              <div className="space-y-2 text-xs text-gray-300">
                 {userCredits.subscription === 'free' && (
                   <>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0"></div>
                       <span>3 starter receipts (lifetime)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0"></div>
                       <span>1 daily receipt (resets at midnight UTC)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full flex-shrink-0"></div>
                       <span>5 Ask Sage Anything chats per day</span>
                     </div>
                   </>
@@ -505,19 +528,19 @@ const DashboardPage = () => {
                 {(userCredits.subscription === 'premium' || userCredits.subscription === 'yearly' || userCredits.subscription === 'founder') && (
                   <>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full flex-shrink-0"></div>
                       <span>Unlimited Truth Receipts</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full flex-shrink-0"></div>
                       <span>Unlimited Ask Sage Anything chats</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full flex-shrink-0"></div>
                       <span>Sage's Playbook & Immunity Training</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full flex-shrink-0"></div>
                       <span>Vibe Check™ real-time analysis</span>
                     </div>
                   </>
@@ -536,10 +559,10 @@ const DashboardPage = () => {
                 return (
                   <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/10">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-300">
+                      <span className="text-xs sm:text-sm text-gray-300">
                         {progress.type === 'starter' ? 'Starter Receipts' : 'Daily Usage'}
                       </span>
-                      <span className={`text-sm font-semibold ${isUsedUp ? 'text-amber-400' : 'text-emerald-400'}`}>
+                      <span className={`text-xs sm:text-sm font-semibold ${isUsedUp ? 'text-gray-300' : 'text-white'}`}>
                         {remaining > 0 ? `${remaining} left` : 'Used up'}
                       </span>
                     </div>
@@ -556,7 +579,7 @@ const DashboardPage = () => {
                     
                     {isUsedUp ? (
                       <div className="mt-4 space-y-3">
-                        <p className="text-sm text-orange-300 text-center">
+                        <p className="text-xs sm:text-sm text-gray-300 text-center">
                           {progress.type === 'starter' 
                             ? "You've used all 3 starter receipts! 🎉" 
                             : "You've used today's free receipt! Come back tomorrow or upgrade for unlimited access."
@@ -595,32 +618,50 @@ const DashboardPage = () => {
 
           {/* Upgrade Card */}
           <motion.div 
-            whileHover={{ scale: 1.02, y: -5 }}
-            className="bg-white/8 backdrop-blur-xl border border-purple-400/30 rounded-3xl p-8 shadow-2xl shadow-purple-500/20 relative overflow-hidden"
+            whileHover={{ scale: 1.01, y: -2 }}
+            className="bg-white/8 backdrop-blur-xl border border-purple-400/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-2xl shadow-purple-500/20 relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+            }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-cyan-500/10"></div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
+            {/* Connecting Visual Elements */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div 
+                className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+                  boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+                }}
+              ></div>
+              <div 
+                className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+                  boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+                }}
+              ></div>
+            </div>
             <div className="relative z-10">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-2xl flex items-center justify-center mr-4">
-                  <CreditCard className="h-6 w-6 text-white" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-xl sm:rounded-2xl flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                  <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
-                <h2 className="text-xl font-bold text-white">Upgrade</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-white">Upgrade</h2>
               </div>
-              <p className="text-sm text-gray-300 mb-6">
+              <p className="text-xs sm:text-sm text-gray-300 mb-5 sm:mb-6">
                 Ready to level up? Get unlimited Sage Receipts, Playbook insights, and Immunity training.
               </p>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <Button 
                   size="sm" 
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 text-sm font-semibold shadow-lg shadow-cyan-500/25"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 text-xs sm:text-sm font-semibold shadow-lg shadow-cyan-500/25 py-2.5 sm:py-3"
                   onClick={() => navigate('/pricing')}
                 >
                   Monthly Premium - $4.99
                 </Button>
                 <Button 
                   size="sm" 
-                  className="w-full bg-gradient-to-r from-purple-500 to-emerald-500 hover:from-purple-600 hover:to-emerald-600 text-white border-0 text-sm font-semibold shadow-lg shadow-purple-500/25"
+                  className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white border-0 text-xs sm:text-sm font-semibold shadow-lg shadow-purple-500/25 py-2.5 sm:py-3"
                   onClick={() => navigate('/pricing')}
                 >
                   OG Founders Yearly - $29.99
@@ -631,45 +672,63 @@ const DashboardPage = () => {
 
           {/* Account Settings Card */}
           <motion.div 
-            whileHover={{ scale: 1.02, y: -5 }}
-            className="bg-white/8 backdrop-blur-xl border border-emerald-400/30 rounded-3xl p-8 shadow-2xl shadow-emerald-500/20 relative overflow-hidden"
+            whileHover={{ scale: 1.01, y: -2 }}
+            className="bg-white/8 backdrop-blur-xl border border-purple-400/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-2xl shadow-purple-500/20 relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+            }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-cyan-500/10"></div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
+            {/* Connecting Visual Elements */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div 
+                className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+                  boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+                }}
+              ></div>
+              <div 
+                className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
+                style={{
+                  background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+                  boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+                }}
+              ></div>
+            </div>
             <div className="relative z-10">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center mr-4">
-                  <Settings className="h-6 w-6 text-white" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-xl sm:rounded-2xl flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                  <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
-                <h2 className="text-xl font-bold text-white">Account</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-white">Account</h2>
               </div>
-              <div className="space-y-3 mb-6">
+              <div className="space-y-2 sm:space-y-3 mb-5 sm:mb-6">
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-400 text-sm">Email:</span>
-                  <span className="text-white text-sm truncate">{user?.email}</span>
+                  <span className="text-gray-400 text-xs sm:text-sm">Email:</span>
+                  <span className="text-white text-xs sm:text-sm truncate">{user?.email}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-400 text-sm">Plan:</span>
-                  <span className="text-white text-sm">{getPlanName(userCredits.subscription)}</span>
+                  <span className="text-gray-400 text-xs sm:text-sm">Plan:</span>
+                  <span className="text-white text-xs sm:text-sm">{getPlanName(userCredits.subscription)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-400 text-sm">Member since:</span>
-                  <span className="text-white text-sm">
+                  <span className="text-gray-400 text-xs sm:text-sm">Member since:</span>
+                  <span className="text-white text-xs sm:text-sm">
                     {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Recently'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-400 text-sm">Status:</span>
-                  <span className="text-green-400 text-sm font-medium">Active</span>
+                  <span className="text-gray-400 text-xs sm:text-sm">Status:</span>
+                  <span className="text-white text-xs sm:text-sm font-medium">Active</span>
                 </div>
               </div>
               <Button 
                 size="sm" 
                 variant="outline"
-                className="w-full border-emerald-400/60 text-white hover:bg-emerald-500/10 hover:border-emerald-400/80 text-sm font-medium shadow-lg shadow-emerald-500/20"
+                className="w-full border-purple-400/60 text-white hover:bg-purple-500/10 hover:border-purple-400/80 text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/20 py-2.5 sm:py-3"
                 onClick={() => navigate('/pricing')}
               >
-                <CreditCard className="mr-2 h-4 w-4" />
+                <CreditCard className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                 Manage Plan
               </Button>
             </div>
@@ -681,59 +740,69 @@ const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
           <div className="max-w-4xl mx-auto">
             <motion.div 
-              className="bg-white/8 backdrop-blur-xl border border-amber-400/30 rounded-2xl p-6 shadow-lg shadow-amber-500/20 relative overflow-hidden"
+              className="bg-white/8 backdrop-blur-xl border border-purple-400/30 rounded-2xl p-4 sm:p-6 shadow-lg shadow-purple-500/20 relative overflow-hidden"
               whileHover={{ scale: 1.01 }}
               transition={{ type: "spring", stiffness: 300 }}
+              style={{
+                background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-500/10"></div>
+              {/* Connecting Visual Elements */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div 
+                  className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+                    boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+                  }}
+                ></div>
+              </div>
               <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/25">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 flex-shrink-0">
                       <Crown className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white">
-                        <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                          Receipts & Riches
-                        </span>
+                      <h2 className="text-lg sm:text-xl font-bold text-white">
+                        Receipts & Riches
                       </h2>
-                      <p className="text-sm text-gray-300">Earn 30% commission on referrals</p>
+                      <p className="text-xs sm:text-sm text-gray-300">Earn 30% commission on referrals</p>
                     </div>
                   </div>
                   
                   <Button 
                     size="sm" 
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-4 py-2 rounded-lg border-0 shadow-lg shadow-amber-500/25 transition-all duration-300 hover:scale-105"
+                    className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold px-4 py-2 rounded-lg border-0 shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 text-xs sm:text-sm"
                     onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfA0MUe-4ETNT019CmER3KHH7usL2H6qmWtOub9oLeQtODIYg/viewform', '_blank')}
                   >
-                    <Crown className="mr-2 h-4 w-4" />
+                    <Crown className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Apply
                   </Button>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-center">
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                       <span className="text-white font-bold text-xs">✓</span>
                     </div>
-                    <span className="text-sm text-gray-300">30% commission</span>
+                    <span className="text-xs sm:text-sm text-gray-300">30% commission</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                       <span className="text-white font-bold text-xs">✓</span>
                     </div>
-                    <span className="text-sm text-gray-300">Monthly payouts</span>
+                    <span className="text-xs sm:text-sm text-gray-300">Monthly payouts</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                       <span className="text-white font-bold text-xs">✓</span>
                     </div>
-                    <span className="text-sm text-gray-300">$1000+ potential</span>
+                    <span className="text-xs sm:text-sm text-gray-300">$1000+ potential</span>
                   </div>
                 </div>
               </div>
@@ -799,7 +868,7 @@ const DashboardPage = () => {
           </div>
           
           {/* Disclaimer */}
-          <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+          <p className="text-gray-500 text-xs mb-2">For 16+ Entertainment Purposes Only</p>
           
           {/* Copyright */}
           <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>

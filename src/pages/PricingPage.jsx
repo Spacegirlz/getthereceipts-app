@@ -116,7 +116,7 @@ const PricingPage = () => {
           <motion.h1 
               initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
             >
               Simple pricing.{" "}
           <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
@@ -128,7 +128,7 @@ const PricingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-              className="text-xl text-gray-300 mb-6"
+              className="text-lg sm:text-xl text-gray-300 mb-4 sm:mb-6"
           >
             Receipts in 60 seconds. No shame. No storage. Just Sage's take.
           </motion.p>
@@ -145,17 +145,17 @@ const PricingPage = () => {
           </motion.div>
           
 
-          {/* Netflix-Style Clean Cards - All Same Size */}
-            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-12">
-              {/* MOST POPULAR Badge for Premium Card */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
+          {/* Netflix-Style Clean Cards - OG Founders Gets Special Treatment */}
+            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8 mt-8 sm:mt-12">
+              {/* MOST POPULAR Badge for Premium Card - Desktop */}
+              <div className="hidden md:block absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
                 <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
                   MOST POPULAR
                 </div>
               </div>
               
-              {/* BEST VALUE Badge for OG Founder Card */}
-              <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-3 z-20">
+              {/* BEST VALUE Badge for OG Founder Card - Desktop */}
+              <div className="hidden md:block absolute top-0 right-0 transform translate-x-1/2 -translate-y-3 z-20">
                 <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                   BEST VALUE
                 </div>
@@ -166,22 +166,22 @@ const PricingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                className="bg-white/8 backdrop-blur-xl p-8 rounded-2xl flex flex-col border-2 border-emerald-400/40 shadow-xl shadow-emerald-500/20" 
+                className="bg-white/8 backdrop-blur-xl p-6 sm:p-8 rounded-2xl flex flex-col border-2 border-cyan-400/20 shadow-xl shadow-cyan-500/10" 
                 style={{ minHeight: '420px' }}
               >
                 <div className="flex-grow">
                     <div className="text-center mb-6">
-                      <h3 className="font-semibold text-xl mb-3 text-emerald-400">Start Free</h3>
+                      <h3 className="font-semibold text-xl mb-3 text-white">Start Free</h3>
                       <div className="text-3xl font-bold text-white mb-2">$0</div>
                       <p className="text-gray-400 text-sm mb-1">Join 2.1K+ Getting Clarity</p>
-                      <p className="text-blue-400 text-xs">No Login Needed</p>
+                      <p className="text-cyan-400 text-xs">No Login Needed</p>
                     </div>
                     
                   <div className="space-y-4 text-sm text-gray-300 text-left">
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">🧠</span><span>3 Truth Receipts to try</span></div>
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">💬</span><span>3 Ask Sage Anything chats</span></div>
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">👀</span><span>See why everyone's obsessed</span></div>
-                    <div className="flex items-start"><span className="text-emerald-400 mr-2 mt-0.5">🆓</span><span>No commitment required</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">🧠</span><span>3 Truth Receipts to try</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">💬</span><span>3 Ask Sage Anything chats</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">👀</span><span>See why everyone's obsessed</span></div>
+                    <div className="flex items-start"><span className="text-cyan-400 mr-2 mt-0.5">🆓</span><span>No commitment required</span></div>
                     
                     <div className="mt-4 pt-3 border-t border-gray-700">
                       <div className="flex items-center text-cyan-400 text-xs">
@@ -192,8 +192,8 @@ const PricingPage = () => {
                   </div>
                 </div>
                 <div className="mt-auto">
-                  <div className="pt-2 text-xs text-emerald-400 font-medium mb-4">Perfect for: Curious but cautious</div>
-                  <Button onClick={() => navigate('/new-receipt')} variant="outline" className="border-emerald-400 text-white hover:bg-emerald-500/20 w-full">
+                  <div className="pt-2 text-xs text-gray-300 font-medium mb-4">Perfect for: Curious but cautious</div>
+                  <Button onClick={() => navigate('/new-receipt')} variant="outline" className="border-cyan-400/40 text-white hover:bg-cyan-500/20 w-full">
                     Start Free →
                   </Button>
                 </div>
@@ -204,12 +204,18 @@ const PricingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="bg-white/8 backdrop-blur-xl p-8 rounded-2xl flex flex-col border-2 border-cyan-400/40 shadow-xl shadow-cyan-500/20" 
+                className="bg-white/8 backdrop-blur-xl p-6 sm:p-8 rounded-2xl flex flex-col border-2 border-cyan-400/30 shadow-xl shadow-cyan-500/15 relative" 
                 style={{ minHeight: '420px' }}
               >
+                {/* MOST POPULAR Badge - Mobile */}
+                <div className="md:hidden absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
+                  <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                    MOST POPULAR
+                  </div>
+                </div>
                 <div className="flex-grow">
                   <div className="text-center mb-6">
-                    <h3 className="font-semibold text-xl mb-3 text-cyan-400">Premium Monthly</h3>
+                    <h3 className="font-semibold text-xl mb-3 text-white">Premium Monthly</h3>
                     <div className="text-4xl font-black text-white mb-2">$4.99</div>
                     <p className="text-gray-400 text-sm">per month</p>
                   </div>
@@ -223,78 +229,182 @@ const PricingPage = () => {
                   </div>
                 </div>
                 <div className="mt-auto">
-                  <div className="pt-2 text-xs text-cyan-400 font-medium mb-4">Perfect for: Done with the drama</div>
-                  <Button onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly')} className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-orange-500/25">
+                  <div className="pt-2 text-xs text-gray-300 font-medium mb-4">Perfect for: Done with the drama</div>
+                  <Button onClick={() => handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly')} className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white w-full font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/30 transition-all duration-300 hover:shadow-cyan-500/50 hover:scale-[1.02]">
                     Go Premium
                   </Button>
                 </div>
               </motion.div>
               
-              {/* OG Founder's Club Card */}
+              {/* OG Founder's Club Card - Special Distinct Component */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="bg-white/8 backdrop-blur-xl p-8 rounded-2xl flex flex-col border-2 border-purple-400/40 shadow-xl shadow-purple-500/20" 
-                style={{ minHeight: '420px' }}
+                className="relative md:col-span-1"
               >
+                {/* Distinct Wrapper - Creates Component Feel */}
+                <div className="relative bg-gradient-to-br from-purple-900/60 via-purple-800/40 to-cyan-900/30 backdrop-blur-xl p-6 sm:p-8 rounded-3xl flex flex-col border-4 border-purple-400/60 shadow-2xl shadow-purple-500/50 overflow-hidden" 
+                  style={{ minHeight: '420px' }}
+                >
+                  {/* Enhanced Animated Background Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-cyan-500/10 to-purple-500/20 animate-pulse pointer-events-none"></div>
+                  
+                  {/* Radial Glow Effects for Depth */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
                 
-                <div className="flex-grow">
-                  <div className="text-center mb-6">
-                    <h3 className="font-bold text-2xl mb-3 text-purple-400">OG Founder's Club</h3>
-                    <div className="text-4xl font-black text-white mb-1">$29.99 / year</div>
-                    <p className="text-gray-400 text-sm">($2.49/month) <span className="text-green-400 font-semibold">40% OFF</span></p>
-                  </div>
-                  <div className="space-y-4 text-sm text-gray-300 text-left">
-                    <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🔒</span><span>Price locked FOREVER</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🛡️</span><span>Build emotional defense strategies</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">⚡</span><span>Priority support for 2am spiral texting</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">🏆</span><span>Beta features first</span></div>
-                    <div className="flex items-start"><span className="text-purple-400 mr-2 mt-0.5">💬</span><span>Direct feedback channel</span></div>
+                {/* Special Badge - Mobile */}
+                <div className="md:hidden absolute -top-2 left-1/2 transform -translate-x-1/2 z-30">
+                  <div className="bg-gradient-to-r from-purple-500 to-cyan-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl animate-pulse border-2 border-white/30">
+                    🔥 FIRST 500 ONLY
                   </div>
                 </div>
-                <div className="mt-auto">
-                  <div className="pt-2 text-xs text-purple-400 font-medium mb-4">Perfect for: First 500 who get it</div>
-                  <Button onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')} className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white w-full font-bold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-purple-500/25">
-                    Lock In Founder's Price
-                  </Button>
+                
+                {/* BEST VALUE Badge - Desktop */}
+                <div className="hidden md:block absolute top-0 right-0 transform translate-x-1/2 -translate-y-3 z-20">
+                  <div className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-emerald-500/50" style={{ willChange: 'transform' }}>
+                    BEST VALUE
+                  </div>
+                </div>
+                
+                  <div className="flex-grow relative z-10">
+                    <div className="text-center mb-6">
+                      <h3 className="font-bold text-2xl sm:text-3xl mb-3 text-white">OG Founder's Club</h3>
+                      <div className="text-4xl sm:text-5xl font-black text-white mb-1">$29.99 / year</div>
+                      <p className="text-gray-300 text-sm">($2.49/month) <span className="text-emerald-400 font-semibold">40% OFF</span></p>
+                      <p className="text-sm sm:text-base text-white mt-3 font-bold tracking-wide" style={{ textShadow: '0 0 10px rgba(168, 85, 247, 0.5)' }}>Price locked FOREVER</p>
+                    </div>
+                    <div className="space-y-4 text-sm text-gray-200 text-left">
+                      <div className="text-xs text-gray-400 mb-2">Everything in Premium, plus:</div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🔒</span><span className="text-white">Price locked FOREVER</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🛡️</span><span className="text-white">Build emotional defense strategies</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">⚡</span><span className="text-white">Priority support for 2am spiral texting</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">🏆</span><span className="text-white">Beta features first</span></div>
+                      <div className="flex items-start"><span className="text-purple-300 mr-2 mt-0.5">💬</span><span className="text-white">Direct feedback channel</span></div>
+                    </div>
+                  </div>
+                  <div className="mt-auto relative z-10">
+                    <div className="pt-2 text-xs text-gray-300 font-medium mb-4 text-center">Perfect for: First 500 who get it</div>
+                    <Button 
+                      onClick={() => handleCheckout('price_1RzgBYG71EqeOEZer7ojcw0R', 'OG Founders Club')} 
+                      className="w-full font-bold py-4 sm:py-3 rounded-xl shadow-2xl transition-all duration-300 hover:scale-[1.03] text-base sm:text-lg relative overflow-hidden group"
+                      style={{
+                        background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #8b5cf6 100%)',
+                        color: '#000000',
+                        boxShadow: '0 0 30px rgba(16, 185, 129, 0.4), 0 0 60px rgba(6, 182, 212, 0.3), 0 8px 32px rgba(139, 92, 246, 0.4)'
+                      }}
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <span className="text-xl">🔒</span>
+                        <span className="font-black">Lock In Founder's Price</span>
+                      </span>
+                      {/* Animated shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
             </div>
+            
+            {/* Emergency Packs - Compact 1x2 Row (Below Main Pricing) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="mb-8 max-w-2xl mx-auto mt-12"
+            >
+              {/* Sage's Voice Explanation */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="text-center text-sm sm:text-base text-gray-300 italic mb-4 px-4"
+              >
+                Sometimes you just need an emergency pack to put your mind at ease or test out the Premium features. 💅
+              </motion.p>
+              
+              {/* Compact 1x2 Grid */}
+              <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+                {/* Emergency Pack x 5 */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.9 }}
+                  className="bg-white/5 backdrop-blur-xl p-4 rounded-xl flex flex-col border border-purple-400/30 shadow-lg shadow-purple-500/10 hover:border-purple-400/50 transition-all"
+                >
+                  <div className="text-center mb-3">
+                    <div className="text-2xl font-black text-white mb-1">$0.99</div>
+                    <p className="text-xs text-gray-400">5 Receipts</p>
+                    <p className="text-xs text-purple-400 font-semibold mt-1">+ Premium</p>
+                  </div>
+                  <Button 
+                    onClick={() => handleCheckout('price_1SRl6hG71EqeOEZebPJkKJB6', 'Emergency Pack x5')} 
+                    disabled={loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6'}
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white w-full font-semibold py-2 text-sm rounded-lg shadow-md transition-all duration-300 mt-auto"
+                  >
+                    {loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6' ? 'Loading...' : 'Get 5'}
+                  </Button>
+                </motion.div>
+
+                {/* Emergency Pack x 10 */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 1.0 }}
+                  className="bg-white/5 backdrop-blur-xl p-4 rounded-xl flex flex-col border border-cyan-400/30 shadow-lg shadow-cyan-500/10 hover:border-cyan-400/50 transition-all"
+                >
+                  <div className="text-center mb-3">
+                    <div className="text-2xl font-black text-white mb-1">$1.99</div>
+                    <p className="text-xs text-gray-400">10 Receipts</p>
+                    <p className="text-xs text-cyan-400 font-semibold mt-1">+ Premium</p>
+                  </div>
+                  <Button 
+                    onClick={() => handleCheckout('price_1S0Po4G71EqeOEZeSqdB1Qfa', 'Emergency Pack x10')} 
+                    disabled={loadingPriceId === 'price_1S0Po4G71EqeOEZeSqdB1Qfa'}
+                    className="bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white w-full font-semibold py-2 text-sm rounded-lg shadow-md transition-all duration-300 mt-auto"
+                  >
+                    {loadingPriceId === 'price_1S0Po4G71EqeOEZeSqdB1Qfa' ? 'Loading...' : 'Get 10'}
+                  </Button>
+                </motion.div>
+              </div>
+            </motion.div>
             
             {/* Subtitle under pricing table */}
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: 1.1 }}
               className="text-lg text-gray-400 text-center mt-8"
             >
               Start free, upgrade when you're ready for unlimited clarity
             </motion.p>
             
-            {/* Security Badges - Moved from top for cleaner UX */}
+            {/* Security Badges - Unified Design (Compact, Single Line) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8"
+              className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-400 mt-8 px-4"
             >
-              <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-400/30 rounded-full text-sm text-emerald-300 font-medium">
-                <Shield className="h-4 w-4" />
+              <div className="flex items-center gap-1.5">
+                <Shield className="h-4 w-4 text-emerald-400" />
                 <span>Bank-level encryption</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-400/30 rounded-full text-sm text-cyan-300 font-medium">
-                <Check className="h-4 w-4" />
+              <span className="text-gray-600">•</span>
+              <div className="flex items-center gap-1.5">
+                <Check className="h-4 w-4 text-cyan-400" />
                 <span>Privacy First</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-400/30 rounded-full text-sm text-purple-300 font-medium">
-                <Zap className="h-4 w-4" />
+              <span className="text-gray-600">•</span>
+              <div className="flex items-center gap-1.5">
+                <Zap className="h-4 w-4 text-purple-400" />
                 <span>Anonymous</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-400/30 rounded-full text-sm text-green-300 font-medium">
-                <span>💯</span>
-                <span>7-day money-back guarantee</span>
+              <span className="text-gray-600">•</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-emerald-400">💯</span>
+                <span>7-day guarantee</span>
               </div>
             </motion.div>
           </div>
@@ -320,7 +430,7 @@ const PricingPage = () => {
                 How OG Founder Pricing Works
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Let's be real: <span className="text-cyan-400 font-semibold">OG Founders and Early Birds get the best perks.</span>
+                Let's be real: <span className="text-white font-semibold">OG Founders and Early Birds get the best perks.</span>
               </p>
             </motion.div>
 
@@ -338,33 +448,33 @@ const PricingPage = () => {
                     Lifetime Locked Price Deal
                   </h3>
                   <p className="text-gray-300 mb-4">
-                    When you lock in your Founder's price, you're not just getting a discount - you're getting a <span className="text-cyan-400 font-semibold">lifetime locked price deal that gets better as we grow.</span>
+                    When you lock in your Founder's price, you're not just getting a discount - you're getting a <span className="text-cyan-300 font-semibold">lifetime locked price deal that gets better as we grow.</span>
                   </p>
                   <p className="text-gray-300">
                     Lock in your <span className="text-cyan-400 font-bold text-lg">$29.99/year</span> before this one-time OG Launch Offer disappears forever.
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-slate-500/15 to-gray-500/10 border border-slate-400/40 rounded-2xl p-6 backdrop-blur-sm shadow-lg shadow-slate-500/10">
-                  <h3 className="text-xl font-bold text-slate-300 mb-4 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-purple-500/15 to-cyan-500/10 border border-purple-400/40 rounded-2xl p-6 backdrop-blur-sm shadow-lg shadow-purple-500/10">
+                  <h3 className="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
                     <span className="text-2xl">⏰</span>
                     The Cost of Confusion
                   </h3>
                   <p className="text-gray-300 mb-4">
-                    That feeling of confusion is costing you more than just your peace of mind - <span className="text-slate-300 font-semibold">it's costing you time.</span>
+                    That feeling of confusion is costing you more than just your peace of mind - <span className="text-purple-300 font-semibold">it's costing you time.</span>
                   </p>
                   <p className="text-gray-300">
-                    Our OG Founder's Deal gives you unlimited access to Sage's wisdom for just <span className="text-cyan-400 font-bold text-lg">$2.49/month</span> (billed annually at $29.99).
+                    Our OG Founder's Deal gives you unlimited access to Sage's wisdom for just <span className="text-purple-400 font-bold text-lg">$2.49/month</span> (billed annually at $29.99).
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-cyan-500/15 to-blue-500/10 border border-cyan-400/40 rounded-2xl p-6 backdrop-blur-sm shadow-lg shadow-cyan-500/10">
-                  <h3 className="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-emerald-500/15 to-teal-500/10 border border-emerald-400/40 rounded-2xl p-6 backdrop-blur-sm shadow-lg shadow-emerald-500/10">
+                  <h3 className="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
                     <span className="text-2xl">🛡️</span>
                     Privacy First
                   </h3>
                   <p className="text-gray-300">
-                    Never stored. Never used for training. <span className="text-cyan-400 font-semibold">Deleted instantly.</span>
+                    Never stored. Never used for training. <span className="text-emerald-300 font-semibold">Deleted instantly.</span>
                   </p>
                 </div>
               </motion.div>
@@ -460,26 +570,34 @@ const PricingPage = () => {
               Let's Do The Math
             </motion.h2>
             
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.4 }}
-                className="bg-slate-800/40 border border-slate-500/30 rounded-2xl p-6 backdrop-blur-sm"
+                className="bg-slate-800/40 border border-slate-500/30 rounded-2xl p-5 sm:p-6 backdrop-blur-sm"
               >
-                <h3 className="text-xl font-bold mb-4 text-slate-300">"What $4.99 gets you elsewhere:"</h3>
-                <ul className="space-y-2 text-left">
-                  <li className="flex items-center gap-2">
-                    <span className="text-slate-400">❌</span>
-                    <span>One overpriced cold latte you'll Instagram anyway</span>
+                <h3 className="text-lg sm:text-xl font-bold mb-4 text-slate-300">"What $29.99 gets you elsewhere:"</h3>
+                <ul className="space-y-3 text-left">
+                  <li className="flex items-start gap-2">
+                    <span className="text-slate-400 mt-0.5">❌</span>
+                    <span className="text-sm sm:text-base">Half a week of overpriced cold lattes you'll Instagram anyway</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-slate-400">❌</span>
-                    <span>Fraction of a therapy session you'll cancel</span>
+                  <li className="flex items-start gap-2">
+                    <span className="text-slate-400 mt-0.5">❌</span>
+                    <span className="text-sm sm:text-base">10 minutes with a psychic who'll say "someone's thinking of you"</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-slate-400">❌</span>
-                    <span>3 minutes with a psychic who'll say "someone's thinking of you"</span>
+                  <li className="flex items-start gap-2">
+                    <span className="text-slate-400 mt-0.5">❌</span>
+                    <span className="text-sm sm:text-base">1 month of a dating app subscription that feels icky</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-slate-400 mt-0.5">❌</span>
+                    <span className="text-sm sm:text-base">A fraction of a therapy session you can't afford</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-slate-400 mt-0.5">❌</span>
+                    <span className="text-sm sm:text-base">That one "self-care" purchase you'll forget about next week</span>
                   </li>
                 </ul>
               </motion.div>
@@ -488,34 +606,42 @@ const PricingPage = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.6 }}
-                className="bg-cyan-900/40 border border-cyan-500/30 rounded-2xl p-6 backdrop-blur-sm"
+                className="bg-gradient-to-br from-cyan-900/30 via-purple-900/20 to-cyan-900/30 border-2 border-cyan-400/30 rounded-2xl p-5 sm:p-6 backdrop-blur-sm shadow-xl shadow-cyan-500/15"
               >
-                <h3 className="text-xl font-bold mb-4 text-cyan-400">"What $4.99 gets you here:"</h3>
-                <ul className="space-y-2 text-left">
-                  <li className="flex items-center gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <span>Unlimited receipts from someone who gets it</span>
+                <h3 className="text-lg sm:text-xl font-bold mb-4 text-white italic">"What $29.99 gets you here:"</h3>
+                <ul className="space-y-3 text-left">
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-400 mt-0.5">✅</span>
+                    <span className="text-sm sm:text-base text-gray-200">Stop replaying that text at 2am. Get clarity whenever your gut's screaming and your brain won't shut up.</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <span>'OMG' Screenshots that'll vindicate you in the group chat</span>
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-400 mt-0.5">✅</span>
+                    <span className="text-sm sm:text-base text-gray-200">Price locked forever - while everyone else pays more, you're locked in. Your future self will thank you.</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <span>Finally knowing if 'k' was shady or just lazy</span>
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-400 mt-0.5">✅</span>
+                    <span className="text-sm sm:text-base text-gray-200">Build immunity to the patterns that keep you stuck. See the breadcrumbs before you're already in the forest.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-400 mt-0.5">✅</span>
+                    <span className="text-sm sm:text-base text-gray-200">Screenshots that'll vindicate you in the group chat. Finally prove you're not crazy - you were right all along.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-emerald-400 mt-0.5">✅</span>
+                    <span className="text-sm sm:text-base text-gray-200">No more wondering if 'k' was shady or just lazy. No more waiting for clarity. Know what's real, when you need it.</span>
                   </li>
                 </ul>
               </motion.div>
             </div>
             
-            <motion.p 
+            <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.8 }}
-              className="text-2xl md:text-3xl font-bold mt-8 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mt-12 mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
             >
               The math is mathing, bestie.
-            </motion.p>
+            </motion.h2>
           </div>
         </section>
 
@@ -586,20 +712,6 @@ const PricingPage = () => {
                 </div>
               </div>
               
-              {/* Terms & Privacy Policy */}
-          <div className="mt-6 mb-4">
-            <p className="text-xs text-gray-500 text-center">
-              For 16+ Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice. By using this site, you agree to our{" "}
-              <Link to="/terms-of-service" className="text-cyan-400 hover:text-cyan-300 underline">
-                Terms
-              </Link>
-              {" "}&{" "}
-              <Link to="/privacy-policy" className="text-cyan-400 hover:text-cyan-300 underline">
-                Privacy Policy
-              </Link>
-              .
-            </p>
-          </div>
               
               {/* Tiny Badge - Clickable Link */}
               <div className="mt-2">
@@ -614,19 +726,6 @@ const PricingPage = () => {
           </div>
         </section>
 
-        {/* Privacy Footer */}
-        <section className="py-8 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-gray-900/60 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6">
-              <p className="text-sm text-gray-400 mb-2">
-                For 16+ Entertainment Purposes Only. Sage is an AI character with opinions, not facts. Her takes are for fun and perspective, not professional advice.
-              </p>
-              <p className="text-xs text-gray-500">
-                By using this site, you agree to our <Link to="/terms-of-service" className="text-cyan-400 hover:text-cyan-300 underline">Terms</Link> & <Link to="/privacy-policy" className="text-cyan-400 hover:text-cyan-300 underline">Privacy Policy</Link>.
-              </p>
-            </div>
-              </div>
-        </section>
 
         {/* Simple Clean Footer */}
         <footer className="px-6 py-8 bg-black border-t border-white/10">
@@ -641,7 +740,7 @@ const PricingPage = () => {
             </div>
             
             {/* Disclaimer */}
-            <p className="text-gray-500 text-xs mb-2">For Entertainment Purposes Only</p>
+            <p className="text-gray-500 text-xs mb-2">For 16+ Entertainment Purposes Only</p>
             
             {/* Copyright */}
             <p className="text-gray-500 text-xs mb-2">© 2025 Get The Receipts. All rights reserved.</p>

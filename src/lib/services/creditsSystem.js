@@ -85,9 +85,14 @@ export const getUserCredits = async (userId) => {
     if (data.subscription_status === 'premium' || data.subscription_status === 'yearly' || data.subscription_status === 'founder') {
       creditsRemaining = CREDIT_AMOUNTS.PREMIUM_UNLIMITED; // -1 indicates unlimited
     }
-    // For free users, give unlimited credits (no daily reset)
+    // For free users, use daily limits (3 starter + 1 daily after)
+    // Credits are managed by FreeUsageService and database functions
+    // Keep existing credits_remaining value from database
     else if (data.subscription_status === 'free') {
-      creditsRemaining = CREDIT_AMOUNTS.PREMIUM_UNLIMITED; // -1 indicates unlimited
+      // Free users have limited credits - don't override with unlimited
+      // The actual limit checking is done by FreeUsageService and consume_credit() RPC
+      // This just returns the current database value
+      creditsRemaining = creditsRemaining; // Keep as-is from database
     }
     // Legacy logic for other subscription types (emergency pack, etc.)
     else {

@@ -122,7 +122,7 @@ const TabbedReceiptInterface = ({
             receiptData={analysis}
             isPremium={isPremium}
             userId={analysis?.userId}
-            // For anonymous users, limit chats per receipt to 3. Free users keep 5/day via other checks.
+            // For anonymous users, limit chats per receipt to 3 (same as logged-in free users)
             maxExchangesOverride={!isPremium && !analysis?.userId ? 3 : undefined}
           />
         </div>

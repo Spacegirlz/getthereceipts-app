@@ -544,7 +544,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
               www.getthereceipts.com
             </p>
           </div>
-        </div>
+          </div>
         </div>
       </div>
       </motion.div>
@@ -650,7 +650,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
                 How does sharing work? →
               </span>
             </div>
-          </div>
+            </div>
           </div>
         </div>
         

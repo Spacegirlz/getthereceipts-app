@@ -33,20 +33,20 @@ const HorizontalTicker = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="w-full bg-slate-800/60 border-y border-slate-600/40 py-4 backdrop-blur-sm overflow-hidden"
+      className="w-full bg-slate-800/60 border-y border-slate-600/40 py-5 sm:py-4 backdrop-blur-sm overflow-hidden"
     >
-      <div className="flex items-center w-full">
-        <div className="flex-shrink-0 ml-4 mr-8">
+      <div className="flex items-center w-full px-2 sm:px-0">
+        <div className="flex-shrink-0 ml-2 sm:ml-4 mr-4 sm:mr-8">
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-            <span className="text-cyan-400 text-sm font-semibold">LIVE</span>
+            <div className="w-2.5 h-2.5 sm:w-2 sm:h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            <span className="text-cyan-400 text-xs sm:text-sm font-semibold">LIVE</span>
           </div>
         </div>
         
         <div className="flex-1 overflow-hidden">
-          <div className="flex space-x-8 whitespace-nowrap">
+          <div className="flex space-x-6 sm:space-x-8 whitespace-nowrap">
             <motion.div
-              className="flex space-x-8 whitespace-nowrap"
+              className="flex space-x-6 sm:space-x-8 whitespace-nowrap"
               animate={{
                 x: [`0%`, `-50%`]
               }}
@@ -54,7 +54,7 @@ const HorizontalTicker = () => {
                 x: {
                   repeat: Infinity,
                   repeatType: "loop",
-                  duration: 60, // 1 minute for full cycle - proper news ticker speed
+                  duration: 80, // Slower on mobile for better readability (was 60)
                   ease: "linear",
                 }
               }}
@@ -62,7 +62,7 @@ const HorizontalTicker = () => {
               {duplicatedMessages.map((message, index) => (
                 <span
                   key={index}
-                  className="text-gray-200 text-base font-medium flex-shrink-0"
+                  className="text-gray-200 text-base sm:text-lg font-medium flex-shrink-0"
                 >
                   {message} •
                 </span>
