@@ -54,6 +54,33 @@ const LandingPage = () => {
     { text: "The immunity training actually works", author: "Casey D." }
   ];
 
+  const socialFeed = [
+    {
+      reaction: "Called. Him. OUT.",
+      quote: "Sage literally highlighted the receipts I needed to send to the group chat. I screenshotted everything in 30 seconds.",
+      handle: "@bridgetxo",
+      meta: "Brooklyn • Breadcrumb decode"
+    },
+    {
+      reaction: "Gut confirmed.",
+      quote: "My therapist told me to trust my instincts. Sage gave me the exact language to shut it down. BF5 code just unlocked my spine.",
+      handle: "@devonlive",
+      meta: "Austin • Situationship audit"
+    },
+    {
+      reaction: "Sent to the GC.",
+      quote: "We were all arguing if he was serious or not. Sage called him a 'future faker' and we howled. Zero lies detected.",
+      handle: "@jenandjuice",
+      meta: "Toronto • Dream seller breakdown"
+    },
+    {
+      reaction: "Low-key obsessed.",
+      quote: "Not a bot acting like my emotionally intelligent bestie. The immunity checklist has me ignoring dry \"wyd\" texts now.",
+      handle: "@hailey.exe",
+      meta: "LA • Immunity training run"
+    }
+  ];
+
   // Typing animation state
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
@@ -446,6 +473,20 @@ const LandingPage = () => {
       </div>
       
       <div className="relative z-10">
+        {/* Top Banner - BF5 Freebie */}
+        <div className="w-full bg-gradient-to-r from-emerald-500/10 via-emerald-500/10 to-emerald-500/10 backdrop-blur-sm border-b border-emerald-400/30 py-3">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col items-center text-center gap-1">
+              <div className="text-emerald-300 font-semibold text-sm sm:text-base uppercase tracking-[0.35em]">
+                Limited Time · Sage's BF Freebie
+              </div>
+              <div className="text-xs sm:text-sm text-gray-200 font-medium">
+                Redeem the <span className="text-emerald-300 font-semibold">BF5</span> coupon in your dashboard for 5 premium receipts + unlimited Sage chat while they last.
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Hero Section  -  World-Class SaaS Design */}
         <section className="pt-20 pb-24 md:pt-32 md:pb-32 lg:pt-40 lg:pb-40 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
@@ -560,7 +601,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 md:mb-12 lg:mb-16 max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto leading-relaxed md:leading-loose px-4 sm:px-0"
+          className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-6 md:mb-9 lg:mb-12 max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto leading-relaxed md:leading-loose px-4 sm:px-0"
         >
           Paste the text. Get the truth. 60&nbsp;seconds.<br />
           <span className="text-sm sm:text-base text-gray-400 italic">Sage is your advanced AI Decoder who reads between the patterns, subtext and hidden&nbsp;messages.</span>
@@ -572,7 +613,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-col items-center justify-center mb-8 md:mb-12 lg:mb-16"
+          className="flex flex-col items-center justify-center mb-6 md:mb-10 lg:mb-12 gap-3"
         >
           <motion.div
             animate={{ 
@@ -592,7 +633,7 @@ const LandingPage = () => {
           >
             <Button
               onClick={handleGetStarted}
-              className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-base sm:text-lg md:text-xl px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 md:hover:scale-110 min-h-[56px] md:min-h-[64px] w-full sm:min-w-[200px] md:min-w-[280px] sm:w-auto border border-cyan-300/50 hover:border-cyan-200/70 relative overflow-hidden"
+              className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-base sm:text-lg md:text-xl px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-[1.04] md:hover:scale-[1.07] min-h-[56px] md:min-h-[62px] w-full sm:min-w-[220px] md:min-w-[280px] sm:w-auto border border-cyan-300/50 hover:border-cyan-200/70 relative overflow-hidden"
             >
               <span className="relative z-10">Get Your First Receipt Free (No Signup)</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
@@ -616,14 +657,29 @@ const LandingPage = () => {
             </div>
           </motion.div>
           
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+            className="flex flex-col items-center gap-2 text-sm sm:text-base text-gray-300"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/6 border border-cyan-400/30 rounded-full text-xs sm:text-sm text-white shadow shadow-cyan-500/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+              </span>
+              1,921 chats decoded this week
+            </div>
+          </motion.div>
+
         </motion.div>
 
             </motion.div>
           </div>
         </section>
 
-        {/* Subtle Section Divider */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent"></div>
+        {/* Single Section Divider to keep flow tight */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-cyan-400/15 to-transparent"></div>
 
         {/* Trust Bridge Section  -  Enhanced with Live Social Proof */}
         <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
@@ -777,6 +833,83 @@ const LandingPage = () => {
               </div>
             </motion.div>
             </div>
+        </section>
+
+        {/* Gradient Divider */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/25 to-transparent opacity-80 my-10 sm:my-12 lg:my-16"></div>
+
+        {/* Sage Freebies - quick value snapshot */}
+        <section className="px-4 pb-6 md:pb-10">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-6 md:mb-8"
+            >
+              <p className="text-xs uppercase tracking-[0.4em] text-cyan-300 mb-2">Sage Freebies</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">Start free. Stay curious.</h2>
+              <p className="text-sm sm:text-base text-gray-300 mt-2 max-w-2xl mx-auto">
+                One tap, one decode, zero invoices. A free plan that actually delivers daily clarity—and a <span className="text-emerald-300 font-semibold">Black Friday treat waiting the moment you sign up.</span>
+              </p>
+              <p className="text-xs sm:text-sm text-gray-400 italic mt-3">
+                Sage: “When I say receipt, I mean the written tea on your chat—no payment stuff, bestie.”
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.6 }}
+                className="bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-2xl p-5 sm:p-6 shadow-xl shadow-cyan-500/10"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🚀</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">One-click, no signup</h3>
+                    <p className="text-sm text-gray-300">
+                      Paste one chat and get Sage’s written decode (your “receipt”) instantly. No account. No card. Just clarity.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="bg-white/5 backdrop-blur-sm border border-purple-400/20 rounded-2xl p-5 sm:p-6 shadow-xl shadow-purple-500/10"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🗓️</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">Free plan with daily receipts</h3>
+                    <p className="text-sm text-gray-300">
+                      Create a login → unlock 3 bonus decodes right away, plus 1 brand-new Sage “receipt” every day. Still $0. Still private.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="bg-white/5 backdrop-blur-sm border border-emerald-400/30 rounded-2xl p-5 sm:p-6 shadow-xl shadow-emerald-500/10"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🎁</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">Black Friday freebie</h3>
+                    <p className="text-sm text-gray-300">
+                      Sign in, head to your dashboard, and redeem <span className="font-mono text-emerald-300">BF5</span> for 5 premium receipts (AKA Sage’s VIP-level decodes) + unlimited chat while they last.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         </section>
 
         {/* Gradient Divider */}
@@ -1113,133 +1246,104 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Social Proof Section  -  Premium SaaS Style - Segmented */}
-        <section className="py-20 md:py-24 lg:py-32 px-4 relative overflow-hidden" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
-          {/* Distinct Background for Segmentation */}
+        {/* Social Proof Section - feed style */}
+        <section className="py-20 md:py-24 lg:py-28 px-4 relative overflow-hidden" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="absolute inset-0 bg-gradient-to-b from-purple-500/8 via-cyan-500/5 to-purple-500/8 pointer-events-none"></div>
-          
-          {/* Subtle Radial Glows for Depth */}
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-3xl opacity-20 pointer-events-none" style={{
-            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%)'
-          }}></div>
-          <div className="absolute bottom-0 right-0 w-[500px] h-[300px] rounded-full blur-3xl opacity-15 pointer-events-none" style={{
-            background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, transparent 70%)'
-          }}></div>
-          
-          {/* Top Border - Visual Separation */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[560px] h-[360px] rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%)' }}></div>
+          <div className="absolute bottom-0 right-0 w-[420px] h-[280px] rounded-full blur-3xl opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(34, 211, 238, 0.12) 0%, transparent 70%)' }}></div>
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent"></div>
-          
-          {/* Bottom Border - Visual Separation */}
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"></div>
-          
-          <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-center mb-12"
-          >
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 max-w-4xl mx-auto leading-tight">
-                  Trust by those who are <span className="text-cyan-400">DONE</span> guessing 💯
-                </h2>
-                <p className="text-base sm:text-lg text-gray-300 max-w-5xl mx-auto tracking-tight px-4">
-                  Join the community that's finally getting the real talk (and proving their friends wrong)
-                </p>
-          </motion.div>
 
-            {/* Just Launched Badge - Replaces Fake Stats */}
+          <div className="max-w-7xl mx-auto relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-center mb-16"
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-center mb-10"
             >
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-cyan-400/30 rounded-full">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                </span>
-                <span className="text-base sm:text-lg font-semibold text-white">
-                  Just Launched • Join the first 500 users
-                </span>
-              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 max-w-4xl mx-auto leading-tight">
+                Trusted by people who are <span className="text-cyan-400">DONE</span> spiraling 💯
+              </h2>
+              <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-4xl mx-auto">
+                Real chaos, real receipts. These are the moments the GC can’t stop sharing.
+              </p>
             </motion.div>
 
-            {/* Testimonial Cards - Enhanced for Segmented Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid gap-10 md:grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)]">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.7 }}
-                className="bg-white/12 backdrop-blur-xl border border-purple-400/30 rounded-2xl p-6 shadow-xl shadow-purple-500/10 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:border-purple-400/50 hover:scale-[1.02]"
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="space-y-4"
               >
-                <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    S
+                {socialFeed.map((item, idx) => (
+                  <div
+                    key={item.handle}
+                    className="bg-white/10 backdrop-blur-lg border border-white/15 rounded-3xl px-5 py-6 sm:px-6 shadow-lg shadow-black/10 flex gap-4 hover:border-cyan-300/40 transition-all duration-300"
+                  >
+                    <div className="flex flex-col items-center pt-1">
+                      <span className="text-xs uppercase tracking-[0.35em] text-cyan-300 mb-3">{String(idx + 1).padStart(2, '0')}</span>
+                      <span className="text-xs font-semibold text-gray-400 rotate-180 writing-vertical hidden sm:block">Receipt</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-emerald-300 uppercase tracking-wide mb-1">{item.reaction}</div>
+                      <p className="text-sm sm:text-base text-gray-100 leading-relaxed mb-3">{item.quote}</p>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
+                        <span className="px-2 py-1 rounded-full bg-white/10 text-white/90 font-medium">{item.handle}</span>
+                        <span>{item.meta}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-3">
-                    <div className="text-white font-medium">Sarah M.</div>
-                    <div className="text-gray-400 text-sm">Verified User</div>
-                  </div>
-                </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    "FINALLY proof that they were breadcrumbing me. My friends kept saying I was overthinking, but Sage confirmed what I already knew. I was RIGHT."
-                  </p>
+                ))}
               </motion.div>
 
-          <motion.div
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-                className="bg-white/12 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-6 shadow-xl shadow-cyan-500/10 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20 hover:border-cyan-400/50 hover:scale-[1.02]"
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="space-y-5"
               >
-                <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    M
-              </div>
-                  <div className="ml-3">
-                    <div className="text-white font-medium">Marcus L.</div>
-                    <div className="text-gray-400 text-sm">Verified User</div>
+                <div className="bg-white/10 backdrop-blur-xl border border-emerald-400/30 rounded-3xl p-6 shadow-xl shadow-emerald-500/10">
+                  <div className="text-emerald-300 text-xs font-bold uppercase tracking-[0.3em] mb-2">Proof</div>
+                  <p className="text-lg sm:text-xl font-semibold text-white mb-3">82% said Sage spotted the pattern they were missing.</p>
+                  <p className="text-sm text-gray-300">
+                    We’re not flexing four-digit user counts yet—we’re flexing how often Sage tells people what their friends couldn’t.
+                  </p>
+                </div>
+                <div className="bg-white/8 backdrop-blur-xl border border-white/15 rounded-3xl p-6 shadow-lg shadow-purple-500/15">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full border border-white/20 bg-white/10 flex items-center justify-center text-lg">📸</div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Shareable Receipts</p>
+                      <p className="text-xs text-gray-400">Built to screenshot, post, and send to the GC.</p>
+                    </div>
+                  </div>
+                  <Button onClick={() => navigate('/new-receipt')} variant="outline" className="w-full border-cyan-400/60 text-white hover:bg-cyan-500/15">
+                    Generate yours →
+                  </Button>
+                  <p className="text-xs text-gray-500 mt-3 text-center">No names shown. Privacy-first layout.</p>
+                </div>
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-lg shadow-black/10">
+                  <div className="text-xs uppercase tracking-[0.3em] text-cyan-300 mb-2">Just launched</div>
+                  <p className="text-sm text-gray-200 mb-3">Join the first 500. BF5 unlocks 5 premium receipts + unlimited chat until Dec&nbsp;1.</p>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-200 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-emerald-300"></span>
+                    <span>Offer ends Dec 1 • 11:59pm EST</span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-                </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    "Sage called out the red flags I was ignoring. Saved me months of wasted time on someone who wasn't serious. My gut was RIGHT."
-                  </p>
-          </motion.div>
 
-          <motion.div
-                initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.9 }}
-                className="bg-white/12 backdrop-blur-xl border border-purple-400/30 rounded-2xl p-6 shadow-xl shadow-purple-500/10 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:border-purple-400/50 hover:scale-[1.02]"
-              >
-                <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-lime-400 to-yellow-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    A
-                  </div>
-                  <div className="ml-3">
-                    <div className="text-white font-medium">Alex K.</div>
-                    <div className="text-gray-400 text-sm">Verified User</div>
-                  </div>
-                </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    "The accuracy is SCARY good. It's like having a friend who's seen every dating pattern and isn't afraid to spill the tea. No more second-guessing."
-                  </p>
-          </motion.div>
-        </div>
-          
-          {/* Built By Line - After Testimonials */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-            className="text-center mt-12 mb-8"
-          >
-            <p className="text-sm sm:text-base text-gray-400">
-              <em>Built by a team that's generated $7M+ with AI systems because we were tired of spiraling over 2am texts and what "k..." really means. First 500 users lock in lifetime access.</em>
-            </p>
-          </motion.div>
-          
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-center mt-16"
+            >
+              <p className="text-sm sm:text-base text-gray-400">
+                <em>Built by a team that's generated $7M+ with AI systems because we were tired of spiraling over 2am texts and what "k..." really means. First 500 users lock in lifetime access.</em>
+              </p>
+            </motion.div>
           </div>
         </section>
 

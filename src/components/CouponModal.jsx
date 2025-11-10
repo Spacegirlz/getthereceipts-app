@@ -86,8 +86,11 @@ const CouponModal = ({ isOpen, onClose }) => {
         
         <div className="space-y-4">
           <div className="text-center">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Enter your coupon code to get free receipts!
+            <p className="text-gray-600 dark:text-gray-400 mb-2">
+              Enter your coupon code to unlock instant receipts.
+            </p>
+            <p className="text-emerald-300 font-semibold text-sm">
+              Limited Time: Redeem the <span className="font-mono tracking-widest text-white">BF5</span> coupon here for 5 premium receipts + unlimited Sage chat
             </p>
           </div>
           
@@ -109,7 +112,7 @@ const CouponModal = ({ isOpen, onClose }) => {
             <div>
               <Input
                 type="text"
-                placeholder="Enter coupon code (e.g., VIPVILLA5)"
+                placeholder="Enter coupon code (e.g., BF5)"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                 className="text-center text-lg font-mono tracking-wider"

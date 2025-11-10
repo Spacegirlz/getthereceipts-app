@@ -2,7 +2,7 @@
 // Tracks anonymous users and their analysis count using localStorage with fallbacks
 
 const ANONYMOUS_USER_KEY = 'gtr_anonymous_user';
-const ANONYMOUS_ANALYSIS_LIMIT = 3; // 3 free analyses (receipts) for anonymous users
+const ANONYMOUS_ANALYSIS_LIMIT = 1; // 1 free analysis (receipt) for anonymous users
 
 // Fallback storage for when localStorage is unavailable
 let fallbackStorage = {};

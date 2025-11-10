@@ -19,6 +19,9 @@ const PricingPage = () => {
   const [loadingPriceId, setLoadingPriceId] = useState(null);
   const [referralId, setReferralId] = useState(null);
   const [liveUserCount, setLiveUserCount] = useState(150);
+  const OG_TOTAL_SPOTS = 500;
+  const OG_SPOTS_LEFT = 487;
+  const ogClaimedPercent = Math.max(3, ((OG_TOTAL_SPOTS - OG_SPOTS_LEFT) / OG_TOTAL_SPOTS) * 100);
 
   // Scroll to top on page load to ensure consistent landing position
   useEffect(() => {
@@ -124,6 +127,20 @@ const PricingPage = () => {
         <meta name="description" content="Choose your truth level. From free daily receipts to unlimited chaos decoded." />
       </Helmet>
 
+        {/* Top Banner - BF5 Freebie */}
+        <div className="w-full bg-gradient-to-r from-emerald-500/10 via-emerald-500/10 to-emerald-500/10 backdrop-blur-sm border-b border-emerald-400/30 py-3">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col items-center text-center gap-1">
+              <div className="text-emerald-300 font-semibold text-sm sm:text-base uppercase tracking-[0.35em]">
+                Limited Time · Sage's BF Freebie
+              </div>
+              <div className="text-xs sm:text-sm text-gray-200 font-medium">
+                Redeem the <span className="text-emerald-300 font-semibold">BF5</span> coupon in your dashboard for 5 premium receipts + unlimited Sage chat while they last.
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Hero Section */}
         <section className="pt-20 pb-16 px-4">
           <div className="max-w-7xl mx-auto text-center">
@@ -149,24 +166,24 @@ const PricingPage = () => {
           
           {/* Urgency Banner - Enhanced FOMO */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.4, ease: 'easeOut' }}
             className="mb-8"
           >
-            <div className="inline-flex flex-col sm:flex-row items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500/20 via-purple-500/20 to-cyan-500/20 backdrop-blur-sm border-2 border-red-400/40 rounded-full text-sm font-semibold text-white animate-pulse">
+            <div className="inline-flex flex-col sm:flex-row items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500/20 via-cyan-500/20 to-cyan-500/20 backdrop-blur-sm border-2 border-cyan-400/40 rounded-full text-sm font-semibold text-cyan-300">
               <span className="flex items-center gap-2">
-                <span className="text-red-400">⚡</span>
-                <span>Price increases to $59.99/year after user #500</span>
+                <span className="text-cyan-300">⚡</span>
+                <span className="text-cyan-300">OG Founders price jumps to $59.99/year after user #500</span>
               </span>
-              <span className="hidden sm:inline text-gray-400">•</span>
-                <span className="text-cyan-300">487 spots left at $29.99</span>
+              <span className="hidden sm:inline text-cyan-300">•</span>
+              <span className="text-cyan-300">Ends Dec 1 • 487 spots left at $29.99</span>
             </div>
           </motion.div>
-          
+
 
           {/* Netflix-Style Clean Cards - OG Founders Gets Special Treatment */}
-            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8 mt-8 sm:mt-12">
+            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8">
               {/* MOST POPULAR Badge for Premium Card - Desktop */}
               <div className="hidden md:block absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-20">
                 <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
@@ -294,6 +311,15 @@ const PricingPage = () => {
                       <div className="text-xs sm:text-sm text-purple-300 mb-3 font-semibold">FIRST 500 ONLY</div>
                       <div className="text-4xl sm:text-5xl font-black text-white mb-2">$29.99/year</div>
                       <p className="text-sm text-gray-300 mb-2">Locked in FOREVER</p>
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between text-xs text-gray-300 mb-1">
+                          <span>{OG_SPOTS_LEFT} spots left</span>
+                          <span>{OG_TOTAL_SPOTS - OG_SPOTS_LEFT} claimed</span>
+                        </div>
+                        <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                          <div className="h-full bg-emerald-300/80 rounded-full" style={{ width: `${ogClaimedPercent}%` }}></div>
+                        </div>
+                      </div>
                       {/* FOMO Price Comparison */}
                       <div className="mb-3 p-3 bg-red-500/10 border border-red-400/30 rounded-lg">
                         <p className="text-xs text-gray-300 line-through mb-1">Regular: $59.99/year</p>

@@ -47,6 +47,8 @@ const DashboardPage = () => {
     todayChats: 0
   });
 
+  const isPremium = ['premium', 'yearly', 'founder'].includes(userCredits.subscription);
+
   const fetchData = useCallback(async (userId) => {
     setLoading(true);
     try {
@@ -61,13 +63,20 @@ const DashboardPage = () => {
       const isPremiumUser = creditsData.subscription === 'premium' || creditsData.subscription === 'yearly' || creditsData.subscription === 'founder';
       
       // Fetch user's receipt saving preference (defaults to OFF for privacy)
-      const { data: userData } = await supabase
-        .from('users')
-        .select('save_receipts')
-        .eq('id', userId)
-        .single();
-      
-      const shouldSaveReceipts = userData?.save_receipts === true; // Explicit false unless explicitly true
+      let shouldSaveReceipts = false;
+      if (isPremiumUser) {
+        const { data: userData, error: userSettingsError } = await supabase
+          .from('users')
+          .select('save_receipts')
+          .eq('id', userId)
+          .single();
+
+        if (userSettingsError) {
+          console.warn('Dashboard: save_receipts preference unavailable:', userSettingsError.message);
+        }
+        
+        shouldSaveReceipts = userData?.save_receipts === true; // Explicit false unless explicitly true
+      }
       setSaveReceipts(shouldSaveReceipts);
 
       // Only fetch receipts if user is premium AND has saving enabled
@@ -495,8 +504,8 @@ const DashboardPage = () => {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-3"
             >
-              {/* Only show coupon button for free users */}
-              {userCredits.subscription === 'free' && (
+              {/* Coupon button available for anyone not on a premium plan */}
+              {!isPremium && (
                 <Button 
                   variant="outline" 
                   className="text-white border-cyan-400/60 hover:bg-cyan-500/10 hover:border-cyan-400/80 font-medium px-4 py-2 rounded-lg transition-all duration-300"

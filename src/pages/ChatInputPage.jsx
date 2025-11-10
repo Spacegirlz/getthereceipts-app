@@ -470,14 +470,14 @@ const ChatInputPage = () => {
                   <div>
                     <p className="text-sm font-medium text-cyan-300">
                       {anonymousStatus.remainingAnalyses > 0 
-                        ? `Free Analysis: ${anonymousStatus.remainingAnalyses} remaining`
+                        ? 'Free Analysis: 1 remaining'
                         : 'Free analysis used up'
                       }
                     </p>
                     <p className="text-xs text-cyan-400/80">
                       {anonymousStatus.remainingAnalyses > 0 
-                        ? 'Sign up for unlimited analysis + daily credits'
-                        : 'Sign up now for unlimited analysis'
+                        ? 'Sign up to unlock your one free premium decode + daily credits'
+                        : 'Sign up now for unlimited analysis and daily credits'
                       }
                     </p>
                   </div>

@@ -1137,7 +1137,7 @@ IMPORTANT:
 - NEVER use the words "chat excerpt" or any field names
 - The actual names are ${cleanContext.userName} and ${cleanContext.otherName}
 `;
-      
+
       console.log('API Request selection:', { provider, openAIModel, geminiModel });
 
 
