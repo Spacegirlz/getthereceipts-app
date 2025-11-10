@@ -36,11 +36,13 @@ LIMIT 1;
 SELECT 
   p.proname as function_name,
   pg_get_function_identity_arguments(p.oid) as arguments,
-  r.rolname as grantee
+  p.proacl as access_privileges,
+  CASE 
+    WHEN p.proacl IS NULL THEN 'Default permissions (owner only)'
+    ELSE 'Custom permissions set'
+  END as permission_status
 FROM pg_proc p
 JOIN pg_namespace n ON p.pronamespace = n.oid
-LEFT JOIN pg_proc_acl pa ON p.oid = pa.prooid
-LEFT JOIN pg_roles r ON pa.proacl::text LIKE '%' || r.rolname || '%'
 WHERE p.proname = 'redeem_coupon'
   AND n.nspname = 'public';
 
