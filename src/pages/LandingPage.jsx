@@ -473,20 +473,6 @@ const LandingPage = () => {
       </div>
       
       <div className="relative z-10">
-        {/* Top Banner - BF5 Freebie */}
-        <div className="w-full bg-gradient-to-r from-emerald-500/10 via-emerald-500/10 to-emerald-500/10 backdrop-blur-sm border-b border-emerald-400/30 py-3">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex flex-col items-center text-center gap-1">
-              <div className="text-emerald-300 font-semibold text-sm sm:text-base uppercase tracking-[0.35em]">
-                Limited Time · Sage's BF Freebie
-              </div>
-              <div className="text-xs sm:text-sm text-gray-200 font-medium">
-                Redeem the <span className="text-emerald-300 font-semibold">BF5</span> coupon in your dashboard for 5 premium receipts + unlimited Sage chat while they last.
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Hero Section  -  World-Class SaaS Design */}
         <section className="pt-20 pb-24 md:pt-32 md:pb-32 lg:pt-40 lg:pb-40 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
@@ -604,7 +590,7 @@ const LandingPage = () => {
           className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-6 md:mb-9 lg:mb-12 max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto leading-relaxed md:leading-loose px-4 sm:px-0"
         >
           Paste the text. Get the truth. 60&nbsp;seconds.<br />
-          <span className="text-sm sm:text-base text-gray-400 italic">Sage is your advanced AI Decoder who reads between the patterns, subtext and hidden&nbsp;messages.</span>
+          <span className="text-sm sm:text-base text-gray-400 italic">Sage is your advanced AI Chat Decoder who reads between the patterns, subtext and hidden&nbsp;messages.</span>
         </motion.p>
 
 
@@ -924,8 +910,11 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center mb-6 md:mb-12"
             >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 md:mb-4">
-                How <span className="text-white">Sage Works</span> (it's embarrassingly simple)
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 md:mb-4">
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                  How&nbsp;Sage&nbsp;Works
+                </span>{' '}
+                <span className="text-white">(it's embarrassingly simple)</span>
               </h2>
               <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto">
                 From confused to confident in under 60 seconds

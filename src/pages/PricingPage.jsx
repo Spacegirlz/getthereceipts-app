@@ -164,24 +164,6 @@ const PricingPage = () => {
             Receipts in 60 seconds. No shame. No storage. Just Sage's take.
           </motion.p>
           
-          {/* Urgency Banner - Enhanced FOMO */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.4, ease: 'easeOut' }}
-            className="mb-8"
-          >
-            <div className="inline-flex flex-col sm:flex-row items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500/20 via-cyan-500/20 to-cyan-500/20 backdrop-blur-sm border-2 border-cyan-400/40 rounded-full text-sm font-semibold text-cyan-300">
-              <span className="flex items-center gap-2">
-                <span className="text-cyan-300">⚡</span>
-                <span className="text-cyan-300">OG Founders price jumps to $59.99/year after user #500</span>
-              </span>
-              <span className="hidden sm:inline text-cyan-300">•</span>
-              <span className="text-cyan-300">Ends Dec 1 • 487 spots left at $29.99</span>
-            </div>
-          </motion.div>
-
-
           {/* Netflix-Style Clean Cards - OG Founders Gets Special Treatment */}
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8">
               {/* MOST POPULAR Badge for Premium Card - Desktop */}
