@@ -150,6 +150,18 @@ module.exports = async function handler(req, res) {
 
   // Shared payment processing function
   async function handlePaymentSuccess(userEmail, amountPaid, mode, paymentObject) {
+    // Get current user data FIRST (needed for Emergency Pack logic)
+    const { data: currentUser, error: fetchError } = await supabase
+      .from('users')
+      .select('credits_remaining, subscription_status')
+      .eq('email', userEmail)
+      .single();
+    
+    if (fetchError) {
+      console.error('❌ Error fetching user:', fetchError);
+      return;
+    }
+    
     // Determine credits and subscription type based on amount
     let creditsToAdd = 0;
     let subscriptionType = 'free';
@@ -183,18 +195,6 @@ module.exports = async function handler(req, res) {
     }
     
     console.log(`🎯 Processing ${userEmail}: ${creditsToAdd === -1 ? 'unlimited' : creditsToAdd} credits, subscription: ${subscriptionType}, expires: ${expiresAt?.toISOString()}`);
-    
-    // Get current user data
-    const { data: currentUser, error: fetchError } = await supabase
-      .from('users')
-      .select('credits_remaining, subscription_status')
-      .eq('email', userEmail)
-      .single();
-    
-    if (fetchError) {
-      console.error('❌ Error fetching user:', fetchError);
-      return;
-    }
     
     // Calculate new credits
     let newCredits;
