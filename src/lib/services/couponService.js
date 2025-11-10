@@ -47,20 +47,38 @@ export const redeemCoupon = async (couponCode, userId) => {
       };
     }
     
+    // Handle case where Supabase might return data as array or string
+    let responseData = data;
+    if (Array.isArray(data) && data.length > 0) {
+      responseData = data[0];
+    } else if (typeof data === 'string') {
+      try {
+        responseData = JSON.parse(data);
+      } catch (e) {
+        console.error('Failed to parse response data:', e);
+        return {
+          success: false,
+          error: 'Invalid response from server. Please try again.'
+        };
+      }
+    }
+    
+    console.log('📦 Response data:', responseData);
+    
     // Check if the function returned an error
-    if (data.success === false || !data.success) {
+    if (responseData.success === false || !responseData.success) {
       // Provide user-friendly error messages
-      let userMessage = data.error || 'Failed to redeem coupon';
+      let userMessage = responseData.error || 'Failed to redeem coupon';
       
-      if (data.error?.includes('Premium users already have unlimited credits')) {
+      if (responseData.error?.includes('Premium users already have unlimited credits')) {
         userMessage = "🎉 You're already Premium! You have unlimited credits - no coupon needed!";
-      } else if (data.error?.includes('already used this coupon')) {
+      } else if (responseData.error?.includes('already used this coupon')) {
         userMessage = "❌ You've already used this coupon code. Each code can only be used once per account.";
-      } else if (data.error?.includes('Invalid coupon code')) {
+      } else if (responseData.error?.includes('Invalid coupon code')) {
         userMessage = "🔍 Coupon not found. Please check the spelling or try a different code. Some codes expire after limited uses.";
-      } else if (data.error?.includes('reached its usage limit')) {
+      } else if (responseData.error?.includes('reached its usage limit')) {
         userMessage = "⏰ This coupon has reached its usage limit. Try a different code!";
-      } else if (data.error?.includes('expired')) {
+      } else if (responseData.error?.includes('expired')) {
         userMessage = "⏰ This coupon has expired. Try a different code!";
       }
       
@@ -72,16 +90,16 @@ export const redeemCoupon = async (couponCode, userId) => {
     
     // Database function already updates credits, so we just return the result
     // The function returns new_credits in the response
-    console.log('✅ Coupon redeemed successfully:', data);
+    console.log('✅ Coupon redeemed successfully:', responseData);
     
     return {
       success: true,
-      couponName: data.coupon_name,
-      receiptsCount: data.receipts_count,
-      isPremium: data.is_premium,
-      remainingUses: data.remaining_uses,
-      newCredits: data.new_credits || (data.previous_credits ? data.previous_credits + (data.credits_added || data.receipts_count || 0) : data.receipts_count || 0),
-      creditsAdded: data.credits_added || data.receipts_count
+      couponName: responseData.coupon_name,
+      receiptsCount: responseData.receipts_count,
+      isPremium: responseData.is_premium,
+      remainingUses: responseData.remaining_uses,
+      newCredits: responseData.new_credits || (responseData.previous_credits ? responseData.previous_credits + (responseData.credits_added || responseData.receipts_count || 0) : responseData.receipts_count || 0),
+      creditsAdded: responseData.credits_added || responseData.receipts_count
     };
     
   } catch (error) {
