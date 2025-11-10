@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye } from 'lucide-react';
+import { MessageSquare, Zap, TrendingUp, Gift, ArrowRight, Sparkles, ChevronDown, ShieldCheck, Eye, Lock } from 'lucide-react';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -357,7 +357,7 @@ const LandingPage = () => {
       
       <div className="relative z-10">
         {/* Hero Section  -  World-Class SaaS Design */}
-        <section className="pt-20 pb-32 px-4">
+        <section className="pt-20 pb-24 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
         <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -412,7 +412,7 @@ const LandingPage = () => {
           className="mb-8"
         >
           <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-4 sm:p-6 max-w-3xl mx-auto shadow-2xl shadow-cyan-500/20">
-            <div className="relative overflow-hidden min-h-[140px] sm:min-h-[120px] flex items-center justify-center py-4">
+            <div className="relative overflow-hidden min-h-[100px] sm:min-h-[110px] flex items-center justify-center py-3">
               <motion.div
                 key={currentMessageIndex}
                 initial={{ opacity: 0, x: 20 }}
@@ -421,7 +421,7 @@ const LandingPage = () => {
                 transition={{ duration: 0.5 }}
                 className="text-center"
               >
-                <div className={`text-xl sm:text-2xl font-medium ${messages[currentMessageIndex].color}`}>
+                <div className={`text-lg sm:text-xl md:text-2xl font-medium ${messages[currentMessageIndex].color}`}>
                   {currentText}
                   {isTyping && <span className="animate-pulse">|</span>}
                 </div>
@@ -430,7 +430,7 @@ const LandingPage = () => {
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-xl sm:text-2xl text-gray-400 mt-1"
+                    className="text-base sm:text-lg md:text-xl text-gray-400 mt-1"
                   >
                     {messages[currentMessageIndex].archetype}
                   </motion.div>
@@ -447,30 +447,21 @@ const LandingPage = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight sm:leading-[1.1] mb-8 max-w-5xl mx-auto px-4 sm:px-0"
         >
-          <span className="text-white">For the message that won't leave your </span>
+          <span className="text-white">For the message that won't leave your&nbsp;</span>
           <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-            brain alone.
+            brain&nbsp;alone.
           </span>
         </motion.h1>
 
-        {/* Quick Process Line */}
+        {/* Combined Process & Description - Streamlined */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-6 sm:mb-4 max-w-3xl mx-auto"
+          className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0"
         >
-          Paste the chat. Tell the story. Get Sage's take. 💅
-        </motion.p>
-
-        {/* Process  -  SIMPLE */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-sm sm:text-base md:text-lg text-gray-400 font-normal mb-12 max-w-2xl mx-auto leading-relaxed"
-        >
-          Sage decodes the chat you can't stop replaying. From crushes to coworkers, breakups to besties. Sage doesn't read minds... she reads patterns. And she's seen it all...
+          Paste the chat. Tell the story. Get&nbsp;Sage's&nbsp;take. 💅<br />
+          <span className="text-sm sm:text-base text-gray-400">Sage decodes the chat you can't stop replaying. She reads patterns, not&nbsp;minds.</span>
         </motion.p>
 
 
@@ -479,7 +470,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
         >
           <motion.div
             animate={{ 
@@ -504,83 +495,44 @@ const LandingPage = () => {
             </Button>
           </motion.div>
           
-          <Button
-            variant="outline"
-            className="border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10 text-lg px-6 py-3 rounded-xl transition-all duration-300"
-          >
-            See How It Works →
-          </Button>
-          
         </motion.div>
 
-        {/* Trust Badges */}
-          <motion.div
-          initial={{ opacity: 0, y: 20 }}
-            animate={{ 
-              opacity: 1, 
-              y: 0,
-              boxShadow: showStreak ? [
-                "0 0 0 rgba(6, 182, 212, 0)",
-                "0 0 20px rgba(6, 182, 212, 0.6)",
-                "0 0 0 rgba(6, 182, 212, 0)"
-              ] : "0 0 0 rgba(6, 182, 212, 0)"
-            }}
-          transition={{ 
-            duration: 0.8, 
-            delay: 0.8,
-            boxShadow: showStreak ? {
-              duration: 1,
-              ease: "easeInOut"
-            } : {}
-          }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-base text-gray-400"
-        >
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-emerald-400" />
-            <span>Bank-level encryption</span>
-            </div>
-          <div className="flex items-center gap-2">
-            <Eye className="h-5 w-5 text-cyan-400" />
-            <span>Data deleted in 24h</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-white" />
-            <span>Results in 60s</span>
-          </div>
-        </motion.div>
-
-        {/* Social Proof Stats */}
+        {/* Compact Trust & Social Proof - Combined */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-          className="flex justify-center gap-4 sm:gap-6 md:gap-8 text-sm text-gray-400 mb-8"
+          transition={{ duration: 0.8, delay: 0.7 }}
+          className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-400 mb-6 px-4"
         >
-          <div className="text-center">
-            <div className="text-cyan-400 font-bold text-lg">2.1K+</div>
-            <div>People who stopped overthinking</div>
+          <div className="flex items-center gap-1.5">
+            <ShieldCheck className="h-4 w-4 text-emerald-400" />
+            <span>Secure</span>
           </div>
-          <div className="text-center">
-            <div className="text-emerald-400 font-bold text-lg">94%</div>
-            <div>Accuracy rate</div>
+          <span className="text-gray-600">•</span>
+          <div className="flex items-center gap-1.5">
+            <Zap className="h-4 w-4 text-cyan-400" />
+            <span>60s</span>
           </div>
-          <div className="text-center">
-            <motion.div
-              animate={{ 
-                scale: [1, 1.05, 1],
-                rotate: [0, 3, - 3, 0]
-              }}
-              transition={{ 
-                duration: 1.5,
-                repeat: Infinity,
-                repeatDelay: 8,
-                ease: "easeInOut"
-              }}
-              className="text-purple-400 font-bold text-lg"
-            >
-              60s
-            </motion.div>
-            <div>Average response time</div>
+          <span className="text-gray-600">•</span>
+          <div className="text-cyan-400 font-semibold">2.1K+ users</div>
+          <span className="text-gray-600">•</span>
+          <div className="text-emerald-400 font-semibold">94% accurate</div>
+        </motion.div>
+
+        {/* Privacy First Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="flex justify-center mb-8"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm border border-emerald-400/30 rounded-full text-xs sm:text-sm text-gray-300 hover:bg-white/10 transition-all duration-300">
+            <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400" />
+            <span className="font-medium">
+              <span className="text-emerald-400">Privacy First Policy</span>
+              <span className="text-gray-500 mx-1.5">•</span>
+              Your Data Your Choice
+            </span>
           </div>
         </motion.div>
 
@@ -592,7 +544,7 @@ const LandingPage = () => {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent"></div>
 
         {/* Trust Bridge Section  -  Enhanced with Live Social Proof */}
-        <section className="py-12 px-4">
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -640,7 +592,7 @@ const LandingPage = () => {
         </section>
 
         {/* Meet Sage Section  -  Enhanced with Personality */}
-        <section className="py-20 px-4">
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -654,11 +606,11 @@ const LandingPage = () => {
               </div>
               {/* Main heading */}
               <h2 className="text-4xl md:text-5xl font-bold mb-4 max-w-4xl mx-auto leading-tight text-white">
-                Stop overthinking every <span className="text-cyan-400">text</span>
+                Stop overthinking <span className="text-cyan-400">every&nbsp;text</span>
               </h2>
               {/* Body paragraph */}
               <p className="text-lg text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Sage has seen every pattern: breadcrumbing, ghosting, love bombing  -  no judgment, just clarity.
+                Sage has seen every pattern: breadcrumbing, ghosting, love&nbsp;bombing&nbsp;—&nbsp;no&nbsp;judgment, just&nbsp;clarity.
               </p>
             </motion.div>
 
@@ -674,7 +626,7 @@ const LandingPage = () => {
                 <div className="relative z-10">
                   <div className="flex flex-col lg:flex-row items-center gap-8 mb-8">
                     <div className="relative">
-                      <div className="w-64 h-64 bg-gradient-to-br from-cyan-400 to-emerald-300 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden shadow-2xl shadow-cyan-400/40">
+                      <div className="w-64 h-64 bg-gradient-to-br from-cyan-400/20 via-purple-400/15 to-emerald-300/20 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden shadow-2xl shadow-cyan-400/30 backdrop-blur-sm border border-cyan-400/20">
                         <img 
                           src={sageLanding} 
                           alt="Sage" 
@@ -692,7 +644,7 @@ const LandingPage = () => {
                     <div className="flex-1 text-center lg:text-left">
                       <div className="space-y-6">
                         <div>
-                          <h3 className="text-2xl font-bold text-white mb-3">The friend you wish you had</h3>
+                          <h3 className="text-2xl font-bold text-white mb-3">The friend you wish you&nbsp;had</h3>
                           <p className="text-gray-300 leading-relaxed text-lg">
                             Not a therapist. Not your mom. Not even <em>really</em> real.
                           </p>
@@ -740,7 +692,7 @@ const LandingPage = () => {
 
 
         {/* How It Works Section  -  MOVED ABOVE DEMO */}
-        <section className="py-20 px-4">
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -815,7 +767,7 @@ const LandingPage = () => {
         </section>
 
         {/* Interactive Demo Section */}
-        <section className="py-20 px-4">
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
           <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -824,7 +776,7 @@ const LandingPage = () => {
               className="text-center mb-12"
           >
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
-                See Sage work in <span className="text-cyan-400">10 seconds</span>
+                See Sage work in&nbsp;<span className="text-cyan-400">10&nbsp;seconds</span>
             </h2>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                 Choose an archetype to see how Sage analyzes different communication patterns
@@ -846,7 +798,7 @@ const LandingPage = () => {
                     onClick={() => handleArchetypeSelect(key)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 text-center min-w-[180px] ${
+                    className={`px-4 sm:px-6 py-3 rounded-full font-semibold transition-all duration-300 text-center min-w-[140px] sm:min-w-[180px] text-sm sm:text-base ${
                       selectedArchetype === key 
                         ? 'bg-cyan-400 text-black shadow-lg shadow-cyan-400/30 border-2 border-cyan-300' 
                         : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-cyan-300 hover:text-cyan-100'
@@ -870,7 +822,7 @@ const LandingPage = () => {
             {/* Premium 3D Container */}
             <div className="relative max-w-6xl mx-auto">
               {/* 3D Container with Depth */}
-              <div className="relative bg-gradient-to-br from-white/10 via-white/5 to-white/3 backdrop-blur-2xl border border-white/20 rounded-3xl p-4 shadow-2xl shadow-black/20 min-h-[600px]">
+              <div className="relative bg-gradient-to-br from-white/10 via-white/5 to-white/3 backdrop-blur-2xl border border-white/20 rounded-3xl p-4 shadow-2xl shadow-black/20 min-h-[400px] sm:min-h-[500px] md:min-h-[600px]">
                 {/* Inner Glow Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 rounded-3xl"></div>
                 
@@ -887,7 +839,7 @@ const LandingPage = () => {
                 <div className="absolute - bottom-4 left-4 right-4 h-4 bg-gradient-to-t from-black/20 to-transparent rounded-b-3xl blur-sm"></div>
                 
                 {/* Content Grid  -  Wider Info Panel */}
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-3 items-stretch h-full min-h-[550px]">
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-3 items-stretch h-full min-h-[350px] sm:min-h-[450px] md:min-h-[550px]">
               
               {/* Left Side  -  Large Receipt Display */}
               <div className="flex justify-center lg:justify-start lg:col-span-3 - ml-1">
@@ -1055,7 +1007,7 @@ const LandingPage = () => {
 
 
         {/* Social Proof Section  -  Premium SaaS Style */}
-        <section className="py-24 px-4 bg-white/2">
+        <section className="py-16 px-4 bg-white/2" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1066,7 +1018,7 @@ const LandingPage = () => {
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 max-w-4xl mx-auto leading-tight">
                   Trusted by thousands who are <span className="text-cyan-400">DONE</span> guessing 💯
             </h2>
-                <p className="text-lg text-gray-300 max-w-5xl mx-auto whitespace-nowrap tracking-tight">
+                <p className="text-base sm:text-lg text-gray-300 max-w-5xl mx-auto tracking-tight px-4">
                   Join the community that's finally getting the real talk (and proving their friends wrong)
                 </p>
           </motion.div>
@@ -1185,7 +1137,7 @@ const LandingPage = () => {
         </section>
 
         {/* Premium Pricing Section */}
-        <section className="py-24 px-4 bg-white/3">
+        <section className="py-16 px-4 bg-white/3" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -1345,7 +1297,7 @@ const LandingPage = () => {
 
 
         {/* FAQ Section */}
-        <section className="py-20 px-4">
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-4xl mx-auto">
         <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1405,7 +1357,7 @@ const LandingPage = () => {
         </section>
 
         {/* Final CTA Section */}
-        <section className="py-20 px-4">
+        <section className="py-16 px-4" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'normal' }}>
           <div className="max-w-4xl mx-auto text-center">
         <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1414,15 +1366,15 @@ const LandingPage = () => {
               className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-12 shadow-2xl shadow-black/20"
             >
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                Ready to stop guessing?<br />
+                Ready to stop&nbsp;guessing?<br />
                 <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-                  Start knowing. 💅
+                  Start&nbsp;knowing. 💅
                 </span>
           </h2>
           
               <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-                Join 5K+ early adopters getting the truth about their chats. 
-                <span className="text-white font-semibold italic"> No more mixed signals.</span>
+                Join 5K+ early adopters getting the truth about their&nbsp;chats. 
+                <span className="text-white font-semibold italic"> No&nbsp;more mixed&nbsp;signals.</span>
               </p>
               
               {/* Live Social Proof Counter */}

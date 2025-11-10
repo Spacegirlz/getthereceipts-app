@@ -478,20 +478,20 @@ const LuxeChatInputPage = () => {
             </div>
           )}
 
-          {/* Input Tabs */}
-          <div className="flex gap-2 mb-6">
+          {/* Input Tabs - Vertical on mobile, horizontal on desktop */}
+          <div className="flex flex-col sm:flex-row gap-2 mb-6">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ${
+                className={`w-full sm:flex-1 py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ${
                   activeTab === tab.id 
                     ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30' 
                     : 'bg-white/5 backdrop-blur-sm text-gray-300 hover:bg-white/10 border border-cyan-400/20'
                 }`}
               >
-                <tab.icon className="w-4 h-4" />
-                <span className="text-sm font-medium">{tab.label}</span>
+                <tab.icon className="w-4 h-4 flex-shrink-0" />
+                <span className="text-sm font-medium text-center">{tab.label}</span>
               </button>
             ))}
           </div>
@@ -503,7 +503,7 @@ const LuxeChatInputPage = () => {
                 <textarea
                   value={texts}
                   onChange={handleTextChange}
-                  placeholder="Paste your conversation here..."
+                  placeholder="Copy and Paste your conversation here."
                   className="w-full h-48 p-4 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400"
                 />
                 <SmartCharacterCounter count={texts.length} limit={5000} />

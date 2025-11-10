@@ -153,7 +153,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
 
   // Dynamic flag system - determine health based on multiple factors
   const overallHealth = (actuallyIntoYou || 0) - (wastingTime || 0);
-  const isHealthy = overallHealth >= 60 || (actuallyIntoYou || 0) >= 80; // High interest OR very high into you
+  const isHealthy = overallHealth >= 50 || (actuallyIntoYou || 0) >= 70 || (redFlags || 0) === 0; // More lenient health detection
   
   // GUARANTEED FLAGS SYSTEM - This will NEVER fail
   const getGuaranteedFlags = () => {

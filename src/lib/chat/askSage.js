@@ -67,7 +67,7 @@ export async function askSage(question, receiptData, previousMessages = [], opts
       }
     }
     // Try API endpoint first (for production)
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
       try {
         const response = await fetch('/api/sage-chat', {
           method: 'POST',
@@ -125,33 +125,65 @@ export async function askSage(question, receiptData, previousMessages = [], opts
     
     const fullPrompt = systemPrompt + originalConversation + chatHistory;
 
-    // Call OpenAI via proxy
-    const response = await fetch('/api/sage-chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        question: useLite ? contextualQuestion : question,
-        receiptData: { conversation: receiptData?.conversation || '' },
-        previousMessages: previousMessages
-      })
-    });
+    // For local development only, use direct OpenAI call
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1'))) {
+      // Direct OpenAI call for local development
+      const response = await fetch('/api/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: useLite ? contextualQuestion : question }
+          ],
+          temperature: 0.88,
+          max_tokens: 250,
+          presence_penalty: 0.5,
+          frequency_penalty: 0.3
+        })
+      });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const rawResponse = data.choices[0]?.message?.content || 'Sorry, I need a moment to think about that.';
-    let cleanedResponse = cleanupSageResponse(rawResponse);
-    // Soft redirects (prepend without blocking)
-    if (!allowed) {
-      for (const rule of SAGE_SAFETY_LAYER.SOFT_REDIRECTS) {
-        if (rule.trigger(safetyText)) { cleanedResponse = rule.prefix + cleanedResponse; break; }
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
       }
+
+      const data = await response.json();
+      const rawResponse = data.choices[0]?.message?.content || 'Sorry, I need a moment to think about that.';
+      let cleanedResponse = cleanupSageResponse(rawResponse);
+      return cleanedResponse;
+    } else {
+      // Production: Call OpenAI via proxy
+      const response = await fetch('/api/sage-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: useLite ? contextualQuestion : question,
+          receiptData: { conversation: receiptData?.conversation || '' },
+          previousMessages: previousMessages
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const rawResponse = data.response || 'Sorry, I need a moment to think about that.';
+      let cleanedResponse = cleanupSageResponse(rawResponse);
+      // Soft redirects (prepend without blocking)
+      if (!allowed) {
+        for (const rule of SAGE_SAFETY_LAYER.SOFT_REDIRECTS) {
+          if (rule.trigger(safetyText)) { cleanedResponse = rule.prefix + cleanedResponse; break; }
+        }
+      }
+      return cleanedResponse;
     }
-    return cleanedResponse;
   } catch (error) {
     console.error('Ask Sage error:', error);
     return "Bestie, my crystal ball is foggy right now. Try again in a sec! 🔮";
