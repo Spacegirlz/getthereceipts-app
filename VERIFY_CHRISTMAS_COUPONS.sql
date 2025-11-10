@@ -7,20 +7,24 @@
 SELECT 
   code,
   coupon_name,
-  credits_to_add,
+  tier,
+  receipts_count,
+  is_premium,
   is_active,
   expires_at,
   max_uses,
   usage_count,
   (max_uses - usage_count) as remaining_uses,
   CASE 
+    WHEN is_active = true AND (expires_at IS NULL OR expires_at > NOW()) AND usage_count < max_uses 
+    THEN '✅ Active and ready'
     WHEN expires_at < NOW() THEN '❌ Expired'
     WHEN NOT is_active THEN '❌ Inactive'
     WHEN usage_count >= max_uses THEN '❌ Max Uses Reached'
-    ELSE '✅ Active'
+    ELSE '❌ Inactive or expired'
   END as status
 FROM coupon_codes
-WHERE code IN ('SAGESANTA05', 'GTRCHRISTMAS10', 'BF5', 'PMFRIENDS50')
+WHERE UPPER(code) IN ('SAGESANTA05', 'GTRCHRISTMAS10', 'BF5', 'PMFRIENDS50')
 ORDER BY code;
 
 -- ============================================
