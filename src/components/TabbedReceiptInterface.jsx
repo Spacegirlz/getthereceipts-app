@@ -119,7 +119,12 @@ const TabbedReceiptInterface = ({
       component: (
         <div ref={sageTabRef} className="w-full max-w-2xl mx-auto">
           <AskSageChat
-            receiptData={analysis}
+            receiptData={{
+              ...analysis,
+              // ✅ FIX: Ensure originalMessage is included in receiptData
+              originalMessage: originalMessage || analysis?.originalMessage || analysis?.message || '',
+              conversation: analysis?.conversation || originalMessage || analysis?.message || ''
+            }}
             isPremium={isPremium}
             userId={analysis?.userId}
             // For anonymous users, limit chats per receipt to 3 (same as logged-in free users)

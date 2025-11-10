@@ -1,5 +1,7 @@
 # 📱 GetTheReceipts - AI-Powered Relationship Analysis
 
+> ⚡️ This is a Vite-powered React project. Use the Vite commands (`npm run dev`, `npm run build`, `npm run preview`) for local development and builds.
+
 **Decode any text message instantly. Get the receipts on what they really meant.**
 
 A React-based web application that provides AI-powered relationship advice through "Truth Receipts." Users can input messages, situations, or conversations and receive detailed analysis including personality archetypes, brutal honesty, and actionable advice.

@@ -59,6 +59,17 @@ const cleanupSageResponse = (text) => {
 
 export async function askSage(question, receiptData, previousMessages = [], opts = {}) {
   try {
+    // ✅ DEBUG: Log what we're receiving
+    console.log('🔍 askSage - receiptData check:', {
+      hasOriginalMessage: !!receiptData?.originalMessage,
+      originalMessageLength: receiptData?.originalMessage?.length || 0,
+      originalMessagePreview: receiptData?.originalMessage?.substring(0, 100) || 'N/A',
+      hasConversation: !!receiptData?.conversation,
+      conversationLength: receiptData?.conversation?.length || 0,
+      hasMessage: !!receiptData?.message,
+      messageLength: receiptData?.message?.length || 0,
+      allKeys: Object.keys(receiptData || {})
+    });
     // Note: Daily chat limit removed - now using per-receipt exchange limits only
     // Free users get 5 exchanges per receipt (enforced in AskSageSimple.jsx)
     // Premium users get 40 exchanges per receipt
@@ -150,9 +161,20 @@ export async function askSage(question, receiptData, previousMessages = [], opts
 
     // Add the original analyzed conversation and chat history
     // ✅ ENHANCEMENT: Check multiple possible locations for conversation
-    const originalConversation = receiptData.conversation || receiptData.originalMessage || receiptData.message || '';
+    // Priority: originalMessage (user's input) > conversation (processed) > message (fallback)
+    const originalConversation = receiptData.originalMessage || receiptData.conversation || receiptData.message || '';
+    
+    // ✅ DEBUG: Log what we're using
+    console.log('🔍 askSage - Conversation source:', {
+      usingOriginalMessage: !!receiptData.originalMessage,
+      usingConversation: !receiptData.originalMessage && !!receiptData.conversation,
+      usingMessage: !receiptData.originalMessage && !receiptData.conversation && !!receiptData.message,
+      finalLength: originalConversation.length,
+      preview: originalConversation.substring(0, 150)
+    });
+    
     const conversationBlock = originalConversation ? 
-      `\n\nORIGINAL ANALYZED CONVERSATION:\n${originalConversation}` : '';
+      `\n\nORIGINAL ANALYZED CONVERSATION (User's Initial Input - Exact Text They Submitted):\n${originalConversation}\n\nThis is the EXACT original message/conversation the user submitted for analysis. Reference specific quotes, phrases, and parts of this when answering their questions.` : '';
     
     const chatHistory = previousMessages.length > 0 ? 
       `\n\nRECENT CHAT WITH USER:\n${previousMessages.slice(-20).map(m => `${m.role}: ${m.content}`).join('\n')}` : '';

@@ -583,7 +583,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
           </div>
           
           {/* Save/Share Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <button 
               onClick={onSaveReceipt}
               disabled={isSharing}
