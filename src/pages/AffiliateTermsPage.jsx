@@ -4,20 +4,32 @@ import { Link } from 'react-router-dom';
 
 export default function AffiliateTermsPage() {
   return (
-    <div className="min-h-screen text-white bg-gradient-to-b from-purple-900 to-purple-800">
-      {/* no extra overlays to keep original variant */}
+    <div className="min-h-screen relative overflow-hidden text-white px-4 py-8">
+      {/* Deep Charcoal Background - Glassmorphism Optimized */}
+      <div className="absolute inset-0 bg-[#0F0F0F]" />
+      
+      {/* Subtle Depth with Cyan Accent */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5" />
+      
+      {/* Glassmorphism Glow Effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
+      
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/20"
+          className="bg-white/8 backdrop-blur-xl rounded-2xl p-8 border border-cyan-400/30 shadow-2xl shadow-cyan-500/20"
+          style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}
         >
           {/* Title */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              📜 Affiliate Program Terms and Conditions
+              <span className="text-white">📜 </span>
+              <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Affiliate Program Terms and Conditions</span>
             </h1>
             <p className="text-purple-200 text-lg">
               Effective Date: October 1, 2025
@@ -249,7 +261,9 @@ export default function AffiliateTermsPage() {
             </section>
 
             {/* Agreement Statement */}
-            <div className="mt-12 p-6 bg-purple-500/10 border border-purple-400/30 rounded-xl">
+            <div className="mt-12 p-6 bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-xl shadow-2xl shadow-cyan-500/20" style={{
+              background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+            }}>
               <p className="text-center text-lg font-semibold text-purple-200">
                 BY PARTICIPATING IN THE PROGRAM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY THESE TERMS AND CONDITIONS.
               </p>

@@ -1,8 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { askSage } from '@/lib/chat/askSage';
-import { Send, Loader2, Copy, Check, MoreVertical, Heart, ThumbsUp, Maximize2, Minimize2 } from 'lucide-react';
+import { Send, Loader2, Copy, Check, MoreVertical, Heart, ThumbsUp, Maximize2, Minimize2, X, Crown } from 'lucide-react';
 import { getUserCredits } from '@/lib/services/creditsSystem';
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
+import { useStripe } from '@stripe/react-stripe-js';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuthModal } from '@/contexts/AuthModalContext';
+import { useToast } from '@/components/ui/use-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverride, userId }) {
   const [messages, setMessages] = useState([]);
@@ -16,6 +21,13 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
   const [maxChatHeight, setMaxChatHeight] = useState(null);
   const introShownRef = useRef(false);
   const [isTrial, setIsTrial] = useState(false);
+  const [showChatLimitModal, setShowChatLimitModal] = useState(false);
+  const [loadingPriceId, setLoadingPriceId] = useState(null);
+  
+  const stripe = useStripe();
+  const { user } = useAuth();
+  const { openModal } = useAuthModal();
+  const { toast } = useToast();
   
   // Check trial status for logged-in users
   useEffect(() => {
@@ -38,6 +50,81 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
     ? maxExchangesOverride
     : (isPremium || isTrial ? 40 : 3);
   const maxMessages = maxExchanges * 2; // 2 messages per exchange
+  
+  // Show chat limit modal when limit is reached (only once per session)
+  useEffect(() => {
+    if (messages.length >= maxMessages && !isPremium && !isTrial && !showChatLimitModal) {
+      // Small delay to let user see the last message
+      const timer = setTimeout(() => {
+        setShowChatLimitModal(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length, maxMessages, isPremium, isTrial, showChatLimitModal]);
+  
+  // Handle checkout for Emergency Pack and Premium
+  const handleCheckout = async (priceId, tierName) => {
+    if (!user) {
+      openModal('sign_up');
+      toast({ 
+        title: 'Create an account to upgrade!', 
+        description: 'Sign up to unlock premium features and get receipts.'
+      });
+      return;
+    }
+
+    if (!stripe) {
+      toast({
+        variant: "destructive",
+        title: "Stripe Error",
+        description: "Stripe is not configured correctly. Please check the console.",
+      });
+      return;
+    }
+
+    setLoadingPriceId(priceId);
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: priceId,
+          userId: user.email,
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { sessionId } = await response.json();
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionId
+      });
+
+      if (error) {
+        console.error("Stripe redirect error:", error);
+        toast({
+          variant: "destructive",
+          title: "Payment Error",
+          description: error.message || "Could not redirect to checkout.",
+        });
+        setLoadingPriceId(null);
+      }
+    } catch (error) {
+      console.error("Checkout session error:", error);
+      toast({
+        variant: "destructive",
+        title: "Payment Error",
+        description: error.message || "Could not create checkout session.",
+      });
+      setLoadingPriceId(null);
+    }
+  };
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -436,7 +523,7 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
       
         {messages.length >= maxMessages && (
           <div className="mt-4">
-            {!isPremium ? (
+            {!isPremium && !isTrial ? (
               <div className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 rounded-xl p-4 border border-slate-600/50 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-amber-500/20 to-yellow-500/20 rounded-full flex items-center justify-center border border-amber-500/30">
@@ -444,10 +531,10 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-200">
-                      Chat limit reached (5 exchanges)
+                      Chat limit reached ({maxExchanges} exchanges)
                     </p>
                     <p className="text-xs text-slate-400">
-                      Upgrade to Premium for 40 exchanges per receipt!
+                      Upgrade to continue the conversation!
                     </p>
                   </div>
                 </div>
@@ -461,6 +548,119 @@ export function AskSageChat({ receiptData, isPremium = false, maxExchangesOverri
             )}
           </div>
         )}
+        
+        {/* Chat Limit Modal - Emergency Pack + $4.99 Monthly */}
+        <AnimatePresence>
+          {showChatLimitModal && !isPremium && !isTrial && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4"
+              onClick={() => setShowChatLimitModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                className="bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-cyan-400/40 rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl shadow-cyan-500/30"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowChatLimitModal(false)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="text-center">
+                  {/* Icon */}
+                  <div className="mb-6">
+                    <div className="w-20 h-20 bg-gradient-to-br from-cyan-500/30 via-purple-500/30 to-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-cyan-400/50 animate-pulse">
+                      <span className="text-4xl">🆘</span>
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                    You're on a roll! 🔥
+                  </h2>
+
+                  {/* Description */}
+                  <p className="text-gray-300 mb-6 leading-relaxed text-sm sm:text-base">
+                    You've used your {maxExchanges} free chats. Keep the conversation going and get unlimited insights!
+                  </p>
+
+                  {/* Primary CTA: Emergency Pack */}
+                  <div className="space-y-3 mb-4">
+                    <button
+                      onClick={() => {
+                        setShowChatLimitModal(false);
+                        handleCheckout('price_1SRl6hG71EqeOEZebPJkKJB6', 'Emergency Pack x5');
+                      }}
+                      disabled={loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6'}
+                      className="w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500 hover:from-cyan-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        {loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6' ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>Processing...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-lg">🆘</span>
+                            <span>Continue Chatting - $0.99</span>
+                          </>
+                        )}
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    </button>
+                    <p className="text-xs text-gray-400 -mt-2">
+                      5 more receipts + 40 chats each
+                    </p>
+                  </div>
+
+                  {/* Secondary CTA: $4.99 Monthly */}
+                  <div className="space-y-3 mb-4">
+                    <button
+                      onClick={() => {
+                        setShowChatLimitModal(false);
+                        handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly');
+                      }}
+                      disabled={loadingPriceId === 'price_1SI49tG71EqeOEZe0p9LNpbP'}
+                      className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {loadingPriceId === 'price_1SI49tG71EqeOEZe0p9LNpbP' ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Crown className="w-5 h-5" />
+                          <span>Never Hit Limits - $4.99/month</span>
+                        </>
+                      )}
+                    </button>
+                    <p className="text-xs text-gray-400 -mt-2">
+                      Unlimited receipts + 40 chats each
+                    </p>
+                  </div>
+
+                  {/* Dismiss */}
+                  <button
+                    onClick={() => setShowChatLimitModal(false)}
+                    className="w-full text-gray-400 hover:text-white transition-colors duration-300 py-2 text-sm"
+                  >
+                    Maybe Later
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
     </>

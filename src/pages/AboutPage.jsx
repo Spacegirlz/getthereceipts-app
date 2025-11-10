@@ -15,14 +15,14 @@ const AboutPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden text-white px-4 py-8">
-      {/* Clean Black Background for Maximum Readability */}
-      <div className="absolute inset-0 bg-black" />
+      {/* Deep Charcoal Background - Glassmorphism Optimized */}
+      <div className="absolute inset-0 bg-[#0F0F0F]" />
       
-      {/* Subtle Depth - No Blur for Performance */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-black/20" />
+      {/* Subtle Depth with Cyan Accent */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5" />
       
-      {/* Minimal Accent - Just for Visual Interest */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.03),rgba(255,255,255,0))] pointer-events-none" />
+      {/* Glassmorphism Glow Effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
       
       <div className="relative z-10">
       {/* Header */}
@@ -49,8 +49,9 @@ const AboutPage = () => {
       >
         <div className="text-6xl mb-6 floating-emoji">🕵️‍♀️</div>
         
-        <h1 className="text-4xl md:text-5xl font-black text-white mb-6">
-          About <span className="gradient-text">Get The Receipts</span>
+        <h1 className="text-4xl md:text-5xl font-black mb-6">
+          <span className="text-white">About </span>
+          <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Get The Receipts</span>
         </h1>
         
         <p className="text-xl text-gray-300 mb-8 sm:whitespace-nowrap break-words">
@@ -65,8 +66,12 @@ const AboutPage = () => {
         transition={{ delay: 0.2, duration: 0.8 }}
         className="max-w-4xl mx-auto mb-16"
       >
-        <div className="meme-card p-8 rounded-3xl">
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">Our Story</h2>
+        <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
+          <h2 className="text-3xl font-bold mb-6 text-center">
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Our Story</span>
+          </h2>
           
           <div className="prose prose-lg text-gray-300 max-w-none">
             <p className="mb-6">
@@ -96,7 +101,9 @@ const AboutPage = () => {
         transition={{ delay: 0.3, duration: 0.8 }}
         className="max-w-4xl mx-auto mb-16"
       >
-        <div className="meme-card p-8 rounded-3xl">
+        <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <div className="text-center mb-6">
             <div className="flex justify-center mb-4">
               <img 
@@ -105,7 +112,9 @@ const AboutPage = () => {
                 className="w-32 h-32 object-contain floating-emoji"
               />
             </div>
-            <h2 className="text-3xl font-bold text-white mb-2">Meet Sage</h2>
+            <h2 className="text-3xl font-bold mb-2">
+              <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Meet Sage</span>
+            </h2>
             <p className="text-pink-400 font-semibold text-lg italic">Your resident text whisperer</p>
           </div>
           
@@ -129,10 +138,14 @@ const AboutPage = () => {
         transition={{ delay: 0.4, duration: 0.8 }}
         className="max-w-6xl mx-auto mb-16"
       >
-        <h2 className="text-3xl font-bold text-white mb-12 text-center">What We Stand For</h2>
+        <h2 className="text-3xl font-bold mb-12 text-center">
+          <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">What We Stand For</span>
+        </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="meme-card p-8 rounded-2xl text-center">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/20 text-center" style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}>
             <Heart className="h-16 w-16 text-pink-400 mx-auto mb-6" />
             <h3 className="text-xl font-bold text-white mb-4">Empowerment</h3>
             <p className="text-gray-300">
@@ -141,7 +154,9 @@ const AboutPage = () => {
             </p>
           </div>
           
-          <div className="meme-card p-8 rounded-2xl text-center">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/20 text-center" style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}>
             <Shield className="h-16 w-16 text-blue-400 mx-auto mb-6" />
             <h3 className="text-xl font-bold text-white mb-4">Privacy First</h3>
             <p className="text-gray-300">
@@ -149,7 +164,9 @@ const AboutPage = () => {
             </p>
           </div>
           
-          <div className="meme-card p-8 rounded-2xl text-center">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/20 text-center" style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}>
             <Zap className="h-16 w-16 text-yellow-400 mx-auto mb-6" />
             <h3 className="text-xl font-bold text-white mb-4">Fun First</h3>
             <p className="text-gray-300">
@@ -167,7 +184,9 @@ const AboutPage = () => {
         transition={{ delay: 0.6, duration: 0.8 }}
         className="max-w-4xl mx-auto mb-16"
       >
-        <div className="meme-card p-8 rounded-3xl text-center">
+        <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/20 text-center" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <div className="text-4xl mb-4">⚖️</div>
           <h2 className="text-2xl font-bold text-white mb-6">The Fine Print (But Make It Fun)</h2>
           
@@ -202,7 +221,9 @@ const AboutPage = () => {
         <h2 className="text-3xl font-bold text-white mb-8 text-center">Common Questions</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="meme-card p-6 rounded-2xl">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-6 shadow-2xl shadow-cyan-500/20" style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}>
             <h3 className="text-lg font-bold text-white mb-3">❓ Can Sage be wrong?</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
               Sometimes the truth is subtle. Sage reads what's written, not the full story or hidden context. 
@@ -211,7 +232,9 @@ const AboutPage = () => {
             </p>
           </div>
           
-          <div className="meme-card p-6 rounded-2xl">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-6 shadow-2xl shadow-cyan-500/20" style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}>
             <h3 className="text-lg font-bold text-white mb-3">🎭 Is Sage a real person?</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
               Sage is an AI assistant with personality. She uses advanced language models to analyze patterns in text 
@@ -220,7 +243,9 @@ const AboutPage = () => {
             </p>
           </div>
           
-          <div className="meme-card p-6 rounded-2xl">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-6 shadow-2xl shadow-cyan-500/20" style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}>
             <h3 className="text-lg font-bold text-white mb-3">🔮 How does Sage "read" my texts?</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
               Sage analyzes patterns in language, timing, word choice, and emotional markers. She picks up on things 
@@ -229,7 +254,9 @@ const AboutPage = () => {
             </p>
           </div>
           
-          <div className="meme-card p-6 rounded-2xl">
+          <div className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-6 shadow-2xl shadow-cyan-500/20" style={{
+            background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+          }}>
             <h3 className="text-lg font-bold text-white mb-3">🔒 What happens to my conversations?</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
               They disappear instantly after your analysis. We don't store, share, or train AI models on your conversations. 
@@ -239,7 +266,9 @@ const AboutPage = () => {
         </div>
         
         {/* Accuracy Disclaimer */}
-        <div className="mt-8 p-6 bg-gradient-to-r from-amber-900/20 to-orange-900/20 rounded-2xl border border-amber-500/30">
+        <div className="mt-8 p-6 bg-white/8 backdrop-blur-xl rounded-2xl border border-cyan-400/30 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <div className="text-center">
             <p className="text-amber-200 font-semibold mb-2">💡 Remember</p>
             <p className="text-gray-300 text-sm leading-relaxed">
@@ -265,7 +294,7 @@ const AboutPage = () => {
         
         <Button
           onClick={() => navigate('/new-receipt')}
-          className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
+          className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold text-lg px-8 py-4 rounded-full border-0 shadow-2xl shadow-cyan-500/30 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/50"
           size="lg"
         >
           Start Getting Receipts 🧾

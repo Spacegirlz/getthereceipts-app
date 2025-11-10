@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare } from 'lucide-react';
+import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare, X, Loader2 } from 'lucide-react';
 import InputTabs from '@/components/InputTabs';
 import SmartCharacterCounter from '@/components/SmartCharacterCounter';
 import ColorMappingHelper from '@/components/ColorMappingHelper';
@@ -11,12 +11,14 @@ import ConversationTips from '@/components/ConversationTips';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
+import { useStripe } from '@stripe/react-stripe-js';
 
 const LuxeChatInputPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
   const { openModal } = useAuthModal();
+  const stripe = useStripe();
   
   // State Management
   const [step, setStep] = useState(1);
@@ -36,6 +38,7 @@ const LuxeChatInputPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [anonymousStatus, setAnonymousStatus] = useState(null);
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [loadingPriceId, setLoadingPriceId] = useState(null);
 
   // Track anonymous user status
   useEffect(() => {
@@ -49,6 +52,70 @@ const LuxeChatInputPage = () => {
       setAnonymousStatus(null);
     }
   }, [user]);
+  
+  // Handle checkout for Emergency Pack and Premium
+  const handleCheckout = async (priceId, tierName) => {
+    if (!user) {
+      openModal('sign_up');
+      toast({ 
+        title: 'Create an account to upgrade!', 
+        description: 'Sign up to unlock premium features and get receipts.'
+      });
+      return;
+    }
+
+    if (!stripe) {
+      toast({
+        variant: "destructive",
+        title: "Stripe Error",
+        description: "Stripe is not configured correctly. Please check the console.",
+      });
+      return;
+    }
+
+    setLoadingPriceId(priceId);
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: priceId,
+          userId: user.email,
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { sessionId } = await response.json();
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionId
+      });
+
+      if (error) {
+        console.error("Stripe redirect error:", error);
+        toast({
+          variant: "destructive",
+          title: "Payment Error",
+          description: error.message || "Could not redirect to checkout.",
+        });
+        setLoadingPriceId(null);
+      }
+    } catch (error) {
+      console.error("Checkout session error:", error);
+      toast({
+        variant: "destructive",
+        title: "Payment Error",
+        description: error.message || "Could not create checkout session.",
+      });
+      setLoadingPriceId(null);
+    }
+  };
 
   // Auto-detect names from conversation
   const detectNames = (text) => {
@@ -790,6 +857,18 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
             )}
           </button>
 
+          {/* Age & Terms Disclaimer - Subtle, below submit button */}
+          <p className="text-xs text-gray-500 text-center mt-3 mb-2">
+            By continuing, you confirm you are 16+ and agree to our{' '}
+            <Link to="/privacy-policy" className="text-gray-400 hover:text-cyan-400 transition-colors underline underline-offset-2">
+              Privacy Policy
+            </Link>
+            {' '}and{' '}
+            <Link to="/terms-of-service" className="text-gray-400 hover:text-cyan-400 transition-colors underline underline-offset-2">
+              Terms of Service
+            </Link>
+          </p>
+
           {/* Enhanced Loading Animation */}
           {isLoading && (
             <motion.div
@@ -866,104 +945,144 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
         </div>
       </footer>
 
-      {/* Anonymous User Limit Modal */}
+      {/* Receipt Generation Limit Modal - Refined with Emergency Pack + $4.99 Focus */}
       <AnimatePresence>
         {showLimitModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={() => setShowLimitModal(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-cyan-500/20"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl border-2 border-cyan-400/40 rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl shadow-cyan-500/30"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowLimitModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
               <div className="text-center">
                 {/* Icon */}
                 <div className="mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Crown className="w-10 h-10 text-white" />
+                  <div className="w-20 h-20 bg-gradient-to-br from-cyan-500/30 via-purple-500/30 to-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-cyan-400/50 animate-pulse">
+                    <span className="text-4xl">🆘</span>
                   </div>
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl font-bold gradient-text mb-4">
-                  🎉 You've Used Your Free Analysis!
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                  Need answers now? 🔥
                 </h2>
 
                 {/* Description */}
-                <p className="text-cyan-200 mb-6 leading-relaxed">
-                  Great job! You've completed your free analysis. Ready for unlimited insights? 
-                  Choose your path to continue getting the tea! ☕️
+                <p className="text-gray-300 mb-6 leading-relaxed text-sm sm:text-base">
+                  You've used your free receipts. Get instant access to more insights!
                 </p>
 
-                {/* Buttons */}
-                <div className="space-y-3">
+                {/* Primary CTA: Emergency Pack - LARGER, MORE PROMINENT */}
+                <div className="space-y-3 mb-4">
                   <button
                     onClick={() => {
                       setShowLimitModal(false);
-                      openModal('signup');
+                      if (user) {
+                        handleCheckout('price_1SRl6hG71EqeOEZebPJkKJB6', 'Emergency Pack x5');
+                      } else {
+                        openModal('sign_up');
+                        toast({ 
+                          title: 'Create an account to upgrade!', 
+                          description: 'Sign up to unlock premium features and get receipts.'
+                        });
+                      }
                     }}
-                    className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                    disabled={loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6'}
+                    className="w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500 hover:from-cyan-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group text-base sm:text-lg"
                   >
-                    🆓 Sign Up for Free Credits
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6' ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-xl">🆘</span>
+                          <span>Get 5 More Receipts - $0.99</span>
+                        </>
+                      )}
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                   </button>
-                  
-                  <button
-                    onClick={() => {
-                      setShowLimitModal(false);
-                      navigate('/pricing');
-                    }}
-                    className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-                  >
-                    🆘 Get Emergency Pack - $0.99
-                  </button>
-                  
-                  <button
-                    onClick={() => {
-                      setShowLimitModal(false);
-                      navigate('/pricing');
-                    }}
-                    className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-                  >
-                    👑 Go Premium - Unlimited
-                  </button>
-                  
-                  <button
-                    onClick={() => setShowLimitModal(false)}
-                    className="w-full text-cyan-300 hover:text-white transition-colors duration-300 py-2"
-                  >
-                    Maybe Later
-                  </button>
+                  <p className="text-xs text-gray-400 -mt-2">
+                    Instant access, no commitment • 5 receipts + 40 chats each
+                  </p>
                 </div>
 
-                {/* Benefits */}
-                <div className="mt-6 pt-6 border-t border-white/10">
-                  <p className="text-xs text-cyan-400 mb-3">What you get with an account:</p>
-                  <div className="grid grid-cols-2 gap-2 text-xs text-cyan-300">
-                    <div className="flex items-center gap-1">
-                      <span>✅</span>
-                      <span>Daily free credits</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>✅</span>
-                      <span>Save receipts</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>✅</span>
-                      <span>Referral bonuses</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>✅</span>
-                      <span>Premium features</span>
-                    </div>
-                  </div>
+                {/* Secondary CTA: $4.99 Monthly - Clear Value Prop */}
+                <div className="space-y-3 mb-4">
+                  <button
+                    onClick={() => {
+                      setShowLimitModal(false);
+                      if (user) {
+                        handleCheckout('price_1SI49tG71EqeOEZe0p9LNpbP', 'Premium Monthly');
+                      } else {
+                        openModal('sign_up');
+                        toast({ 
+                          title: 'Create an account to upgrade!', 
+                          description: 'Sign up to unlock premium features and get receipts.'
+                        });
+                      }
+                    }}
+                    disabled={loadingPriceId === 'price_1SI49tG71EqeOEZe0p9LNpbP'}
+                    className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {loadingPriceId === 'price_1SI49tG71EqeOEZe0p9LNpbP' ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Processing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Crown className="w-5 h-5" />
+                        <span>Unlimited Access - $4.99/month</span>
+                      </>
+                    )}
+                  </button>
+                  <p className="text-xs text-gray-400 -mt-2">
+                    Best value for regular users • Unlimited receipts + 40 chats each
+                  </p>
                 </div>
+
+                {/* Tertiary: Sign Up (if anonymous) - Smaller, Less Prominent */}
+                {!user && (
+                  <div className="mb-4">
+                    <button
+                      onClick={() => {
+                        setShowLimitModal(false);
+                        openModal('sign_up');
+                      }}
+                      className="w-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-300 text-sm"
+                    >
+                      🆓 Sign Up for Free Credits
+                    </button>
+                  </div>
+                )}
+
+                {/* Dismiss */}
+                <button
+                  onClick={() => setShowLimitModal(false)}
+                  className="w-full text-gray-400 hover:text-white transition-colors duration-300 py-2 text-sm"
+                >
+                  Maybe Later
+                </button>
               </div>
             </motion.div>
           </motion.div>

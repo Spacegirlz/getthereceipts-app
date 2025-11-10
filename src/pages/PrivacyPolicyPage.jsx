@@ -11,19 +11,33 @@ const PrivacyPolicyPage = () => {
         <meta property="og:title" content="Privacy Policy  -  Get The Receipts" />
         <meta property="og:description" content="Read our Privacy Policy to understand how Get The Receipts collects, uses, and protects your personal information." />
       </Helmet>
-      <div className="container mx-auto px-4 py-16 text-white max-w-4xl">
+      <div className="min-h-screen relative overflow-hidden text-white px-4 py-8">
+        {/* Deep Charcoal Background - Glassmorphism Optimized */}
+        <div className="absolute inset-0 bg-[#0F0F0F]" />
+        
+        {/* Subtle Depth with Cyan Accent */}
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5" />
+        
+        {/* Glassmorphism Glow Effect */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto py-8">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 px-4 py-2 rounded-full mb-4">
-            <span className="text-blue-400">🔒</span>
-            <span className="text-blue-400 text-sm font-medium">Privacy First Policy</span>
+          <div className="inline-flex items-center gap-2 bg-cyan-400/20 backdrop-blur-sm border border-cyan-400/30 px-4 py-2 rounded-full mb-4">
+            <span className="text-cyan-400">🔒</span>
+            <span className="text-cyan-400 text-sm font-medium">Privacy First Policy</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-6 gradient-text">Privacy Policy</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-6">
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Privacy Policy</span>
+          </h1>
           <p className="text-xl text-gray-300 mb-4">Last Updated: September 21, 2025</p>
         </div>
 
         {/* Our Privacy First Philosophy */}
-        <section className="mb-12 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-8">
+        <section className="mb-12 bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <h2 className="text-3xl font-bold mb-6 text-white">Our Privacy First Philosophy</h2>
           <p className="text-lg text-gray-300 mb-4">
             At Get The Receipts, privacy isn't just a feature-it's our foundation. We believe your personal communications should remain exactly that: personal. This Privacy Policy explains our commitment to protecting your privacy and details how we've built our entire service around the principle that your messages are analyzed and immediately forgotten.
@@ -34,7 +48,9 @@ const PrivacyPolicyPage = () => {
         </section>
 
         {/* We Store Nothing Banner */}
-        <div className="mb-12 p-8 bg-gradient-to-r from-green-500/10 to-blue-500/10 border-2 border-green-500/30 rounded-2xl text-center relative overflow-hidden">
+        <div className="mb-12 p-8 bg-white/8 backdrop-blur-xl border-2 border-cyan-400/30 rounded-2xl text-center relative overflow-hidden shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-50"></div>
           <div className="relative z-10">
             <h2 className="text-3xl font-bold mb-3 text-white">🚫 We Store Nothing. Period.</h2>
@@ -49,7 +65,9 @@ const PrivacyPolicyPage = () => {
         </div>
 
         {/* What We Don't Collect */}
-        <section className="mb-12 bg-white/5 border border-white/10 rounded-2xl p-8">
+        <section className="mb-12 bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
             <span className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center text-xl">🚫</span>
             What We Don't Collect (Almost Everything)
@@ -174,7 +192,9 @@ const PrivacyPolicyPage = () => {
         </section>
 
         {/* AI Training Guarantee */}
-        <section className="mb-12 bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30 rounded-2xl p-8">
+        <section className="mb-12 bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
             <span className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center text-xl">🛡️</span>
             AI Training Guarantee: Your Data Stays Yours
@@ -431,7 +451,9 @@ const PrivacyPolicyPage = () => {
         </section>
 
         {/* Mental Health and Safety Resources */}
-        <section className="mb-12 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-2xl p-8">
+        <section className="mb-12 bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
             <span className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-xl">🆘</span>
             Mental Health and Safety Resources
@@ -468,7 +490,9 @@ const PrivacyPolicyPage = () => {
         </section>
 
         {/* Contact CTA Section */}
-        <div className="mb-12 p-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl text-center relative overflow-hidden">
+        <div className="mb-12 p-8 bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-2xl text-center relative overflow-hidden shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50"></div>
           <div className="relative z-10">
             <h2 className="text-3xl font-bold mb-3 text-white flex items-center justify-center gap-3">
@@ -477,7 +501,7 @@ const PrivacyPolicyPage = () => {
             <p className="text-xl text-gray-300 mb-6">We're committed to transparency and are happy to answer any questions.</p>
             <a 
               href="mailto:support@getthereceipts.com" 
-              className="inline-block text-blue-400 text-xl font-semibold bg-blue-500/10 border border-blue-500 px-8 py-3 rounded-full hover:bg-blue-500/20 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
+              className="inline-block text-cyan-400 text-xl font-semibold bg-cyan-500/10 border border-cyan-400/40 px-8 py-3 rounded-full hover:bg-cyan-500/20 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300"
             >
               support@getthereceipts.com
             </a>
@@ -485,7 +509,9 @@ const PrivacyPolicyPage = () => {
         </div>
 
         {/* Company Information */}
-        <div className="mb-12 p-6 bg-gray-800/30 rounded-xl border border-gray-700/50">
+        <div className="mb-12 p-6 bg-white/8 backdrop-blur-xl rounded-xl border border-cyan-400/30 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <h3 className="text-xl font-semibold text-white mb-4 text-center">Company Information</h3>
           <div className="text-center space-y-2">
             <p className="text-gray-300">
@@ -501,7 +527,9 @@ const PrivacyPolicyPage = () => {
         </div>
 
         {/* Legal Shield Footer Note */}
-        <div className="mt-12 mb-8 text-center p-4 bg-gradient-to-r from-gray-900/40 to-gray-800/40 rounded-xl border border-gray-600/30">
+        <div className="mt-12 mb-8 text-center p-4 bg-white/8 backdrop-blur-xl rounded-xl border border-cyan-400/30 shadow-2xl shadow-cyan-500/20" style={{
+          background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+        }}>
           <p className="text-gray-300 text-sm">
             <strong className="text-white">Note:</strong> All readings are for entertainment and insight purposes only. 
             Sage is a fictional emotional analyst and does not offer therapeutic or legal advice.
@@ -534,6 +562,7 @@ const PrivacyPolicyPage = () => {
           </div>
         </footer>
 
+        </div>
       </div>
     </>
   );

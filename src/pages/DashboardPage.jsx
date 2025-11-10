@@ -15,12 +15,14 @@ import { getUserCredits, getUserReferralCode, getReferralStats, initializeUserCr
 import { FreeUsageService } from '@/lib/services/freeUsageService';
 import ReferralProgressCard from '@/components/ReferralProgressCard';
 import TrialBanner from '@/components/TrialBanner';
+import { useStripe } from '@stripe/react-stripe-js';
 
 const DashboardPage = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const { openModal } = useAuthModal();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const stripe = useStripe();
   
   const [receipts, setReceipts] = useState([]);
   const [userCredits, setUserCredits] = useState({ 
@@ -38,6 +40,7 @@ const DashboardPage = () => {
   const [saveReceipts, setSaveReceipts] = useState(false); // Default OFF - privacy first
   const [loading, setLoading] = useState(true);
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
+  const [loadingPriceId, setLoadingPriceId] = useState(null);
   const [usageData, setUsageData] = useState({
     starterUsed: 0,
     todayReceipts: 0,
@@ -141,6 +144,70 @@ const DashboardPage = () => {
     };
   }, [user?.id, fetchData]);
 
+
+  // Handle checkout for Emergency Pack and Premium
+  const handleCheckout = async (priceId, tierName) => {
+    if (!user) {
+      openModal('sign_up');
+      toast({ 
+        title: 'Create an account to upgrade!', 
+        description: 'Sign up to unlock premium features and get receipts.'
+      });
+      return;
+    }
+
+    if (!stripe) {
+      toast({
+        variant: "destructive",
+        title: "Stripe Error",
+        description: "Stripe is not configured correctly. Please check the console.",
+      });
+      return;
+    }
+
+    setLoadingPriceId(priceId);
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: priceId,
+          userId: user.email,
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { sessionId } = await response.json();
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionId
+      });
+
+      if (error) {
+        console.error("Stripe redirect error:", error);
+        toast({
+          variant: "destructive",
+          title: "Payment Error",
+          description: error.message || "Could not redirect to checkout.",
+        });
+        setLoadingPriceId(null);
+      }
+    } catch (error) {
+      console.error("Checkout session error:", error);
+      toast({
+        variant: "destructive",
+        title: "Payment Error",
+        description: error.message || "Could not create checkout session.",
+      });
+      setLoadingPriceId(null);
+    }
+  };
 
   const getPlanName = (subscription) => {
     if (!subscription) return 'Free Forever Plan';
@@ -669,6 +736,112 @@ const DashboardPage = () => {
               </div>
             </div>
           </motion.div>
+
+          {/* Emergency Pack Section - Only visible for Free users */}
+          {userCredits.subscription === 'free' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              className="col-span-1 md:col-span-3"
+            >
+              <motion.div 
+                whileHover={{ scale: 1.01, y: -2 }}
+                className="bg-white/8 backdrop-blur-xl border border-purple-400/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-2xl shadow-purple-500/20 relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)'
+                }}
+              >
+                {/* Connecting Visual Elements */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div 
+                    className="absolute top-0 right-0 w-48 h-48 rounded-full blur-2xl"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 70%)',
+                      boxShadow: '0 0 60px rgba(168, 85, 247, 0.15)'
+                    }}
+                  ></div>
+                  <div 
+                    className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(0, 229, 255, 0.06) 40%, transparent 70%)',
+                      boxShadow: '0 0 60px rgba(0, 229, 255, 0.15)'
+                    }}
+                  ></div>
+                </div>
+                <div className="relative z-10">
+                  <div className="flex items-center mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-xl sm:rounded-2xl flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                      <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                    </div>
+                    <h2 className="text-lg sm:text-xl font-bold text-white">Emergency Packs</h2>
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-300 mb-4 sm:mb-5">
+                    Sometimes you just need an emergency pack to put your mind at ease or test out the Premium features. 💅
+                  </p>
+                  
+                  {/* Emergency Pack Cards - 2x2 Grid */}
+                  <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+                    {/* Emergency Pack x5 - $0.99 */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleCheckout('price_1SRl6hG71EqeOEZebPJkKJB6', 'Emergency Pack x5')}
+                      disabled={loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6'}
+                      className="bg-gradient-to-br from-cyan-500/20 via-purple-500/15 to-cyan-500/20 backdrop-blur-sm border-2 border-cyan-400/40 rounded-xl p-4 hover:border-cyan-400/60 hover:bg-gradient-to-br hover:from-cyan-500/25 hover:via-purple-500/20 hover:to-cyan-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+                      style={{
+                        boxShadow: '0 4px 20px rgba(6, 182, 212, 0.2), 0 0 0 1px rgba(6, 182, 212, 0.15)'
+                      }}
+                    >
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-center mb-2">
+                          <span className="text-2xl">🆘</span>
+                        </div>
+                        <div className="text-center mb-1">
+                          <div className="text-lg font-bold text-white">$0.99</div>
+                          <div className="text-xs text-gray-300">Get 5</div>
+                        </div>
+                        {loadingPriceId === 'price_1SRl6hG71EqeOEZebPJkKJB6' ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-cyan-400 mx-auto mt-1" />
+                        ) : (
+                          <div className="text-[10px] text-cyan-400 font-semibold mt-1 text-center">+ Premium</div>
+                        )}
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    </motion.button>
+
+                    {/* Emergency Pack x10 - $1.99 */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleCheckout('price_1S0Po4G71EqeOEZeSqdB1Qfa', 'Emergency Pack x10')}
+                      disabled={loadingPriceId === 'price_1S0Po4G71EqeOEZeSqdB1Qfa'}
+                      className="bg-gradient-to-br from-purple-500/20 via-cyan-500/15 to-purple-500/20 backdrop-blur-sm border-2 border-purple-400/40 rounded-xl p-4 hover:border-purple-400/60 hover:bg-gradient-to-br hover:from-purple-500/25 hover:via-cyan-500/20 hover:to-purple-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+                      style={{
+                        boxShadow: '0 4px 20px rgba(168, 85, 247, 0.2), 0 0 0 1px rgba(168, 85, 247, 0.15)'
+                      }}
+                    >
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-center mb-2">
+                          <span className="text-2xl">🆘</span>
+                        </div>
+                        <div className="text-center mb-1">
+                          <div className="text-lg font-bold text-white">$1.99</div>
+                          <div className="text-xs text-gray-300">Get 10</div>
+                        </div>
+                        {loadingPriceId === 'price_1S0Po4G71EqeOEZeSqdB1Qfa' ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-purple-400 mx-auto mt-1" />
+                        ) : (
+                          <div className="text-[10px] text-purple-400 font-semibold mt-1 text-center">+ Premium</div>
+                        )}
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
 
           {/* Account Settings Card */}
           <motion.div 
