@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare, X, Loader2 } from 'lucide-react';
+import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare, X, Loader2, CheckCircle2 } from 'lucide-react';
 import InputTabs from '@/components/InputTabs';
 import SmartCharacterCounter from '@/components/SmartCharacterCounter';
 import ColorMappingHelper from '@/components/ColorMappingHelper';
 import PronounSelector from '@/components/PronounSelector';
 import ImageUpload from '@/components/ImageUpload';
 import ConversationTips from '@/components/ConversationTips';
+import ProcessingAnimation from '@/components/ProcessingAnimation';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
@@ -21,8 +22,7 @@ const LuxeChatInputPage = () => {
   const stripe = useStripe();
   
   // State Management
-  const [step, setStep] = useState(1);
-  const [activeTab, setActiveTab] = useState('text');
+  const [activeTab, setActiveTab] = useState('story'); // Default to unified story/chat input
   const [texts, setTexts] = useState('');
   const [contextType, setContextType] = useState('');
   const [detectedNames, setDetectedNames] = useState([]);
@@ -219,16 +219,60 @@ const LuxeChatInputPage = () => {
     }
   };
 
+  // 🎯 SMART FORMAT DETECTION: Detect if input is structured chat or narrative
+  const detectInputFormat = (text) => {
+    if (!text || text.length < 10) return 'narrative'; // Default to narrative for short text
+    
+    // Check for structured chat patterns
+    const chatPatterns = [
+      /^[A-Z][a-z]+:\s/m,           // "Name: message" at start of line
+      /^[A-Z][a-z]+\s\(\d+:\d+\):\s/m, // "Name (time): message"
+      /\n[A-Z][a-z]+:\s/g,          // "Name:" on new line
+      /\n[A-Z][a-z]+\s\(\d+:\d+\):\s/g, // "Name (time):" on new line
+    ];
+    
+    // Count how many chat patterns we find
+    const chatPatternCount = chatPatterns.reduce((count, pattern) => {
+      const matches = text.match(pattern);
+      return count + (matches ? matches.length : 0);
+    }, 0);
+    
+    // If we find 2+ chat patterns, it's likely structured chat
+    if (chatPatternCount >= 2) {
+      return 'conversation';
+    }
+    
+    // If text has many line breaks and looks structured, treat as conversation
+    const lines = text.split('\n').filter(line => line.trim());
+    if (lines.length >= 3) {
+      const linesWithColon = lines.filter(line => /:\s/.test(line));
+      if (linesWithColon.length >= 2) {
+        return 'conversation';
+      }
+    }
+    
+    // Default to narrative (better results, more forgiving)
+    return 'narrative';
+  };
+
   // Handle text change
   const handleTextChange = (e) => {
     const newText = e.target.value.slice(0, 5000);
     setTexts(newText);
     
-    // Auto-detect names but don't auto-populate - let user review in step 2
+    // Auto-detect names
     const names = detectNames(newText);
     if (names.length > 0) {
       setDetectedNames(names);
-      // Don't auto-populate - let user review and choose in the "Who's who?" section
+      
+      // 🎯 SMART AUTO-SELECTION: If "Me" is detected, auto-select it as the user
+      if (names.includes('Me')) {
+        setUserName('Me');
+        const otherNames = names.filter(name => name !== 'Me');
+        if (otherNames.length > 0) {
+          setOtherName(otherNames[0]);
+        }
+      }
     }
   };
 
@@ -250,21 +294,31 @@ const LuxeChatInputPage = () => {
       return;
     }
     
-    // Always go to step 2 first (name collection) - same as screenshot option
-    if (step === 1) {
-      setStep(2);
-    } else {
-      // We're on step 2 - check if user has selected their name
-      if (!userName || !otherName) {
+    // 🎯 SMART SUBMIT: Only require names if not auto-detected
+    // If "Me" was auto-selected, we can proceed directly
+    // Otherwise, check if names are provided
+    if (!userName || !otherName) {
+      // Try to use detected names as fallback
+      if (detectedNames.length >= 2) {
+        // If we have 2 names but user hasn't selected, prompt them
         toast({
-          title: 'Name Selection Required',
-          description: 'Please select which person you are in the conversation before continuing.'
+          title: 'Who are you?',
+          description: 'Please select which person you are in the conversation.'
         });
         return;
+      } else if (detectedNames.length === 1) {
+        // Only one name detected - use it and set other to "Them"
+        setUserName(detectedNames[0]);
+        setOtherName('Them');
+      } else {
+        // No names detected - use defaults
+        setUserName('Me');
+        setOtherName('Them');
       }
-      // User has selected names - submit the analysis
-      submitAnalysis();
     }
+    
+    // Submit analysis (names are now set)
+    submitAnalysis();
   };
 
   const submitAnalysis = async () => {
@@ -424,12 +478,12 @@ const LuxeChatInputPage = () => {
         // Input method - PROPERLY TAGGED
         inputMethod: activeTab,
         
-        // Input format for AI routing
-        inputFormat: activeTab === 'story' ? 'narrative' : 
-                     activeTab === 'screenshot' ? 'screenshot' : 
-                     'conversation',
-        isNarrative: activeTab === 'story',
-        narrativeDisclaimer: activeTab === 'story' ? 'Based on your story:' : null,
+        // Input format for AI routing - Smart auto-detection for story tab
+        inputFormat: activeTab === 'screenshot' ? 'screenshot' : 
+                     activeTab === 'story' ? detectInputFormat(texts.trim() || extractedTexts.join('\n')) : 
+                     'narrative', // Default to narrative (better results)
+        isNarrative: activeTab === 'story' && detectInputFormat(texts.trim() || extractedTexts.join('\n')) === 'narrative',
+        narrativeDisclaimer: (activeTab === 'story' && detectInputFormat(texts.trim() || extractedTexts.join('\n')) === 'narrative') ? 'Based on your story:' : null,
         
         // NEW: Detection hints for AI
         detectionHints: {
@@ -533,9 +587,8 @@ const LuxeChatInputPage = () => {
   };
 
   const tabs = [
-    { id: 'text', label: 'Paste Texts', icon: Type },
-    { id: 'story', label: 'Tell Your Story', icon: MessageSquare }, // New
-    { id: 'screenshot', label: 'Screenshot', icon: Camera }
+    { id: 'story', label: 'Paste Chat or Tell Your Story', icon: MessageSquare, description: 'Paste formatted chat or write in your own words' },
+    { id: 'screenshot', label: 'Upload Screenshots', icon: Camera, description: 'Upload up to 5 screenshots' }
   ];
 
   const relationshipTypes = ['Dating', 'Situationship', 'Marriage', 'Friend', 'Work', 'Family'];
@@ -609,44 +662,120 @@ const LuxeChatInputPage = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full sm:flex-1 py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ${
+                className={`w-full sm:flex-1 py-3 px-4 rounded-lg flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
                   activeTab === tab.id 
                     ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30' 
                     : 'bg-white/5 backdrop-blur-sm text-gray-300 hover:bg-white/10 border border-cyan-400/20'
                 }`}
               >
-                <tab.icon className="w-4 h-4 flex-shrink-0" />
-                <span className="text-sm font-medium text-center">{tab.label}</span>
+                <div className="flex items-center gap-2">
+                  <tab.icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-sm font-medium text-center">{tab.label}</span>
+                </div>
+                {tab.description && (
+                  <span className="text-xs opacity-70 text-center">{tab.description}</span>
+                )}
               </button>
             ))}
           </div>
 
           {/* Dynamic Input Area */}
           <div className="mb-6">
-            {activeTab === 'text' && (
-              <div>
-                <textarea
-                  value={texts}
-                  onChange={handleTextChange}
-                  placeholder="Copy and Paste your conversation here."
-                  className="w-full h-48 p-4 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400"
-                />
-                <SmartCharacterCounter count={texts.length} limit={5000} />
-                <ConversationTips />
-              </div>
-            )}
-            
             {activeTab === 'story' && (
               <div>
                 <textarea
                   value={texts}
                   onChange={handleTextChange}
-                  placeholder="Tell your story in your own words..  Use 'I' for yourself and their name or 'they/them' for the other person.
+                  placeholder="Paste your formatted chat (Name: message) OR tell your story in your own words.
 
-Example: I've been seeing Alex for 3 months. Last week they said they wanted to be exclusive, but yesterday I saw them active on dating apps at 2am. When I asked about it, they said I was 'being paranoid'..."
+For chat: Copy and paste exactly as it appears
+Alex: Hey, how are you?
+You: I'm good, thanks!
+
+For story: Write naturally using 'I' for yourself
+I've been seeing Alex for 3 months. Last week they said they wanted to be exclusive, but yesterday I saw them active on dating apps at 2am..."
                   className="w-full h-48 p-4 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400"
                 />
                 <SmartCharacterCounter count={texts.length} limit={5000} />
+                <ConversationTips />
+                
+                {/* 🎯 INLINE NAME SELECTION - Shows when names detected but not auto-selected */}
+                <AnimatePresence>
+                  {detectedNames.length > 0 && !userName && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-4 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30"
+                    >
+                      <p className="text-sm font-medium mb-3 flex items-center gap-2 text-white">
+                        <Sparkles className="w-4 h-4" />
+                        I found these names: {detectedNames.join(' and ')}
+                      </p>
+                      
+                      {detectedNames.length >= 2 ? (
+                        <div className="space-y-2">
+                          <p className="text-xs text-white/80 mb-2">Which person are you?</p>
+                          {detectedNames.map((name, index) => (
+                            <label key={name} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-white/5 transition-colors">
+                              <input 
+                                type="radio" 
+                                name="userRole"
+                                value={name}
+                                checked={userName === name}
+                                onChange={(e) => {
+                                  setUserName(name);
+                                  setOtherName(detectedNames[1 - index]); // Set the other name
+                                }}
+                                className="text-cyan-500"
+                              />
+                              <span className="text-sm text-white">I am {name}</span>
+                            </label>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-3">
+                          <input
+                            placeholder="You/Person 1"
+                            className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                            value={userName}
+                            onChange={(e) => setUserName(e.target.value)}
+                          />
+                          <input
+                            placeholder="Them/Person 2"
+                            className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                            value={otherName}
+                            onChange={(e) => setOtherName(e.target.value)}
+                          />
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                  
+                  {/* 🎯 AUTO-SELECTED CONFIRMATION - Shows when "Me" is auto-selected */}
+                  {userName === 'Me' && detectedNames.includes('Me') && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="mt-4 p-3 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm rounded-lg border border-emerald-400/30 flex items-center gap-2"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                      <span className="text-sm text-white">
+                        ✓ You're <span className="font-semibold">Me</span>, they're <span className="font-semibold">{otherName || 'Them'}</span>
+                      </span>
+                      <button
+                        onClick={() => {
+                          setUserName('');
+                          setOtherName('');
+                        }}
+                        className="ml-auto text-xs text-gray-400 hover:text-white transition-colors"
+                      >
+                        Edit
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
             
@@ -695,148 +824,41 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
             </div>
           </div>
 
-          {/* Step 2: Name Collection (if needed) - Shows when we need to collect names */}
-          <AnimatePresence>
-            {step === 2 && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-6 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30"
-              >
-                <p className="text-sm font-medium mb-3 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  Almost there! Who are you in this conversation?
-                </p>
-                
-                {detectedNames.length > 0 ? (
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-xs text-gray-400">
-                        I found these names: {detectedNames.join(' and ')}
-                      </p>
-                      <button 
-                        onClick={() => setShowManualNames(!showManualNames)}
-                        className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
-                      >
-                        {showManualNames ? 'Use detected names' : 'Edit names'}
-                      </button>
-                    </div>
-                    
-                    {!showManualNames ? (
-                      <div className="space-y-2">
-                        <p className="text-xs text-white/80 mb-2">Which person are you?</p>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input 
-                            type="radio" 
-                            name="userRole"
-                            value={detectedNames[0]}
-                            checked={userName === detectedNames[0]}
-                            onChange={(e) => {
-                              setUserName(detectedNames[0]);
-                              setOtherName(detectedNames[1]);
-                            }}
-                            className="text-blue-500"
-                          />
-                          <span className="text-sm">I am {detectedNames[0]}</span>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input 
-                            type="radio" 
-                            name="userRole"
-                            value={detectedNames[1]}
-                            checked={userName === detectedNames[1]}
-                            onChange={(e) => {
-                              setUserName(detectedNames[1]);
-                              setOtherName(detectedNames[0]);
-                            }}
-                            className="text-blue-500"
-                          />
-                          <span className="text-sm">I am {detectedNames[1]}</span>
-                        </label>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-2 gap-3">
-                        <input
-                          placeholder="You/Person 1"
-                          className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
-                        />
-                        <input
-                          placeholder="Them/Person 2"
-                          className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                          value={otherName}
-                          onChange={(e) => setOtherName(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      placeholder="You/Person 1"
-                      className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                    />
-                    <input
-                      placeholder="Them/Person 2"
-                      className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                      value={otherName}
-                      onChange={(e) => setOtherName(e.target.value)}
-                    />
-                  </div>
-                )}
-
-                {/* Pronouns section inside the "Almost there! Who's who?" section */}
-                <div className="mt-4">
-                  <details className="group">
-                    <summary className="text-sm text-white/70 cursor-pointer hover:text-white transition-colors duration-300 mb-3 flex items-center gap-2">
-                      <span>👤</span>
-                      Add pronouns (optional)
-                      <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200" />
-                    </summary>
-                    <div className="grid grid-cols-2 gap-4">
-                      <PronounSelector 
-                        label="You" 
-                        value={userPronouns}
-                        onChange={setUserPronouns}
-                      />
-                      <PronounSelector 
-                        label="Them" 
-                        value={otherPronouns}
-                        onChange={setOtherPronouns}
-                      />
-                    </div>
-                  </details>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-
-          {/* Context and Questions */}
-          <div className="mb-6">
+          {/* Optional: Pronouns and Context - Collapsed by default */}
+          <div className="mb-6 space-y-3">
             <details className="group">
-              <summary className="text-sm text-white/70 cursor-pointer hover:text-white transition-colors duration-300 mb-3 flex items-center gap-2">
+              <summary className="text-sm text-white/60 cursor-pointer hover:text-white/80 transition-colors duration-300 flex items-center gap-2">
+                <span>👤</span>
+                Add pronouns (optional)
+                <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200 ml-auto" />
+              </summary>
+              <div className="mt-3 grid grid-cols-2 gap-4 p-4 bg-white/5 rounded-lg border border-white/10">
+                <PronounSelector 
+                  label="You" 
+                  value={userPronouns}
+                  onChange={setUserPronouns}
+                />
+                <PronounSelector 
+                  label="Them" 
+                  value={otherPronouns}
+                  onChange={setOtherPronouns}
+                />
+              </div>
+            </details>
+            
+            <details className="group">
+              <summary className="text-sm text-white/60 cursor-pointer hover:text-white/80 transition-colors duration-300 flex items-center gap-2">
                 <span>💡</span>
                 Add context (optional)
-                <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200 ml-auto" />
               </summary>
-              <div className="space-y-4 p-4 bg-white/5 rounded-lg border border-white/10">
-                {/* Quick Context */}
-                <div>
-                  <label className="text-xs text-white/60 mb-2 block">
-                    Quick context (optional)
-                  </label>
-                  <input 
-                    value={context}
-                    onChange={(e) => setContext(e.target.value)}
-                    placeholder="e.g., 'We've been dating 3 months' or 'My ex from last year'"
-                    className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm rounded-lg text-sm text-white placeholder-gray-400 border border-cyan-400/20 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                  />
-                </div>
+              <div className="mt-3 p-4 bg-white/5 rounded-lg border border-white/10">
+                <input 
+                  value={context}
+                  onChange={(e) => setContext(e.target.value)}
+                  placeholder="e.g., 'We've been dating 3 months' or 'My ex from last year'"
+                  className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm rounded-lg text-sm text-white placeholder-gray-400 border border-cyan-400/20 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                />
               </div>
             </details>
           </div>
@@ -853,7 +875,7 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                 <span>Analyzing...</span>
               </div>
             ) : (
-              step === 2 ? 'Get Your Receipts Now →' : 'Analyze Conversation'
+              'Get Your Receipts Now →'
             )}
           </button>
 
@@ -877,19 +899,9 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
               className="mt-6 p-6 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-emerald-500/10 rounded-2xl border border-cyan-400/30 backdrop-blur-sm"
             >
               <div className="text-center">
-                {/* Animated Progress Bar */}
-                <div className="w-full bg-gray-700/50 rounded-full h-2 mb-4 overflow-hidden">
-                  <motion.div
-                    className="bg-gradient-to-r from-cyan-400 to-purple-500 h-2 rounded-full"
-                    initial={{ x: "-100%" }}
-                    animate={{ x: "0%" }}
-                    transition={{
-                      duration: 45, // ~45 seconds for full analysis
-                      ease: "linear",
-                      repeat: Infinity,
-                      repeatType: 'loop'
-                    }}
-                  />
+                {/* Cute Processing Animation */}
+                <div className="mb-6">
+                  <ProcessingAnimation />
                 </div>
                 
                 {/* Dynamic Analysis Steps */}
@@ -900,7 +912,6 @@ Example: I've been seeing Alex for 3 months. Last week they said they wanted to 
                   className="text-cyan-200 font-medium mb-2"
                 >
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="animate-bounce text-2xl">🧾</div>
                     <span className="text-lg">Sage is brewing the tea...</span>
                   </div>
                   <div className="text-sm text-cyan-300 space-y-1">

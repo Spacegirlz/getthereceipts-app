@@ -76,7 +76,7 @@ const ConversationTips = () => {
         className="text-sm text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-2 mb-2"
       >
         <Info className="w-4 h-4" />
-        <span>Tips: How to best upload conversations</span>
+        <span>Tips: Paste chat or tell your story</span>
         <ChevronDown className={`w-4 h-4 transition-transform ${showTips ? 'rotate-180' : ''}`} />
       </button>
       
@@ -100,15 +100,34 @@ const ConversationTips = () => {
             
             {/* Tips Content */}
             <div className="pr-8">
-              <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
                 <span className="text-lg">💡</span>
-                How to copy chats from your app
+                Quick start
               </h3>
               
-              <div className="text-xs text-gray-400 mb-3 p-2 bg-gray-800/30 rounded-lg">
-                <p><span className="text-purple-400">Text input:</span> up to 5k characters (about 10-15 Instagram captions) long</p>
-                <p><span className="text-purple-400">Screenshots:</span> up to 5 images, 5MB total</p>
+              {/* Two main options - visual cards */}
+              <div className="grid grid-cols-1 gap-3 mb-4">
+                <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                  <p className="text-xs font-semibold text-purple-300 mb-1 flex items-center gap-1">
+                    <span>📋</span> Paste Chat
+                  </p>
+                  <p className="text-xs text-gray-300">Copy formatted messages (Name: message) from any app</p>
+                </div>
+                
+                <div className="p-3 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
+                  <p className="text-xs font-semibold text-cyan-300 mb-1 flex items-center gap-1">
+                    <span>✨</span> Tell Your Story
+                  </p>
+                  <p className="text-xs text-gray-300">Write naturally using "I" for yourself and their name</p>
+                  <p className="text-xs text-cyan-400/80 italic mt-1">💡 Often gives better results!</p>
+                </div>
               </div>
+              
+              <div className="text-xs text-gray-400 mb-4 p-2 bg-gray-800/30 rounded-lg">
+                <p><span className="text-purple-400">Screenshots:</span> Use the Screenshot tab for up to 5 images</p>
+              </div>
+              
+              <h4 className="text-xs font-semibold text-white/90 mb-2 mt-4">How to copy chats from your app:</h4>
               
               <div className="space-y-3 max-h-80 overflow-y-auto">
                 {platformTips.map((platform) => (
