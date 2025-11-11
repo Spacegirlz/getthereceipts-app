@@ -17,7 +17,7 @@ import ghostingChampionPlaybook from '@/assets/GTR Demo Assets/ghosting-champion
 // Immunity Receipts
 import ghostingChampionImmunity from '@/assets/GTR Demo Assets/ghosting-champion-sage-immunity-1761067753743.png';
 
-const LandingPage = () => {
+const LandingPageRedesign_20250115 = () => {
   const navigate = useNavigate();
   const { openModal } = useAuthModal();
   const { user } = useAuth();
@@ -1012,5 +1012,5 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default LandingPageRedesign_20250115;
 

@@ -10,7 +10,7 @@ import { useAuth } from '../contexts/SupabaseAuthContext';
 import { useAuthModal } from '../contexts/AuthModalContext';
 import { useToast } from '../components/ui/use-toast';
 
-const PricingPage = () => {
+const PricingPageRedesign_20250115 = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, isPremium, loading } = useAuth();
@@ -188,20 +188,15 @@ const PricingPage = () => {
             {/* Visual Interest: Animated pricing badge */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0,
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              animate={{
                 scale: [1, 1.05, 1],
               }}
               transition={{
-                delay: 0.4,
-                opacity: { duration: 0.6 },
-                y: { duration: 0.6 },
-                scale: {
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
               }}
               className="flex justify-center"
             >
@@ -592,5 +587,5 @@ const PricingPage = () => {
   );
 };
 
-export default PricingPage;
+export default PricingPageRedesign_20250115;
 
