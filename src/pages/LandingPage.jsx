@@ -440,10 +440,6 @@ const LandingPage = () => {
                       <span className="text-purple-400 mt-1">💅</span>
                       <p className="text-xl text-gray-300 leading-relaxed">Savage takes. Zero filter. Made with love.</p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-emerald-400 mt-1">⚡</span>
-                      <p className="text-base text-gray-400 leading-relaxed">70% savage, 30% supportive. Drag → Decode → Soft slap of truth → Tiny uplift.</p>
-                    </div>
                   </div>
                   <div className="flex items-center gap-4 pt-4 border-t border-white/10">
                     <Button
