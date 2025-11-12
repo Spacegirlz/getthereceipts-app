@@ -340,57 +340,51 @@ const PricingPage = () => {
             >
               {/* Emergency Pack x5 - $0.99 - SUBTLE */}
               <motion.div
-                whileHover={{ scale: 1.02, y: -2 }}
-                className="bg-white/5 backdrop-blur-xl border border-cyan-400/20 rounded-xl p-5 hover:border-cyan-400/40 hover:bg-white/7 transition-all duration-300 cursor-pointer group"
+                whileHover={{ scale: 1.01, y: -1 }}
+                className="bg-white/4 backdrop-blur-sm border border-cyan-400/15 rounded-lg p-4 hover:border-cyan-400/25 hover:bg-white/6 transition-all duration-300 cursor-pointer group"
                 onClick={() => handleCheckout('price_1SRl6hG71EqeOEZebPJkKJB6', 'Emergency Pack x5')}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">🆘</span>
-                    <h4 className="text-base font-semibold text-gray-300">Emergency Pack</h4>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-lg">🆘</span>
+                    <h4 className="text-sm font-medium text-gray-400">Emergency Pack</h4>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-cyan-400">$0.99</div>
+                    <div className="text-lg font-semibold text-cyan-400/80">$0.99</div>
                     <div className="text-xs text-gray-500">one-time</div>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400 font-medium">5 Sage Receipts</p>
-                    <p className="text-xs text-gray-500 mt-1">Perfect for one more spiral</p>
+                    <p className="text-xs text-gray-500 font-medium">5 Sage Receipts</p>
                   </div>
-                  <div className="px-3 py-1.5 bg-cyan-500/15 border border-cyan-400/30 rounded-lg text-xs font-medium text-cyan-300 group-hover:bg-cyan-500/25 group-hover:border-cyan-400/50 transition-all">
+                  <div className="px-2.5 py-1 bg-cyan-500/10 border border-cyan-400/20 rounded text-xs font-medium text-cyan-400/70 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/30 transition-all">
                     Get 5 →
                   </div>
                 </div>
               </motion.div>
 
-              {/* Emergency Pack x10 - $1.99 - KEY OPTION */}
+              {/* Emergency Pack x10 - $1.99 - SUBTLE */}
               <motion.div
-                whileHover={{ scale: 1.03, y: -3 }}
-                className="bg-gradient-to-br from-purple-500/20 via-purple-500/15 to-purple-500/20 backdrop-blur-xl border-2 border-purple-400/60 rounded-xl p-6 hover:border-purple-400/80 hover:bg-gradient-to-br hover:from-purple-500/25 hover:via-purple-500/20 hover:to-purple-500/25 transition-all duration-300 cursor-pointer group shadow-lg shadow-purple-500/30 relative"
+                whileHover={{ scale: 1.01, y: -1 }}
+                className="bg-white/4 backdrop-blur-sm border border-purple-400/15 rounded-lg p-4 hover:border-purple-400/25 hover:bg-white/6 transition-all duration-300 cursor-pointer group"
                 onClick={() => handleCheckout('price_1S0Po4G71EqeOEZeSqdB1Qfa', 'Emergency Pack x10')}
               >
-                {/* Popular Badge */}
-                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-emerald-500 to-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                  POPULAR
-                </div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-3xl">🆘</span>
-                    <h4 className="text-xl font-bold text-white">Emergency Pack</h4>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-lg">🆘</span>
+                    <h4 className="text-sm font-medium text-gray-400">Emergency Pack</h4>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-black text-purple-400">$1.99</div>
-                    <div className="text-xs text-gray-300 font-medium">one-time</div>
+                    <div className="text-lg font-semibold text-purple-400/80">$1.99</div>
+                    <div className="text-xs text-gray-500">one-time</div>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-base text-gray-200 font-bold">10 Sage Receipts</p>
-                    <p className="text-xs text-gray-400 mt-1">Double the clarity</p>
+                    <p className="text-xs text-gray-500 font-medium">10 Sage Receipts</p>
                   </div>
-                  <div className="px-5 py-2.5 bg-purple-500/35 border-2 border-purple-400/70 rounded-lg text-sm font-bold text-purple-100 group-hover:bg-purple-500/45 group-hover:border-purple-400/90 transition-all shadow-md shadow-purple-500/40">
+                  <div className="px-2.5 py-1 bg-purple-500/10 border border-purple-400/20 rounded text-xs font-medium text-purple-400/70 group-hover:bg-purple-500/20 group-hover:border-purple-400/30 transition-all">
                     Get 10 →
                   </div>
                 </div>
