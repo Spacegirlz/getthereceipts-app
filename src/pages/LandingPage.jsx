@@ -446,10 +446,10 @@ const LandingPage = () => {
                   <div className="flex justify-center pt-4 border-t border-white/10">
                     <Button
                       onClick={() => navigate('/new-receipt')}
-                      className="bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-black px-6 py-3 rounded-xl shadow-lg shadow-cyan-500/30 flex flex-col items-center leading-tight whitespace-nowrap"
+                      className="bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-black px-6 py-4 rounded-xl shadow-lg shadow-cyan-500/30 flex flex-col items-center justify-center leading-tight whitespace-nowrap min-h-[72px]"
                     >
                       <span className="text-lg font-semibold whitespace-nowrap">Get Your First 3 Receipts Free</span>
-                      <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1">no signup needed</span>
+                      <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1.5">no signup needed</span>
                     </Button>
                   </div>
                 </div>
@@ -748,11 +748,15 @@ const LandingPage = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-cyan-400 mt-1">✓</span>
-                    <span>3 bonus receipts when you sign up</span>
+                    <span>1 full Sage read every day (Free Plan)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-cyan-400 mt-1">✓</span>
-                    <span>1 daily receipt (free plan)</span>
+                    <span>No credit card. No pressure.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-yellow-400 mt-1">🎁</span>
+                    <span>Black Friday Freebie: enter BF5 in your dashboard</span>
                   </li>
                 </ul>
                 <Button
