@@ -322,6 +322,7 @@ const LandingPageRedesign_20250115 = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
               className="mb-6"
+              className="flex justify-center"
             >
               <Button
                 onClick={handleGetStarted}
@@ -983,13 +984,15 @@ const LandingPageRedesign_20250115 = () => {
             exit={{ y: 100, opacity: 0 }}
             className="fixed bottom-4 left-4 right-4 z-50 md:hidden"
           >
-            <Button
-              onClick={handleGetStarted}
-              className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black py-4 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 flex flex-col items-center leading-tight"
-            >
-              <span className="font-bold text-lg">Get Your First 3 Receipts Free</span>
-              <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1">no signup needed</span>
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                onClick={handleGetStarted}
+                className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black py-4 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 flex flex-col items-center leading-tight"
+              >
+                <span className="font-bold text-lg">Get Your First 3 Receipts Free</span>
+                <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1">no signup needed</span>
+              </Button>
+            </div>
           </motion.div>
         )}
 
