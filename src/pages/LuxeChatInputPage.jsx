@@ -14,6 +14,44 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAuthModal } from '@/contexts/AuthModalContext';
 import { useStripe } from '@stripe/react-stripe-js';
 
+// Rotating Analysis Text Component - Shows one line at a time
+const RotatingAnalysisText = () => {
+  const analysisSteps = [
+    { text: "Sage is brewing the tea...", emoji: "✨" },
+    { text: "Analyzing conversation patterns...", emoji: "📊" },
+    { text: "Deep diving into the subtext...", emoji: "🔎" },
+    { text: "Building your immunity training...", emoji: "🛡️" },
+  ];
+
+  const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentStep((prev) => (prev + 1) % analysisSteps.length);
+    }, 2500); // Change every 2.5 seconds
+
+    return () => clearInterval(interval);
+  }, [analysisSteps.length]);
+
+  return (
+    <div className="text-center">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentStep}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.4 }}
+          className="text-sm sm:text-base text-cyan-300"
+        >
+          <span className="mr-2">{analysisSteps[currentStep].emoji}</span>
+          {analysisSteps[currentStep].text}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const LuxeChatInputPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -297,7 +335,7 @@ const LuxeChatInputPage = () => {
     // 🎯 SMART SUBMIT: Only require names if not auto-detected
     // If "Me" was auto-selected, we can proceed directly
     // Otherwise, check if names are provided
-    if (!userName || !otherName) {
+      if (!userName || !otherName) {
       // Try to use detected names as fallback
       if (detectedNames.length >= 2) {
         // If we have 2 names but user hasn't selected, prompt them
@@ -318,7 +356,7 @@ const LuxeChatInputPage = () => {
     }
     
     // Submit analysis (names are now set)
-    submitAnalysis();
+      submitAnalysis();
   };
 
   const submitAnalysis = async () => {
@@ -669,8 +707,8 @@ const LuxeChatInputPage = () => {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <tab.icon className="w-4 h-4 flex-shrink-0" />
-                  <span className="text-sm font-medium text-center">{tab.label}</span>
+                <tab.icon className="w-4 h-4 flex-shrink-0" />
+                <span className="text-sm font-medium text-center">{tab.label}</span>
                 </div>
                 {tab.description && (
                   <span className="text-xs opacity-70 text-center">{tab.description}</span>
@@ -826,26 +864,26 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
 
           {/* Optional: Pronouns and Context - Collapsed by default */}
           <div className="mb-6 space-y-3">
-            <details className="group">
+                  <details className="group">
               <summary className="text-sm text-white/60 cursor-pointer hover:text-white/80 transition-colors duration-300 flex items-center gap-2">
-                <span>👤</span>
-                Add pronouns (optional)
+                      <span>👤</span>
+                      Add pronouns (optional)
                 <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200 ml-auto" />
-              </summary>
+                    </summary>
               <div className="mt-3 grid grid-cols-2 gap-4 p-4 bg-white/5 rounded-lg border border-white/10">
-                <PronounSelector 
-                  label="You" 
-                  value={userPronouns}
-                  onChange={setUserPronouns}
-                />
-                <PronounSelector 
-                  label="Them" 
-                  value={otherPronouns}
-                  onChange={setOtherPronouns}
-                />
-              </div>
-            </details>
-            
+                      <PronounSelector 
+                        label="You" 
+                        value={userPronouns}
+                        onChange={setUserPronouns}
+                      />
+                      <PronounSelector 
+                        label="Them" 
+                        value={otherPronouns}
+                        onChange={setOtherPronouns}
+                      />
+                    </div>
+                  </details>
+
             <details className="group">
               <summary className="text-sm text-white/60 cursor-pointer hover:text-white/80 transition-colors duration-300 flex items-center gap-2">
                 <span>💡</span>
@@ -853,12 +891,12 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
                 <ChevronDown className="h-4 w-4 opacity-60 group-open:rotate-180 transition-transform duration-200 ml-auto" />
               </summary>
               <div className="mt-3 p-4 bg-white/5 rounded-lg border border-white/10">
-                <input 
-                  value={context}
-                  onChange={(e) => setContext(e.target.value)}
-                  placeholder="e.g., 'We've been dating 3 months' or 'My ex from last year'"
-                  className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm rounded-lg text-sm text-white placeholder-gray-400 border border-cyan-400/20 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                />
+                  <input 
+                    value={context}
+                    onChange={(e) => setContext(e.target.value)}
+                    placeholder="e.g., 'We've been dating 3 months' or 'My ex from last year'"
+                    className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm rounded-lg text-sm text-white placeholder-gray-400 border border-cyan-400/20 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                  />
               </div>
             </details>
           </div>
@@ -904,25 +942,14 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
                   <ProcessingAnimation />
                 </div>
                 
-                {/* Dynamic Analysis Steps */}
-                <motion.div
-                  key={isLoading}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-cyan-200 font-medium mb-2"
-                >
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <span className="text-lg">Sage is brewing the tea...</span>
-                  </div>
-                  <div className="text-sm text-cyan-300 space-y-1">
-                    <div className="animate-pulse">📊 Analyzing conversation patterns...</div>
-                    <div className="animate-pulse delay-100">🔍 Deep diving into the subtext...</div>
-                    <div className="animate-pulse delay-200">🛡️ Building your immunity training...</div>
-                  </div>
-                </motion.div>
+                {/* Rotating Analysis Steps - Only 2 lines visible at a time */}
+                <div className="text-cyan-200 font-medium mb-2 min-h-[60px] flex flex-col justify-center">
+                  <RotatingAnalysisText />
+                </div>
                 
+                {/* Fixed bottom line */}
                 <div className="text-xs text-cyan-400 mt-3">
-                  This usually takes 30-60 seconds ⏱️
+                  This usually takes 30-60 seconds ⏳
                 </div>
               </div>
             </motion.div>

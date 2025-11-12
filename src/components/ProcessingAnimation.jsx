@@ -101,9 +101,9 @@ const ProcessingAnimation = () => {
         </motion.div>
       </motion.div>
 
-      {/* Floating emojis that change - creates variety */}
-      {[...Array(4)].map((_, i) => {
-        const emojis = ['🧾', '💭', '🔮', '✨'];
+      {/* Floating bubbles that pop up sporadically - removed crystal ball and receipt */}
+      {[...Array(2)].map((_, i) => {
+        const emojis = ['💭', '✨'];
         return (
           <motion.div
             key={`float-${i}`}
@@ -117,7 +117,7 @@ const ProcessingAnimation = () => {
             animate={{
               x: [
                 '50%',
-                `${50 + (i - 1.5) * 25}%`,
+                `${50 + (i - 1) * 30}%`,
                 '50%',
               ],
               y: [
@@ -132,7 +132,7 @@ const ProcessingAnimation = () => {
             transition={{
               duration: 3.5,
               repeat: Infinity,
-              delay: i * 0.8,
+              delay: i * 1.2, // More sporadic timing
               ease: "easeInOut",
             }}
           >
@@ -162,21 +162,6 @@ const ProcessingAnimation = () => {
         ))}
       </div>
 
-      {/* Fun text that appears occasionally */}
-      <motion.div
-        className="absolute top-8 left-1/2 transform -translate-x-1/2"
-        animate={{
-          opacity: [0, 1, 1, 0],
-          y: [10, 0, 0, -10],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        <span className="text-sm text-cyan-300 font-medium">Sage is brewing the tea... 🍵</span>
-      </motion.div>
     </div>
   );
 };
