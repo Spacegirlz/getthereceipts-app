@@ -325,9 +325,10 @@ const LandingPageRedesign_20250115 = () => {
             >
               <Button
                 onClick={handleGetStarted}
-                className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-lg md:text-xl px-10 py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 min-h-[64px] min-w-[280px]"
+                className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black px-10 py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 min-h-[64px] min-w-[280px] flex flex-col items-center leading-tight"
               >
-                Get Your First 3 Receipts Free (No Signup)
+                <span className="font-bold text-lg md:text-xl">Get Your First 3 Receipts Free</span>
+                <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1">no signup needed</span>
               </Button>
             </motion.div>
 
@@ -444,9 +445,10 @@ const LandingPageRedesign_20250115 = () => {
                   <div className="flex items-center gap-4 pt-4 border-t border-white/10">
                     <Button
                       onClick={() => navigate('/new-receipt')}
-                      className="bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-black font-semibold px-6 py-3 rounded-xl shadow-lg shadow-cyan-500/30"
+                      className="bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-black px-6 py-3 rounded-xl shadow-lg shadow-cyan-500/30 flex flex-col items-center leading-tight"
                     >
-                      Chat with Sage free
+                      <span className="text-lg font-semibold">Get Your First 3 Receipts Free</span>
+                      <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1">no signup needed</span>
                     </Button>
                     <p className="text-sm text-gray-400">3 free receipts + 1 daily freebie • No signup • 60 seconds</p>
                   </div>
@@ -964,9 +966,10 @@ const LandingPageRedesign_20250115 = () => {
               </p>
               <Button
                 onClick={handleGetStarted}
-                className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-lg px-10 py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 min-h-[64px]"
+                className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black px-10 py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 min-h-[64px] flex flex-col items-center leading-tight"
               >
-                Get Your First 3 Receipts Free
+                <span className="font-bold text-lg">Get Your First 3 Receipts Free</span>
+                <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1">no signup needed</span>
               </Button>
             </motion.div>
           </div>
@@ -982,9 +985,10 @@ const LandingPageRedesign_20250115 = () => {
           >
             <Button
               onClick={handleGetStarted}
-              className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-lg py-4 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black py-4 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 flex flex-col items-center leading-tight"
             >
-              Get Your First 3 Receipts Free
+              <span className="font-bold text-lg">Get Your First 3 Receipts Free</span>
+              <span className="text-[10px] font-medium text-black/60 tracking-wide uppercase mt-1">no signup needed</span>
             </Button>
           </motion.div>
         )}
