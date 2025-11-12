@@ -332,10 +332,10 @@ const PricingPage = () => {
 
             {/* Emergency Packs - Thin Horizontal Cards */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 1, y: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 max-w-3xl mx-auto"
             >
               {/* Emergency Pack x5 - $0.99 - ENHANCED VISIBILITY */}
