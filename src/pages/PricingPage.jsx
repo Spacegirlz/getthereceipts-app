@@ -254,15 +254,19 @@ const PricingPage = () => {
                 <ul className="space-y-3 mb-8 text-gray-300 flex-grow">
                   <li className="flex items-start gap-2">
                     <span className="text-cyan-400 mt-1">✓</span>
-                    <span>1 free receipt (no signup)</span>
+                    <span>3 free receipts instantly (no signup)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-cyan-400 mt-1">✓</span>
-                    <span>3 bonus receipts when you sign up</span>
+                    <span>1 full Sage read every day (Free Plan)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-cyan-400 mt-1">✓</span>
-                    <span>1 daily receipt (free plan)</span>
+                    <span>No credit card. No pressure.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyan-400 mt-1">🎁</span>
+                    <span>Black Friday Freebie: enter <code>BF5</code> in your dashboard</span>
                   </li>
                 </ul>
                 <Button

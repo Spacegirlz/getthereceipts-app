@@ -75,8 +75,8 @@ const LandingPage = () => {
     },
     {
       question: "Can I try Sage without signing up?",
-      summary: "✅ Yes! 1 free receipt, no login, no card, no judgment.",
-      answer: "Yep. No account. No strings. You get 1 free Sage Receipt - no login, no credit card, no judgment. Just paste your chat and go. Want more? Join the Free Plan: you'll get 3 bonus Receipts right away, plus 1 full Sage read every day. Still no card. Still no pressure."
+      summary: "✅ Yes! 3 free receipts + 1 daily freebie. No login. No judgment.",
+      answer: "Yep. No account. No strings. You get 3 free Sage Receipts instantly — no login, no credit card, no judgment. Just paste your chat and go. Want more? Stay on the Free Plan: you'll still get that daily Sage read for free. Still no card. Still no pressure."
     },
     {
       question: "What do I get with the free plan?",
@@ -327,7 +327,7 @@ const LandingPage = () => {
                 onClick={handleGetStarted}
                 className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-lg md:text-xl px-10 py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 min-h-[64px] min-w-[280px]"
               >
-                Get Your First Receipt Free (No Signup)
+                Get Your First 3 Receipts Free (No Signup)
               </Button>
             </motion.div>
 
@@ -448,7 +448,7 @@ const LandingPage = () => {
                     >
                       Chat with Sage free
                     </Button>
-                    <p className="text-sm text-gray-400">Free • No signup • 60 seconds</p>
+                    <p className="text-sm text-gray-400">3 free receipts + 1 daily freebie • No signup • 60 seconds</p>
                   </div>
                 </div>
               </motion.div>
@@ -742,7 +742,7 @@ const LandingPage = () => {
                 <ul className="space-y-3 mb-8 text-gray-300 flex-grow">
                   <li className="flex items-start gap-2">
                     <span className="text-cyan-400 mt-1">✓</span>
-                    <span>1 free receipt (no signup)</span>
+                    <span>3 free receipts instantly (no signup)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-cyan-400 mt-1">✓</span>
@@ -966,7 +966,7 @@ const LandingPage = () => {
                 onClick={handleGetStarted}
                 className="bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-lg px-10 py-5 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 min-h-[64px]"
               >
-                Get Your First Receipt Free
+                Get Your First 3 Receipts Free
               </Button>
             </motion.div>
           </div>
@@ -984,7 +984,7 @@ const LandingPage = () => {
               onClick={handleGetStarted}
               className="w-full bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 text-black font-bold text-lg py-4 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300"
             >
-              Get Your First Receipt Free
+              Get Your First 3 Receipts Free
             </Button>
           </motion.div>
         )}
