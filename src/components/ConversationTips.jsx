@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, Info } from 'lucide-react';
+import ghostingChampionTruth from '@/assets/GTR Demo Assets/Truth Receipts/ghosting-champion-sage-receipt-1761066312906.png';
 
 const ConversationTips = () => {
   const [showTips, setShowTips] = useState(false);
@@ -100,6 +101,63 @@ const ConversationTips = () => {
             
             {/* Tips Content */}
             <div className="pr-8">
+              {/* Paste This → Get This Example */}
+              <div className="mb-6 p-3 sm:p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl border border-cyan-400/30">
+                <h3 className="text-xs sm:text-sm font-bold text-cyan-400 mb-3">📱 See Example: Paste This → Get This</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4">
+                  {/* Input Example */}
+                  <div>
+                    <p className="text-xs font-semibold text-cyan-300 mb-2">Input:</p>
+                    <div className="bg-black/40 rounded-lg p-2 sm:p-3 text-[10px] sm:text-xs text-gray-300 font-mono leading-relaxed border border-cyan-400/20 overflow-x-auto">
+                      <pre className="whitespace-pre-wrap font-sans break-words">Tyler: just thinking about you
+You: That's sweet! Want to grab coffee this week?
+Tyler: yeah that sounds nice
+You: How about Thursday?
+Tyler: maybe, I'll let you know
+[3 days later]
+You: Hey, still up for coffee?
+Tyler: sorry been so busy
+You: No worries, when works for you?
+Tyler: I'll check my schedule and get back to you</pre>
+                    </div>
+                  </div>
+                  {/* Output List */}
+                  <div>
+                    <p className="text-xs font-semibold text-cyan-300 mb-2">Output:</p>
+                    <div className="bg-black/40 rounded-lg p-2 sm:p-3 space-y-1.5 sm:space-y-2 border border-cyan-400/20">
+                      <div className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-300">
+                        <span className="text-cyan-400 flex-shrink-0">✓</span>
+                        <span className="break-words">Sage's Receipt</span>
+                      </div>
+                      <div className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-300">
+                        <span className="text-cyan-400 flex-shrink-0">✓</span>
+                        <span className="break-words">Sage's Playbook</span>
+                      </div>
+                      <div className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-300">
+                        <span className="text-cyan-400 flex-shrink-0">✓</span>
+                        <span className="break-words">Immunity Training</span>
+                      </div>
+                      <div className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-cyan-300 pt-1 border-t border-cyan-400/20">
+                        <span className="text-purple-400 flex-shrink-0">+</span>
+                        <span className="font-semibold break-words">Plus Beta Access to Sage Chatbot</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* Receipt Preview */}
+                <div className="relative">
+                  <img
+                    src={ghostingChampionTruth}
+                    alt="Example Receipt - Ghosting Champion"
+                    className="w-full rounded-lg border border-white/20"
+                  />
+                  <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-semibold">
+                    Truth Receipt
+                  </div>
+                </div>
+                <p className="text-[10px] sm:text-xs text-cyan-400 font-semibold mt-2 text-center">Ghosting Champion - Sugar-coated ghosting detected</p>
+              </div>
+
               <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
                 <span className="text-lg">💡</span>
                 Quick start

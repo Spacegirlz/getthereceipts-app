@@ -8,6 +8,8 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Toaster } from '@/components/ui/toaster';
 import { BrowserRouter } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 // Suppress external service errors in development
 if (import.meta.env.DEV) {
@@ -31,6 +33,19 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY, {
   // Disable fraud detection in development to reduce errors
   fraudDetection: import.meta.env.DEV ? false : true,
 });
+
+// Configure native app appearance (only runs in native apps, not web)
+if (Capacitor.isNativePlatform()) {
+  // Set status bar to dark style (matches app theme)
+  StatusBar.setStyle({ style: Style.Dark }).catch(() => {
+    // Ignore errors if status bar plugin not available
+  });
+  
+  // Set status bar background color to match app
+  StatusBar.setBackgroundColor({ color: '#0F0F0F' }).catch(() => {
+    // Ignore errors if status bar plugin not available
+  });
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>

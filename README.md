@@ -249,6 +249,55 @@ VITE_ELEVENLABS_API_KEY=sk_...
 - [`GET_THE_RECEIPTS_HANDOFF_SUMMARY.md`](GET_THE_RECEIPTS_HANDOFF_SUMMARY.md) - Comprehensive project overview
 - [`LINK_AUDIT_REPORT.md`](LINK_AUDIT_REPORT.md) - Navigation verification
 
+### Developer Checklist: Deep Dive Data Contract
+
+**CRITICAL RULES FOR DEEP DIVE ANALYSIS:**
+
+✅ **Never send processedMessage to Deep Dive.**
+   - Deep Dive must always receive `rawText + speakers` from `ConversationPayload`
+   - Use `normalizeConversation(conversationPayload)` directly in API calls
+   - Never replace with `processedMessage` or any cleaned/truncated version
+
+✅ **Always include rawText + speakers.**
+   - `ConversationPayload` must have `rawText` (untouched original) and `speakers` (color/name mapping)
+   - `processedText` is optional and only for visualization
+   - Deep Dive reads verbatim normalized transcript: `[SPEAKER: <Name>] <Message Text>`
+
+✅ **Verify at least two speakers detected.**
+   - Validate `Object.keys(conversationPayload.speakers).length >= 2` before Deep Dive
+   - Return `OCR_PARSE_FAIL` error if speaker count < 2
+   - Require manual confirmation if confidence < 0.8
+
+✅ **Preserve <time> tags; don't strip them.**
+   - OCR parsing marks timestamps with `<time>` tags (e.g., `<time>9:30 AM</time>`)
+   - `normalizeConversation()` preserves these tags in the output
+   - Never strip timestamps - they provide context for analysis
+
+✅ **Stop pipeline if OCR confidence < 0.8.**
+   - Validate `ocrMeta.confidence >= 0.8` before Deep Dive
+   - Return `OCR_PARSE_FAIL` error if confidence threshold not met
+   - Force manual confirmation for low-confidence OCR results
+
+✅ **Keep normalization + parsing functions separate.**
+   - `parseOCR()`: Extracts text, assigns colors, builds speakers, marks timestamps
+   - `normalizeConversation()`: Formats payload into `[SPEAKER: <Name>] <Message>` format
+   - Never combine these steps - they serve different purposes
+
+✅ **Never auto-generate Playbook when evidence missing.**
+   - If Deep Dive returns `status: "error"` with `message: "OCR_PARSE_FAIL"`, do NOT generate fallback
+   - Return error status to UI instead of creating fake/sanitized content
+   - UI should display error message, not hidden behind AI improvisation
+
+✅ **Log payload.length and quoteCount for QA.**
+   - Log `payloadLength` (rawText length) and `speakerCount` before Deep Dive API call
+   - Log `quoteCount` (receipts array length) after parsing response
+   - Use console.log with `📊` prefix for easy filtering: `📊 Deep Dive Payload Metrics:`
+
+**Error Handling:**
+- Return `{ status: "error", message: "OCR_PARSE_FAIL", error: "<specific error>" }` on any parsing failure
+- UI component (`DeepDive.jsx`) checks for `deepDive?.status === "error"` and displays error message
+- Never create fallback Playbook/receipts when error occurs - make errors visible
+
 ### API Documentation
 - Authentication via Supabase Auth
 - Subscription management via custom service

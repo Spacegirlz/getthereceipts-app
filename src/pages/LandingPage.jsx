@@ -8,14 +8,26 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { useStripe } from '@stripe/react-stripe-js';
 import sageLanding from '@/assets/sage-landing.png';
-
 // Demo receipt images - All receipt types for proper rotation
 // Truth Receipts
 import ghostingChampionTruth from '@/assets/GTR Demo Assets/Truth Receipts/ghosting-champion-sage-receipt-1761066312906.png';
+import maybeMerchantTruth from '@/assets/GTR Demo Assets/Truth Receipts/maybe-merchant-sage-receipt-1761067025449.png';
 // Playbook Receipts
 import ghostingChampionPlaybook from '@/assets/GTR Demo Assets/ghosting-champion-sage-playbook-1761066320799.png';
+import maybeMerchantPlaybook from '@/assets/GTR Demo Assets/maybe-merchant-sage-playbook-1761067383678.png';
 // Immunity Receipts
 import ghostingChampionImmunity from '@/assets/GTR Demo Assets/ghosting-champion-sage-immunity-1761067753743.png';
+import maybeMerchantImmunity from '@/assets/GTR Demo Assets/maybe-merchant-sage-immunity-1761067388991.png';
+
+// Activity Ticker - Real-time social proof (constant, defined outside component)
+const activities = [
+  "Sarah in NYC just spotted a Breadcrumber",
+  "Marcus in London identified a Keeper",
+  "Alex in Sydney dodged a Ghoster",
+  "Emma in Toronto exposed a Love Bomber", 
+  "Jake in Miami called out a Gaslighter",
+  "Zoe in Berlin recognized a Genuine Connection"
+];
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -27,6 +39,7 @@ const LandingPage = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
   const [currentReceiptDemo, setCurrentReceiptDemo] = useState(0);
   const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [currentActivity, setCurrentActivity] = useState(0);
   const stripe = useStripe() || null;
   
   // Show sticky CTA after scrolling past hero
@@ -188,6 +201,14 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Activity Ticker rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentActivity((prev) => (prev + 1) % activities.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Demo data structure - Images and headers stay in sync
   const demoReceipts = [
     {
@@ -204,6 +225,66 @@ const LandingPage = () => {
       type: 'Immunity Training',
       description: 'Build emotional armor and recognize patterns faster.',
       image: ghostingChampionImmunity
+    }
+  ];
+
+  // Revolving Headers - Rotate above Input section
+  const revolvingHeaders = [
+    {
+      title: 'Truth Receipt',
+      description: 'Get the unfiltered breakdown of what they really mean.'
+    },
+    {
+      title: 'Playbook',
+      description: 'Actionable strategies to handle the situation.'
+    },
+    {
+      title: 'Immunity Training',
+      description: 'Build emotional armor and recognize patterns faster.'
+    }
+  ];
+
+  // Input/Output Examples - Matching conversations to receipt patterns
+  // These rotate with the demo receipts to show input → output flow
+  const inputOutputExamples = [
+    {
+      input: `Tyler: just thinking about you
+You: That's sweet! Want to grab coffee this week?
+Tyler: yeah that sounds nice
+You: How about Thursday?
+Tyler: maybe, I'll let you know
+[3 days later]
+You: Hey, still up for coffee?
+Tyler: sorry been so busy
+You: No worries, when works for you?
+Tyler: I'll check my schedule and get back to you`,
+      receiptType: 'Truth Receipt',
+      receiptImage: ghostingChampionTruth,
+      pattern: 'Ghosting Champion',
+      description: 'Sugar-coated ghosting detected'
+    },
+    {
+      input: `Mia: omg yes let's do dinner this week!!
+Jake: sounds good, when?
+Mia: I'll check and lyk!
+[5 days later]
+Jake: hey still down?
+Mia: omg so busy rn 😭`,
+      receiptType: 'Playbook',
+      receiptImage: ghostingChampionPlaybook,
+      pattern: 'Busy Ghoster',
+      description: 'Pattern verified: Excited opener → Vague plans → Ghost'
+    },
+    {
+      input: `Alex: maybe we can hang this weekend?
+You: I'd love that! Saturday?
+Alex: maybe, let me see
+You: Sunday works too
+Alex: maybe, I'll let you know`,
+      receiptType: 'Immunity Training',
+      receiptImage: ghostingChampionImmunity,
+      pattern: 'Maybe Merchant',
+      description: 'Vague plans with no follow-through'
     }
   ];
 
@@ -321,8 +402,7 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="mb-6"
-              className="flex justify-center"
+              className="mb-6 flex justify-center"
             >
               <Button
                 onClick={handleGetStarted}
@@ -338,13 +418,32 @@ const LandingPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm text-gray-300"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm text-gray-300 mb-4"
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
               </span>
               <span className="font-medium">{liveUserCount}</span> people getting clarity right now
+            </motion.div>
+
+            {/* Activity Ticker - Above the fold */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="relative overflow-hidden h-8 flex items-center justify-center mb-2"
+            >
+              <motion.div
+                key={currentActivity}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.5 }}
+                className="text-gray-300 text-sm md:text-base italic"
+              >
+                {activities[currentActivity]}...
+              </motion.div>
             </motion.div>
           </div>
         </section>
@@ -534,7 +633,7 @@ const LandingPage = () => {
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent"></div>
 
         {/* ============================================
-            SECTION 4: DEMO - SIMPLIFIED AUTO-PLAY
+            SECTION 4: INPUT/OUTPUT EXAMPLE - SHOWS WHAT TO UPLOAD
             ============================================ */}
         <section className="py-24 md:py-32 px-4">
           <div className="max-w-6xl mx-auto">
@@ -546,37 +645,116 @@ const LandingPage = () => {
               className="text-center mb-12"
             >
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                See Sage work in <span className="text-cyan-400">10 seconds</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                  Paste This → Get This
+                </span>
               </h2>
-              <p className="text-xl text-gray-300 mb-2">
-                Watch how Sage decodes different communication patterns
+              <p className="text-xl md:text-2xl text-cyan-400 mb-2 font-semibold">
+                See Sage work in <span className="text-cyan-300">10 seconds</span>
               </p>
               <p className="text-base text-gray-400 italic">
-                Screenshot-worthy receipts that make it to the group chat
+                No guessing. Just paste your chat and get the receipts.
               </p>
             </motion.div>
 
+            {/* Input/Output Example - Rotating through examples */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-8 shadow-2xl"
+              className="bg-white/8 backdrop-blur-xl border border-cyan-400/30 rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl"
             >
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                {/* Receipt Display - Auto-rotating with smooth transitions */}
-                <div className="relative">
+              <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-start md:items-center">
+                {/* LEFT: Input Example + Output List */}
+                <div className="space-y-6">
+                  {/* Revolving Header - Rotates with demo receipts */}
+                  <motion.div
+                    key={`header-${currentReceiptDemo}`}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5 }}
+                    className="mb-4"
+                  >
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-cyan-400 mb-2">
+                      {revolvingHeaders[currentReceiptDemo].title}
+                    </h2>
+                    <p className="text-gray-300 text-sm sm:text-base md:text-lg">
+                      {revolvingHeaders[currentReceiptDemo].description}
+                    </p>
+                  </motion.div>
+
+                  {/* Input Section */}
+                  <div>
+                    <h3 className="text-base sm:text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+                      <span>📱</span> Input:
+                    </h3>
+                    <div className="bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-3 sm:p-4 text-xs sm:text-sm text-gray-300 font-mono leading-relaxed overflow-x-auto">
+                      <pre className="whitespace-pre-wrap font-sans break-words">{inputOutputExamples[currentReceiptDemo].input}</pre>
+                    </div>
+                  </div>
+
+                  {/* Output Section */}
+                  <div>
+                    <h3 className="text-base sm:text-lg font-semibold text-cyan-400 mb-3 flex items-center gap-2">
+                      <span>✨</span> Output:
+                    </h3>
+                    <div className="bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl p-3 sm:p-4 space-y-2 sm:space-y-3">
+                      <div className="flex items-start gap-2 sm:gap-3 text-gray-300">
+                        <span className="text-cyan-400 mt-0.5 flex-shrink-0">✓</span>
+                        <div className="min-w-0">
+                          <span className="font-medium text-sm sm:text-base">Sage's Receipt</span>
+                          <p className="text-xs text-gray-400 mt-0.5">The unfiltered breakdown</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 sm:gap-3 text-gray-300">
+                        <span className="text-cyan-400 mt-0.5 flex-shrink-0">✓</span>
+                        <div className="min-w-0">
+                          <span className="font-medium text-sm sm:text-base">Sage's Playbook</span>
+                          <p className="text-xs text-gray-400 mt-0.5">Actionable strategies</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 sm:gap-3 text-gray-300">
+                        <span className="text-cyan-400 mt-0.5 flex-shrink-0">✓</span>
+                        <div className="min-w-0">
+                          <span className="font-medium text-sm sm:text-base">Immunity Training</span>
+                          <p className="text-xs text-gray-400 mt-0.5">Pattern recognition & emotional armor</p>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-cyan-400/20">
+                        <div className="flex items-start gap-2 sm:gap-3 text-cyan-300">
+                          <span className="text-purple-400 mt-0.5 flex-shrink-0">+</span>
+                          <div className="min-w-0">
+                            <span className="font-semibold text-sm sm:text-base">Plus Beta Access to the Sage Chatbot</span>
+                            <p className="text-xs text-purple-300/80 mt-0.5">Ask Sage anything, anytime</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={handleGetStarted}
+                    className="w-full bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:scale-105 transition-all"
+                  >
+                    Get My Full Analysis
+                  </Button>
+                </div>
+
+                {/* RIGHT: Output Receipt - Hero, prominent */}
+                <div className="relative mt-6 md:mt-0">
                   <motion.div
                     key={currentReceiptDemo}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.5 }}
-                    className="bg-white/10 rounded-2xl p-4 border border-white/20"
+                    className="bg-white/10 rounded-2xl p-2 sm:p-4 border border-white/20 shadow-xl"
                   >
                     <img
-                      src={demoReceipts[currentReceiptDemo].image}
-                      alt={`Sage ${demoReceipts[currentReceiptDemo].type} Demo`}
+                      src={inputOutputExamples[currentReceiptDemo].receiptImage}
+                      alt={`Sage ${inputOutputExamples[currentReceiptDemo].receiptType} - ${inputOutputExamples[currentReceiptDemo].pattern}`}
                       className="w-full h-auto rounded-lg"
                     />
                   </motion.div>
@@ -584,32 +762,19 @@ const LandingPage = () => {
                     key={`badge-${currentReceiptDemo}`}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-4 right-4 bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"
+                    className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-2 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg"
                   >
-                    {demoReceipts[currentReceiptDemo].type}
+                    {inputOutputExamples[currentReceiptDemo].receiptType}
                   </motion.div>
+                  <div className="mt-3 sm:mt-4 text-center">
+                    <p className="text-base sm:text-lg font-semibold text-cyan-400">
+                      {inputOutputExamples[currentReceiptDemo].pattern}
+                    </p>
+                    <p className="text-xs sm:text-sm text-gray-400 italic">
+                      {inputOutputExamples[currentReceiptDemo].description}
+                    </p>
+                  </div>
                 </div>
-
-                {/* Description - Stays in sync with image */}
-                <motion.div
-                  key={`desc-${currentReceiptDemo}`}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <h3 className="text-3xl font-bold text-cyan-400 mb-4">
-                    {demoReceipts[currentReceiptDemo].type}
-                  </h3>
-                  <p className="text-gray-300 text-xl leading-relaxed mb-6">
-                    {demoReceipts[currentReceiptDemo].description}
-                  </p>
-                  <Button
-                    onClick={() => navigate('/new-receipt')}
-                    className="bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition-all"
-                  >
-                    Get My Full Analysis
-                  </Button>
-                </motion.div>
               </div>
             </motion.div>
           </div>

@@ -7,6 +7,8 @@ import ReceiptCardViral from '@/components/ReceiptCardViral';
 import DeepDive from '@/components/DeepDive';
 import ImmunityTraining from '@/components/ImmunityTraining';
 import { AskSageChat } from '@/components/AskSageSimple';
+// Story Arc disabled - test mode only
+// import SwipableStoryArc from '@/components/SwipableStoryArc';
 import sageDarkCircle from '@/assets/sage-dark-circle.png';
 
 const TabbedReceiptInterface = ({ 
@@ -112,6 +114,20 @@ const TabbedReceiptInterface = ({
       ),
       isPremium: !isCrisisSituation // Make crisis safety guidance free
     },
+    // Story Arc disabled - test mode only
+    // {
+    //   id: 'story',
+    //   label: 'Story Arc',
+    //   icon: '📱',
+    //   component: (
+    //     <SwipableStoryArc
+    //       deepDive={analysis?.deepDive}
+    //       immunityData={analysis?.immunityTraining}
+    //       analysisData={analysis}
+    //     />
+    //   ),
+    //   isPremium: true
+    // },
     {
       id: 'sage',
       label: 'Chat with Sage',

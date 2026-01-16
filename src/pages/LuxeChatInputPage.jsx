@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare, X, Loader2, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Type, Camera, ChevronDown, User, Crown, AlertCircle, MessageSquare, X, Loader2, CheckCircle2, Upload, Mic, MicOff, Info } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 import InputTabs from '@/components/InputTabs';
 import SmartCharacterCounter from '@/components/SmartCharacterCounter';
 import ColorMappingHelper from '@/components/ColorMappingHelper';
+import ColorNameOverrideEditor from '@/components/ColorNameOverrideEditor';
 import PronounSelector from '@/components/PronounSelector';
 import ImageUpload from '@/components/ImageUpload';
 import ConversationTips from '@/components/ConversationTips';
@@ -66,17 +68,66 @@ const LuxeChatInputPage = () => {
   const [detectedNames, setDetectedNames] = useState([]);
   const [userName, setUserName] = useState('');
   const [otherName, setOtherName] = useState('');
+  const [namesConfirmed, setNamesConfirmed] = useState(false);
   const [userPronouns, setUserPronouns] = useState('');
   const [otherPronouns, setOtherPronouns] = useState('');
-  const [showManualNames, setShowManualNames] = useState(false);
+  const [showNameEditor, setShowNameEditor] = useState(false);
+  const [isManuallyEditingNames, setIsManuallyEditingNames] = useState(false);
   const [showColorHelper, setShowColorHelper] = useState(false);
   const [colorMapping, setColorMapping] = useState('');
+  const [colorNameOverrides, setColorNameOverrides] = useState({});
+  const [detectedColors, setDetectedColors] = useState([]);
   const [extractedTexts, setExtractedTexts] = useState([]);
   const [context, setContext] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [anonymousStatus, setAnonymousStatus] = useState(null);
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [loadingPriceId, setLoadingPriceId] = useState(null);
+  const [isListening, setIsListening] = useState(false);
+  const [isTextExpanded, setIsTextExpanded] = useState(false);
+  const [recognition, setRecognition] = useState(null);
+  const nameInputRef = useRef(null); // Track if user is typing in name input fields
+
+  // Load color-name overrides from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('colorNameOverrides');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setColorNameOverrides(parsed);
+        console.log('✅ Loaded color-name overrides from localStorage:', parsed);
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to load color-name overrides from localStorage:', error);
+    }
+  }, []);
+
+  // 🎯 AUTO-SELECT "You" or "Me" in "Which person are you?" section when detected
+  useEffect(() => {
+    // Only auto-select if:
+    // 1. We have 2+ detected names
+    // 2. userName is not set yet
+    // 3. User is not manually editing
+    // 4. Context type is selected
+    // 5. Names are not already confirmed
+    if (detectedNames.length >= 2 && !userName && !isManuallyEditingNames && contextType && !namesConfirmed) {
+      // Auto-select "You" or "Me" if detected
+      if (detectedNames.includes('You')) {
+        setUserName('You');
+        const otherNames = detectedNames.filter(n => n !== 'You');
+        if (otherNames.length > 0) {
+          setOtherName(otherNames[0]);
+        }
+      } else if (detectedNames.includes('Me')) {
+        setUserName('Me');
+        const otherNames = detectedNames.filter(n => n !== 'Me');
+        if (otherNames.length > 0) {
+          setOtherName(otherNames[0]);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detectedNames, contextType]); // Only run when detectedNames or contextType changes
 
   // Track anonymous user status
   useEffect(() => {
@@ -90,6 +141,117 @@ const LuxeChatInputPage = () => {
       setAnonymousStatus(null);
     }
   }, [user]);
+
+  // Initialize Speech Recognition API
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (SpeechRecognition) {
+        const recognitionInstance = new SpeechRecognition();
+        recognitionInstance.continuous = true; // Keep listening until stopped
+        recognitionInstance.interimResults = true; // Show results as you speak
+        recognitionInstance.lang = 'en-US';
+
+        recognitionInstance.onresult = (event) => {
+          let interimTranscript = '';
+          let finalTranscript = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript + ' ';
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+
+          // Update text with final results
+          if (finalTranscript) {
+            setTexts(prev => prev + (prev ? ' ' : '') + finalTranscript.trim());
+          }
+        };
+
+        recognitionInstance.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+          setIsListening(false);
+          
+          if (event.error === 'no-speech') {
+            toast({
+              title: 'No speech detected',
+              description: 'Please try speaking again.',
+              variant: 'default'
+            });
+          } else if (event.error === 'not-allowed') {
+            toast({
+              title: 'Microphone permission denied',
+              description: 'Please allow microphone access in your browser settings.',
+              variant: 'destructive'
+            });
+          } else {
+            toast({
+              title: 'Speech recognition error',
+              description: event.error,
+              variant: 'destructive'
+            });
+          }
+        };
+
+        recognitionInstance.onend = () => {
+          setIsListening(false);
+        };
+
+        setRecognition(recognitionInstance);
+      }
+    }
+
+    // Cleanup
+    return () => {
+      // Cleanup will be handled by the recognition state
+    };
+  }, []);
+
+  // Cleanup recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognition) {
+        recognition.stop();
+      }
+    };
+  }, [recognition]);
+
+  // Handle microphone toggle
+  const toggleListening = () => {
+    if (!recognition) {
+      toast({
+        title: 'Speech recognition not supported',
+        description: 'Your browser does not support voice input. Please use Chrome, Edge, or Safari.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognition.stop();
+      setIsListening(false);
+    } else {
+      try {
+        recognition.start();
+        setIsListening(true);
+        toast({
+          title: 'Listening...',
+          description: 'Speak now. Tap the mic again to stop.',
+        });
+      } catch (error) {
+        console.error('Error starting recognition:', error);
+        toast({
+          title: 'Could not start listening',
+          description: 'Please try again.',
+          variant: 'destructive'
+        });
+      }
+    }
+  };
   
   // Handle checkout for Emergency Pack and Premium
   const handleCheckout = async (priceId, tierName) => {
@@ -295,14 +457,33 @@ const LuxeChatInputPage = () => {
 
   // Handle text change
   const handleTextChange = (e) => {
-    const newText = e.target.value.slice(0, 5000);
+    const newText = e.target.value.slice(0, 10000); // 10,000 character limit
     setTexts(newText);
-    
+
     // Auto-detect names
     const names = detectNames(newText);
     if (names.length > 0) {
       setDetectedNames(names);
-      
+
+      // 🚫 PREVENT AUTO-POPULATION IF USER IS MANUALLY EDITING NAMES
+      // Check if user is currently focused on a name input field
+      const activeElement = document.activeElement;
+      const isTypingInNameField = activeElement && activeElement.tagName === 'INPUT' && (
+        activeElement.placeholder?.toLowerCase().includes('you') || 
+        activeElement.placeholder?.toLowerCase().includes('them') ||
+        activeElement.placeholder?.toLowerCase().includes('person 1') ||
+        activeElement.placeholder?.toLowerCase().includes('person 2') ||
+        activeElement.placeholder?.toLowerCase().includes('name') ||
+        activeElement.id?.includes('name') ||
+        activeElement.className?.includes('name')
+      );
+
+      // 🚫 PREVENT AUTO-POPULATION IF NAMES ARE ALREADY SET OR USER IS EDITING
+      // Only auto-populate if both fields are completely empty AND user is not editing
+      if (isManuallyEditingNames || isTypingInNameField || userName.trim() || otherName.trim()) {
+        return; // Don't auto-populate while user is typing or has already set names
+      }
+
       // 🎯 SMART AUTO-SELECTION: If "Me" is detected, auto-select it as the user
       if (names.includes('Me')) {
         setUserName('Me');
@@ -310,12 +491,44 @@ const LuxeChatInputPage = () => {
         if (otherNames.length > 0) {
           setOtherName(otherNames[0]);
         }
+      } else if (names.includes('You')) {
+        // 🎯 AUTO-POPULATE: If "You" is detected, auto-populate as userName
+        setUserName('You');
+        setNamesConfirmed(false); // Reset confirmation when new names detected
+        const otherNames = names.filter(name => name !== 'You');
+        if (otherNames.length > 0) {
+          setOtherName(otherNames[0]);
+          setNamesConfirmed(false); // Reset confirmation when new names detected
+        }
+      } else if (names.length >= 2) {
+        // 🎯 AUTO-POPULATE: If 2 names detected and fields are empty, auto-populate
+        // Assume first name is "You" and second is "Them" (user can edit)
+        setUserName(names[0]);
+        setOtherName(names[1]);
+        setNamesConfirmed(false); // Reset confirmation when new names detected
+      } else if (names.length === 1) {
+        // If only one name detected, check if it's "You" or auto-populate as "Them"
+        if (names[0].toLowerCase() === 'you') {
+          setUserName('You');
+        } else {
+          setOtherName(names[0]);
+        }
+        setNamesConfirmed(false); // Reset confirmation when new names detected
       }
     }
   };
 
   // Handle analyze click
   const handleAnalyze = () => {
+    console.log('🚀 HandleAnalyze triggered', {
+      hasText: !!texts.trim(),
+      extractedCount: extractedTexts.length,
+      contextType,
+      userName,
+      otherName,
+      detectedNames
+    });
+
     if (!texts.trim() && extractedTexts.length === 0) {
       toast({
         title: 'Conversation Required',
@@ -355,8 +568,14 @@ const LuxeChatInputPage = () => {
       }
     }
     
-    // Submit analysis (names are now set)
-      submitAnalysis();
+    if (!userName) setUserName(prev => prev || 'Me');
+    if (!otherName) setOtherName(prev => prev || 'Them');
+
+    toast({
+      title: 'Processing…',
+      description: 'Sage is decoding your chat now.',
+    });
+    submitAnalysis();
   };
 
   const submitAnalysis = async () => {
@@ -366,6 +585,7 @@ const LuxeChatInputPage = () => {
       return;
     }
     
+    console.log('⚙️ submitAnalysis starting');
     setIsLoading(true);
     
     try {
@@ -472,6 +692,7 @@ const LuxeChatInputPage = () => {
       }
       
       console.log('✅ Credit check passed:', creditMessage);
+      
       // Combine all text inputs
       const message = texts.trim() + '\n' + extractedTexts.join('\n');
       
@@ -508,6 +729,8 @@ const LuxeChatInputPage = () => {
         
         // Screenshot-specific data - PROPERLY TAGGED
         colorMapping: colorMapping || '',
+        colorNameOverrides: colorNameOverrides, // Saved overrides from localStorage
+        detectedColors: detectedColors, // Detected colors for validation
         extractedTexts: extractedTexts,
         
         // Auto-detected data - PROPERLY TAGGED
@@ -620,6 +843,7 @@ const LuxeChatInputPage = () => {
         description: 'Please try again. If the problem persists, contact support.'
       });
     } finally {
+      console.log('✅ submitAnalysis finished');
       setIsLoading(false);
     }
   };
@@ -630,7 +854,878 @@ const LuxeChatInputPage = () => {
   ];
 
   const relationshipTypes = ['Dating', 'Situationship', 'Marriage', 'Friend', 'Work', 'Family'];
+  
+  const isNative = Capacitor.isNativePlatform();
 
+  // Mobile-optimized input page for native apps
+  if (isNative) {
+    return (
+      <div className="h-screen w-full flex flex-col bg-[#0F0F0F] overflow-hidden relative">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(168,85,247,0.05),rgba(255,255,255,0.02))] pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col h-full">
+          {/* Header */}
+          <div className="pt-6 pb-3 px-4 flex-shrink-0">
+            <h1 className="text-2xl font-black text-white text-center">
+              Get Your <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Receipt</span>
+            </h1>
+            <p className="text-xs text-gray-400 text-center mt-1">Results in 60 seconds</p>
+          </div>
+
+          {/* Two Input Tabs */}
+          <div className="px-4 mb-3 flex-shrink-0">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveTab('story')}
+                className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ${
+                  activeTab === 'story'
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30'
+                    : 'bg-white/5 backdrop-blur-sm text-gray-300 border border-cyan-400/20'
+                }`}
+              >
+                <Type className="w-4 h-4" />
+                <span className="text-sm font-medium">Paste Text</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('screenshot')}
+                className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ${
+                  activeTab === 'screenshot'
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30'
+                    : 'bg-white/5 backdrop-blur-sm text-gray-300 border border-cyan-400/20'
+                }`}
+              >
+                <Camera className="w-4 h-4" />
+                <span className="text-sm font-medium">Upload</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Input Area - Takes most space */}
+          <div className="flex-1 px-4 mb-3 min-h-0 overflow-y-auto">
+            {activeTab === 'story' && (
+              <div className="h-full flex flex-col">
+                <div className={`relative w-full ${isTextExpanded ? 'h-[280px]' : 'h-[170px]'} transition-all duration-300`}
+                >
+                  <textarea
+                    value={texts}
+                    onChange={handleTextChange}
+                    placeholder="Paste your chat or tell your story...
+
+Example:
+Alex: Hey, how are you?
+You: I'm good, thanks!
+
+Or write naturally:
+I've been seeing Alex for 3 months. Last week they said they wanted to be exclusive, but yesterday I saw them active on dating apps at 2am..."
+                    className="w-full h-full p-4 pr-12 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400 overflow-y-auto"
+                  />
+                  {/* Microphone Button */}
+                  <button
+                    onClick={toggleListening}
+                    className={`absolute bottom-4 right-4 p-2.5 rounded-full transition-all duration-300 ${
+                      isListening
+                        ? 'bg-red-500/90 text-white shadow-lg shadow-red-500/50 animate-pulse'
+                        : 'bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-400/30'
+                    }`}
+                    title={isListening ? 'Stop recording' : 'Start voice input'}
+                  >
+                    {isListening ? (
+                      <MicOff className="w-5 h-5" />
+                    ) : (
+                      <Mic className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="text-center flex-1">
+                    {texts.length > 0 && (
+                      <div>
+                        <div className={`text-xs ${
+                          texts.length >= 10000
+                            ? 'text-red-400 font-medium'
+                            : texts.length >= 9000
+                            ? 'text-yellow-400'
+                            : 'text-gray-400'
+                        }`}>
+                          {texts.length.toLocaleString()} / 10,000 characters
+                          {texts.length >= 10000 && ' (limit reached)'}
+                          {texts.length >= 9000 && texts.length < 10000 && ' (approaching limit)'}
+                        </div>
+                        {/* Dynamic feedback message */}
+                        {texts.length < 300 && (
+                          <div className="text-xs text-orange-400 mt-1">
+                            Minimum 300 characters required
+                          </div>
+                        )}
+                        {texts.length >= 300 && texts.length < 500 && (
+                          <div className="text-xs text-cyan-400 mt-1">
+                            A good range is between 500-10,000 characters
+                          </div>
+                        )}
+                        {texts.length >= 500 && texts.length <= 10000 && (
+                          <div className="text-xs text-green-400 mt-1">
+                            A good range is between 500-10,000 characters
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {isListening && (
+                    <div className="flex items-center gap-1.5 text-xs text-red-400">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                      </span>
+                      <span>Listening...</span>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => setIsTextExpanded(prev => !prev)}
+                  className="mt-2 text-[11px] text-cyan-400/80 hover:text-cyan-300 transition-colors self-end"
+                >
+                  {isTextExpanded ? 'Collapse input ↑' : 'Expand input ↓'}
+                </button>
+              </div>
+            )}
+            
+            {activeTab === 'screenshot' && (
+              <div className="h-full">
+                <ImageUpload 
+                  onTextExtracted={(text) => {
+                    setExtractedTexts(prev => [...prev, text]);
+                    setTexts(prev => prev + (prev ? '\n\n' : '') + text);
+                    setShowColorHelper(true); // Show color mapping helper
+                    // Auto-detect names from extracted text
+                    const names = detectNames(text);
+                    if (names.length > 0) {
+                      setDetectedNames(names);
+                      // Auto-select "Me" if detected
+                      if (names.includes('Me')) {
+                        setUserName('Me');
+                        const otherNames = names.filter(name => name !== 'Me');
+                        if (otherNames.length > 0) {
+                          setOtherName(otherNames[0]);
+                        }
+                      }
+                    }
+                    // Don't auto-switch tab - let user see the name editor
+                  }}
+                  maxFiles={5}
+                />
+                
+                {/* Color Mapping Helper - Essential for screenshots */}
+                <AnimatePresence>
+                  {showColorHelper && extractedTexts.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="mt-3 px-4"
+                    >
+                      <ColorMappingHelper 
+                        onColorMapping={(mapping) => {
+                          setColorMapping(mapping);
+                          // Parse color mapping to extract colors and set names
+                          if (mapping.includes('=')) {
+                            const parts = mapping.split(',');
+                            const colors = [];
+                            parts.forEach(part => {
+                              const [color, name] = part.split('=').map(s => s.trim());
+                              if (color && name) {
+                                colors.push(color.toLowerCase());
+                                if (color.toLowerCase().includes('blue') && !userName) {
+                                  setUserName(name);
+                                } else if (color.toLowerCase().includes('gray') && !otherName) {
+                                  setOtherName(name);
+                                }
+                              }
+                            });
+                            // Update detected colors
+                            if (colors.length > 0) {
+                              setDetectedColors(colors);
+                            }
+                          }
+                        }}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* 🎯 COLOR-NAME OVERRIDE EDITOR - Shows detected colors with editable name fields */}
+                {extractedTexts.length > 0 && detectedColors.length >= 2 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="mt-3 px-4"
+                  >
+                    <ColorNameOverrideEditor
+                      detectedColors={detectedColors}
+                      initialMappings={colorNameOverrides}
+                      onSave={(mappings) => {
+                        setColorNameOverrides(mappings);
+                        // Update userName and otherName from mappings
+                        const names = Object.values(mappings).filter(n => n && n.trim());
+                        if (names.length >= 2) {
+                          setUserName(names[0]);
+                          setOtherName(names[1]);
+                        }
+                        // Update colorMapping string
+                        const mappingString = Object.entries(mappings)
+                          .filter(([_, name]) => name && name.trim())
+                          .map(([color, name]) => `${color} = ${name}`)
+                          .join(', ');
+                        setColorMapping(mappingString);
+                        setShowNameEditor(false);
+                      }}
+                      onCancel={() => setShowNameEditor(false)}
+                    />
+                  </motion.div>
+                )}
+
+                {/* 🎯 NAME EDITING FOR SCREENSHOTS - Fallback when colors not detected */}
+                {extractedTexts.length > 0 && detectedColors.length < 2 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-3 px-4"
+                  >
+                    {!showNameEditor ? (
+                      <div className="p-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30">
+                        <p className="text-xs font-medium mb-2 flex items-center gap-1.5 text-white">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Who is who in these screenshots?
+                        </p>
+                        
+                        {/* Show detected names with selection */}
+                        {detectedNames.length >= 2 && !userName ? (
+                          <div className="space-y-1.5 mb-2">
+                            <p className="text-[10px] text-white/70 mb-1.5">Which person are you?</p>
+                            {detectedNames.map((name, index) => (
+                              <button
+                                key={name}
+                                onClick={() => {
+                                  setUserName(name);
+                                  setOtherName(detectedNames[1 - index]);
+                                }}
+                                className="w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 bg-white/5 backdrop-blur-sm text-gray-300 border border-cyan-400/20 hover:bg-white/10 hover:border-cyan-400/40 active:scale-95"
+                              >
+                                I am {name}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          /* Manual input if names not detected */
+                          <div className="grid grid-cols-2 gap-2 mb-2">
+                            <input
+                              placeholder="You/Person 1"
+                              value={userName}
+                              onFocus={() => setIsManuallyEditingNames(true)}
+                              onChange={(e) => {
+                                setIsManuallyEditingNames(true);
+                                setUserName(e.target.value);
+                              }}
+                              className="px-2.5 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-xs text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                            />
+                            <input
+                              placeholder="Them/Person 2"
+                              value={otherName}
+                              onFocus={() => setIsManuallyEditingNames(true)}
+                              onChange={(e) => {
+                                setIsManuallyEditingNames(true);
+                                setOtherName(e.target.value);
+                              }}
+                              className="px-2.5 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-xs text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                            />
+                          </div>
+                        )}
+
+                        {/* Show confirmation when names are set */}
+                        {userName && otherName ? (
+                          <div className="flex items-center justify-between p-2 bg-emerald-500/20 border border-emerald-400/30 rounded-lg">
+                            <div className="flex items-center gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                              <span className="text-xs text-white">
+                                You: <span className="font-semibold">{userName}</span> • Them: <span className="font-semibold">{otherName}</span>
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => setShowNameEditor(true)}
+                              className="text-[10px] text-cyan-400 hover:text-cyan-300 transition-colors"
+                            >
+                              Edit
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setShowNameEditor(true)}
+                            className="w-full mt-2 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm text-cyan-300 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-purple-500/30 active:scale-95"
+                          >
+                            ✏️ Set names →
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      /* Full name editor with pronouns */
+                      <div className="p-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30">
+                        <p className="text-xs font-medium mb-2 text-white">Customize how names appear on the receipt</p>
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] uppercase tracking-wide text-gray-500">You</label>
+                            <input
+                              placeholder="e.g. Me, Piet, Bestie"
+                              value={userName}
+                              onFocus={() => setIsManuallyEditingNames(true)}
+                              onChange={(e) => {
+                                setIsManuallyEditingNames(true);
+                                setUserName(e.target.value);
+                              }}
+                              className="w-full px-2.5 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-xs text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                            />
+                            <PronounSelector
+                              label="Pronouns"
+                              value={userPronouns}
+                              onChange={(value) => setUserPronouns(prev => prev === value ? '' : value)}
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] uppercase tracking-wide text-gray-500">Them</label>
+                            <input
+                              placeholder="e.g. Them, Bani, Situationship"
+                              value={otherName}
+                              onFocus={() => setIsManuallyEditingNames(true)}
+                              onChange={(e) => {
+                                setIsManuallyEditingNames(true);
+                                setOtherName(e.target.value);
+                              }}
+                              className="w-full px-2.5 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-xs text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                            />
+                            <PronounSelector
+                              label="Pronouns"
+                              value={otherPronouns}
+                              onChange={(value) => setOtherPronouns(prev => prev === value ? '' : value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <button
+                            onClick={() => setShowNameEditor(false)}
+                            className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                          >
+                            Done
+                          </button>
+                          <button
+                            onClick={() => {
+                              setUserName('');
+                              setOtherName('');
+                              setUserPronouns('');
+                              setOtherPronouns('');
+                              setShowNameEditor(false);
+                            }}
+                            className="text-xs text-gray-400 hover:text-white transition-colors"
+                          >
+                            Use defaults
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* 🎯 NAME EDITING - ESSENTIAL: Shows immediately after text is pasted (not screenshots) */}
+          {texts.trim() && !extractedTexts.length && (
+            <div className="px-4 mb-3 flex-shrink-0">
+              <AnimatePresence>
+                {/* Show detected names with selection */}
+                {detectedNames.length >= 2 && !userName && !showNameEditor && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30"
+                  >
+                    <p className="text-xs font-medium mb-2 flex items-center gap-1.5 text-white">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Found: {detectedNames.join(' and ')}
+                    </p>
+                    <p className="text-[10px] text-white/70 mb-2">Which person are you?</p>
+                    <div className="space-y-1.5">
+                      {detectedNames.map((name, index) => (
+                        <button
+                          key={name}
+                          onClick={() => {
+                            setUserName(name);
+                            setOtherName(detectedNames[1 - index]);
+                          }}
+                          className="w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 bg-white/5 backdrop-blur-sm text-gray-300 border border-cyan-400/20 hover:bg-white/10 hover:border-cyan-400/40 active:scale-95"
+                        >
+                          I am {name}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => setShowNameEditor(true)}
+                      className="mt-2 w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm text-cyan-300 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-purple-500/30 active:scale-95"
+                    >
+                      ✏️ Edit names →
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* Show manual input if 1 or 0 names detected */}
+                {detectedNames.length < 2 && !userName && !showNameEditor && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-3 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30"
+                  >
+                    <p className="text-xs font-medium mb-2 text-white">Who's in this conversation?</p>
+                    <div className="grid grid-cols-2 gap-2 mb-2">
+                      <input
+                        placeholder="You/Person 1"
+                        value={userName}
+                        onFocus={() => setIsManuallyEditingNames(true)}
+                        onChange={(e) => {
+                          setIsManuallyEditingNames(true);
+                          setUserName(e.target.value);
+                        }}
+                        className="px-2.5 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-xs text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                      />
+                      <input
+                        placeholder="Them/Person 2"
+                        value={otherName}
+                        onFocus={() => setIsManuallyEditingNames(true)}
+                        onChange={(e) => {
+                          setIsManuallyEditingNames(true);
+                          setOtherName(e.target.value);
+                        }}
+                        className="px-2.5 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-xs text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                      />
+                    </div>
+                    <button
+                      onClick={() => setShowNameEditor(true)}
+                      className="w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm text-cyan-300 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-purple-500/30 active:scale-95"
+                    >
+                      ✏️ Advanced editor with pronouns →
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* Show confirmation when names are set - ALWAYS SHOW EDIT BUTTON */}
+                {userName && otherName && !showNameEditor && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-2.5 bg-emerald-500/20 border border-emerald-400/30 rounded-lg"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        <span className="text-xs text-white">
+                          You: <span className="font-semibold">{userName}</span> • Them: <span className="font-semibold">{otherName}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowNameEditor(true)}
+                      className="w-full px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm text-cyan-300 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-purple-500/30 active:scale-95"
+                    >
+                      ✏️ Edit names & pronouns
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* Relationship Type - Compact for Mobile */}
+          {(texts.trim() || extractedTexts.length > 0) && !contextType && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <p className="text-xs text-cyan-400/80 mb-1.5 text-center font-medium">Select relationship type to continue</p>
+              <div className="flex flex-wrap gap-1.5 justify-center">
+                {['Dating', 'Situationship', 'Friend', 'Work', 'Family', 'Other'].map(type => (
+                  <button
+                    key={type}
+                    onClick={() => setContextType(type.toLowerCase())}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+                      contextType === type.toLowerCase()
+                        ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/30'
+                        : 'bg-white/5 backdrop-blur-sm text-gray-300 border border-cyan-400/20'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Name Editor - Manual override - STAYS VISIBLE WHILE EDITING */}
+          {(texts.trim() || extractedTexts.length > 0) && contextType && showNameEditor && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30 p-3 mb-2">
+                <p className="text-xs font-medium mb-2 flex items-center gap-1.5 text-white">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Edit names
+                </p>
+                <p className="text-[10px] text-white/70 mb-3">
+                  Customize how names appear on the receipt. You can edit these at any time.
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] text-cyan-400/80 mb-1 block">
+                      You = <span className="text-white/70">Add your name</span>
+                    </label>
+                    <input
+                      placeholder={detectedNames[0] || "e.g. Me, Piet, Bestie"}
+                      value={userName}
+                      onFocus={() => setIsManuallyEditingNames(true)}
+                      onChange={(e) => {
+                        setIsManuallyEditingNames(true);
+                        setUserName(e.target.value);
+                      }}
+                      className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                    />
+                    <div className="pt-1">
+                      <PronounSelector
+                        label="Pronouns"
+                        value={userPronouns}
+                        onChange={(value) => setUserPronouns(prev => prev === value ? '' : value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] text-cyan-400/80 mb-1 block">
+                      Them = <span className="text-white/70">
+                        {detectedNames.length > 0 && detectedNames[0] !== userName
+                          ? `${detectedNames.find(n => n !== userName) || detectedNames[0]} (auto-detected)`
+                          : 'Add their name'}
+                      </span>
+                    </label>
+                    <input
+                      placeholder={detectedNames.find(n => n !== userName) || detectedNames[0] || "e.g. Them, Bani, Tyler"}
+                      value={otherName}
+                      onFocus={() => setIsManuallyEditingNames(true)}
+                      onChange={(e) => {
+                        setIsManuallyEditingNames(true);
+                        setOtherName(e.target.value);
+                      }}
+                      className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                    />
+                    <div className="pt-1">
+                      <PronounSelector
+                        label="Pronouns"
+                        value={otherPronouns}
+                        onChange={(value) => setOtherPronouns(prev => prev === value ? '' : value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-2 border-t border-cyan-400/20">
+                  <button
+                    onClick={() => {
+                      setNamesConfirmed(true);
+                      setShowNameEditor(false);
+                    }}
+                    className="text-[10px] text-cyan-400/80 hover:text-cyan-300 transition-colors px-3 py-1.5 rounded hover:bg-cyan-500/10"
+                  >
+                    ✓ Done
+                  </button>
+                  <button
+                    onClick={() => {
+                      setUserName('');
+                      setOtherName('');
+                      setUserPronouns('');
+                      setOtherPronouns('');
+                      setNamesConfirmed(false);
+                      setShowNameEditor(false);
+                    }}
+                    className="text-[10px] text-gray-400 hover:text-gray-300 transition-colors px-3 py-1.5 rounded hover:bg-white/5"
+                  >
+                    Reset to defaults
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Who Are You? - Shows after relationship type selected - ALWAYS EDITABLE */}
+          {(texts.trim() || extractedTexts.length > 0) && contextType && !showNameEditor && detectedNames.length >= 2 && !userName && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30 p-3 mb-2">
+                <p className="text-xs font-medium mb-2 flex items-center gap-1.5 text-white">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  We found: {detectedNames.join(' and ')}
+                </p>
+                <p className="text-[10px] text-white/70 mb-3">
+                  Which person are you? We'll auto-fill the other name.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {detectedNames.map((name) => {
+                    // 🎯 HIGHLIGHT: If "You" or "Me" is detected and already selected
+                    const isAutoSelected = (name === 'You' || name === 'Me') && userName === name;
+                    return (
+                      <button
+                        key={name}
+                        onClick={() => {
+                          setIsManuallyEditingNames(false); // Reset flag when user clicks
+                          setUserName(name);
+                          const otherNames = detectedNames.filter(n => n !== name);
+                          setOtherName(otherNames[0] || 'Them');
+                        }}
+                        className={`w-full px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 backdrop-blur-sm border ${
+                          isAutoSelected 
+                            ? 'bg-cyan-500/20 text-white border-cyan-400/50' 
+                            : 'bg-white/5 text-gray-300 border-cyan-400/20 hover:bg-white/10 hover:border-cyan-400/40'
+                        }`}
+                      >
+                        I am {name}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  onClick={() => {
+                    setIsManuallyEditingNames(true);
+                    setShowNameEditor(true);
+                  }}
+                  className="mt-2 text-[10px] text-cyan-400/80 hover:text-cyan-300 transition-colors text-center w-full py-1 rounded hover:bg-cyan-500/10"
+                >
+                  ✏️ Or edit names manually →
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {/* ALWAYS SHOW EDIT OPTION - Even when names are complete and 2+ names detected */}
+          {(texts.trim() || extractedTexts.length > 0) && contextType && !showNameEditor && detectedNames.length >= 2 && userName && otherName && namesConfirmed && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <button
+                onClick={() => setShowNameEditor(true)}
+                className="w-full bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-lg border border-cyan-400/30 p-2 flex items-center justify-between hover:from-cyan-500/20 hover:to-purple-500/20 transition-all group"
+              >
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-xs text-white">
+                    ✓ You: <span className="font-semibold">{userName}</span> • Them: <span className="font-semibold">{otherName}</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-cyan-400/80 group-hover:text-cyan-300 transition-colors">
+                  <span>✏️ Edit</span>
+                  <ChevronDown className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </button>
+            </div>
+          )}
+
+          {/* Confirmation Question - Shows when names are auto-detected and auto-populated */}
+          {(texts.trim() || extractedTexts.length > 0) && contextType && !showNameEditor && userName && otherName && !namesConfirmed && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30 p-3 mb-2">
+                <p className="text-xs font-medium mb-3 flex items-center gap-1.5 text-white">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Is this correct?
+                </p>
+                <div className="space-y-2 mb-3">
+                  <div className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                    <span className="text-[10px] text-gray-400 uppercase tracking-wide">Person 1</span>
+                    <span className="text-sm text-white font-semibold">{userName}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                    <span className="text-[10px] text-gray-400 uppercase tracking-wide">Person 2</span>
+                    <span className="text-sm text-white font-semibold">{otherName}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setNamesConfirmed(true)}
+                    className="flex-1 px-4 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    Yes, correct
+                  </button>
+                  <button
+                    onClick={() => setShowNameEditor(true)}
+                    className="px-4 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 text-cyan-300 rounded-lg text-sm font-medium hover:bg-white/10 hover:border-cyan-400/40 transition-all"
+                  >
+                    ✏️ Edit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Manual Name Input - If only one name detected or none - STAYS VISIBLE WHILE TYPING - ALWAYS EDITABLE */}
+          {(texts.trim() || extractedTexts.length > 0) && contextType && !showNameEditor && detectedNames.length < 2 && (!userName || !otherName) && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30 p-3 mb-2">
+                <p className="text-xs font-medium mb-2 flex items-center gap-1.5 text-white">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Identify who's who
+                </p>
+                <p className="text-[10px] text-white/70 mb-3">
+                  {detectedNames.length > 0 
+                    ? `We detected: ${detectedNames.join(', ')}. Please confirm or edit the names below.`
+                    : 'Add the names of the people in this conversation.'}
+                </p>
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-[10px] text-cyan-400/80 mb-1 block">
+                      You = <span className="text-white/70">Add your name</span>
+                    </label>
+                    <input
+                      placeholder={detectedNames[0] || "Your name"}
+                      value={userName}
+                      onFocus={() => setIsManuallyEditingNames(true)}
+                      onChange={(e) => {
+                        setIsManuallyEditingNames(true);
+                        setUserName(e.target.value);
+                      }}
+                      className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-cyan-400/80 mb-1 block">
+                      Them = <span className="text-white/70">
+                        {detectedNames.length > 0 
+                          ? `${detectedNames[0]} (auto-detected)` 
+                          : 'Add their name'}
+                      </span>
+                    </label>
+                    <input
+                      placeholder={detectedNames[0] || "Their name"}
+                      value={otherName}
+                      onFocus={() => setIsManuallyEditingNames(true)}
+                      onChange={(e) => {
+                        setIsManuallyEditingNames(true);
+                        setOtherName(e.target.value);
+                      }}
+                      className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                    />
+                  </div>
+                </div>
+                {detectedNames.length > 0 && (
+                  <p className="text-[9px] text-cyan-400/60 mt-2 italic">
+                    💡 If these names are wrong, edit them above
+                  </p>
+                )}
+                {/* Always show edit option even when both names are filled */}
+                {userName && otherName && namesConfirmed && (
+                  <button
+                    onClick={() => setShowNameEditor(true)}
+                    className="mt-2 w-full text-[10px] text-cyan-400/80 hover:text-cyan-300 transition-colors text-center py-1 rounded hover:bg-cyan-500/10"
+                  >
+                    ✏️ Click to edit names
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* ALWAYS SHOW EDIT OPTION - Even when only 1 name detected and names are complete */}
+          {(texts.trim() || extractedTexts.length > 0) && contextType && !showNameEditor && detectedNames.length === 1 && userName && otherName && namesConfirmed && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <button
+                onClick={() => setShowNameEditor(true)}
+                className="w-full bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-lg border border-cyan-400/30 p-2 flex items-center justify-between hover:from-cyan-500/20 hover:to-purple-500/20 transition-all group"
+              >
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-xs text-white">
+                    ✓ You: <span className="font-semibold">{userName}</span> • Them: <span className="font-semibold">{otherName}</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-cyan-400/80 group-hover:text-cyan-300 transition-colors">
+                  <span>✏️ Edit</span>
+                  <ChevronDown className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </button>
+            </div>
+          )}
+
+          {/* Confirmation - Shows when names are set and confirmed - ALWAYS EDITABLE WITH CLICK */}
+          {(texts.trim() || extractedTexts.length > 0) && contextType && userName && otherName && !showNameEditor && namesConfirmed && (
+            <div className="px-4 mb-2 flex-shrink-0">
+              <div 
+                onClick={() => setShowNameEditor(true)}
+                className="bg-emerald-500/20 border border-emerald-400/30 rounded-lg p-2 flex items-center justify-between cursor-pointer hover:bg-emerald-500/30 transition-all group"
+              >
+                <div className="flex items-center gap-2 flex-1">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-xs text-white">
+                    ✓ You: <span className="font-semibold">{userName}</span> • Them: <span className="font-semibold">{otherName}</span>
+                    {detectedNames.includes(otherName) && (
+                      <span className="text-[9px] text-emerald-400/70 ml-1">(auto-detected)</span>
+                    )}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-emerald-400/80 group-hover:text-emerald-300 transition-colors">
+                  <span>✏️ Edit</span>
+                  <ChevronDown className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Submit Button - Fixed at bottom, always visible */}
+          <div className="px-4 pb-4 pt-2 flex-shrink-0 space-y-1.5 border-t border-white/5">
+            <button
+              onClick={handleAnalyze}
+              disabled={isLoading || (!texts.trim() && extractedTexts.length === 0) || !contextType}
+              className="w-full bg-gradient-to-r from-cyan-400 via-purple-400 to-cyan-400 bg-[length:200%_100%] hover:bg-[length:200%_100%] animate-gradient text-black font-black text-base py-4 rounded-xl shadow-2xl shadow-cyan-500/40 hover:shadow-cyan-500/60 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 z-10 relative"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Analyzing...</span>
+                </div>
+              ) : (
+                'Get Receipt →'
+              )}
+            </button>
+            <p className="text-[10px] text-gray-500 text-center">
+              For 16+ Entertainment Purposes Only
+            </p>
+          </div>
+        </div>
+
+        {/* Loading Overlay */}
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center"
+          >
+            <div className="text-center space-y-4">
+              <RotatingAnalysisText />
+              <ProcessingAnimation />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Gradient Animation */}
+        <style>{`
+          @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+          }
+          .animate-gradient {
+            animation: gradient 3s ease infinite;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // Desktop/Web version (existing code)
   return (
     <div className="min-h-screen relative overflow-hidden text-white flex flex-col">
       {/* Deep Charcoal Background - Glassmorphism Optimized */}
@@ -734,12 +1829,13 @@ For story: Write naturally using 'I' for yourself
 I've been seeing Alex for 3 months. Last week they said they wanted to be exclusive, but yesterday I saw them active on dating apps at 2am..."
                   className="w-full h-48 p-4 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400"
                 />
-                <SmartCharacterCounter count={texts.length} limit={5000} />
+                <SmartCharacterCounter count={texts.length} limit={10000} />
                 <ConversationTips />
                 
                 {/* 🎯 INLINE NAME SELECTION - Shows when names detected but not auto-selected */}
+                {/* 🚫 PREVENT UI JUMPING: Keep section visible even when user is typing */}
                 <AnimatePresence>
-                  {detectedNames.length > 0 && !userName && (
+                  {detectedNames.length > 0 && (!namesConfirmed || (!userName && !otherName) || isManuallyEditingNames || (!userName || !otherName)) && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
@@ -751,7 +1847,37 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
                         I found these names: {detectedNames.join(' and ')}
                       </p>
                       
-                      {detectedNames.length >= 2 ? (
+                      {/* Confirmation Question - Shows when both names are filled but not confirmed */}
+                      {userName && otherName && !namesConfirmed ? (
+                        <div>
+                          <p className="text-xs font-medium mb-3 text-white">Is this correct?</p>
+                          <div className="space-y-2 mb-3">
+                            <div className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                              <span className="text-[10px] text-gray-400 uppercase tracking-wide">Person 1</span>
+                              <span className="text-sm text-white font-semibold">{userName}</span>
+                            </div>
+                            <div className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                              <span className="text-[10px] text-gray-400 uppercase tracking-wide">Person 2</span>
+                              <span className="text-sm text-white font-semibold">{otherName}</span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setNamesConfirmed(true)}
+                              className="flex-1 px-4 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all flex items-center justify-center gap-2"
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                              Yes, correct
+                            </button>
+                            <button
+                              onClick={() => setShowNameEditor(true)}
+                              className="px-4 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 text-cyan-300 rounded-lg text-sm font-medium hover:bg-white/10 hover:border-cyan-400/40 transition-all"
+                            >
+                              ✏️ Edit
+                            </button>
+                          </div>
+                        </div>
+                      ) : detectedNames.length >= 2 ? (
                         <div className="space-y-2">
                           <p className="text-xs text-white/80 mb-2">Which person are you?</p>
                           {detectedNames.map((name, index) => (
@@ -764,28 +1890,82 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
                                 onChange={(e) => {
                                   setUserName(name);
                                   setOtherName(detectedNames[1 - index]); // Set the other name
+                                  setNamesConfirmed(false);
                                 }}
                                 className="text-cyan-500"
                               />
                               <span className="text-sm text-white">I am {name}</span>
                             </label>
                           ))}
+                          <button
+                            onClick={() => setShowNameEditor(true)}
+                            className="mt-2 w-full text-[10px] text-cyan-400/80 hover:text-cyan-300 transition-colors text-center py-1 rounded hover:bg-cyan-500/10"
+                          >
+                            ✏️ Or edit names manually →
+                          </button>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-2 gap-3">
-                          <input
-                            placeholder="You/Person 1"
-                            className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                          />
-                          <input
-                            placeholder="Them/Person 2"
-                            className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
-                            value={otherName}
-                            onChange={(e) => setOtherName(e.target.value)}
-                          />
+                        <div>
+                          <div className="grid grid-cols-2 gap-3 mb-2">
+                            <div>
+                              <label className="text-[10px] text-cyan-400/80 mb-1 block">
+                                Person 1 (You)
+                              </label>
+                              <input
+                                placeholder="You/Person 1"
+                                className="w-full p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                                value={userName}
+                                onFocus={() => setIsManuallyEditingNames(true)}
+                                onChange={(e) => {
+                                  setIsManuallyEditingNames(true);
+                                  setUserName(e.target.value);
+                                  setNamesConfirmed(false);
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] text-cyan-400/80 mb-1 block">
+                                Person 2 (Them)
+                              </label>
+                              <input
+                                placeholder={detectedNames[0] || "Them/Person 2"}
+                                className="w-full p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                                value={otherName}
+                                onFocus={() => setIsManuallyEditingNames(true)}
+                                onChange={(e) => {
+                                  setIsManuallyEditingNames(true);
+                                  setOtherName(e.target.value);
+                                  setNamesConfirmed(false);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          {userName && otherName && (
+                            <button
+                              onClick={() => setNamesConfirmed(true)}
+                              className="w-full px-4 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all flex items-center justify-center gap-2"
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                              Confirm names
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setShowNameEditor(true)}
+                            className="mt-2 w-full text-[10px] text-cyan-400/80 hover:text-cyan-300 transition-colors text-center py-1 rounded hover:bg-cyan-500/10"
+                          >
+                            ✏️ Or edit names manually →
+                          </button>
                         </div>
+                      )}
+                      
+                      {/* Always show edit option when names are confirmed */}
+                      {userName && otherName && namesConfirmed && (
+                        <button
+                          onClick={() => setShowNameEditor(true)}
+                          className="mt-2 w-full text-[10px] text-cyan-400/80 hover:text-cyan-300 transition-colors text-center py-1 rounded hover:bg-cyan-500/10"
+                        >
+                          ✏️ Click to edit names
+                        </button>
                       )}
                     </motion.div>
                   )}
@@ -804,16 +1984,105 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
                       </span>
                       <button
                         onClick={() => {
-                          setUserName('');
-                          setOtherName('');
+                          setShowNameEditor(true);
                         }}
                         className="ml-auto text-xs text-gray-400 hover:text-white transition-colors"
                       >
-                        Edit
+                        Edit names
                       </button>
                     </motion.div>
                   )}
+
+                  {/* 🎯 NAME CONFIRMATION - Shows when names are set and confirmed (not "Me") */}
+                  {userName && otherName && userName !== 'Me' && namesConfirmed && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="mt-4 p-3 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm rounded-lg border border-emerald-400/30 flex items-center gap-2 cursor-pointer hover:from-emerald-500/30 hover:to-cyan-500/30 transition-all group"
+                      onClick={() => setShowNameEditor(true)}
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                      <span className="text-sm text-white flex-1">
+                        ✓ You: <span className="font-semibold">{userName}</span> • Them: <span className="font-semibold">{otherName}</span>
+                      </span>
+                      <div className="flex items-center gap-1 text-[10px] text-cyan-400/80 group-hover:text-cyan-300 transition-colors">
+                        <span>✏️ Edit</span>
+                        <ChevronDown className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
+
+                {/* 🎯 NAME EDITOR - Full editor with pronouns (Desktop) */}
+                {showNameEditor && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30"
+                  >
+                    <p className="text-sm font-medium mb-3 text-white">Customize how names appear on the receipt</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs uppercase tracking-wide text-gray-400">You</label>
+                        <input
+                          placeholder="e.g. Me, Piet, Bestie"
+                          value={userName}
+                          onFocus={() => setIsManuallyEditingNames(true)}
+                          onChange={(e) => {
+                            setIsManuallyEditingNames(true);
+                            setUserName(e.target.value);
+                          }}
+                          className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                        />
+                        <PronounSelector
+                          label="Pronouns"
+                          value={userPronouns}
+                          onChange={(value) => setUserPronouns(prev => prev === value ? '' : value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs uppercase tracking-wide text-gray-400">Them</label>
+                        <input
+                          placeholder="e.g. Them, Bani, Situationship"
+                          value={otherName}
+                          onFocus={() => setIsManuallyEditingNames(true)}
+                          onChange={(e) => {
+                            setIsManuallyEditingNames(true);
+                            setOtherName(e.target.value);
+                          }}
+                          className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                        />
+                        <PronounSelector
+                          label="Pronouns"
+                          value={otherPronouns}
+                          onChange={(value) => setOtherPronouns(prev => prev === value ? '' : value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between mt-3">
+                      <button
+                        onClick={() => setShowNameEditor(false)}
+                        className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                      >
+                        Done
+                      </button>
+                      <button
+                        onClick={() => {
+                          setUserName('');
+                          setOtherName('');
+                          setUserPronouns('');
+                          setOtherPronouns('');
+                          setShowNameEditor(false);
+                        }}
+                        className="text-xs text-gray-400 hover:text-white transition-colors"
+                      >
+                        Use defaults
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             )}
             
@@ -823,17 +2092,191 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
                   onTextExtracted={(text) => {
                     setExtractedTexts(prev => [...prev, text]);
                     setShowColorHelper(true);
+                    // Auto-detect names from extracted text
+                    const names = detectNames(text);
+                    if (names.length > 0) {
+                      setDetectedNames(names);
+                      // Auto-select "Me" if detected
+                      if (names.includes('Me')) {
+                        setUserName('Me');
+                        const otherNames = names.filter(name => name !== 'Me');
+                        if (otherNames.length > 0) {
+                          setOtherName(otherNames[0]);
+                        }
+                      }
+                    }
                   }}
                   maxFiles={5}
                 />
                 
                 <AnimatePresence>
-                  {showColorHelper && (
+                  {showColorHelper && extractedTexts.length > 0 && (
                     <ColorMappingHelper 
-                      onColorMapping={setColorMapping}
+                      onColorMapping={(mapping) => {
+                        setColorMapping(mapping);
+                        // Parse color mapping to set names if provided
+                        if (mapping.includes('=')) {
+                          const parts = mapping.split(',');
+                          parts.forEach(part => {
+                            const [color, name] = part.split('=').map(s => s.trim());
+                            if (color && name) {
+                              if (color.toLowerCase().includes('blue') && !userName) {
+                                setUserName(name);
+                              } else if (color.toLowerCase().includes('gray') && !otherName) {
+                                setOtherName(name);
+                              }
+                            }
+                          });
+                        }
+                      }}
                     />
                   )}
                 </AnimatePresence>
+
+                {/* 🎯 NAME EDITING FOR SCREENSHOTS - Desktop version */}
+                {extractedTexts.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-cyan-400/30"
+                  >
+                    {!showNameEditor ? (
+                      <>
+                        <p className="text-sm font-medium mb-3 flex items-center gap-2 text-white">
+                          <Sparkles className="w-4 h-4" />
+                          Who is who in these screenshots?
+                        </p>
+                        
+                        {/* Show detected names with selection */}
+                        {detectedNames.length >= 2 && !userName ? (
+                          <div className="space-y-2 mb-3">
+                            <p className="text-xs text-white/80 mb-2">Which person are you?</p>
+                            {detectedNames.map((name, index) => (
+                              <label key={name} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-white/5 transition-colors">
+                                <input 
+                                  type="radio" 
+                                  name="userRoleScreenshot"
+                                  value={name}
+                                  checked={userName === name}
+                                  onChange={(e) => {
+                                    setUserName(name);
+                                    setOtherName(detectedNames[1 - index]);
+                                  }}
+                                  className="text-cyan-500"
+                                />
+                                <span className="text-sm text-white">I am {name}</span>
+                              </label>
+                            ))}
+                          </div>
+                        ) : (
+                          /* Manual input if names not detected */
+                          <div className="grid grid-cols-2 gap-3 mb-3">
+                            <input
+                              placeholder="You/Person 1"
+                              value={userName}
+                              onFocus={() => setIsManuallyEditingNames(true)}
+                              onChange={(e) => {
+                                setIsManuallyEditingNames(true);
+                                setUserName(e.target.value);
+                              }}
+                              className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                            />
+                            <input
+                              placeholder="Them/Person 2"
+                              value={otherName}
+                              onFocus={() => setIsManuallyEditingNames(true)}
+                              onChange={(e) => {
+                                setIsManuallyEditingNames(true);
+                                setOtherName(e.target.value);
+                              }}
+                              className="p-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all duration-300"
+                            />
+                          </div>
+                        )}
+
+                        {/* Show confirmation when names are set */}
+                        {userName && otherName ? (
+                          <div className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm rounded-lg border border-emerald-400/30">
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                              <span className="text-sm text-white">
+                                ✓ You: <span className="font-semibold">{userName}</span> • Them: <span className="font-semibold">{otherName}</span>
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => setShowNameEditor(true)}
+                              className="text-xs text-gray-400 hover:text-white transition-colors"
+                            >
+                              Edit names
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setShowNameEditor(true)}
+                            className="w-full mt-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm text-cyan-300 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-purple-500/30 active:scale-95"
+                          >
+                            ✏️ Set names →
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      /* Full name editor with pronouns */
+                      <>
+                        <p className="text-sm font-medium mb-3 text-white">Customize how names appear on the receipt</p>
+                        <div className="grid grid-cols-2 gap-4 mb-3">
+                          <div className="space-y-2">
+                            <label className="text-xs uppercase tracking-wide text-gray-400">You</label>
+                            <input
+                              placeholder="e.g. Me, Piet, Bestie"
+                              value={userName}
+                              onChange={(e) => setUserName(e.target.value)}
+                              className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                            />
+                            <PronounSelector
+                              label="Pronouns"
+                              value={userPronouns}
+                              onChange={(value) => setUserPronouns(prev => prev === value ? '' : value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs uppercase tracking-wide text-gray-400">Them</label>
+                            <input
+                              placeholder="e.g. Them, Bani, Situationship"
+                              value={otherName}
+                              onChange={(e) => setOtherName(e.target.value)}
+                              className="w-full px-3 py-2 bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-lg text-sm text-white placeholder-gray-400 focus:border-cyan-400/50 focus:outline-none transition-all"
+                            />
+                            <PronounSelector
+                              label="Pronouns"
+                              value={otherPronouns}
+                              onChange={(value) => setOtherPronouns(prev => prev === value ? '' : value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <button
+                            onClick={() => setShowNameEditor(false)}
+                            className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                          >
+                            Done
+                          </button>
+                          <button
+                            onClick={() => {
+                              setUserName('');
+                              setOtherName('');
+                              setUserPronouns('');
+                              setOtherPronouns('');
+                              setShowNameEditor(false);
+                            }}
+                            className="text-xs text-gray-400 hover:text-white transition-colors"
+                          >
+                            Use defaults
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </motion.div>
+                )}
               </div>
             )}
           </div>
@@ -1126,6 +2569,7 @@ I've been seeing Alex for 3 months. Last week they said they wanted to be exclus
           </motion.div>
         )}
       </AnimatePresence>
+
       </div>
     </div>
   );

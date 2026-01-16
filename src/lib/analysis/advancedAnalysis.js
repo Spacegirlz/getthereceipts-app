@@ -1472,14 +1472,78 @@ export const generateAlignedResults = async (message, context) => {
   const startTime = performance.now();
   console.log('🔄 Starting 3-API analysis system...');
   
+  // ✅ CRITICAL: Normalize conversation data using schema contract
+  let conversationPayload = null;
+  try {
+    const { normalizeConversationPayload, formatConversationForDeepDive, validateConversationPayload } = await import('../schemas/conversationSchema');
+    
+    // Build normalized payload from context
+    const normalizedData = {
+      texts: message,
+      extractedTexts: context?.extractedTexts || [],
+      colorMapping: context?.colorMapping || '',
+      colorNameOverrides: context?.colorNameOverrides || {}, // Saved overrides from localStorage
+      detectedColors: context?.detectedColors || [], // Detected colors for validation
+      userName: context?.userName || '',
+      otherName: context?.otherName || '',
+      source: context?.extractedTexts?.length > 0 ? 'ocr' : 'paste',
+      ocrMeta: context?.ocrMeta || {}
+    };
+    
+    conversationPayload = normalizeConversationPayload(normalizedData);
+    validateConversationPayload(conversationPayload);
+    
+    console.log('✅ Conversation payload normalized:', {
+      id: conversationPayload.id,
+      source: conversationPayload.source,
+      rawTextLength: conversationPayload.rawText.length,
+      speakersCount: Object.keys(conversationPayload.speakers).length,
+      speakers: conversationPayload.speakers,
+      requiresManualConfirmation: conversationPayload.requiresManualConfirmation,
+      validationError: conversationPayload.validationError
+    });
+
+    // ✅ GUARDRAILS: Hard-block if manual confirmation is required
+    if (conversationPayload.requiresManualConfirmation) {
+      const errorMsg = conversationPayload.validationError || 'Speaker mapping requires manual confirmation';
+      console.error('🚫 OCR_PARSE_FAIL: Manual confirmation required - blocking analysis');
+      throw new Error(`🚫 Deep Dive blocked: ${errorMsg}`);
+    }
+  } catch (error) {
+    // ✅ CRITICAL: Re-throw guardrail errors - do NOT create fallback payload
+    if (error.message?.includes('🚫 Deep Dive blocked')) {
+      throw error; // Re-throw guardrail errors immediately
+    }
+    
+    console.warn('⚠️ Failed to normalize conversation payload, using fallback:', error);
+    // Fallback: create minimal payload (only for non-guardrail errors)
+    conversationPayload = {
+      id: `conv_${Date.now()}`,
+      source: context?.extractedTexts?.length > 0 ? 'ocr' : 'paste',
+      rawText: message,
+      speakers: {
+        ...(context?.userName && { 'Me': context.userName }),
+        ...(context?.otherName && { 'Them': context.otherName })
+      },
+      requiresManualConfirmation: true,
+      validationError: error.message || 'Failed to normalize conversation payload'
+    };
+    
+    // ✅ CRITICAL: After creating fallback, check again and throw if guardrails fail
+    if (conversationPayload.requiresManualConfirmation) {
+      const errorMsg = conversationPayload.validationError || 'Speaker mapping requires manual confirmation';
+      throw new Error(`🚫 Deep Dive blocked: ${errorMsg}`);
+    }
+  }
+  
   // Smart content truncation for long inputs (5000+ characters)
   const MAX_INPUT_LENGTH = 8000; // allow longer screenshot transcripts while keeping headroom
-  let processedMessage = message;
-  if (message.length > MAX_INPUT_LENGTH) {
-    console.log(`📝 Input too long (${message.length} chars), truncating to ${MAX_INPUT_LENGTH} chars`);
+  let processedMessage = conversationPayload.rawText;
+  if (processedMessage.length > MAX_INPUT_LENGTH) {
+    console.log(`📝 Input too long (${processedMessage.length} chars), truncating to ${MAX_INPUT_LENGTH} chars`);
     // Keep the beginning and end for context
-    const start = message.substring(0, MAX_INPUT_LENGTH * 0.6);
-    const end = message.substring(message.length - MAX_INPUT_LENGTH * 0.4);
+    const start = processedMessage.substring(0, MAX_INPUT_LENGTH * 0.6);
+    const end = processedMessage.substring(processedMessage.length - MAX_INPUT_LENGTH * 0.4);
     processedMessage = start + '\n\n[... content truncated for performance ...]\n\n' + end;
   }
   
@@ -1652,88 +1716,12 @@ export const generateAlignedResults = async (message, context) => {
   console.log(`✅ Truth Receipt complete in ${(api1Time / 1000).toFixed(2)}s`);
 
   // API Call 2 and 3 in parallel: Deep Dive and Immunity Training
-  const runDeepDive = async () => {
+  // ✅ Use standalone runDeepDive function (single entry point, strict guardrails, no sanitization)
+  const { runDeepDive } = await import('./runDeepDive');
+  const runDeepDiveTask = async () => {
     const api2Start = performance.now();
     console.log('🔍 API Call 2: Deep Dive analysis...');
-    let alignedDeepDive = null;
-    const deepDiveTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Deep Dive timeout after 25 seconds')), 25000));
-    try {
-      const { deepDivePrompt } = await import('../prompts/deepDivePrompt');
-      const deepDiveSystemPrompt = deepDivePrompt(shareShotAnalysis.archetype, message, shareShotAnalysis.redFlags, shareShotAnalysis.confidenceRemark)
-        .replace(/\{userName\}/g, cleanContext.userName || 'You')
-        .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
-      const apiKeys = [import.meta.env.VITE_OPENAI_API_KEY, import.meta.env.VITE_OPENAI_API_KEY_BACKUP1, import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2].filter(key => key && key.trim());
-      const currentKey = apiKeys[0]?.replace(/\s/g, '');
-      const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
-      const cacheKey = `deepDiveV4:${shareShotAnalysis.archetype}:${encodeURIComponent(message.slice(0,100))}`;
-      console.info('🔍 DEEP DIVE TELEMETRY:', { promptVersion: 'deepDiveV4', usedPromptId: 'deepDivePrompt.js', cacheKey, provider, archetype: shareShotAnalysis.archetype, redFlags: shareShotAnalysis.redFlags, messageLength: message.length, systemPromptLength: deepDiveSystemPrompt.length });
-      console.log('🔧 Deep Dive using provider:', provider);
-      const openAIModel = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o-mini';
-      const geminiModel = import.meta.env.VITE_GOOGLE_GEMINI_MODEL || 'gemini-2.5-lite';
-      let rawContent = '';
-      if (provider === 'openai') {
-        const endpoint = '/api/chat/completions';
-        const body = { model: openAIModel, messages: [ { role: 'system', content: deepDiveSystemPrompt }, { role: 'user', content: `Return JSON only. Do not include explanations.\n\nTEXTS:\n${processedMessage}` } ], temperature: 0.8, max_completion_tokens: 1200, response_format: { type: 'json_object' } };
-        console.log('🔧 OpenAI Deep Dive request:', { endpoint, model: openAIModel });
-        const data = await Promise.race([ makeApiCallWithBackup(endpoint, body), deepDiveTimeout ]);
-        rawContent = data.choices?.[0]?.message?.content || '';
-        console.log('🔧 OpenAI Deep Dive response length:', rawContent.length);
-      } else {
-        const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${currentKey}`;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-        const response = await fetch(geminiEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: deepDiveSystemPrompt + `\n\nTEXTS:\n${message}` }] }], generationConfig: { temperature: 1.2, maxOutputTokens: 2000 } }), signal: controller.signal });
-        clearTimeout(timeoutId);
-        const data = await response.json();
-        rawContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      }
-      try { alignedDeepDive = JSON.parse(rawContent); } catch { const m = rawContent.match(/\{[\s\S]*\}/); if (m) alignedDeepDive = JSON.parse(m[0]); }
-      // aggressive banned n-gram rejection removed; handled by sanitizeDeepDive
-      const sanitizeDeepDive = (dd) => {
-        if (!dd) return null;
-        const BANNED_PATTERNS = /\[placeholder\]|\[template\]|\[pending\]|analysis in progress|pattern continuation predicted/i;
-        const sanitizeField = (value, defaultValue) => {
-          if (!value || typeof value !== 'string' || BANNED_PATTERNS.test(value)) return defaultValue;
-          return value;
-        };
-        if (dd.verdict) {
-          dd.verdict.act = sanitizeField(dd.verdict.act, shareShotAnalysis?.archetype || "Mixed Signal Territory");
-          dd.verdict.subtext = sanitizeField(dd.verdict.subtext, "Let's break down what's really happening here");
-        }
-        if (dd.receipts && Array.isArray(dd.receipts)) {
-          dd.receipts = dd.receipts.map((r) => ({
-            quote: sanitizeField(r.quote, "Pattern observed in conversation"),
-            bestie_look: sanitizeField(r.bestie_look, "Notice how they're controlling the narrative here"),
-            calling_it: sanitizeField(r.calling_it, "They'll keep this pattern going"),
-            vibe_check: sanitizeField(r.vibe_check, "Try being direct and watch what happens")
-          }));
-        }
-        if (dd.physics) {
-          dd.physics.you_bring = sanitizeField(dd.physics.you_bring, "Your genuine interest and emotional availability");
-          dd.physics.they_exploit = sanitizeField(dd.physics.they_exploit, "Your patience and willingness to accept uncertainty");
-          dd.physics.result = sanitizeField(dd.physics.result, "You're doing all the emotional work while they maintain control");
-        }
-        if (dd.playbook) {
-          dd.playbook.next_48h = sanitizeField(dd.playbook.next_48h, "Watch for their next move - it'll follow the same pattern");
-          dd.playbook.your_move = sanitizeField(dd.playbook.your_move, "Ask one direct question. Make one clear boundary. Notice their response.");
-        }
-        dd.sages_seal = sanitizeField(dd.sages_seal, shareShotAnalysis?.confidenceRemark === 'TOXIC AF' ? "Trust your gut. Red flags aren't confetti." : "Actions over words. Every single time.");
-        return dd;
-      };
-      alignedDeepDive = sanitizeDeepDive(alignedDeepDive);
-      if (!alignedDeepDive) {
-        console.log('🔄 Deep Dive failed - creating fallback structure based on main analysis');
-        alignedDeepDive = { mode: "mirror", verdict: { act: shareShotAnalysis.archetype || "Communication Territory", subtext: `${shareShotAnalysis.redFlags || 0} red flags detected` }, receipts: [ { quote: "Pattern analysis in progress", pattern: "Communication Style", cost: "Clarity needed" } ], physics: { you_bring: "Genuine interest and questions", they_exploit: "Your patience and understanding", result: "Mixed signals and confusion" }, playbook: { next_48h: "Ask one direct question about intentions", next_week: "Notice if actions match their words", trump_card: "Calendar test - suggest specific plans" }, sages_seal: shareShotAnalysis.confidenceRemark === 'TOXIC AF' ? "Trust your gut. Red flags aren't confetti." : "Actions over words. Every single time.", red_flag_tags: shareShotAnalysis.redFlagTags || [], metrics: { wastingTime: shareShotAnalysis.wastingTime || 0, actuallyIntoYou: shareShotAnalysis.actuallyIntoYou || 0, redFlags: shareShotAnalysis.redFlags || 0 }, next_move_script: shareShotAnalysis.redFlags > 5 ? "Say: 'I need consistency, not confusion.'" : null };
-      }
-    } catch (e) {
-      if (e.message?.includes('timeout')) {
-        console.warn('⏰ Deep Dive timed out after 15 seconds - using fallback');
-      } else {
-        console.error('🚨 DEEP DIVE GENERATION FAILED:', e);
-        console.error('Error details:', e.message);
-      }
-      alignedDeepDive = { mode: "mirror", verdict: { act: shareShotAnalysis.archetype || "Communication Territory", subtext: "Analysis incomplete - try again" }, receipts: [ { quote: "API connection issue", pattern: "Technical Difficulty", cost: "Retry needed" } ], physics: { you_bring: "Patience during technical issues", they_exploit: "System limitations", result: "Temporary analysis unavailable" }, playbook: { next_48h: "Refresh and try analysis again", next_week: "Check connection and retry", trump_card: "Manual pattern recognition" }, sages_seal: "Technical hiccup. Your situation is still valid.", red_flag_tags: [], metrics: { wastingTime: 0, actuallyIntoYou: 0, redFlags: 0 }, next_move_script: null };
-    }
+    const alignedDeepDive = await runDeepDive(conversationPayload, shareShotAnalysis, cleanContext);
     const api2Time = performance.now() - api2Start;
     console.log(`✅ Deep Dive complete in ${(api2Time / 1000).toFixed(2)}s`);
     return alignedDeepDive;
@@ -1744,14 +1732,22 @@ export const generateAlignedResults = async (message, context) => {
     console.log('🛡️ API Call 3: Immunity Training...');
     let immunityTraining = null;
     try {
-      const { immunityPrompt } = await import('../prompts/immunityPrompt');
-      const immunitySystemPrompt = immunityPrompt
-        .replace(/\{archetype\}/g, shareShotAnalysis.archetype)
-        .replace(/\{message\}/g, message)
-        .replace(/\{redFlags\}/g, String(shareShotAnalysis.redFlags))
-        .replace(/\{confidenceRemark\}/g, shareShotAnalysis.confidenceRemark)
-        .replace(/\{userName\}/g, cleanContext.userName || 'You')
-        .replace(/\{otherName\}/g, cleanContext.otherName || 'they');
+      const { generateImmunityTraining } = await import('../prompts/immunityPrompt');
+      // Use contextual names - cleanContext already has the best available names from buildCleanContext
+      // These will be actual names from conversation if available, or user-provided names
+      const immunitySystemPrompt = await generateImmunityTraining(
+        shareShotAnalysis.archetype,
+        message,
+        shareShotAnalysis.redFlags,
+        shareShotAnalysis.confidenceRemark,
+        {
+          userName: cleanContext.userName || 'You',
+          otherName: cleanContext.otherName || 'they',
+          userPronoun: cleanContext.userPronouns || 'they/them',
+          otherPronoun: cleanContext.otherPronouns || 'they/them',
+          relationshipContext: cleanContext.relationshipType || 'relationship'
+        }
+      );
       const apiKeys = [import.meta.env.VITE_OPENAI_API_KEY, import.meta.env.VITE_OPENAI_API_KEY_BACKUP1, import.meta.env.VITE_GOOGLE_API_KEY_BACKUP2].filter(key => key && key.trim());
       const currentKey = apiKeys[0]?.replace(/\s/g, '');
       const provider = currentKey?.startsWith('AIza') ? 'google' : 'openai';
@@ -1796,9 +1792,26 @@ export const generateAlignedResults = async (message, context) => {
     }
   };
 
-  const [deepResult, immResult] = await Promise.allSettled([runDeepDive(), runImmunity()]);
-  const alignedDeepDive = deepResult.status === 'fulfilled' ? deepResult.value : null;
-  const immunityTraining = immResult.status === 'fulfilled' ? immResult.value : null;
+  // ✅ CRITICAL: Use Promise.all - if Deep Dive throws (guardrail failure), stop execution
+  // Never use Promise.allSettled around Deep Dive
+  let alignedDeepDive = null;
+  let immunityTraining = null;
+  
+  try {
+    [alignedDeepDive, immunityTraining] = await Promise.all([
+      runDeepDiveTask(),
+      runImmunity()
+    ]);
+  } catch (error) {
+    // ✅ CRITICAL: If Deep Dive guardrails fail, re-throw immediately - no fallback
+    if (error.message?.includes('🚫 Deep Dive blocked') || error.message?.includes('OCR_PARSE_FAIL')) {
+      console.error('🚫 Analysis blocked by guardrails:', error.message);
+      throw error; // Re-throw to stop entire analysis
+    }
+    // For other errors (network, timeout), also throw - no silent fallbacks
+    console.error('🚨 Analysis failed:', error);
+    throw error;
+  }
   
   // Combine all results into final response
   const processingStart = performance.now();

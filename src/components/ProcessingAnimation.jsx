@@ -24,30 +24,42 @@ const ProcessingAnimation = () => {
     <div className="relative w-full h-64 flex items-center justify-center overflow-hidden">
       {/* Background sparkles */}
       <div className="absolute inset-0">
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-cyan-400 rounded-full"
-            initial={{
-              x: Math.random() * 100 + '%',
-              y: Math.random() * 100 + '%',
-              opacity: 0,
-              scale: 0,
-            }}
-            animate={{
-              opacity: [0, 0.8, 0],
-              scale: [0, 1.2, 0],
-              y: [null, (Math.random() - 0.5) * 80],
-              x: [null, (Math.random() - 0.5) * 80],
-            }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              delay: i * 0.15,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
+        {[...Array(15)].map((_, i) => {
+          // Generate random positions once per sparkle
+          const initialX = Math.random() * 100;
+          const initialY = Math.random() * 100;
+          const animateX = (Math.random() - 0.5) * 80;
+          const animateY = (Math.random() - 0.5) * 80;
+          
+          return (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-cyan-400 rounded-full"
+              style={{
+                left: `${initialX}%`,
+                top: `${initialY}%`,
+              }}
+              initial={{
+                opacity: 0,
+                scale: 0,
+                x: 0,
+                y: 0,
+              }}
+              animate={{
+                opacity: [0, 0.8, 0],
+                scale: [0, 1.2, 0],
+                x: [0, animateX, 0],
+                y: [0, animateY, 0],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                delay: i * 0.15,
+                ease: "easeInOut",
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Main bouncing character - randomly selected, transforms through different fun states */}
@@ -104,27 +116,29 @@ const ProcessingAnimation = () => {
       {/* Floating bubbles that pop up sporadically - removed crystal ball and receipt */}
       {[...Array(2)].map((_, i) => {
         const emojis = ['💭', '✨'];
+        // Calculate positions as numbers (relative to center)
+        const centerX = 0;
+        const centerY = 0;
+        const animateX = (i - 1) * 30; // -30 or 30
+        const animateY = -30 + (i % 2) * 20; // -30 or -10
+        
         return (
           <motion.div
             key={`float-${i}`}
             className="absolute text-3xl"
+            style={{
+              left: '50%',
+              top: '50%',
+            }}
             initial={{
-              x: '50%',
-              y: '50%',
+              x: 0,
+              y: 0,
               opacity: 0,
               scale: 0,
             }}
             animate={{
-              x: [
-                '50%',
-                `${50 + (i - 1) * 30}%`,
-                '50%',
-              ],
-              y: [
-                '50%',
-                `${50 - 30 + (i % 2) * 20}%`,
-                '50%',
-              ],
+              x: [0, animateX, 0],
+              y: [0, animateY, 0],
               opacity: [0, 0.7, 0],
               scale: [0, 1.2, 0],
               rotate: [0, 180, 360],

@@ -506,7 +506,7 @@ const ChatInputPage = () => {
                   placeholder="Paste your conversation here..."
                   className="w-full h-48 p-4 text-sm bg-white/5 backdrop-blur-sm border border-cyan-400/20 rounded-xl focus:border-cyan-400/50 focus:outline-none transition-all duration-300 resize-none text-white placeholder-gray-400"
                 />
-                <SmartCharacterCounter count={texts.length} limit={5000} />
+                <SmartCharacterCounter count={texts.length} limit={10000} />
               </div>
             )}
             

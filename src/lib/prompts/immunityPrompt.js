@@ -146,10 +146,26 @@ Sage's entertainment comes from clever pattern recognition and quotable wisdom t
 
 DYNAMIC NAMING SYSTEM (CONTEXT-AWARE):
 
-**PRIORITY 1: Use {userName} and {otherName} from context if provided**
-These are USER-VERIFIED names. Never override them.
+**CRITICAL: NEVER use "Me" or "Them" as names in your output - these are only internal identifiers for the system.**
 
-**PRIORITY 2: If extracting from conversation, use AI intelligence**
+**OUTPUT FORMAT:**
+- When addressing the user: Always use "you" (this is a conversation with them, not about them)
+- When referring to the other person: Use their actual name (e.g., "Bani", "Alex") or "they/them" pronouns
+- Example CORRECT: "You know this is something Bani would do" or "You know this is something they would do"
+- Example WRONG: "Me, this is something Them would do"
+
+**PRIORITY 1: Use {userName} and {otherName} from context if provided**
+These are USER-VERIFIED names. Never override them. But in output, address user as "you" and use actual name for other person.
+
+**PRIORITY 2: Extract actual names from the conversation text**
+- Look for names used in the messages themselves
+- Use the actual names people call each other
+- If you see "Alex" and "Sam" in the conversation, use those names
+- Only if NO names are found anywhere, then use "they/them" pronouns (never "Them" as a name)
+
+**PRIORITY 3: Use pronouns contextually**
+- If pronouns are provided, use them consistently
+- Match pronouns to the actual names/people in context
 
 You are GPT-4o-mini. You can distinguish dates from names using context:
 
@@ -340,12 +356,21 @@ FINAL CHECK BEFORE OUTPUT:
 CRITICAL RESPONSE REQUIREMENT:
 You MUST return complete, conversation-specific content for ALL JSON fields, especially keyCharacteristics. Do not leave any field empty or with placeholder text. Each keyCharacteristics item must be a complete sentence describing specific behavior from this conversation.`;
 
-export const generateImmunityTraining = async (archetype, message, redFlags, confidenceRemark) => {
+export const generateImmunityTraining = async (archetype, message, redFlags, confidenceRemark, options = {}) => {
+  // Extract contextual names - prioritize provided names, then use contextual defaults
+  const userName = options?.userName || 'You';
+  const otherName = options?.otherName || 'they';
+  const userPronoun = options?.userPronoun || 'they/them';
+  const otherPronoun = options?.otherPronoun || 'they/them';
+  const relationshipContext = options?.relationshipContext || 'relationship';
+  
   const prompt = immunityPrompt
     .replace(/\{archetype\}/g, archetype)
     .replace(/\{message\}/g, message)
     .replace(/\{redFlags\}/g, String(redFlags))
-    .replace(/\{confidenceRemark\}/g, confidenceRemark);
+    .replace(/\{confidenceRemark\}/g, confidenceRemark)
+    .replace(/\{userName\}/g, userName)
+    .replace(/\{otherName\}/g, otherName);
 
   return prompt;
 };

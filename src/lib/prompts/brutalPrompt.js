@@ -201,6 +201,11 @@ DYNAMIC NAMING SYSTEM:
 - PRIORITY 1: Use {userName} and {otherName} from context if provided
 - PRIORITY 2: Extract actual names/identifiers from the conversation and use consistently
 - USER/OTHER are conceptual placeholders only; never output the literal words "USER" or "OTHER" as names
+- CRITICAL: NEVER use "Me" or "Them" as names in your output - these are only internal identifiers
+- When addressing the user: Use "you" (not "Me") - this is a conversation with them
+- When referring to the other person: Use their actual name (e.g., "Bani", "Alex") or "they/them" pronouns (not "Them")
+- Example CORRECT: "You know this is something Bani would do" or "You know this is something they would do"
+- Example WRONG: "Me, this is something Them would do"
 - If actual names are present, prefer those over placeholders
 - Be consistent - do not switch between names and placeholder variables mid-response
 

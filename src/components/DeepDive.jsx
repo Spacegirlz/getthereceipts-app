@@ -376,16 +376,28 @@ const DeepDive = memo(({ deepDive, analysisData, originalMessage, context, isPre
     }
   };
 
-  // Handle missing or invalid data with proper fallback
-  if (!deepDive || typeof deepDive !== 'object') {
+  // ✅ STEP 3: UI behavior - never show a fake Deep Dive
+  // Check for missing, error status, or failed valid receipts check
+  const hasErrorStatus = deepDive?.status === "error";
+  const hasNoReceipts = !deepDive?.receipts || !Array.isArray(deepDive.receipts) || deepDive.receipts.length === 0;
+  const isMissing = !deepDive || typeof deepDive !== 'object';
+  
+  if (hasErrorStatus || hasNoReceipts || isMissing) {
     return (
-      <div className="meme-card rounded-2xl p-6 mb-3">
+      <div className="meme-card rounded-2xl p-6 mb-3 border border-red-500/30">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-500/20 rounded-full mb-4">
-            <span className="text-2xl">🔮</span>
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-red-500/20 rounded-full mb-4">
+            <span className="text-2xl">⚠️</span>
           </div>
-          <h3 className="text-white font-bold text-base mb-2">Sage is finishing the read</h3>
-          <p className="text-stone-200 text-xl leading-relaxed">Try again in a moment for your complete analysis.</p>
+          <h3 className="text-white font-bold text-base mb-2">Sage is having technical difficulties</h3>
+          <p className="text-stone-200 text-sm leading-relaxed mb-3">
+            Sage is having technical difficulties reading this chat. Try again or upload clearer screenshots.
+          </p>
+          <p className="text-stone-400 text-xs">
+            {hasErrorStatus && deepDive?.message && `Error: ${deepDive.message}`}
+            {hasNoReceipts && "No valid receipts found in the conversation."}
+            {isMissing && "Deep Dive analysis is missing."}
+          </p>
         </div>
       </div>
     );
