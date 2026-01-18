@@ -1,7 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://dpzalqyrmjuuhvcquyzc.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwemFscXlybWp1dWh2Y3F1eXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NDgwMjMsImV4cCI6MjA3MTUyNDAyM30.hUwv38jR4O0cC7hEDFQP0zu94zeVyVukc0-eY4fsbX0';
+// Use environment variables with fallback for development
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://dpzalqyrmjuuhvcquyzc.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwemFscXlybWp1dWh2Y3F1eXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NDgwMjMsImV4cCI6MjA3MTUyNDAyM30.hUwv38jR4O0cC7hEDFQP0zu94zeVyVukc0-eY4fsbX0';
+
+// Validate required configuration
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('❌ Supabase configuration missing! Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -26,12 +32,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     headers: {
       'X-Client-Info': 'getthereceipts-web@1.0.0',
     },
-    // Add timeout for all requests
+    // Add timeout for all requests with browser compatibility
     fetch: (url, options = {}) => {
+      // Create AbortController for timeout (compatible with all browsers)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       return fetch(url, {
         ...options,
-        // 10 second timeout for all requests
-        signal: AbortSignal.timeout(10000),
+        signal: options.signal || controller.signal,
+      }).finally(() => {
+        clearTimeout(timeoutId);
       });
     },
   },

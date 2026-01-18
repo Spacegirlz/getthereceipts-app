@@ -193,15 +193,15 @@ export const getUserReferralCodeEnhanced = async (userId) => {
 export const getReferralLink = (referralCode) => {
   const baseUrl = window.location.origin;
   
-  // Check if Rewardful is available
-  if (window.Rewardful && typeof window.Rewardful.refer === 'function') {
-    // Use Rewardful to generate tracked referral link
-    return window.Rewardful.refer({
-      referral: referralCode
-    });
-  }
+  // Rewardful affiliate tracking disabled - using built-in referral system
+  // if (window.Rewardful && typeof window.Rewardful.refer === 'function') {
+  //   // Use Rewardful to generate tracked referral link
+  //   return window.Rewardful.refer({
+  //     referral: referralCode
+  //   });
+  // }
   
-  // Fallback to original link if Rewardful not available
+  // Built-in referral system (always used now)
   return `${baseUrl}/?ref=${referralCode}`;
 };
 

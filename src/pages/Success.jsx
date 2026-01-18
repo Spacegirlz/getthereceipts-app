@@ -29,15 +29,15 @@ export default function Success() {
               setCredits(data.credits_remaining);
               setSubscriptionStatus(data.subscription_status || 'free');
               
-              // Track conversion with Rewardful (official documentation approach)
-              if (window.rewardful && user.email) {
-                try {
-                  window.rewardful('convert', { email: user.email });
-                  console.log('Rewardful conversion tracked for:', user.email);
-                } catch (error) {
-                  console.warn('Rewardful conversion tracking failed:', error);
-                }
-              }
+              // Rewardful affiliate tracking disabled - using built-in referral system instead
+              // if (window.rewardful && user.email) {
+              //   try {
+              //     window.rewardful('convert', { email: user.email });
+              //     console.log('Rewardful conversion tracked for:', user.email);
+              //   } catch (error) {
+              //     console.warn('Rewardful conversion tracking failed:', error);
+              //   }
+              // }
             }
             setLoading(false);
           }, 2000); // Give webhook 2 seconds to process
@@ -57,7 +57,7 @@ export default function Success() {
     if (subscriptionStatus === 'premium') {
       return {
         title: "Welcome to Premium! 🚀",
-        subtitle: "You now have unlimited Truth Receipts",
+        subtitle: "You now have unlimited Sage's Receipts",
         emoji: "⚡",
         credits: "UNLIMITED"
       };

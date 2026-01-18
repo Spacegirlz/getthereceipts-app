@@ -310,7 +310,7 @@ const PricingPage = () => {
                 <ul className="space-y-3 mb-8 text-gray-200 flex-grow">
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 mt-1">✓</span>
-                    <span className="font-semibold">UNLIMITED Truth Receipts</span>
+                    <span className="font-semibold">UNLIMITED Sage's Receipts</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 mt-1">✓</span>

@@ -326,7 +326,7 @@ const ReceiptCardViral = memo(({ results, onSaveReceipt, onScreenshot, isSharing
             <div className="inline-flex items-center gap-3 bg-black/30 px-6 py-3 rounded-2xl border border-white/20 mb-4 relative z-50 shadow-lg">
               <img 
                 src={sageStandardImage}
-                alt="Sage's Truth Receipt" 
+                alt="Sage's Receipt" 
                 className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-full border-2 border-teal-400/50 relative z-50"
                 style={{
                   filter: 'brightness(1.2) contrast(1.1)',

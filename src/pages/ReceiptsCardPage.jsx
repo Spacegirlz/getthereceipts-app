@@ -360,7 +360,7 @@ const ReceiptsCardPage = () => {
               <p className="text-lg font-medium text-cyan-200 mb-2">
                 Serving the tea... it's hot! ☕️
               </p>
-              <p className="text-sm text-cyan-300">Preparing your truth receipt</p>
+              <p className="text-sm text-cyan-300">Preparing your Sage's receipt</p>
             </div>
           </div>
         </div>
@@ -477,7 +477,7 @@ const ReceiptsCardPage = () => {
           <div className="flex justify-center mb-4">
             <div className="inline-flex items-center px-4 py-2 bg-white/8 backdrop-blur-sm rounded-full border border-cyan-400/30">
               <p className="text-cyan-300 text-sm">
-                {userCredits.credits || 0} Truth Receipts left today
+                {userCredits.credits || 0} Sage's Receipts left today
               </p>
             </div>
           </div>
@@ -487,7 +487,7 @@ const ReceiptsCardPage = () => {
         <div className="text-center mb-6 sm:mb-8 px-2">
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 sm:mb-3 md:mb-4 leading-tight">
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-              Sage's Truth Receipts
+              Sage's Receipts
             </span>
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-0 sm:mb-2 md:mb-4">

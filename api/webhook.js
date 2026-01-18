@@ -7,11 +7,28 @@ module.exports = async function handler(req, res) {
   }
 
   // Initialize Stripe and Supabase inside function
+  // Note: VITE_ prefix is for client-side only, server-side uses different env vars
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const supabase = createClient(
-    process.env.VITE_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+    process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, // Support both naming conventions
+    process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY // Support both naming conventions
   );
+  
+  // Validate required environment variables
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.error('❌ STRIPE_SECRET_KEY is missing');
+    return res.status(500).json({ error: 'Server configuration error' });
+  }
+  
+  if (!process.env.SUPABASE_URL && !process.env.VITE_SUPABASE_URL) {
+    console.error('❌ Supabase URL is missing');
+    return res.status(500).json({ error: 'Server configuration error' });
+  }
+  
+  if (!process.env.SUPABASE_SERVICE_KEY && !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error('❌ Supabase Service Key is missing');
+    return res.status(500).json({ error: 'Server configuration error' });
+  }
 
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;

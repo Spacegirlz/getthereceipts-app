@@ -152,7 +152,7 @@ Tyler: I'll check my schedule and get back to you</pre>
                     className="w-full rounded-lg border border-white/20"
                   />
                   <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-semibold">
-                    Truth Receipt
+                    Sage's Receipt
                   </div>
                 </div>
                 <p className="text-[10px] sm:text-xs text-cyan-400 font-semibold mt-2 text-center">Ghosting Champion - Sugar-coated ghosting detected</p>

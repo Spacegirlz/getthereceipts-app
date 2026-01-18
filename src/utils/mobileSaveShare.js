@@ -75,7 +75,7 @@ export const shareReceiptImage = async (elementId, shareOptions = {}) => {
         const defaultShareOptions = {
           files: [file],
           title: "Sage's Receipt",
-          text: "Check out my truth receipt! #GetTheReceipts",
+          text: "Check out my Sage's receipt! #GetTheReceipts",
           url: 'https://getthereceipts.com'
         };
 
@@ -143,7 +143,7 @@ export const mobileSaveShare = async (elementId, options = {}) => {
   const { 
     action = 'both', // 'save', 'share', or 'both'
     filename = 'receipt.png',
-    shareText = "Check out my truth receipt! #GetTheReceipts",
+    shareText = "Check out my Sage's receipt! #GetTheReceipts",
     onSuccess = () => {},
     onError = () => {},
     onProgress = () => {}

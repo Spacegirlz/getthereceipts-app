@@ -79,7 +79,7 @@ const ReceiptCard = ({ results }) => {
                   backgroundClip: 'text'
                 }}>
                 <Sparkles className="w-4 h-4 mr-2" style={{ color: '#D4AF37' }} />
-                SAGE'S TRUTH RECEIPT
+                SAGE'S RECEIPT
               </h3>
               <p className="text-sm text-white/90 italic">"{realityCheck}"</p>
             </div>

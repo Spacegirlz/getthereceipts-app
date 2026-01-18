@@ -44,7 +44,7 @@ const MobileLandingPage = () => {
   }, []);
 
   const demoReceipts = [
-    { image: ghostingChampionTruth, label: 'Truth Receipt' },
+    { image: ghostingChampionTruth, label: "Sage's Receipt" },
     { image: ghostingChampionPlaybook, label: 'Playbook' },
     { image: ghostingChampionImmunity, label: 'Immunity Training' }
   ];

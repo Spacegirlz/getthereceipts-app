@@ -212,7 +212,7 @@ const LandingPage = () => {
   // Demo data structure - Images and headers stay in sync
   const demoReceipts = [
     {
-      type: 'Truth Receipt',
+      type: "Sage's Receipt",
       description: 'Get the unfiltered breakdown of what they really mean.',
       image: ghostingChampionTruth
     },
@@ -231,7 +231,7 @@ const LandingPage = () => {
   // Revolving Headers - Rotate above Input section
   const revolvingHeaders = [
     {
-      title: 'Truth Receipt',
+      title: "Sage's Receipt",
       description: 'Get the unfiltered breakdown of what they really mean.'
     },
     {
@@ -258,7 +258,7 @@ You: Hey, still up for coffee?
 Tyler: sorry been so busy
 You: No worries, when works for you?
 Tyler: I'll check my schedule and get back to you`,
-      receiptType: 'Truth Receipt',
+      receiptType: "Sage's Receipt",
       receiptImage: ghostingChampionTruth,
       pattern: 'Ghosting Champion',
       description: 'Sugar-coated ghosting detected'
@@ -336,7 +336,7 @@ Alex: maybe, I'll let you know`,
                 <span className="text-white">Stop spiraling.</span>
                 <br />
                 <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent relative">
-                  Start knowing.
+                  Start seeing clearly.
                   {/* Subtle sparkles around headline - Strategic placement */}
                   <motion.span
                     animate={{
@@ -365,7 +365,7 @@ Alex: maybe, I'll let you know`,
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl text-gray-300 mb-4 max-w-3xl mx-auto leading-relaxed"
             >
-              Paste the text. Get the truth. 60 seconds.
+              Paste the text. Get Sage's take. 60 seconds.
             </motion.p>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -452,7 +452,148 @@ Alex: maybe, I'll let you know`,
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent"></div>
 
         {/* ============================================
-            SECTION 2: WHY SAGE - MERGED TRUST + MEET SAGE
+            SECTION 2: THE PROBLEM - PAIN POINT AMPLIFICATION
+            ============================================ */}
+        <section className="py-24 md:py-32 px-4">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              {/* Opening Hook */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-center"
+              >
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  You know the feeling.
+                </h2>
+              </motion.div>
+
+              {/* Problem Setup */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="space-y-4"
+              >
+                <p className="text-xl md:text-2xl text-gray-300 text-center leading-relaxed">
+                  You get a text.
+                </p>
+                <p className="text-xl md:text-2xl text-gray-300 text-center leading-relaxed">
+                  And suddenly you're in <span className="text-cyan-400 font-semibold">full detective mode</span>.
+                </p>
+              </motion.div>
+
+              {/* Examples - Visual Cards with Full Thought Process */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="space-y-4"
+              >
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-left">
+                  <p className="text-lg md:text-xl text-gray-200 italic leading-relaxed">
+                    "Wait... why did he only say <span className="text-cyan-300">'cool'</span>?"
+                  </p>
+                </div>
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-left">
+                  <p className="text-lg md:text-xl text-gray-200 italic leading-relaxed">
+                    "She just replied <span className="text-purple-300">'k.'</span> Not 'okay.' Just K. What did I do?"
+                  </p>
+                </div>
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-left">
+                  <p className="text-lg md:text-xl text-gray-200 italic leading-relaxed">
+                    "He ended his message with <span className="text-emerald-300">'lol.'</span> Is the conversation over now?"
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* The Spiral - Amplified */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="space-y-3 text-center"
+              >
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                  So you do what any rational person does...
+                </p>
+                <div className="space-y-2 text-gray-400">
+                  <p className="text-base md:text-lg">Overanalyze those 4 words for 20 minutes.</p>
+                  <p className="text-base md:text-lg">Screenshot it. Send it to the group chat.</p>
+                  <p className="text-base md:text-lg">Read it 47 more times.</p>
+                </div>
+                <p className="text-xl md:text-2xl text-white font-semibold mt-6">
+                  And you <span className="text-red-400">STILL</span> don't know what's going on.
+                </p>
+              </motion.div>
+
+              {/* The Truth - Pivot Point */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="bg-gradient-to-r from-purple-500/20 via-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-purple-400/30 rounded-2xl p-8 space-y-4"
+              >
+                <h3 className="text-2xl md:text-3xl font-bold text-white text-center">
+                  Here's the thing:
+                </h3>
+                <div className="space-y-3 text-center">
+                  <p className="text-xl md:text-2xl text-gray-200 font-semibold">
+                    You're <span className="text-cyan-400">not</span> overthinking.
+                  </p>
+                  <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                    Texting just sucks at communicating intent.
+                  </p>
+                  <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                    People don't say what they mean.
+                  </p>
+                  <p className="text-lg md:text-xl text-gray-300 leading-relaxed mt-4">
+                    And you're stuck trying to decode it...
+                  </p>
+                  <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                    With <span className="text-red-400 font-semibold">zero context</span>.
+                  </p>
+                  <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                    And <span className="text-red-400 font-semibold">way too much anxiety</span>.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Solution Teaser - Bridge to Sage */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="text-center pt-4"
+              >
+                <p className="text-2xl md:text-3xl font-bold">
+                  <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent font-black">
+                    That's where Sage comes in.
+                  </span>
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Section Divider */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/20 to-transparent"></div>
+
+        {/* ============================================
+            SECTION 3: WHY SAGE - MERGED TRUST + MEET SAGE
             ============================================ */}
         <section className="py-24 md:py-32 px-4">
           <div className="max-w-6xl mx-auto">
@@ -561,7 +702,7 @@ Alex: maybe, I'll let you know`,
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/20 to-transparent"></div>
 
         {/* ============================================
-            SECTION 3: HOW IT WORKS - SIMPLIFIED
+            SECTION 4: HOW IT WORKS - SIMPLIFIED
             ============================================ */}
         <section className="py-24 md:py-32 px-4">
           <div className="max-w-6xl mx-auto">
@@ -609,7 +750,7 @@ Alex: maybe, I'll let you know`,
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 { icon: '🧠', title: '1. Paste Your Chat', desc: 'Copy any conversation and paste it in. Sage analyzes every message instantly.' },
-                { icon: '💡', title: '2. Get the Truth', desc: 'Sage gives you the unfiltered breakdown: what they really mean, not what you want to hear.' },
+                { icon: '💡', title: "2. Get Sage's Take", desc: 'Sage gives you the unfiltered breakdown: what they really mean, not what you want to hear.' },
                 { icon: '📱', title: '3. Share the Receipt', desc: 'Get a beautiful receipt you can screenshot and share. Finally, proof you were right.' }
               ].map((step, idx) => (
                 <motion.div
@@ -633,7 +774,7 @@ Alex: maybe, I'll let you know`,
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent"></div>
 
         {/* ============================================
-            SECTION 4: INPUT/OUTPUT EXAMPLE - SHOWS WHAT TO UPLOAD
+            SECTION 5: INPUT/OUTPUT EXAMPLE - SHOWS WHAT TO UPLOAD
             ============================================ */}
         <section className="py-24 md:py-32 px-4">
           <div className="max-w-6xl mx-auto">
@@ -784,7 +925,7 @@ Alex: maybe, I'll let you know`,
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/20 to-transparent"></div>
 
         {/* ============================================
-            SECTION 5: SOCIAL PROOF - ENHANCED
+            SECTION 6: SOCIAL PROOF - ENHANCED
             ============================================ */}
         <section className="py-24 md:py-32 px-4">
           <div className="max-w-6xl mx-auto">
@@ -846,7 +987,7 @@ Alex: maybe, I'll let you know`,
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent"></div>
 
         {/* ============================================
-            SECTION 6: PRICING - SIMPLIFIED (2 MAIN OPTIONS)
+            SECTION 7: PRICING - SIMPLIFIED (2 MAIN OPTIONS)
             ============================================ */}
         <section className="py-24 md:py-32 px-4">
           <div className="max-w-5xl mx-auto">
@@ -965,7 +1106,7 @@ Alex: maybe, I'll let you know`,
                 <ul className="space-y-3 mb-8 text-gray-200 flex-grow">
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 mt-1">✓</span>
-                    <span className="font-semibold">UNLIMITED Truth Receipts</span>
+                    <span className="font-semibold">UNLIMITED Sage's Receipts</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 mt-1">✓</span>
@@ -1021,7 +1162,7 @@ Alex: maybe, I'll let you know`,
         <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/20 to-transparent"></div>
 
         {/* ============================================
-            SECTION 7: FAQ - SIMPLIFIED (3 QUESTIONS)
+            SECTION 8: FAQ - SIMPLIFIED (3 QUESTIONS)
             ============================================ */}
         <section className="py-24 md:py-32 px-4">
           <div className="max-w-4xl mx-auto">
@@ -1092,6 +1233,161 @@ Alex: maybe, I'll let you know`,
           </div>
         </section>
 
+        {/* Section Divider */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-purple-400/20 to-transparent"></div>
+
+        {/* ============================================
+            CLOSING ARGUMENT SECTION - REAL TALK
+            ============================================ */}
+        <section className="py-24 md:py-32 px-4">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              {/* Section Header */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-center"
+              >
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                  Here's The Real Talk:
+                </h2>
+              </motion.div>
+
+              {/* Cost of Inaction - Pain Point */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="space-y-4 text-center"
+              >
+                <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
+                  Every day you spend overthinking texts...
+                </p>
+                <p className="text-xl md:text-2xl text-white font-semibold leading-relaxed">
+                  Is another day someone else controls how you feel.
+                </p>
+              </motion.div>
+
+              {/* The Reality Check */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 space-y-3"
+              >
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                  You're sitting there... stressing... spiraling... wondering what they <span className="text-cyan-400 font-semibold">REALLY</span> meant.
+                </p>
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                  While they're out living their life.
+                </p>
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                  Not thinking about you at all.
+                </p>
+              </motion.div>
+
+              {/* That Sucks - Direct Hit */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-center"
+              >
+                <p className="text-2xl md:text-3xl text-red-400 font-bold">
+                  That sucks.
+                </p>
+              </motion.div>
+
+              {/* What You Deserve - Empowerment */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="space-y-3 text-center"
+              >
+                <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
+                  You deserve <span className="text-cyan-400 font-semibold">clarity</span>.
+                </p>
+                <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
+                  You deserve to make decisions from a place of <span className="text-emerald-400 font-semibold">CONFIDENCE</span>.
+                </p>
+                <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
+                  Not <span className="text-red-400 font-semibold">anxiety</span>.
+                </p>
+              </motion.div>
+
+              {/* Calling Out Excuses */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="bg-gradient-to-r from-purple-500/20 via-cyan-500/20 to-purple-500/20 backdrop-blur-sm border border-purple-400/30 rounded-2xl p-8 space-y-4"
+              >
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed text-center">
+                  So stop waiting for people to <span className="text-cyan-400 font-semibold">"just be more direct."</span>
+                </p>
+                <p className="text-lg md:text-xl text-red-400 font-semibold text-center italic">
+                  (They won't.)
+                </p>
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed text-center mt-4">
+                  Stop hoping you'll magically figure it out on your own.
+                </p>
+                <p className="text-lg md:text-xl text-red-400 font-semibold text-center italic">
+                  (You won't.)
+                </p>
+              </motion.div>
+
+              {/* The Solution - Empowerment */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="space-y-4 text-center"
+              >
+                <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
+                  And start using the tool that gives you <span className="text-cyan-400 font-semibold">Sage's Receipt</span>...
+                </p>
+                <p className="text-xl md:text-2xl text-white font-semibold leading-relaxed">
+                  So you can stop guessing and start <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">seeing clearly</span>.
+                </p>
+                <p className="text-xl md:text-2xl text-cyan-400 font-bold mt-4">
+                  Right now.
+                </p>
+              </motion.div>
+
+              {/* Transition to CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+                className="text-center pt-4"
+              >
+                <p className="text-2xl md:text-3xl font-bold text-white mb-2">
+                  Stop spiraling. Start seeing clearly.
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Section Divider */}
+        <div className="w-full max-w-6xl mx-auto h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent"></div>
+
         {/* ============================================
             FINAL CTA SECTION
             ============================================ */}
@@ -1107,7 +1403,7 @@ Alex: maybe, I'll let you know`,
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight relative">
                 Ready to stop guessing?<br />
                 <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent relative inline-block">
-                  Start knowing. 💅
+                  Start seeing clearly. 💅
                   {/* Final CTA sparkles - Strategic accent */}
                   <motion.span
                     animate={{
@@ -1128,10 +1424,7 @@ Alex: maybe, I'll let you know`,
                 </span>
               </h2>
               <p className="text-xl text-gray-300 mb-4 max-w-2xl mx-auto leading-relaxed">
-                Join the first 500 getting the truth about their chats.
-              </p>
-              <p className="text-base text-gray-400 italic mb-8 max-w-2xl mx-auto">
-                No more mixed signals. No more doing CPR on a ghost.
+                No signup needed. Just paste and let Sage call it like she sees it.
               </p>
               <div className="flex justify-center">
                 <Button

@@ -25,16 +25,17 @@ const AuthModal = () => {
     const [referralId, setReferralId] = useState(null);
 
     useEffect(() => {
-        if (typeof window !== 'undefined' && window.rewardful) {
-            window.rewardful('ready', function() {
-                if (window.Rewardful && window.Rewardful.referral) {
-                    setReferralId(window.Rewardful.referral);
-                    console.log('Rewardful referral detected:', window.Rewardful.referral);
-                }
-            });
-        }
+        // Rewardful affiliate tracking disabled - using built-in referral system instead
+        // if (typeof window !== 'undefined' && window.rewardful) {
+        //     window.rewardful('ready', function() {
+        //         if (window.Rewardful && window.Rewardful.referral) {
+        //             setReferralId(window.Rewardful.referral);
+        //             console.log('Rewardful referral detected:', window.Rewardful.referral);
+        //         }
+        //     });
+        // }
         
-        // Also check URL parameters for referral
+        // Check URL parameters for referral (built-in referral system)
         const urlParams = new URLSearchParams(window.location.search);
         const referralParam = urlParams.get('via') || urlParams.get('ref') || urlParams.get('referral');
         if (referralParam) {
